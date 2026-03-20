@@ -16,7 +16,7 @@ const TAGLINE_LINES = [
 ];
 
 const EDITION_TEXT = "TINTAXIS · INAUGURAL EDITION";
-const SUBJECT_LINE = "THE LIFE OF ROBI DRACO ROSA";
+const SUBJECT_LINE = "THE HUNT — A NOVELLA";
 
 // Mechanical boot-up sequence for the decorative UI chrome
 const BOOT_LINES = [
@@ -334,9 +334,11 @@ export default function InitiationScreen() {
                 className="mt-10"
                 style={{
                   display: "flex",
-                  gap: "1rem",
+                  gap: "0.75rem",
                   justifyContent: "center",
                   flexWrap: "wrap",
+                  maxWidth: "900px",
+                  margin: "0 auto",
                 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -344,16 +346,51 @@ export default function InitiationScreen() {
               >
                 <ChapterIndexCard
                   number="I"
-                  title="The Sound Before the Sound"
-                  subtitle="San Juan, 1966–1978"
+                  title="What Robbin Told Alma"
+                  subtitle="The Diner at the Edge of Little Pines"
                   href="/chapter/one"
                   isLocked={false}
                 />
                 <ChapterIndexCard
                   number="II"
-                  title="The Machine and the Ghost"
-                  subtitle="New York / Los Angeles, 1984–1992"
+                  title="Corridor B"
+                  subtitle="The Clinic, Earlier That Morning"
                   href="/chapter/two"
+                  isLocked={true}
+                />
+                <ChapterIndexCard
+                  number="III"
+                  title="Regular Hours"
+                  subtitle="Alma Mae, at Her Desk"
+                  href="/chapter/three"
+                  isLocked={true}
+                />
+                <ChapterIndexCard
+                  number="IV"
+                  title="The Smell of Coffee and Syrup"
+                  subtitle="The Family Cabin, the Barrow History"
+                  href="/chapter/four"
+                  isLocked={true}
+                />
+                <ChapterIndexCard
+                  number="V"
+                  title="What Blood Requires"
+                  subtitle="Michelle, Grown"
+                  href="/chapter/five"
+                  isLocked={true}
+                />
+                <ChapterIndexCard
+                  number="VI"
+                  title="The Stories People Tell"
+                  subtitle="The Pines, the Town, the Years"
+                  href="/chapter/six"
+                  isLocked={true}
+                />
+                <ChapterIndexCard
+                  number="VII"
+                  title="Once Again"
+                  subtitle="The Cabin. The Lake. The End."
+                  href="/chapter/seven"
                   isLocked={true}
                 />
               </motion.div>
@@ -361,6 +398,60 @@ export default function InitiationScreen() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* ── OTHER WORKS LIBRARY ──────────────────────────────── */}
+      <AnimatePresence>
+        {phase === "ready" && (
+          <motion.div
+            className="w-full"
+            style={{ maxWidth: "960px", padding: "0 2rem", marginBottom: "5rem" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
+          >
+            {/* Section divider */}
+            <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.5rem" }}>
+              <div style={{ flex: 1, height: "1px", background: "linear-gradient(90deg, transparent, rgba(201,168,76,0.15))" }} />
+              <p style={{
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: "0.5rem",
+                letterSpacing: "0.3em",
+                color: "rgba(201,168,76,0.3)",
+                textTransform: "uppercase",
+                whiteSpace: "nowrap",
+              }}>
+                MORE FROM THIS ARCHIVE
+              </p>
+              <div style={{ flex: 1, height: "1px", background: "linear-gradient(90deg, rgba(201,168,76,0.15), transparent)" }} />
+            </div>
+
+            {/* Work cards */}
+            <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
+              <LibraryWorkCard
+                title="Recoleta"
+                subtitle="Novela corta · Español"
+                byline="~11,600 palabras"
+                description="Dedicado a todas las madres. A story of Rita, her asthma, and the silence left by the dead."
+                language="ES"
+              />
+              <LibraryWorkCard
+                title="Noches de Maya"
+                subtitle="Novela · Español"
+                byline="~32,000 palabras"
+                description="Triste de cuna. A novel of old men, river birds, and the weight of ordinary life in the tropics."
+                language="ES"
+              />
+              <LibraryWorkCard
+                title="Mi Pájaro del Río"
+                subtitle="Colección · ES · 中文 · EN"
+                byline="Diciembre 2017"
+                description="Letters written in three languages to the one called the river mouth bird. Rochester and Montauk."
+                language="三"
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── BOTTOM SYSTEM STATUS ──────────────────────────────── */}
       <AnimatePresence>
@@ -570,5 +661,128 @@ function ChapterIndexCard({
         )}
       </motion.div>
     </Link>
+  );
+}
+
+// ─── LIBRARY WORK CARD ───────────────────────────────────────────────────────
+// Shows other works by the author — sealed, coming to Tintaxis.
+
+function LibraryWorkCard({
+  title,
+  subtitle,
+  byline,
+  description,
+  language,
+}: {
+  title: string;
+  subtitle: string;
+  byline: string;
+  description: string;
+  language: string;
+}) {
+  return (
+    <motion.div
+      style={{
+        width: "220px",
+        padding: "1rem",
+        border: "1px solid rgba(201,168,76,0.1)",
+        borderRadius: "1px",
+        background: "rgba(13,11,8,0.5)",
+        cursor: "default",
+        textAlign: "left",
+        position: "relative",
+        overflow: "hidden",
+      }}
+      whileHover={{
+        borderColor: "rgba(201,168,76,0.2)",
+        background: "rgba(201,168,76,0.03)",
+      }}
+      transition={{ duration: 0.25 }}
+    >
+      {/* Language badge */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          padding: "0.2rem 0.4rem",
+          background: "rgba(201,168,76,0.06)",
+          borderLeft: "1px solid rgba(201,168,76,0.1)",
+          borderBottom: "1px solid rgba(201,168,76,0.1)",
+        }}
+      >
+        <span style={{
+          fontFamily: '"JetBrains Mono", monospace',
+          fontSize: "0.45rem",
+          letterSpacing: "0.1em",
+          color: "rgba(201,168,76,0.4)",
+          textTransform: "uppercase",
+        }}>
+          {language}
+        </span>
+      </div>
+
+      {/* Title */}
+      <p style={{
+        fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+        fontSize: "1rem",
+        fontStyle: "italic",
+        color: "rgba(245,230,200,0.4)",
+        lineHeight: 1.2,
+        marginBottom: "0.2rem",
+        paddingRight: "1.5rem",
+      }}>
+        {title}
+      </p>
+
+      {/* Subtitle */}
+      <p style={{
+        fontFamily: '"JetBrains Mono", monospace',
+        fontSize: "0.45rem",
+        letterSpacing: "0.1em",
+        color: "rgba(201,168,76,0.25)",
+        textTransform: "uppercase",
+        marginBottom: "0.15rem",
+      }}>
+        {subtitle}
+      </p>
+
+      {/* Byline */}
+      <p style={{
+        fontFamily: '"JetBrains Mono", monospace',
+        fontSize: "0.45rem",
+        letterSpacing: "0.08em",
+        color: "rgba(201,168,76,0.2)",
+        marginBottom: "0.6rem",
+      }}>
+        {byline}
+      </p>
+
+      {/* Brass divider */}
+      <div style={{ height: "1px", background: "rgba(201,168,76,0.08)", marginBottom: "0.6rem" }} />
+
+      {/* Description */}
+      <p style={{
+        fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+        fontSize: "0.75rem",
+        fontStyle: "italic",
+        color: "rgba(245,230,200,0.25)",
+        lineHeight: 1.5,
+        marginBottom: "0.6rem",
+      }}>
+        {description}
+      </p>
+
+      {/* Sealed badge */}
+      <p style={{
+        fontFamily: '"JetBrains Mono", monospace',
+        fontSize: "0.45rem",
+        letterSpacing: "0.2em",
+        color: "rgba(201,168,76,0.2)",
+        textTransform: "uppercase",
+      }}>
+        ⚿ COMING TO TINTAXIS
+      </p>
+    </motion.div>
   );
 }

@@ -88,7 +88,7 @@ export default function Image({ params }: Props) {
           >
             <span>TINTAXIS</span>
             <span style={{ color: "rgba(201,168,76,0.2)" }}>·</span>
-            <span>THE LIFE OF ROBI DRACO ROSA</span>
+            <span>THE HUNT — CHICO MONTECRISTI</span>
           </div>
 
           {/* Chapter label */}

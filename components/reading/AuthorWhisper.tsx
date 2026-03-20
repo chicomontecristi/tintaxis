@@ -22,32 +22,32 @@ export interface WhisperData {
   type: "whisper" | "anchor"; // Whisper = short text. Anchor = pinned reader insight.
 }
 
-// ─── DEMO WHISPERS — Replace with real content when Robi approves ────────────
+// ─── AUTHOR WHISPERS — Chico Montecristi on The Hunt ─────────────────────────
 export const DEMO_WHISPERS: WhisperData[] = [
   {
     id: "whisper-1",
     paragraphIndex: 1,
-    anchoredText: "the imported and the ancient had been arguing long enough to produce something new",
-    content: "That argument never stopped. I'm still in it. Every record I've made is that argument.",
-    authorName: "Robi Draco Rosa",
+    anchoredText: "the story of a teacher\'s suicide would be mustered over lunch like fries",
+    content: "Robbin is the kind of person who tells the truth without knowing it. She\'s the most honest character in the book. She just doesn\'t know she is.",
+    authorName: "Chico Montecristi",
     timestamp: "2025",
     type: "whisper",
   },
   {
     id: "whisper-2",
-    paragraphIndex: 5,
-    anchoredText: "He was not learning an instrument. He was discovering a medium.",
-    content: "This is the truest sentence in the book so far. I didn't understand it until I read it here.",
-    authorName: "Robi Draco Rosa",
+    paragraphIndex: 10,
+    anchoredText: "suicide was not one of them",
+    content: "The town knew before they knew. That\'s how small places work. The official story arrives after everyone has already decided what happened.",
+    authorName: "Chico Montecristi",
     timestamp: "2025",
     type: "anchor",
   },
   {
     id: "whisper-3",
-    paragraphIndex: 9,
-    anchoredText: "She gave him access to the school's practice rooms after hours.",
-    content: "Doña Carmen. I never thanked her properly. By the time I understood what she gave me, she was gone.",
-    authorName: "Robi Draco Rosa",
+    paragraphIndex: 55,
+    anchoredText: "You can\'t really trust the voices you hear",
+    content: "Alma says this at the end of chapter one and she\'s talking about the voices around her — gossip, rumor. But she\'s also talking about the whole book.",
+    authorName: "Chico Montecristi",
     timestamp: "2025",
     type: "whisper",
   },
@@ -110,7 +110,7 @@ export default function AuthorWhisper({ whisper }: AuthorWhisperProps) {
           } : {}}
           transition={{ duration: 1.2, ease: "easeOut" }}
         >
-          <span style={{ fontSize: "0.5rem", color: "rgba(201,168,76,0.7)" }}>R</span>
+          <span style={{ fontSize: "0.5rem", color: "rgba(201,168,76,0.7)" }}>C</span>
         </motion.div>
 
         <span

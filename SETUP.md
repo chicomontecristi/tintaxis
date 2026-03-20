@@ -28,7 +28,7 @@ Open http://localhost:3000
 **/** — The Initiation Screen
   Boot sequence → platform title → "OPEN THE ARCHIVE" button
 
-**/chapter/one** — Chapter One: The Sound Before the Sound
+**/chapter/one** — Chapter One: What Robbin Told Alma
   Full reading surface with:
   - Ink Toolbar (left rail) — Ghost Ink + Signal Ink active
   - Annotatable text — select any text, apply ink, add notes
@@ -42,7 +42,7 @@ Open http://localhost:3000
 
 Open `lib/content/chapters.ts`
 
-Replace the placeholder paragraphs with actual biography text. Each paragraph is:
+Each paragraph is an object in the paragraphs array:
 ```typescript
 {
   index: 0,         // sequential number

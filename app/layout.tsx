@@ -8,8 +8,8 @@ export const metadata: Metadata = {
     default: "Tintaxis",
     template: "%s — Tintaxis",
   },
-  description: "A living reading platform. The biography of Robi Draco Rosa. Year 2250.",
-  keywords: ["tintaxis", "reading", "biography", "Robi Draco Rosa", "interactive", "annotation"],
+  description: "A living reading platform. The Hunt — a novella by Chico Montecristi. Year 2250.",
+  keywords: ["tintaxis", "reading", "novel", "Chico Montecristi", "interactive", "annotation", "The Hunt"],
   metadataBase: new URL(BASE_URL),
   openGraph: {
     title: "Tintaxis",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Tintaxis",
-    description: "A living reading platform. The biography of Robi Draco Rosa.",
+    description: "A living reading platform. The Hunt — a novella by Chico Montecristi.",
     creator: "@chicomontecristi",
   },
   robots: {

@@ -152,7 +152,7 @@ export default async function Image() {
               display: "flex",
             }}
           >
-            THE LIFE OF ROBI DRACO ROSA
+            THE HUNT — A NOVELLA BY CHICO MONTECRISTI
           </div>
 
           {/* Tagline */}
