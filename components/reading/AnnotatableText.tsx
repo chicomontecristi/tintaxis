@@ -47,30 +47,59 @@ export default function AnnotatableText({
   const inkConfig = INK_CONFIGS[activeInkType];
 
   // ── Handle text selection (mouse + touch) ─────────────────────
+  //
+  // Strategy: listen to document `selectionchange` with a debounce.
+  // This fires on every platform whenever the selection moves —
+  // including mobile handle drags — so sliding a finger naturally
+  // triggers the ink popover once the finger stops.
+  // Mouse users also benefit; onMouseUp is kept as an instant fallback.
+
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const captureCurrentSelection = useCallback(() => {
-    const selection = captureSelection(paragraphIndex);
-    if (!selection || !paragraphRef.current) return;
+    if (!paragraphRef.current) return;
 
     const sel = window.getSelection();
-    if (!sel || sel.rangeCount === 0) return;
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return;
 
+    // Only respond if the selection overlaps this paragraph
     const range = sel.getRangeAt(0);
+    if (!paragraphRef.current.contains(range.commonAncestorContainer) &&
+        !range.intersectsNode(paragraphRef.current)) return;
+
+    const captured = captureSelection(paragraphIndex);
+    if (!captured) return;
+
     const rect = range.getBoundingClientRect();
-    // rect can be zero-height if selection collapsed — guard
     if (rect.width === 0 && rect.height === 0) return;
 
-    setPendingSelection({ selection, rect });
+    setPendingSelection({ selection: captured, rect });
     setNoteValue("");
     setShowNoteInput(false);
   }, [paragraphIndex]);
 
+  // Debounced selectionchange — fires 320ms after the user stops moving
+  useEffect(() => {
+    const handleSelectionChange = () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(captureCurrentSelection, 320);
+    };
+    document.addEventListener("selectionchange", handleSelectionChange);
+    return () => {
+      document.removeEventListener("selectionchange", handleSelectionChange);
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [captureCurrentSelection]);
+
+  // Desktop: instant response on mouse release (no debounce needed)
   const handleMouseUp = useCallback(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
     captureCurrentSelection();
   }, [captureCurrentSelection]);
 
-  // On touch devices the selection isn't committed until after touchend,
-  // so we wait one tick before reading it.
+  // Touch: also capture on finger lift in case selectionchange misfires
   const handleTouchEnd = useCallback(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
     setTimeout(captureCurrentSelection, 50);
   }, [captureCurrentSelection]);
 
