@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
@@ -513,6 +513,25 @@ export default function InitiationScreen() {
         )}
       </AnimatePresence>
 
+      {/* ── EMAIL CAPTURE ─────────────────────────────────────── */}
+      <AnimatePresence>
+        {phase === "ready" && (
+          <motion.div
+            style={{
+              width: "100%",
+              maxWidth: "520px",
+              padding: "0 clamp(1rem, 4vw, 2rem)",
+              marginBottom: "5rem",
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.6, duration: 0.8 }}
+          >
+            <EmailCapture />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* ── BOTTOM SYSTEM STATUS ──────────────────────────────── */}
       <AnimatePresence>
         {phase === "ready" && (
@@ -848,5 +867,139 @@ function LibraryWorkCard({
         ⚿ COMING TO TINTAXIS
       </p>
     </motion.div>
+  );
+}
+
+// ─── EMAIL CAPTURE COMPONENT ──────────────────────────────────────────────────
+
+function EmailCapture() {
+  const [email, setEmail] = useState("");
+  const [state, setState] = useState<"idle" | "submitting" | "done" | "error">("idle");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setState("submitting");
+    try {
+      const res = await fetch("/api/email-capture", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), source: "homepage" }),
+      });
+      if (res.ok) {
+        setState("done");
+      } else {
+        setState("error");
+      }
+    } catch {
+      setState("error");
+    }
+  }
+
+  return (
+    <div style={{ textAlign: "center" }}>
+      {/* Divider */}
+      <div style={{
+        height: "1px",
+        background: "linear-gradient(90deg, transparent, rgba(201,168,76,0.15) 40%, rgba(201,168,76,0.15) 60%, transparent)",
+        marginBottom: "2rem",
+      }} />
+
+      {state === "done" ? (
+        <motion.p
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{
+            fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+            fontSize: "0.95rem",
+            fontStyle: "italic",
+            color: "rgba(245,230,200,0.45)",
+            letterSpacing: "0.02em",
+          }}
+        >
+          You're on the list. New chapters find you.
+        </motion.p>
+      ) : (
+        <>
+          <p style={{
+            fontFamily: '"JetBrains Mono", monospace',
+            fontSize: "0.45rem",
+            letterSpacing: "0.3em",
+            color: "rgba(201,168,76,0.3)",
+            textTransform: "uppercase",
+            marginBottom: "0.75rem",
+          }}>
+            When new work arrives
+          </p>
+          <p style={{
+            fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+            fontSize: "1rem",
+            fontStyle: "italic",
+            color: "rgba(245,230,200,0.35)",
+            marginBottom: "1.25rem",
+            lineHeight: 1.6,
+          }}>
+            New chapters. New writers. No noise.
+          </p>
+
+          <form
+            onSubmit={handleSubmit}
+            style={{ display: "flex", gap: "0", maxWidth: "420px", margin: "0 auto" }}
+          >
+            <input
+              ref={inputRef}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
+              required
+              style={{
+                flex: 1,
+                background: "rgba(201,168,76,0.03)",
+                border: "1px solid rgba(201,168,76,0.15)",
+                borderRight: "none",
+                color: "rgba(245,230,200,0.7)",
+                fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                fontSize: "0.9rem",
+                padding: "0.6rem 0.9rem",
+                outline: "none",
+              }}
+            />
+            <motion.button
+              type="submit"
+              disabled={state === "submitting"}
+              style={{
+                background: state === "submitting" ? "rgba(201,168,76,0.3)" : "rgba(201,168,76,0.12)",
+                border: "1px solid rgba(201,168,76,0.15)",
+                color: "rgba(201,168,76,0.6)",
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: "0.45rem",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                padding: "0.6rem 1.1rem",
+                cursor: state === "submitting" ? "default" : "pointer",
+                whiteSpace: "nowrap",
+              }}
+              whileHover={state === "idle" ? { background: "rgba(201,168,76,0.2)" } : {}}
+            >
+              {state === "submitting" ? "…" : "Notify me"}
+            </motion.button>
+          </form>
+
+          {state === "error" && (
+            <p style={{
+              marginTop: "0.5rem",
+              fontFamily: '"JetBrains Mono", monospace',
+              fontSize: "0.4rem",
+              letterSpacing: "0.1em",
+              color: "rgba(220,60,60,0.6)",
+            }}>
+              Something went wrong. Try again.
+            </p>
+          )}
+        </>
+      )}
+    </div>
   );
 }
