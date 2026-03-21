@@ -7,6 +7,7 @@ import type { InkType, Annotation, TextSelection } from "@/lib/types";
 import { INK_CONFIGS } from "@/lib/types";
 import { saveAnnotation, captureSelection } from "@/lib/ink";
 import { playInkScratch } from "@/lib/sound";
+import type { SubscriptionTierName } from "@/components/ui/SubscriptionModal";
 
 // ─── ANNOTATABLE TEXT ────────────────────────────────────────────────────────
 // A single paragraph with full annotation capability.
@@ -19,6 +20,10 @@ interface AnnotatableTextProps {
   activeInkType: InkType;
   annotations: Annotation[];
   onAnnotationCreated: (annotation: Annotation) => void;
+  /** False when the reader hasn't subscribed to a Codex-or-higher plan */
+  canAnnotate?: boolean;
+  /** Called when a gate is triggered — opens the subscription modal */
+  onGateTriggered?: (tier: SubscriptionTierName, featureName: string) => void;
   isEpigraph?: boolean;
   isFirstParagraph?: boolean;
 }
@@ -35,6 +40,8 @@ export default function AnnotatableText({
   activeInkType,
   annotations,
   onAnnotationCreated,
+  canAnnotate = true,
+  onGateTriggered,
   isEpigraph = false,
   isFirstParagraph = false,
 }: AnnotatableTextProps) {
@@ -120,6 +127,17 @@ export default function AnnotatableText({
   const applyInk = useCallback((withNote: boolean) => {
     if (!pendingSelection) return;
 
+    // Gate: reader must have at least Codex to annotate
+    if (!canAnnotate) {
+      onGateTriggered?.("codex", "Ink Annotation");
+      // Inline dismiss — clears selection state without a circular dep on `dismiss`
+      setPendingSelection(null);
+      setShowNoteInput(false);
+      setNoteValue("");
+      window.getSelection()?.removeAllRanges();
+      return;
+    }
+
     if (withNote) {
       setShowNoteInput(true);
       return;
@@ -139,7 +157,7 @@ export default function AnnotatableText({
 
     setPendingSelection(null);
     window.getSelection()?.removeAllRanges();
-  }, [pendingSelection, chapterSlug, activeInkType, onAnnotationCreated]);
+  }, [pendingSelection, chapterSlug, activeInkType, onAnnotationCreated, canAnnotate, onGateTriggered]);
 
   const applyInkWithNote = useCallback(() => {
     if (!pendingSelection) return;

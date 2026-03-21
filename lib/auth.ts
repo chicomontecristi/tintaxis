@@ -16,11 +16,17 @@ const COOKIE_NAME = "tintaxis_session";
 const EXPIRES_IN = 60 * 60 * 24 * 7; // 7 days in seconds
 
 export type Role = "author" | "reader";
+export type ReaderTier = "codex" | "scribe" | "archive" | "chronicler";
+export type AuthorPlan = "manuscript" | "press";
 
 export interface SessionPayload {
-  sub: string;   // email
+  sub: string;          // email or Stripe customer ID
   role: Role;
   name: string;
+  tier?: ReaderTier;    // readers only
+  plan?: AuthorPlan;    // authors only
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
   iat: number;
   exp: number;
 }

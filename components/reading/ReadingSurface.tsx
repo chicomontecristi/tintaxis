@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { playArchiveMode } from "@/lib/sound";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Annotation, InkType, MarginLayer, Chapter } from "@/lib/types";
@@ -26,6 +27,9 @@ import InkTutorial from "@/components/ui/InkTutorial";
 import Link from "next/link";
 import ChapterRain from "./ChapterRain";
 
+// Tier access order — must match SubscriptionModal's TIER_ORDER
+const TIER_ORDER: SubscriptionTierName[] = ["codex", "scribe", "archive", "chronicler"];
+
 // ─── READING SURFACE ─────────────────────────────────────────────────────────
 // The complete reading environment. This is the heart of Tintaxis.
 // All subsystems are orchestrated here.
@@ -37,6 +41,7 @@ interface ReadingSurfaceProps {
 }
 
 export default function ReadingSurface({ chapter, nextChapter, prevChapter }: ReadingSurfaceProps) {
+  const pathname = usePathname();
   const [annotations, setAnnotations] = useState<Annotation[]>([]);
   const [activeInkType, setActiveInkTypeState] = useState<InkType>("ghost");
   const [marginLayer, setMarginLayer] = useState<MarginLayer>("mine");
@@ -49,6 +54,26 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
   const [gateTier, setGateTier] = useState<SubscriptionTierName | undefined>(undefined);
   const [gateFeatureName, setGateFeatureName] = useState<string | undefined>(undefined);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  // ── Reader session — determines which ink features are unlocked ────
+  const [readerTier, setReaderTier] = useState<SubscriptionTierName | null>(null);
+
+  useEffect(() => {
+    fetch("/api/reader/session")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.subscribed && data.tier) {
+          setReaderTier(data.tier as SubscriptionTierName);
+        }
+      })
+      .catch(() => {/* session check fails silently — treat as unsubscribed */});
+  }, []);
+
+  // Returns true if the reader's tier meets or exceeds the required tier
+  const hasAccess = useCallback((required: SubscriptionTierName): boolean => {
+    if (!readerTier) return false;
+    return TIER_ORDER.indexOf(readerTier) >= TIER_ORDER.indexOf(required);
+  }, [readerTier]);
 
   // ── Initialize reader state ────────────────────────────────
   useEffect(() => {
@@ -90,19 +115,31 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
   // ── Handle ink type change ─────────────────────────────────
   const handleInkChange = useCallback(
     (ink: InkType) => {
-      setActiveInkTypeState(ink);
-      setActiveInkType(chapter.slug, ink);
-
-      // Signal ink: open the question chamber
+      // Signal ink requires Scribe tier
       if (ink === "signal") {
+        if (!hasAccess("scribe")) {
+          handleGateTriggered("scribe", "Signal Ink");
+          return;
+        }
+        setActiveInkTypeState(ink);
+        setActiveInkType(chapter.slug, ink);
         const selection = window.getSelection();
         const text = selection?.toString().trim() || "";
         setSignalSelectedText(text);
         setSignalModalOpen(true);
         return;
       }
+
+      // All other inks require Codex tier
+      if (!hasAccess("codex")) {
+        handleGateTriggered("codex", "Ink Annotation");
+        return;
+      }
+
+      setActiveInkTypeState(ink);
+      setActiveInkType(chapter.slug, ink);
     },
-    [chapter.slug]
+    [chapter.slug, hasAccess]
   );
 
   // ── Handle annotation created ─────────────────────────────
@@ -196,6 +233,8 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
                 activeInkType={activeInkType}
                 annotations={annotations}
                 onAnnotationCreated={handleAnnotationCreated}
+                canAnnotate={hasAccess("codex")}
+                onGateTriggered={handleGateTriggered}
                 isEpigraph
               />
               <p
@@ -232,6 +271,8 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
                   (a) => a.selection.paragraphIndex === para.index
                 )}
                 onAnnotationCreated={handleAnnotationCreated}
+                canAnnotate={hasAccess("codex")}
+                onGateTriggered={handleGateTriggered}
                 isFirstParagraph={i === 0 || (i > 0 && chapter.paragraphs[i - 1]?.isSectionBreak)}
               />
             );
@@ -295,6 +336,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
         triggeredBy={gateTier}
         featureName={gateFeatureName}
         onClose={() => setSubscriptionModalOpen(false)}
+        returnUrl={pathname ?? "/"}
       />
 
       {/* ── Continue Reading toast ───────────────────────────── */}

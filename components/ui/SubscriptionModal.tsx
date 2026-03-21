@@ -1,23 +1,22 @@
 "use client";
 
 // ─── SUBSCRIPTION MODAL ───────────────────────────────────────────────────────
-// Tintaxis's four tiers. Shown when a reader tries to access a gated
-// feature. Phase 1: "Join the Waitlist" — no live payments yet.
-// Phase 2: Stripe or Lemon Squeezy integration.
+// Shown when a reader tries to access a gated feature.
+// Each tier has a live Stripe checkout button.
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-export type SubscriptionTierName = "codex" | "author" | "archive" | "chronicler";
+// "scribe" is the Stripe plan ID; displayed as "Scribe" in the UI
+export type SubscriptionTierName = "codex" | "scribe" | "archive" | "chronicler";
 
 interface SubscriptionModalProps {
   isOpen: boolean;
-  triggeredBy?: SubscriptionTierName; // which tier is required for this feature
-  featureName?: string;               // human-readable name of locked feature
+  triggeredBy?: SubscriptionTierName;
+  featureName?: string;
   onClose: () => void;
+  returnUrl?: string; // where to send the reader after successful payment
 }
-
-// ─── TIER DEFINITIONS ────────────────────────────────────────────────────────
 
 interface Tier {
   id: SubscriptionTierName;
@@ -47,7 +46,7 @@ const TIERS: Tier[] = [
     accentColor: "rgba(201,168,76,0.6)",
   },
   {
-    id: "author",
+    id: "scribe",
     name: "Scribe",
     price: "$6",
     period: "/month",
@@ -93,7 +92,7 @@ const TIERS: Tier[] = [
   },
 ];
 
-const TIER_ORDER: SubscriptionTierName[] = ["codex", "author", "archive", "chronicler"];
+const TIER_ORDER: SubscriptionTierName[] = ["codex", "scribe", "archive", "chronicler"];
 
 function tierIndex(id?: SubscriptionTierName) {
   if (!id) return -1;
@@ -105,8 +104,10 @@ export default function SubscriptionModal({
   triggeredBy,
   featureName,
   onClose,
+  returnUrl,
 }: SubscriptionModalProps) {
-  // Close on Escape
+  const [loadingTier, setLoadingTier] = useState<SubscriptionTierName | null>(null);
+
   useEffect(() => {
     if (!isOpen) return;
     const handler = (e: KeyboardEvent) => {
@@ -115,6 +116,30 @@ export default function SubscriptionModal({
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [isOpen, onClose]);
+
+  const handleSubscribe = async (tierId: SubscriptionTierName) => {
+    setLoadingTier(tierId);
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          plan: tierId,
+          returnUrl: returnUrl ?? window.location.pathname,
+        }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("[SubscriptionModal] No checkout URL returned:", data);
+        setLoadingTier(null);
+      }
+    } catch (err) {
+      console.error("[SubscriptionModal] Checkout error:", err);
+      setLoadingTier(null);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -128,16 +153,13 @@ export default function SubscriptionModal({
           transition={{ duration: 0.25 }}
           onClick={onClose}
         >
-          {/* ── Backdrop ── */}
+          {/* Backdrop */}
           <div
             className="absolute inset-0"
-            style={{
-              backgroundColor: "rgba(13,11,8,0.94)",
-              backdropFilter: "blur(6px)",
-            }}
+            style={{ backgroundColor: "rgba(13,11,8,0.94)", backdropFilter: "blur(6px)" }}
           />
 
-          {/* ── Modal panel ── */}
+          {/* Modal panel */}
           <motion.div
             onClick={(e) => e.stopPropagation()}
             style={{
@@ -156,7 +178,7 @@ export default function SubscriptionModal({
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
             transition={{ duration: 0.4, ease: [0.2, 0, 0.1, 1] }}
           >
-            {/* ── Close button ── */}
+            {/* Close button */}
             <button
               onClick={onClose}
               style={{
@@ -176,7 +198,7 @@ export default function SubscriptionModal({
               ✕ CLOSE
             </button>
 
-            {/* ── Header ── */}
+            {/* Header */}
             <div style={{ textAlign: "center", marginBottom: "2rem" }}>
               {featureName && (
                 <p
@@ -216,7 +238,7 @@ export default function SubscriptionModal({
               </p>
             </div>
 
-            {/* ── Brass rule ── */}
+            {/* Brass rule */}
             <div
               style={{
                 height: "1px",
@@ -226,20 +248,18 @@ export default function SubscriptionModal({
               }}
             />
 
-            {/* ── Tier grid ── */}
+            {/* Tier grid */}
             <div
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
                 gap: "1rem",
-                marginBottom: "2rem",
+                marginBottom: "1.5rem",
               }}
             >
               {TIERS.map((tier, i) => {
                 const isHighlighted = tier.id === triggeredBy;
-                const isUnlocked = triggeredBy
-                  ? i < tierIndex(triggeredBy)
-                  : false;
+                const isUnlocked = triggeredBy ? i < tierIndex(triggeredBy) : false;
 
                 return (
                   <TierCard
@@ -248,84 +268,26 @@ export default function SubscriptionModal({
                     isHighlighted={isHighlighted}
                     isUnlocked={isUnlocked}
                     index={i}
+                    isLoading={loadingTier === tier.id}
+                    onSubscribe={() => handleSubscribe(tier.id)}
                   />
                 );
               })}
             </div>
 
-            {/* ── Brass rule ── */}
-            <div
+            {/* Footer note */}
+            <p
               style={{
-                height: "1px",
-                background:
-                  "linear-gradient(90deg, transparent, rgba(201,168,76,0.3) 50%, transparent)",
-                marginBottom: "1.5rem",
+                textAlign: "center",
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: "0.45rem",
+                letterSpacing: "0.15em",
+                color: "rgba(201,168,76,0.25)",
+                textTransform: "uppercase",
               }}
-            />
-
-            {/* ── Phase note ── */}
-            <div style={{ textAlign: "center" }}>
-              <p
-                style={{
-                  fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.5rem",
-                  letterSpacing: "0.2em",
-                  color: "rgba(201,168,76,0.3)",
-                  textTransform: "uppercase",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                Phase 1 — Subscriptions Opening Soon
-              </p>
-              <p
-                style={{
-                  fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                  fontSize: "0.85rem",
-                  fontStyle: "italic",
-                  color: "rgba(245,230,200,0.3)",
-                  maxWidth: "42ch",
-                  margin: "0 auto 1.2rem",
-                  lineHeight: 1.6,
-                }}
-              >
-                The Archive is currently in private reading. Leave your address
-                and you will be the first through the door.
-              </p>
-
-              {/* Waitlist CTA */}
-              <a
-                href="mailto:chicomontecristi@gmail.com?subject=Tintaxis Waitlist"
-                style={{ textDecoration: "none" }}
-              >
-                <motion.div
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                    fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.6rem",
-                    letterSpacing: "0.22em",
-                    textTransform: "uppercase",
-                    color: "#C9A84C",
-                    border: "1px solid rgba(201,168,76,0.4)",
-                    padding: "0.7rem 2rem",
-                    cursor: "pointer",
-                    position: "relative",
-                  }}
-                  whileHover={{
-                    borderColor: "rgba(201,168,76,0.8)",
-                    boxShadow: "0 0 20px rgba(201,168,76,0.15)",
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  {/* Corner accents */}
-                  {["top-0 left-0 border-t border-l","top-0 right-0 border-t border-r","bottom-0 left-0 border-b border-l","bottom-0 right-0 border-b border-r"].map((cls, j) => (
-                    <span key={j} className={`absolute w-1.5 h-1.5 ${cls}`} style={{ borderColor: "#C9A84C" }} />
-                  ))}
-                  Join the Waitlist
-                </motion.div>
-              </a>
-            </div>
+            >
+              Cancel anytime · Billed monthly · Secure checkout via Stripe
+            </p>
           </motion.div>
         </motion.div>
       )}
@@ -340,11 +302,15 @@ function TierCard({
   isHighlighted,
   isUnlocked,
   index,
+  isLoading,
+  onSubscribe,
 }: {
   tier: Tier;
   isHighlighted: boolean;
   isUnlocked: boolean;
   index: number;
+  isLoading: boolean;
+  onSubscribe: () => void;
 }) {
   return (
     <motion.div
@@ -352,9 +318,7 @@ function TierCard({
         border: isHighlighted
           ? `1px solid ${tier.accentColor}`
           : "1px solid rgba(201,168,76,0.12)",
-        background: isHighlighted
-          ? "rgba(201,168,76,0.04)"
-          : "rgba(13,11,8,0.6)",
+        background: isHighlighted ? "rgba(201,168,76,0.04)" : "rgba(13,11,8,0.6)",
         padding: "1.25rem",
         position: "relative",
         display: "flex",
@@ -454,23 +418,14 @@ function TierCard({
             style={{
               fontFamily: '"EB Garamond", Garamond, Georgia, serif',
               fontSize: "0.8rem",
-              color: isUnlocked
-                ? "rgba(245,230,200,0.25)"
-                : "rgba(245,230,200,0.55)",
+              color: isUnlocked ? "rgba(245,230,200,0.25)" : "rgba(245,230,200,0.55)",
               lineHeight: 1.5,
               paddingLeft: "0.9rem",
               position: "relative",
               marginBottom: "0.2rem",
             }}
           >
-            <span
-              style={{
-                position: "absolute",
-                left: 0,
-                color: tier.accentColor,
-                opacity: isUnlocked ? 0.3 : 0.7,
-              }}
-            >
+            <span style={{ position: "absolute", left: 0, color: tier.accentColor, opacity: isUnlocked ? 0.3 : 0.7 }}>
               ·
             </span>
             {f}
@@ -479,7 +434,7 @@ function TierCard({
       </ul>
 
       {/* Ink color dots */}
-      <div style={{ display: "flex", gap: "4px", marginTop: "1rem" }}>
+      <div style={{ display: "flex", gap: "4px", marginTop: "1rem", marginBottom: "1rem" }}>
         {tier.inkColors.map((color, i) => (
           <div
             key={i}
@@ -493,6 +448,34 @@ function TierCard({
           />
         ))}
       </div>
+
+      {/* Subscribe button */}
+      <motion.button
+        onClick={onSubscribe}
+        disabled={isLoading}
+        style={{
+          width: "100%",
+          fontFamily: '"JetBrains Mono", monospace',
+          fontSize: "0.5rem",
+          letterSpacing: "0.2em",
+          textTransform: "uppercase",
+          color: isLoading ? "rgba(201,168,76,0.3)" : (isHighlighted ? "#0D0B08" : "#C9A84C"),
+          background: isHighlighted
+            ? (isLoading ? "rgba(201,168,76,0.2)" : tier.accentColor)
+            : "transparent",
+          border: `1px solid ${isHighlighted ? tier.accentColor : "rgba(201,168,76,0.25)"}`,
+          padding: "0.6rem 0.5rem",
+          cursor: isLoading ? "not-allowed" : "pointer",
+          transition: "all 0.2s ease",
+        }}
+        whileHover={!isLoading ? {
+          borderColor: tier.accentColor,
+          boxShadow: `0 0 12px ${tier.accentColor}40`,
+        } : {}}
+        whileTap={!isLoading ? { scale: 0.97 } : {}}
+      >
+        {isLoading ? "OPENING..." : "SUBSCRIBE"}
+      </motion.button>
     </motion.div>
   );
 }
