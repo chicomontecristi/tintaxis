@@ -195,7 +195,7 @@ function SignalCard({ signal, onReply }: { signal: SignalQuestion; onReply: (id:
               marginRight: "0.75rem",
             }}
           >
-            Ch. {signal.chapterNumber ?? signal.chapterTitle}
+            Ch. {signal.chapterTitle}
           </span>
           <span
             style={{
