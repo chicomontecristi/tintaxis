@@ -30,6 +30,29 @@ export interface FeaturedWriter {
 
 export const FEATURED_WRITERS: FeaturedWriter[] = [
   {
+    slug: "jose-la-luz",
+    name: "José La Luz",
+    photo: undefined,
+    origin: "Dominican Republic",
+    genre: "Political Essay · Dominican Letters",
+    shortBio:
+      "A Dominican public intellectual and political figure whose writing addresses power, identity, and the condition of the Caribbean. His essays arrive with the weight of someone who has lived the history he describes.",
+    fullBio:
+      "José La Luz is a Dominican political figure, intellectual, and writer whose work spans more than three decades of engagement with Caribbean politics, social development, and the lives of ordinary people. His writing draws from direct experience inside the institutions and movements that have shaped the Dominican Republic. He writes in Spanish — plainly, precisely, and without detachment. His essays are not commentary from the outside. They are testimony.",
+    works: [
+      {
+        title: "Escritos de un Hombre Político",
+        subtitle: "Ensayos · Español",
+        description:
+          "A collection of political essays drawn from thirty years of public life in the Dominican Republic. On power, community, and the cost of conviction.",
+        language: "ES",
+        comingSoon: true,
+      },
+    ],
+    instagram: undefined,
+    website: undefined,
+  },
+  {
     slug: "chico-montecristi",
     name: "José Elisaúl Chávez Martínez",
     artistName: "Chico Montecristi",
