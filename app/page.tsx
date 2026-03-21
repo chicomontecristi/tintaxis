@@ -85,7 +85,7 @@ export default function InitiationScreen() {
           justifyContent: "flex-end",
           alignItems: "center",
           gap: "1.75rem",
-          padding: "0.85rem 2rem",
+          padding: "0.85rem clamp(1rem, 4vw, 2rem)",
           borderBottom: "1px solid rgba(201,168,76,0.07)",
           background: "rgba(13,11,8,0.85)",
           backdropFilter: "blur(8px)",
@@ -451,7 +451,7 @@ export default function InitiationScreen() {
         {phase === "ready" && (
           <motion.div
             className="w-full"
-            style={{ maxWidth: "960px", padding: "0 2rem", marginBottom: "5rem" }}
+            style={{ maxWidth: "960px", padding: "0 clamp(1rem, 4vw, 2rem)", marginBottom: "4rem" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2, duration: 0.8 }}
@@ -473,7 +473,7 @@ export default function InitiationScreen() {
             </div>
 
             {/* Work cards */}
-            <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
+            <div className="library-section-inner" style={{ display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
               <LibraryWorkCard
                 title="Recoleta"
                 subtitle="Novela corta · Español"
@@ -504,7 +504,7 @@ export default function InitiationScreen() {
       <AnimatePresence>
         {phase === "ready" && (
           <motion.div
-            className="absolute bottom-20 left-1/2 -translate-x-1/2 flex flex-wrap items-center justify-center gap-4"
+            className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-wrap items-center justify-center gap-4 px-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.6 }}

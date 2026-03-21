@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 const BASE_URL = "https://tintaxis.vercel.app";
@@ -29,6 +29,14 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+};
+
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#0D0B08",
 };
 
 export default function RootLayout({

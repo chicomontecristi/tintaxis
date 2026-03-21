@@ -898,7 +898,7 @@ export default function AuthorDashboard() {
                     key={ch.slug}
                     style={{
                       display: "grid",
-                      gridTemplateColumns: "2rem 1fr auto auto",
+                      gridTemplateColumns: "1.5rem 1fr auto",
                       alignItems: "center",
                       gap: "1.5rem",
                       padding: "1rem 1.5rem",
