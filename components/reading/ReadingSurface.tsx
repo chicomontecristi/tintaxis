@@ -24,6 +24,7 @@ import type { SubscriptionTierName } from "@/components/ui/SubscriptionModal";
 import ContinueReadingToast from "@/components/ui/ContinueReadingToast";
 import InkTutorial from "@/components/ui/InkTutorial";
 import Link from "next/link";
+import ChapterRain from "./ChapterRain";
 
 // ─── READING SURFACE ─────────────────────────────────────────────────────────
 // The complete reading environment. This is the heart of Tintaxis.
@@ -236,27 +237,8 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
             );
           })}
 
-          {/* ── Chapter end marker ──────────────────────────── */}
-          <div
-            style={{
-              textAlign: "center",
-              marginTop: "4rem",
-              paddingTop: "3rem",
-            }}
-          >
-            <div className="brass-line" style={{ marginBottom: "1.5rem" }} />
-            <p
-              style={{
-                fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.6rem",
-                letterSpacing: "0.3em",
-                color: "rgba(201,168,76,0.35)",
-                textTransform: "uppercase",
-              }}
-            >
-              — END OF CHAPTER {chapter.romanNumeral} —
-            </p>
-          </div>
+          {/* ── Chapter rain — generated from chapter vocabulary ─── */}
+          <ChapterRain chapterSlug={chapter.slug} height={320} />
 
           {/* ── Chapter navigation ───────────────────────────── */}
           <ChapterEndNav
