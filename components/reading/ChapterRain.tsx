@@ -217,6 +217,7 @@ export default function ChapterRain({ chapterSlug, height = 340 }: ChapterRainPr
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+    // After this point, canvas and ctx are guaranteed to be non-null
 
     const config = CHAPTER_CONFIGS[chapterSlug] ?? DEFAULT_CONFIG;
     const { digitColor, glowColor, bgAlpha } = config;
@@ -238,7 +239,7 @@ export default function ChapterRain({ chapterSlug, height = 340 }: ChapterRainPr
       const len = 8 + Math.floor(Math.random() * 16);
       return {
         x,
-        y: Math.random() * canvas.height,
+        y: Math.random() * canvas!.height,
         speed: 0.6 + Math.random() * 1.2,
         length: len,
         digits: Array.from({ length: len }, () => Math.floor(Math.random() * 10)),
@@ -260,8 +261,8 @@ export default function ChapterRain({ chapterSlug, height = 340 }: ChapterRainPr
       const margin = 80;
       const node: EntityNode = {
         entity,
-        x: margin + Math.random() * (Math.max(canvas.width - margin * 2, 200)),
-        y: 40 + Math.random() * (canvas.height - 80),
+        x: margin + Math.random() * (Math.max(canvas!.width - margin * 2, 200)),
+        y: 40 + Math.random() * (canvas!.height - 80),
         phase: "name",
         phaseProgress: 0,
         phaseDuration: 90,
@@ -283,8 +284,8 @@ export default function ChapterRain({ chapterSlug, height = 340 }: ChapterRainPr
       eventIndex++;
       const label: EventLabel = {
         text,
-        x: (canvas.width || 400) / 2,
-        y: canvas.height - 40 - Math.random() * (canvas.height / 2),
+        x: (canvas!.width || 400) / 2,
+        y: canvas!.height - 40 - Math.random() * (canvas!.height / 2),
         phase: "appear",
         progress: 0,
         duration: 50,
@@ -310,15 +311,15 @@ export default function ChapterRain({ chapterSlug, height = 340 }: ChapterRainPr
     let raf: number;
 
     function draw() {
-      const W = canvas.width;
-      const H = canvas.height;
+      const W = canvas!.width;
+      const H = canvas!.height;
 
       // Background fade (creates trail effect)
-      ctx.fillStyle = `rgba(13,11,8,${bgAlpha})`;
-      ctx.fillRect(0, 0, W, H);
+      ctx!.fillStyle = `rgba(13,11,8,${bgAlpha})`;
+      ctx!.fillRect(0, 0, W, H);
 
       // ── Draw digit columns ─────────────────────────────────────────────
-      ctx.font = `${FONT_SIZE}px "JetBrains Mono", monospace`;
+      ctx!.font = `${FONT_SIZE}px "JetBrains Mono", monospace`;
       for (const col of columns) {
         col.y += col.speed;
         if (col.y > H + col.length * FONT_SIZE) {
@@ -334,12 +335,12 @@ export default function ChapterRain({ chapterSlug, height = 340 }: ChapterRainPr
         for (let i = 0; i < col.length; i++) {
           const brightness = col.brightness[i];
           const alpha = brightness * 0.35;
-          ctx.fillStyle = `rgba(${digitColor},${alpha})`;
-          ctx.fillText(String(col.digits[i]), col.x, col.y - i * FONT_SIZE);
+          ctx!.fillStyle = `rgba(${digitColor},${alpha})`;
+          ctx!.fillText(String(col.digits[i]), col.x, col.y - i * FONT_SIZE);
         }
         // Bright head digit
-        ctx.fillStyle = `rgba(${digitColor},0.7)`;
-        ctx.fillText(String(col.digits[0]), col.x, col.y);
+        ctx!.fillStyle = `rgba(${digitColor},0.7)`;
+        ctx!.fillText(String(col.digits[0]), col.x, col.y);
       }
 
       // ── Spawn entities and events ──────────────────────────────────────
@@ -349,7 +350,7 @@ export default function ChapterRain({ chapterSlug, height = 340 }: ChapterRainPr
       // ── Draw entity nodes ──────────────────────────────────────────────
       const NODE_FONT = 15;
       const ROLE_FONT = 9;
-      ctx.textAlign = "center";
+      ctx!.textAlign = "center";
 
       for (let ni = activeNodes.length - 1; ni >= 0; ni--) {
         const node = activeNodes[ni];
@@ -395,58 +396,58 @@ export default function ChapterRain({ chapterSlug, height = 340 }: ChapterRainPr
         }
 
         // Draw node
-        ctx.save();
-        ctx.globalAlpha = node.opacity;
+        ctx!.save();
+        ctx!.globalAlpha = node.opacity;
 
         const [r, g, b] = node.entity.color.split(",").map(Number);
 
         // Glow backdrop
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = `rgba(${r},${g},${b},0.5)`;
+        ctx!.shadowBlur = 12;
+        ctx!.shadowColor = `rgba(${r},${g},${b},0.5)`;
 
         if (node.phase === "name") {
           // Plain character name
-          ctx.font = `${NODE_FONT}px "JetBrains Mono", monospace`;
-          ctx.fillStyle = `rgba(${r},${g},${b},0.9)`;
-          ctx.fillText(node.entity.name, node.x, node.y);
+          ctx!.font = `${NODE_FONT}px "JetBrains Mono", monospace`;
+          ctx!.fillStyle = `rgba(${r},${g},${b},0.9)`;
+          ctx!.fillText(node.entity.name, node.x, node.y);
 
-          ctx.shadowBlur = 0;
-          ctx.font = `${ROLE_FONT}px "JetBrains Mono", monospace`;
-          ctx.fillStyle = `rgba(${r},${g},${b},0.4)`;
-          ctx.fillText(node.entity.role.toUpperCase(), node.x, node.y + 14);
+          ctx!.shadowBlur = 0;
+          ctx!.font = `${ROLE_FONT}px "JetBrains Mono", monospace`;
+          ctx!.fillStyle = `rgba(${r},${g},${b},0.4)`;
+          ctx!.fillText(node.entity.role.toUpperCase(), node.x, node.y + 14);
         } else {
           // Show letters being replaced with numbers
           const chars: string[] = node.encodedLetters.map((enc, i) =>
             enc !== null ? enc : node.entity.name[i]
           );
           const full = chars.join(" ");
-          ctx.font = `${NODE_FONT}px "JetBrains Mono", monospace`;
+          ctx!.font = `${NODE_FONT}px "JetBrains Mono", monospace`;
 
           // Draw each character segment individually with color shift
-          const totalWidth = ctx.measureText(full).width;
+          const totalWidth = ctx!.measureText(full).width;
           let xCursor = node.x - totalWidth / 2;
 
           for (let ci = 0; ci < node.encodedLetters.length; ci++) {
             const isEncoded = node.encodedLetters[ci] !== null;
             const seg = (node.encodedLetters[ci] ?? node.entity.name[ci]) + " ";
-            ctx.fillStyle = isEncoded
+            ctx!.fillStyle = isEncoded
               ? `rgba(${digitColor},0.75)`       // encoded = amber digits
               : `rgba(${r},${g},${b},0.9)`;      // original = character color
-            ctx.textAlign = "left";
-            ctx.fillText(seg, xCursor, node.y);
-            xCursor += ctx.measureText(seg).width;
+            ctx!.textAlign = "left";
+            ctx!.fillText(seg, xCursor, node.y);
+            xCursor += ctx!.measureText(seg).width;
           }
-          ctx.textAlign = "center";
+          ctx!.textAlign = "center";
 
           if (node.phase !== "dissolve") {
-            ctx.shadowBlur = 0;
-            ctx.font = `${ROLE_FONT}px "JetBrains Mono", monospace`;
-            ctx.fillStyle = `rgba(${r},${g},${b},0.3)`;
-            ctx.fillText("→ " + toAsciiCodes(node.entity.name), node.x, node.y + 14);
+            ctx!.shadowBlur = 0;
+            ctx!.font = `${ROLE_FONT}px "JetBrains Mono", monospace`;
+            ctx!.fillStyle = `rgba(${r},${g},${b},0.3)`;
+            ctx!.fillText("→ " + toAsciiCodes(node.entity.name), node.x, node.y + 14);
           }
         }
 
-        ctx.restore();
+        ctx!.restore();
       }
 
       // ── Draw event labels ──────────────────────────────────────────────
@@ -481,10 +482,10 @@ export default function ChapterRain({ chapterSlug, height = 340 }: ChapterRainPr
           if (pct >= 1) { activeEvents.splice(ei, 1); continue; }
         }
 
-        ctx.save();
-        ctx.globalAlpha = evt.opacity * 0.65;
-        ctx.textAlign = "left";
-        ctx.font = `${EVT_FONT}px "JetBrains Mono", monospace`;
+        ctx!.save();
+        ctx!.globalAlpha = evt.opacity * 0.65;
+        ctx!.textAlign = "left";
+        ctx!.font = `${EVT_FONT}px "JetBrains Mono", monospace`;
 
         const rendered = evt.quantizedChars.map(c =>
           typeof c === "number"
@@ -492,21 +493,21 @@ export default function ChapterRain({ chapterSlug, height = 340 }: ChapterRainPr
             : c
         ).join(" ");
 
-        const tw = ctx.measureText(rendered).width;
+        const tw = ctx!.measureText(rendered).width;
         let xC = evt.x - tw / 2;
 
         for (const ch of evt.quantizedChars) {
           const seg = typeof ch === "number"
             ? String(ch).padStart(3, "0") + " "
             : ch + " ";
-          ctx.fillStyle = typeof ch === "number"
+          ctx!.fillStyle = typeof ch === "number"
             ? `rgba(${digitColor},0.6)`
             : `rgba(245,230,200,0.5)`;
-          ctx.fillText(seg, xC, evt.y);
-          xC += ctx.measureText(seg).width;
+          ctx!.fillText(seg, xC, evt.y);
+          xC += ctx!.measureText(seg).width;
         }
 
-        ctx.restore();
+        ctx!.restore();
       }
 
       // ── End of chapter text ────────────────────────────────────────────
@@ -519,16 +520,16 @@ export default function ChapterRain({ chapterSlug, height = 340 }: ChapterRainPr
           endAsciiProgress += 0.3;
         }
 
-        ctx.save();
-        ctx.textAlign = "center";
-        ctx.globalAlpha = endOpacity;
+        ctx!.save();
+        ctx!.textAlign = "center";
+        ctx!.globalAlpha = endOpacity;
 
         if (!endAscii) {
-          ctx.font = `13px "JetBrains Mono", monospace`;
-          ctx.fillStyle = `rgba(${glowColor},0.9)`;
-          ctx.shadowBlur = 16;
-          ctx.shadowColor = `rgba(${glowColor},0.6)`;
-          ctx.fillText(END_TEXT, W / 2, H / 2);
+          ctx!.font = `13px "JetBrains Mono", monospace`;
+          ctx!.fillStyle = `rgba(${glowColor},0.9)`;
+          ctx!.shadowBlur = 16;
+          ctx!.shadowColor = `rgba(${glowColor},0.6)`;
+          ctx!.fillText(END_TEXT, W / 2, H / 2);
         } else {
           // Transition: characters → ASCII codes
           const progress = Math.floor(endAsciiProgress);
@@ -537,31 +538,31 @@ export default function ChapterRain({ chapterSlug, height = 340 }: ChapterRainPr
             encoded: i < progress,
           }));
 
-          ctx.font = `12px "JetBrains Mono", monospace`;
-          ctx.shadowBlur = 12;
-          ctx.shadowColor = `rgba(${glowColor},0.5)`;
+          ctx!.font = `12px "JetBrains Mono", monospace`;
+          ctx!.shadowBlur = 12;
+          ctx!.shadowColor = `rgba(${glowColor},0.5)`;
 
           const fullEncoded = segments.map(s =>
             s.encoded
               ? (s.ch === " " || s.ch === "—" ? s.ch : String(s.ch.charCodeAt(0)).padStart(3,"0"))
               : s.ch
           ).join(" ");
-          const tw = ctx.measureText(fullEncoded).width;
+          const tw = ctx!.measureText(fullEncoded).width;
           let xC = W / 2 - tw / 2;
 
-          ctx.textAlign = "left";
+          ctx!.textAlign = "left";
           for (const seg of segments) {
             const txt = seg.encoded && seg.ch !== " " && seg.ch !== "—"
               ? String(seg.ch.charCodeAt(0)).padStart(3, "0") + " "
               : seg.ch + " ";
-            ctx.fillStyle = seg.encoded
+            ctx!.fillStyle = seg.encoded
               ? `rgba(${digitColor},0.8)`
               : `rgba(245,230,200,0.9)`;
-            ctx.fillText(txt, xC, H / 2);
-            xC += ctx.measureText(txt).width;
+            ctx!.fillText(txt, xC, H / 2);
+            xC += ctx!.measureText(txt).width;
           }
         }
-        ctx.restore();
+        ctx!.restore();
       }
 
       frame++;

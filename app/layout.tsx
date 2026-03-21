@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const BASE_URL = "https://tintaxis.vercel.app";
@@ -48,6 +49,7 @@ export default function RootLayout({
       </head>
       <body className="vault-noise antialiased">
         {children}
+        <Analytics />
       </body>
     </html>
   );
