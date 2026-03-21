@@ -70,7 +70,7 @@ export default function InitiationScreen() {
 
   return (
     <div
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-x-hidden"
       style={{ backgroundColor: "#0D0B08" }}
     >
       {/* ── TOP NAV ───────────────────────────────────────────── */}
@@ -383,8 +383,9 @@ export default function InitiationScreen() {
                   gap: "0.75rem",
                   justifyContent: "center",
                   flexWrap: "wrap",
-                  maxWidth: "900px",
+                  maxWidth: "min(900px, 100%)",
                   margin: "0 auto",
+                  padding: "0 0.5rem",
                 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -503,7 +504,7 @@ export default function InitiationScreen() {
       <AnimatePresence>
         {phase === "ready" && (
           <motion.div
-            className="absolute bottom-20 left-1/2 -translate-x-1/2 flex items-center gap-6"
+            className="absolute bottom-20 left-1/2 -translate-x-1/2 flex flex-wrap items-center justify-center gap-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.6 }}
@@ -607,7 +608,9 @@ function ChapterIndexCard({
     <Link href={href} style={{ textDecoration: "none" }}>
       <motion.div
         style={{
-          width: "200px",
+          flex: "1 1 160px",
+          minWidth: "140px",
+          maxWidth: "210px",
           padding: "0.9rem 1rem",
           border: isLocked
             ? "1px solid rgba(201,168,76,0.12)"
@@ -729,7 +732,9 @@ function LibraryWorkCard({
   return (
     <motion.div
       style={{
-        width: "220px",
+        flex: "1 1 180px",
+        minWidth: "160px",
+        maxWidth: "240px",
         padding: "1rem",
         border: "1px solid rgba(201,168,76,0.1)",
         borderRadius: "1px",

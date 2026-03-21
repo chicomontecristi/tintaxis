@@ -802,7 +802,7 @@ export default function PublishPage() {
           >
             All plans are billed monthly. Cancel anytime. Acceptance required.
           </motion.p>
-          <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap", justifyContent: "center" }}>
             {PLANS.map((plan) => (
               <PricingCard key={plan.id} plan={plan} onSelect={scrollToForm} />
             ))}
@@ -902,7 +902,7 @@ export default function PublishPage() {
                     <div
                       style={{
                         display: "grid",
-                        gridTemplateColumns: "1fr 1fr",
+                        gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
                         gap: "1rem",
                         marginBottom: "1rem",
                       }}
@@ -951,7 +951,7 @@ export default function PublishPage() {
                     <div
                       style={{
                         display: "grid",
-                        gridTemplateColumns: "1fr 1fr",
+                        gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
                         gap: "1rem",
                         marginBottom: "1rem",
                       }}

@@ -898,7 +898,7 @@ export default function AuthorDashboard() {
                     key={ch.slug}
                     style={{
                       display: "grid",
-                      gridTemplateColumns: "2rem 1fr auto auto auto",
+                      gridTemplateColumns: "2rem 1fr auto auto",
                       alignItems: "center",
                       gap: "1.5rem",
                       padding: "1rem 1.5rem",
@@ -1080,7 +1080,7 @@ export default function AuthorDashboard() {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(3, 1fr)",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
                   gap: "1px",
                   border: "1px solid rgba(201,168,76,0.1)",
                 }}
