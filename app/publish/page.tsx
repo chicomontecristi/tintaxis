@@ -802,7 +802,7 @@ export default function PublishPage() {
           >
             All plans are billed monthly. Cancel anytime. Acceptance required.
           </motion.p>
-          <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap", justifyContent: "center" }}>
+          <div className="pricing-plans-row" style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap", justifyContent: "center", alignItems: "flex-start" }}>
             {PLANS.map((plan) => (
               <PricingCard key={plan.id} plan={plan} onSelect={scrollToForm} />
             ))}

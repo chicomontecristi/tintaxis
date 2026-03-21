@@ -234,13 +234,22 @@ body {
     transform: none !important;
     flex-direction: row !important;
     justify-content: center;
-    height: 52px;
+    height: 56px;
     width: 100% !important;
-    background: rgba(13, 11, 8, 0.96);
-    border-top: 1px solid rgba(201, 168, 76, 0.15);
-    padding: 0 1rem;
-    gap: 0.25rem;
+    background: rgba(13, 11, 8, 0.97);
+    border-top: 1px solid rgba(201, 168, 76, 0.2);
+    padding: 0 0.5rem;
+    gap: 0;
     z-index: 40;
+    /* Ensure toolbar clears safe-area on devices with home indicator */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Make ink buttons wider/taller on mobile for easy tapping */
+  .ink-toolbar-fixed button {
+    flex: 1;
+    height: 56px !important;
+    min-width: 44px;
   }
 
   /* Rotate vertical rail decorations on mobile */
@@ -249,14 +258,21 @@ body {
     display: none;
   }
 
-  /* Remove left offset — no sidebar on mobile */
+  /* Remove left offset — toolbar is at bottom on mobile */
   :root {
     --toolbar-offset: 0px;
+    --nav-left-pad: 1rem;
+    --nav-title-max: 160px;
   }
 
-  /* Add bottom padding so content doesn't hide behind toolbar */
+  /* Enough bottom padding to clear the 56px toolbar + breathing room */
   .parchment-surface {
-    padding-bottom: 6rem !important;
+    padding-bottom: 5rem !important;
+  }
+
+  /* Scroll padding so the browser's scroll-into-view accounts for bottom toolbar */
+  html {
+    scroll-padding-bottom: 56px;
   }
 
   /* Tighten chapter title on mobile */
@@ -264,9 +280,27 @@ body {
     font-size: clamp(1.5rem, 7vw, 2.5rem) !important;
   }
 
-  /* Hide progress % text on very small screens */
+  /* Hide reading progress percentage on small screens */
   .progress-pct {
     display: none;
+  }
+
+  /* Pricing cards: stack to one column on mobile */
+  .pricing-plans-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  /* Chapter nav: limit title width so it doesn't overlap wordmark */
+  .chapter-nav-title {
+    max-width: 140px !important;
+    font-size: 0.7rem !important;
+  }
+
+  /* Library cards: go full-width when stacked */
+  .library-section-inner > * {
+    max-width: 100% !important;
+    flex-basis: 100% !important;
   }
 }
 
@@ -384,13 +418,9 @@ button, a, [role="button"] {
 }
 
 /* ─── MOBILE — MINIMUM TOUCH TARGET SIZE ─────────────────────────── */
+/* Only apply to standalone interactive elements, not inline text links */
 @media (max-width: 640px) {
-  button {
+  button:not(.inline-btn) {
     min-height: 44px;
-  }
-  a {
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
   }
 }

@@ -57,7 +57,7 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
               : "1px solid rgba(201,168,76,0.12)",
             backdropFilter: atTop ? "none" : "blur(8px)",
             transition: "background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease",
-            paddingLeft: "60px", // clear the ink toolbar
+            paddingLeft: "var(--nav-left-pad, 60px)", // 60px on desktop (clears left toolbar), 0 on mobile (toolbar is at bottom)
           }}
           initial={{ y: -52, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -102,7 +102,7 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
             </Link>
 
             {/* ── Center: Chapter identity ────────────────── */}
-            <div style={{ textAlign: "center", position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
+            <div className="chapter-nav-center" style={{ textAlign: "center", position: "absolute", left: "50%", transform: "translateX(-50%)" }}>
               <span
                 style={{
                   fontFamily: '"JetBrains Mono", monospace',
@@ -118,12 +118,18 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
                 Chapter {chapter.romanNumeral}
               </span>
               <span
+                className="chapter-nav-title"
                 style={{
                   fontFamily: '"EB Garamond", Garamond, Georgia, serif',
                   fontSize: "0.8rem",
                   fontStyle: "italic",
                   color: "rgba(245,230,200,0.4)",
                   letterSpacing: "0.02em",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  maxWidth: "var(--nav-title-max, 260px)",
+                  display: "block",
                 }}
               >
                 {chapter.title}
