@@ -34,7 +34,7 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
     slug: "rosalva-flores-aleman",
     name: "Rosalva Flores-Alemán, Ph.D.",
     photo: "/writers/rosalva-flores-aleman.jpg",
-    origin: "Sonora, México · Tucson, AZ",
+    origin: "Sonora, México · Tucson, AZ · Tennessee",
     genre: "Literary Scholarship · Latin American Fiction",
     shortBio:
       "A scholar and writer whose work moves between 19th-century Latin American literature and the living questions of cultural identity, performance, and what it means to belong. She writes and teaches in Spanish and English — often at the same time.",
