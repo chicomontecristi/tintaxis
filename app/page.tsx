@@ -118,6 +118,19 @@ export default function InitiationScreen() {
           Featured Artists
         </a>
         <a
+          href="/account"
+          style={{
+            fontFamily: '"JetBrains Mono", monospace',
+            fontSize: "0.5rem",
+            letterSpacing: "0.25em",
+            color: "rgba(245,230,200,0.35)",
+            textDecoration: "none",
+            textTransform: "uppercase",
+          }}
+        >
+          My Account
+        </a>
+        <a
           href="/author/login"
           style={{
             fontFamily: '"JetBrains Mono", monospace',

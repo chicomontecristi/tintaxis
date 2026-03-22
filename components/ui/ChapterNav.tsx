@@ -136,8 +136,30 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
               </span>
             </div>
 
-            {/* ── Right: Ink indicator ─────────────────────── */}
-            <InkStatusDot />
+            {/* ── Right: Account link + Ink indicator ─────── */}
+            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+              <Link
+                href="/account"
+                style={{
+                  fontFamily: '"JetBrains Mono", monospace',
+                  fontSize: "0.45rem",
+                  letterSpacing: "0.2em",
+                  color: "rgba(201,168,76,0.35)",
+                  textDecoration: "none",
+                  textTransform: "uppercase",
+                  transition: "color 0.2s",
+                }}
+                onMouseEnter={(e) =>
+                  ((e.target as HTMLAnchorElement).style.color = "rgba(201,168,76,0.7)")
+                }
+                onMouseLeave={(e) =>
+                  ((e.target as HTMLAnchorElement).style.color = "rgba(201,168,76,0.35)")
+                }
+              >
+                Account
+              </Link>
+              <InkStatusDot />
+            </div>
           </div>
         </motion.header>
       )}
