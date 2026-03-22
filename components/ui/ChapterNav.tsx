@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Chapter } from "@/lib/types";
 import TintaxisLogo from "./TintaxisLogo";
@@ -15,9 +16,24 @@ interface ChapterNavProps {
 }
 
 export default function ChapterNav({ chapter }: ChapterNavProps) {
+  const pathname = usePathname();
   const [visible, setVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [atTop, setAtTop] = useState(true);
+
+  // ── Reader session state ───────────────────────────────────
+  const [readerName,  setReaderName]  = useState<string | null>(null);
+  const [readerReady, setReaderReady] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/reader/session")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.subscribed) setReaderName(data.name ?? null);
+      })
+      .catch(() => {})
+      .finally(() => setReaderReady(true));
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -136,28 +152,59 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
               </span>
             </div>
 
-            {/* ── Right: Account link + Ink indicator ─────── */}
+            {/* ── Right: Reader identity + Ink indicator ─────── */}
             <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-              <Link
-                href="/account"
-                style={{
-                  fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.45rem",
-                  letterSpacing: "0.2em",
-                  color: "rgba(201,168,76,0.35)",
-                  textDecoration: "none",
-                  textTransform: "uppercase",
-                  transition: "color 0.2s",
-                }}
-                onMouseEnter={(e) =>
-                  ((e.target as HTMLAnchorElement).style.color = "rgba(201,168,76,0.7)")
-                }
-                onMouseLeave={(e) =>
-                  ((e.target as HTMLAnchorElement).style.color = "rgba(201,168,76,0.35)")
-                }
-              >
-                Account
-              </Link>
+              {readerReady && (
+                readerName ? (
+                  // Signed in — show name linking to account
+                  <Link
+                    href="/account"
+                    style={{
+                      fontFamily: '"JetBrains Mono", monospace',
+                      fontSize: "0.45rem",
+                      letterSpacing: "0.2em",
+                      color: "rgba(201,168,76,0.55)",
+                      textDecoration: "none",
+                      textTransform: "uppercase",
+                      transition: "color 0.2s",
+                      maxWidth: "120px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                    onMouseEnter={(e) =>
+                      ((e.target as HTMLAnchorElement).style.color = "rgba(201,168,76,0.9)")
+                    }
+                    onMouseLeave={(e) =>
+                      ((e.target as HTMLAnchorElement).style.color = "rgba(201,168,76,0.55)")
+                    }
+                  >
+                    {readerName}
+                  </Link>
+                ) : (
+                  // Not signed in — show Sign In link
+                  <Link
+                    href={`/reader/login?from=${encodeURIComponent(pathname ?? "/")}`}
+                    style={{
+                      fontFamily: '"JetBrains Mono", monospace',
+                      fontSize: "0.45rem",
+                      letterSpacing: "0.2em",
+                      color: "rgba(201,168,76,0.35)",
+                      textDecoration: "none",
+                      textTransform: "uppercase",
+                      transition: "color 0.2s",
+                    }}
+                    onMouseEnter={(e) =>
+                      ((e.target as HTMLAnchorElement).style.color = "rgba(201,168,76,0.7)")
+                    }
+                    onMouseLeave={(e) =>
+                      ((e.target as HTMLAnchorElement).style.color = "rgba(201,168,76,0.35)")
+                    }
+                  >
+                    Sign In →
+                  </Link>
+                )
+              )}
               <InkStatusDot />
             </div>
           </div>

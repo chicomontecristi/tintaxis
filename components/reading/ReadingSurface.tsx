@@ -57,7 +57,9 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
   const contentRef = useRef<HTMLDivElement>(null);
 
   // ── Reader session — determines which ink features are unlocked ────
-  const [readerTier, setReaderTier] = useState<SubscriptionTierName | null>(null);
+  const [readerTier,  setReaderTier]  = useState<SubscriptionTierName | null>(null);
+  const [readerId,    setReaderId]    = useState<string | null>(null);
+  const [readerEmail, setReaderEmail] = useState<string | null>(null);
 
   // ── Live whispers — fetched on mount, used for inline paragraph markers ──
   const [whispers, setWhispers] = useState<WhisperData[]>([]);
@@ -89,6 +91,8 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
         if (data.subscribed && data.tier) {
           setReaderTier(data.tier as SubscriptionTierName);
         }
+        if (data.id)    setReaderId(data.id);
+        if (data.email) setReaderEmail(data.email);
       })
       .catch(() => {/* session check fails silently — treat as unsubscribed */});
   }, []);
@@ -105,12 +109,30 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
     if (!state) {
       state = initReaderState(chapter.slug);
     }
-
-    const saved = getAnnotations(chapter.slug);
-    setAnnotations(saved);
     setActiveInkTypeState(state.activeInkType);
     setQuestionAsked(hasAskedQuestion(chapter.slug));
     setIsComplete(state.hasCompletedFirstRead);
+
+    // Load annotations: Supabase when authenticated, localStorage otherwise
+    fetch(`/api/reader/annotations?chapter=${chapter.slug}`)
+      .then((r) => {
+        if (!r.ok) throw new Error("not authed");
+        return r.json();
+      })
+      .then((data) => {
+        if (data.annotations && data.annotations.length > 0) {
+          setAnnotations(data.annotations);
+        } else {
+          // Authenticated but no cloud annotations — seed from localStorage
+          const local = getAnnotations(chapter.slug);
+          setAnnotations(local);
+        }
+      })
+      .catch(() => {
+        // Not authenticated — use localStorage
+        const local = getAnnotations(chapter.slug);
+        setAnnotations(local);
+      });
   }, [chapter.slug]);
 
   // ── Track scroll progress ──────────────────────────────────
@@ -169,19 +191,50 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
   // ── Handle annotation created ─────────────────────────────
   const handleAnnotationCreated = useCallback((annotation: Annotation) => {
     setAnnotations((prev) => [...prev, annotation]);
-  }, []);
+
+    // Persist to Supabase when reader is authenticated
+    if (readerId) {
+      fetch("/api/reader/annotations", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({
+          inkType:     annotation.inkType,
+          note:        annotation.note,
+          chapterSlug: annotation.chapterSlug,
+          isPublic:    annotation.isPublic ?? false,
+          selection:   annotation.selection,
+        }),
+      }).catch(() => {/* persist fails silently — annotation is in local state */});
+    }
+  }, [readerId]);
 
   // ── Handle annotation updated ─────────────────────────────
   const handleAnnotationUpdated = useCallback((updated: Annotation) => {
     setAnnotations((prev) =>
       prev.map((a) => (a.id === updated.id ? updated : a))
     );
-  }, []);
+
+    // Sync note update to Supabase when reader is authenticated
+    if (readerId) {
+      fetch(`/api/reader/annotations/${updated.id}`, {
+        method:  "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ note: updated.note }),
+      }).catch(() => {/* update fails silently */});
+    }
+  }, [readerId]);
 
   // ── Handle annotation deleted ─────────────────────────────
   const handleAnnotationDeleted = useCallback((id: string) => {
     setAnnotations((prev) => prev.filter((a) => a.id !== id));
-  }, []);
+
+    // Remove from Supabase when reader is authenticated
+    if (readerId) {
+      fetch(`/api/reader/annotations/${id}`, {
+        method: "DELETE",
+      }).catch(() => {/* delete fails silently — removed from local state */});
+    }
+  }, [readerId]);
 
   // ── Handle subscription gate trigger ──────────────────────
   const handleGateTriggered = useCallback((tier: SubscriptionTierName, featureName: string) => {
@@ -340,6 +393,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
         selectedText={signalSelectedText}
         chapterSlug={chapter.slug}
         hasAlreadyAsked={questionAsked}
+        readerEmail={readerEmail}
         onClose={() => {
           setSignalModalOpen(false);
           // Return to ghost ink after using signal

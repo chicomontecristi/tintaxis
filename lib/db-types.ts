@@ -9,6 +9,8 @@ export interface ReaderRow {
   id:                      string;
   email:                   string;
   name:                    string | null;
+  reading_name:            string | null;   // Phase 7: public display name in margins
+  password_hash:           string | null;   // Phase 7: native auth (null = Stripe-only reader)
   stripe_customer_id:      string | null;
   stripe_subscription_id:  string | null;
   tier:                    ReaderTier | null;
@@ -17,6 +19,21 @@ export interface ReaderRow {
   active:                  boolean;
   created_at:              string;
   updated_at:              string;
+}
+
+export interface AnnotationRow {
+  id:              string;
+  reader_id:       string;
+  chapter_slug:    string;
+  paragraph_index: number;
+  start_offset:    number;
+  end_offset:      number;
+  selected_text:   string;
+  note:            string | null;
+  ink_type:        string;
+  is_public:       boolean;
+  created_at:      string;
+  updated_at:      string;
 }
 
 export interface PurchaseRow {
@@ -63,6 +80,11 @@ export interface Database {
         Row:    ReaderRow;
         Insert: Omit<ReaderRow, "id" | "created_at" | "updated_at">;
         Update: Partial<Omit<ReaderRow, "id" | "created_at">>;
+      };
+      annotations: {
+        Row:    AnnotationRow;
+        Insert: Omit<AnnotationRow, "id" | "created_at" | "updated_at">;
+        Update: Partial<Omit<AnnotationRow, "id" | "created_at">>;
       };
       purchases: {
         Row:    PurchaseRow;

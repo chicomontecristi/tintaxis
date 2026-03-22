@@ -2,7 +2,7 @@
 // All Supabase operations go through here. Server-side only.
 
 import { supabase } from "./supabase";
-import type { ReaderRow, ReaderTier, AuthorPlan, SignalRow, WhisperRow } from "./db-types";
+import type { ReaderRow, ReaderTier, AuthorPlan, SignalRow, WhisperRow, AnnotationRow } from "./db-types";
 
 // ── Readers ───────────────────────────────────────────────────────────────────
 
@@ -400,6 +400,160 @@ export async function deleteWhisper(id: string): Promise<boolean> {
 
   if (error) {
     console.error("[db] deleteWhisper error:", error.message);
+    return false;
+  }
+  return true;
+}
+
+// ─── PHASE 7 — READER NATIVE AUTH ────────────────────────────────────────────
+
+/**
+ * Create a new reader account with a hashed password.
+ * Returns null if the email is already registered.
+ */
+export async function createReaderWithPassword(params: {
+  email:        string;
+  passwordHash: string;
+  name?:        string;
+  readingName?: string;
+}): Promise<ReaderRow | null> {
+  const { data, error } = await supabase
+    .from("readers")
+    .insert({
+      email:         params.email.toLowerCase().trim(),
+      password_hash: params.passwordHash,
+      name:          params.name        ?? null,
+      reading_name:  params.readingName ?? null,
+      role:          "reader",
+      active:        false, // becomes true when they subscribe
+      updated_at:    new Date().toISOString(),
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("[db] createReaderWithPassword error:", error.message);
+    return null;
+  }
+  return data;
+}
+
+/**
+ * Fetch the stored password hash for a reader.
+ * Returns null if reader not found or has no password (Stripe-only reader).
+ */
+export async function getReaderPasswordHash(
+  email: string
+): Promise<{ id: string; passwordHash: string } | null> {
+  const { data, error } = await supabase
+    .from("readers")
+    .select("id, password_hash")
+    .eq("email", email.toLowerCase().trim())
+    .single();
+
+  if (error || !data || !data.password_hash) return null;
+  return { id: data.id, passwordHash: data.password_hash };
+}
+
+// ─── PHASE 7 — ANNOTATIONS ───────────────────────────────────────────────────
+
+/**
+ * Persist an annotation to Supabase.
+ */
+export async function insertAnnotation(params: {
+  readerId:       string;
+  chapterSlug:    string;
+  paragraphIndex: number;
+  startOffset:    number;
+  endOffset:      number;
+  selectedText:   string;
+  note?:          string;
+  inkType:        string;
+  isPublic:       boolean;
+}): Promise<AnnotationRow | null> {
+  const { data, error } = await supabase
+    .from("annotations")
+    .insert({
+      reader_id:       params.readerId,
+      chapter_slug:    params.chapterSlug,
+      paragraph_index: params.paragraphIndex,
+      start_offset:    params.startOffset,
+      end_offset:      params.endOffset,
+      selected_text:   params.selectedText,
+      note:            params.note ?? null,
+      ink_type:        params.inkType,
+      is_public:       params.isPublic,
+      updated_at:      new Date().toISOString(),
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("[db] insertAnnotation error:", error.message);
+    return null;
+  }
+  return data;
+}
+
+/**
+ * List all annotations by a reader for a given chapter.
+ */
+export async function listAnnotationsByReader(
+  readerId:    string,
+  chapterSlug: string
+): Promise<AnnotationRow[]> {
+  const { data, error } = await supabase
+    .from("annotations")
+    .select("*")
+    .eq("reader_id", readerId)
+    .eq("chapter_slug", chapterSlug)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("[db] listAnnotationsByReader error:", error.message);
+    return [];
+  }
+  return data ?? [];
+}
+
+/**
+ * Update the note on an annotation.
+ * Scoped to readerId so a reader can only update their own.
+ */
+export async function updateAnnotationNote(
+  id:       string,
+  readerId: string,
+  note:     string
+): Promise<boolean> {
+  const { error } = await supabase
+    .from("annotations")
+    .update({ note, updated_at: new Date().toISOString() })
+    .eq("id", id)
+    .eq("reader_id", readerId);
+
+  if (error) {
+    console.error("[db] updateAnnotationNote error:", error.message);
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Delete an annotation.
+ * Scoped to readerId so a reader can only delete their own.
+ */
+export async function deleteAnnotation(
+  id:       string,
+  readerId: string
+): Promise<boolean> {
+  const { error } = await supabase
+    .from("annotations")
+    .delete()
+    .eq("id", id)
+    .eq("reader_id", readerId);
+
+  if (error) {
+    console.error("[db] deleteAnnotation error:", error.message);
     return false;
   }
   return true;

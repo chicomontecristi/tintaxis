@@ -37,6 +37,8 @@ export async function GET(req: NextRequest) {
         tier:       dbReader.tier ?? null,
         plan:       dbReader.plan ?? null,
         name:       dbReader.name ?? session.name,
+        email:      session.sub,
+        id:         dbReader.id,
         // Convenience: tell client if this is a subscriber vs one-time purchaser
         type:       dbReader.stripe_subscription_id ? "subscription" : "one-time",
       });
@@ -53,6 +55,8 @@ export async function GET(req: NextRequest) {
     tier:       session.tier ?? null,
     plan:       session.plan ?? null,
     name:       session.name,
+    email:      session.sub,
+    id:         null,
     type:       "cookie-fallback",
   });
 }

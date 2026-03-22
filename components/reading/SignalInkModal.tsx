@@ -18,6 +18,7 @@ interface SignalInkModalProps {
   hasAlreadyAsked: boolean;
   onClose: () => void;
   onQuestionSent: () => void;
+  readerEmail?: string | null;   // pre-filled from session when authenticated
 }
 
 type SubmitState = "idle" | "sending" | "sent" | "error";
@@ -35,9 +36,15 @@ export default function SignalInkModal({
   hasAlreadyAsked,
   onClose,
   onQuestionSent,
+  readerEmail,
 }: SignalInkModalProps) {
   const [question, setQuestion] = useState("");
   const [email, setEmail] = useState("");
+
+  // Pre-fill email from session when authenticated
+  useEffect(() => {
+    if (readerEmail) setEmail(readerEmail);
+  }, [readerEmail]);
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
   const [authorReply, setAuthorReply] = useState<AuthorReply | null>(null);
 
@@ -282,39 +289,53 @@ export default function SignalInkModal({
                       />
                     </div>
 
-                    {/* Optional email */}
-                    <div style={{ marginBottom: "1.5rem" }}>
-                      <label
-                        style={{
+                    {/* Email — hidden when session provides it, optional otherwise */}
+                    {readerEmail ? (
+                      <div style={{ marginBottom: "1.5rem" }}>
+                        <p style={{
                           fontFamily: '"JetBrains Mono", monospace',
-                          fontSize: "0.55rem",
-                          letterSpacing: "0.2em",
-                          color: "rgba(245,230,200,0.3)",
+                          fontSize: "0.5rem",
+                          letterSpacing: "0.15em",
+                          color: "rgba(0,229,204,0.45)",
                           textTransform: "uppercase",
-                          display: "block",
-                          marginBottom: "0.5rem",
-                        }}
-                      >
-                        Your Address (optional — to receive a reply)
-                      </label>
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="reader@archive.net"
-                        style={{
-                          width: "100%",
-                          background: "rgba(13,11,8,0.9)",
-                          border: "1px solid rgba(245,230,200,0.1)",
-                          borderRadius: "1px",
-                          padding: "0.5rem 0.75rem",
-                          color: "#F5E6C8",
-                          fontFamily: '"JetBrains Mono", monospace',
-                          fontSize: "0.75rem",
-                          outline: "none",
-                        }}
-                      />
-                    </div>
+                        }}>
+                          Reply will go to: {readerEmail}
+                        </p>
+                      </div>
+                    ) : (
+                      <div style={{ marginBottom: "1.5rem" }}>
+                        <label
+                          style={{
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: "0.55rem",
+                            letterSpacing: "0.2em",
+                            color: "rgba(245,230,200,0.3)",
+                            textTransform: "uppercase",
+                            display: "block",
+                            marginBottom: "0.5rem",
+                          }}
+                        >
+                          Your Address (optional — to receive a reply)
+                        </label>
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="reader@archive.net"
+                          style={{
+                            width: "100%",
+                            background: "rgba(13,11,8,0.9)",
+                            border: "1px solid rgba(245,230,200,0.1)",
+                            borderRadius: "1px",
+                            padding: "0.5rem 0.75rem",
+                            color: "#F5E6C8",
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: "0.75rem",
+                            outline: "none",
+                          }}
+                        />
+                      </div>
+                    )}
 
                     {/* Notice */}
                     <p
