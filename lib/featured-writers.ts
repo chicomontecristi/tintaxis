@@ -50,7 +50,7 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
       },
       {
         title: "21st Century Diaspora",
-        subtitle: "Essays · Poetry · Philosophy",
+        subtitle: "Essays · Poetry · PHaiLOSOPHY",
         description:
           "A collection moving across essay, poetry, and philosophical reflection on what it means to carry a culture across borders, languages, and generations.",
         language: "ES",
