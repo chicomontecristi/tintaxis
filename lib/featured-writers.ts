@@ -30,6 +30,37 @@ export interface FeaturedWriter {
 
 export const FEATURED_WRITERS: FeaturedWriter[] = [
   {
+    slug: "rosalva-flores-aleman",
+    name: "Rosalva Flores-Alemán, Ph.D.",
+    photo: "/writers/rosalva-flores-aleman.jpg",
+    origin: "Sonora, México · Tucson, AZ",
+    genre: "Literary Scholarship · Latin American Fiction",
+    shortBio:
+      "A scholar and writer whose work moves between 19th-century Latin American literature and the living questions of cultural identity, performance, and what it means to belong. She writes and teaches in Spanish and English — often at the same time.",
+    fullBio:
+      "Rosalva Flores-Alemán holds a Ph.D. in Literature from the University of Arizona (2022), where her research centered on 19th- and 20th-century Latin American literature, cultural studies, and the intersections of performance and subalternity. She is a native speaker of Spanish who has spent her academic career at the boundary between languages — teaching Spanish as a foreign language, working with Heritage Speakers recovering their own tongue, and building fully online courses that make rigorous literary study available to students who cannot reach a classroom. She has served as an academic advisor for Spanish Majors and Minors and as a Study Abroad advisor, personally recruiting and leading 33 students to Spain in 2021 and helping rescue a Costa Rica program from cancellation. Her pedagogy is built around first-generation students: active learning, critical thinking, and the conviction that literature is not a luxury but a tool. She writes with the same precision she demands in the classroom.",
+    works: [
+      {
+        title: "Noches de Maya",
+        subtitle: "Fiction · Español",
+        description:
+          "A work of literary fiction drawn from the borderlands of language, memory, and cultural inheritance. Forthcoming on Tintaxis.",
+        language: "ES",
+        comingSoon: true,
+      },
+      {
+        title: "On Subalternity and the Archive",
+        subtitle: "Essay · EN",
+        description:
+          "A critical essay on the silences that 19th-century Latin American literature preserves — and what performance theory lets us hear in them.",
+        language: "EN",
+        comingSoon: true,
+      },
+    ],
+    instagram: undefined,
+    website: undefined,
+  },
+  {
     slug: "jose-la-luz",
     name: "José La Luz",
     photo: "/writers/jose-la-luz.jpg",
