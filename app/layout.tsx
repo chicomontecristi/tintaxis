@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const BASE_URL = "https://tintaxis.vercel.app";
@@ -56,6 +57,7 @@ export default function RootLayout({
       </head>
       <body className="vault-noise antialiased">
         {children}
+        <Analytics />
       </body>
     </html>
   );
