@@ -558,3 +558,23 @@ export async function deleteAnnotation(
   }
   return true;
 }
+
+/**
+ * Fetch ALL annotations for a reader across all chapters.
+ * Used on the account/vault page to show reading history.
+ */
+export async function listAllAnnotationsByReader(
+  readerId: string
+): Promise<AnnotationRow[]> {
+  const { data, error } = await supabase
+    .from("annotations")
+    .select("*")
+    .eq("reader_id", readerId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("[db] listAllAnnotationsByReader error:", error.message);
+    return [];
+  }
+  return data ?? [];
+}

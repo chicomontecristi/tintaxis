@@ -66,9 +66,26 @@ interface ReaderSession {
   tier?: string | null;
   plan?: string | null;
   name?: string;
+  email?: string;
+  id?: string | null;
   type?: string;
   reason?: string;
 }
+
+interface AnnotationSummary {
+  total: number;
+  byChapter: { chapterSlug: string; count: number; latest: string; inks: string[] }[];
+  recent: { id: string; inkType: string; selectedText: string; note: string; chapterSlug: string; createdAt: string }[];
+}
+
+const INK_COLORS: Record<string, string> = {
+  ember:   "#C0392B",
+  copper:  "#B87333",
+  ghost:   "rgba(160,168,168,0.7)",
+  archive: "#C9A84C",
+  signal:  "#00E5CC",
+  memory:  "#6B3FA0",
+};
 
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
@@ -84,9 +101,10 @@ export default function AccountPageShell() {
 }
 
 function AccountPage() {
-  const [session, setSession] = useState<ReaderSession | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [signingOut, setSigningOut] = useState(false);
+  const [session, setSession]         = useState<ReaderSession | null>(null);
+  const [annotations, setAnnotations] = useState<AnnotationSummary | null>(null);
+  const [loading, setLoading]         = useState(true);
+  const [signingOut, setSigningOut]   = useState(false);
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
 
@@ -96,6 +114,13 @@ function AccountPage() {
       .then((data: ReaderSession) => {
         setSession(data);
         setLoading(false);
+        // Load annotation summary if reader has an id
+        if (data.subscribed && data.id) {
+          fetch("/api/reader/annotations/all")
+            .then((r) => r.ok ? r.json() : null)
+            .then((d) => d && setAnnotations(d))
+            .catch(() => {});
+        }
       })
       .catch(() => {
         setSession({ subscribed: false });
@@ -105,7 +130,7 @@ function AccountPage() {
 
   async function handleSignOut() {
     setSigningOut(true);
-    await fetch("/api/auth/logout", { method: "POST" });
+    await fetch("/api/reader/logout", { method: "POST" });
     window.location.href = "/";
   }
 
@@ -268,8 +293,11 @@ function AccountPage() {
               </p>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", alignItems: "center" }}>
+                <Link href="/reader/login?from=/account" style={{ textDecoration: "none" }}>
+                  <BrassButton>Sign In →</BrassButton>
+                </Link>
                 <Link href="/chapter/one" style={{ textDecoration: "none" }}>
-                  <BrassButton>Open the Archive</BrassButton>
+                  <GhostButton>Open the Archive</GhostButton>
                 </Link>
                 {session?.reason === "inactive" && (
                   <a href="/api/stripe/portal" style={{ textDecoration: "none" }}>
@@ -522,6 +550,155 @@ function AccountPage() {
                     ? "No billing record found. Contact support if this is unexpected."
                     : "Could not open billing portal. Try again shortly."}
                 </motion.p>
+              )}
+
+              {/* ── Annotations panel ─────────────────────── */}
+              {annotations && annotations.total > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25, duration: 0.5 }}
+                  style={{
+                    border: "1px solid rgba(201,168,76,0.1)",
+                    borderRadius: "2px",
+                    padding: "1.25rem 1.5rem",
+                    background: "rgba(13,11,8,0.4)",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  {/* Header */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "1rem" }}>
+                    <p style={{
+                      fontFamily: '"JetBrains Mono", monospace',
+                      fontSize: "0.45rem",
+                      letterSpacing: "0.25em",
+                      color: "rgba(201,168,76,0.4)",
+                      textTransform: "uppercase",
+                    }}>
+                      Your Marks
+                    </p>
+                    <p style={{
+                      fontFamily: '"JetBrains Mono", monospace',
+                      fontSize: "0.45rem",
+                      letterSpacing: "0.15em",
+                      color: "rgba(201,168,76,0.25)",
+                      textTransform: "uppercase",
+                    }}>
+                      {annotations.total} annotation{annotations.total !== 1 ? "s" : ""}
+                    </p>
+                  </div>
+
+                  {/* Chapter breakdown */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "1rem" }}>
+                    {annotations.byChapter.map((ch) => (
+                      <Link
+                        key={ch.chapterSlug}
+                        href={`/chapter/${ch.chapterSlug}`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <motion.div
+                          whileHover={{ background: "rgba(201,168,76,0.04)", borderColor: "rgba(201,168,76,0.2)" }}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            padding: "0.5rem 0.75rem",
+                            border: "1px solid rgba(201,168,76,0.07)",
+                            borderRadius: "1px",
+                            cursor: "pointer",
+                            transition: "all 0.2s",
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                            {/* Ink dots */}
+                            <div style={{ display: "flex", gap: "3px" }}>
+                              {ch.inks.map((ink) => (
+                                <div
+                                  key={ink}
+                                  style={{
+                                    width: "5px",
+                                    height: "5px",
+                                    borderRadius: "50%",
+                                    backgroundColor: INK_COLORS[ink] ?? "#C9A84C",
+                                    boxShadow: `0 0 4px ${INK_COLORS[ink] ?? "#C9A84C"}80`,
+                                  }}
+                                />
+                              ))}
+                            </div>
+                            <span style={{
+                              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                              fontSize: "0.875rem",
+                              fontStyle: "italic",
+                              color: "rgba(245,230,200,0.55)",
+                            }}>
+                              Chapter {ch.chapterSlug}
+                            </span>
+                          </div>
+                          <span style={{
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: "0.42rem",
+                            letterSpacing: "0.12em",
+                            color: "rgba(201,168,76,0.3)",
+                            textTransform: "uppercase",
+                          }}>
+                            {ch.count} mark{ch.count !== 1 ? "s" : ""}
+                          </span>
+                        </motion.div>
+                      </Link>
+                    ))}
+                  </div>
+
+                  {/* Recent marks preview */}
+                  {annotations.recent.length > 0 && (
+                    <div style={{ borderTop: "1px solid rgba(201,168,76,0.07)", paddingTop: "0.75rem" }}>
+                      <p style={{
+                        fontFamily: '"JetBrains Mono", monospace',
+                        fontSize: "0.42rem",
+                        letterSpacing: "0.2em",
+                        color: "rgba(201,168,76,0.25)",
+                        textTransform: "uppercase",
+                        marginBottom: "0.6rem",
+                      }}>
+                        Recent
+                      </p>
+                      {annotations.recent.slice(0, 3).map((a) => (
+                        <div
+                          key={a.id}
+                          style={{
+                            borderLeft: `2px solid ${INK_COLORS[a.inkType] ?? "#C9A84C"}60`,
+                            paddingLeft: "0.6rem",
+                            marginBottom: "0.6rem",
+                          }}
+                        >
+                          <p style={{
+                            fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                            fontSize: "0.85rem",
+                            fontStyle: "italic",
+                            color: "rgba(245,230,200,0.4)",
+                            lineHeight: 1.5,
+                            overflow: "hidden",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                          }}>
+                            &ldquo;{a.selectedText}&rdquo;
+                          </p>
+                          {a.note && (
+                            <p style={{
+                              fontFamily: '"JetBrains Mono", monospace',
+                              fontSize: "0.42rem",
+                              color: "rgba(245,230,200,0.25)",
+                              marginTop: "0.2rem",
+                              letterSpacing: "0.05em",
+                            }}>
+                              {a.note}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
               )}
 
               {/* Action buttons */}
