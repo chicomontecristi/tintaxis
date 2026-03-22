@@ -1,16 +1,29 @@
 // ─── STRIPE WEBHOOK ───────────────────────────────────────────────────────────
 // Handles subscription lifecycle events from Stripe.
-// Phase 1: logs events and handles cancellations.
-// Phase 2: write subscription state to Supabase.
+// Writes all subscription state changes to Supabase.
 //
 // Register this URL in your Stripe dashboard:
 //   https://tintaxis.vercel.app/api/stripe/webhook
-// Events to enable: customer.subscription.deleted, customer.subscription.updated
+// Events to enable:
+//   checkout.session.completed
+//   customer.subscription.deleted
+//   customer.subscription.updated
+//   invoice.payment_failed
 
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { getWriterConnectId, WRITER_SHARE } from "@/lib/featured-writers";
+import { deactivateReader, updateReaderSubscription, getReaderBySubscriptionId } from "@/lib/db";
 import type Stripe from "stripe";
+
+// Map Stripe price IDs → Tintaxis tier names.
+// Update this if you add new plans to lib/stripe.ts.
+const PRICE_TO_TIER: Record<string, string> = {
+  [process.env.STRIPE_PRICE_CODEX       ?? ""]: "codex",
+  [process.env.STRIPE_PRICE_SCRIBE      ?? ""]: "scribe",
+  [process.env.STRIPE_PRICE_ARCHIVE     ?? ""]: "archive",
+  [process.env.STRIPE_PRICE_CHRONICLER  ?? ""]: "chronicler",
+};
 
 // Next.js App Router: read raw body to verify Stripe signature
 export async function POST(req: NextRequest) {
@@ -35,24 +48,53 @@ export async function POST(req: NextRequest) {
   switch (event.type) {
 
     case "customer.subscription.deleted": {
-      // Subscription cancelled — Phase 2: revoke access in DB
+      // Subscription cancelled — revoke access in Supabase
       const sub = event.data.object as Stripe.Subscription;
-      console.log(`[stripe/webhook] Subscription cancelled: ${sub.id} (customer: ${sub.customer})`);
-      // TODO Phase 2: mark user as inactive in Supabase
+      const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer.id;
+      console.log(`[stripe/webhook] Subscription cancelled: ${sub.id} (customer: ${customerId})`);
+      await deactivateReader(customerId);
+      console.log(`[stripe/webhook] Reader deactivated for customer: ${customerId}`);
       break;
     }
 
     case "customer.subscription.updated": {
       const sub = event.data.object as Stripe.Subscription;
-      console.log(`[stripe/webhook] Subscription updated: ${sub.id} status=${sub.status}`);
-      // TODO Phase 2: update user tier/plan in Supabase
+      const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer.id;
+      const isActive = sub.status === "active" || sub.status === "trialing";
+
+      // Try to determine the new tier from the price ID
+      const priceId = sub.items?.data?.[0]?.price?.id ?? "";
+      const newTier = PRICE_TO_TIER[priceId] ?? null;
+
+      console.log(`[stripe/webhook] Subscription updated: ${sub.id} status=${sub.status} tier=${newTier ?? "unknown"}`);
+
+      await updateReaderSubscription(customerId, {
+        stripeSubscriptionId: sub.id,
+        ...(newTier ? { tier: newTier as import("@/lib/db-types").ReaderTier } : {}),
+        active: isActive,
+      });
       break;
     }
 
     case "invoice.payment_failed": {
       const inv = event.data.object as Stripe.Invoice;
-      console.log(`[stripe/webhook] Payment failed for customer: ${inv.customer}`);
-      // TODO Phase 2: send dunning email, flag account
+      const customerId = typeof inv.customer === "string" ? inv.customer : (inv.customer?.id ?? "");
+      console.log(`[stripe/webhook] Payment failed for customer: ${customerId}`);
+      // Mark inactive on payment failure — Stripe will retry and re-activate if payment succeeds
+      if (customerId) {
+        await updateReaderSubscription(customerId, { active: false });
+      }
+      break;
+    }
+
+    case "invoice.paid": {
+      // Payment succeeded (including retry after failure) — restore access
+      const inv = event.data.object as Stripe.Invoice;
+      const customerId = typeof inv.customer === "string" ? inv.customer : (inv.customer?.id ?? "");
+      if (customerId && inv.subscription) {
+        console.log(`[stripe/webhook] Invoice paid — restoring access for customer: ${customerId}`);
+        await updateReaderSubscription(customerId, { active: true });
+      }
       break;
     }
 
