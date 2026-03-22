@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { playArchiveMode } from "@/lib/sound";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Annotation, InkType, MarginLayer, Chapter } from "@/lib/types";
+import type { WhisperData } from "./AuthorWhisper";
 import {
   getAnnotations,
   getReaderState,
@@ -57,6 +58,29 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
 
   // ── Reader session — determines which ink features are unlocked ────
   const [readerTier, setReaderTier] = useState<SubscriptionTierName | null>(null);
+
+  // ── Live whispers — fetched on mount, used for inline paragraph markers ──
+  const [whispers, setWhispers] = useState<WhisperData[]>([]);
+
+  useEffect(() => {
+    fetch(`/api/whispers?chapter=${chapter.slug}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.whispers && data.whispers.length > 0) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setWhispers(data.whispers.map((w: any) => ({
+            id:           w.id,
+            paragraphIndex: -1,
+            anchoredText: w.anchor_text,
+            content:      w.content,
+            authorName:   w.author_name,
+            timestamp:    new Date(w.created_at).getFullYear().toString(),
+            type:         w.whisper_type as "whisper" | "anchor",
+          })));
+        }
+      })
+      .catch(() => {});
+  }, [chapter.slug]);
 
   useEffect(() => {
     fetch("/api/reader/session")
@@ -260,6 +284,11 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
               );
             }
 
+            // Check if any whisper anchor text appears in this paragraph
+            const paraHasWhisper = whispers.some((w) =>
+              w.anchoredText && para.text.includes(w.anchoredText)
+            );
+
             return (
               <AnnotatableText
                 key={`para-${para.index}`}
@@ -274,6 +303,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
                 canAnnotate={hasAccess("codex")}
                 onGateTriggered={handleGateTriggered}
                 isFirstParagraph={i === 0 || (i > 0 && chapter.paragraphs[i - 1]?.isSectionBreak)}
+                hasWhisperAnchor={paraHasWhisper}
               />
             );
           })}
@@ -299,6 +329,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
             onAnnotationUpdated={handleAnnotationUpdated}
             onAnnotationDeleted={handleAnnotationDeleted}
             onGateTriggered={handleGateTriggered}
+            liveWhispers={whispers}
           />
         </div>
       </div>

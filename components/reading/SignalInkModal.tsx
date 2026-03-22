@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { saveQuestion } from "@/lib/ink";
+import { saveQuestion, getQuestions } from "@/lib/ink";
 import { INK_CONFIGS } from "@/lib/types";
 import { playSignalSend } from "@/lib/sound";
 
@@ -22,6 +22,12 @@ interface SignalInkModalProps {
 
 type SubmitState = "idle" | "sending" | "sent" | "error";
 
+interface AuthorReply {
+  reply:        string;
+  question:     string;
+  selectedText: string | null;
+}
+
 export default function SignalInkModal({
   isOpen,
   selectedText,
@@ -33,6 +39,24 @@ export default function SignalInkModal({
   const [question, setQuestion] = useState("");
   const [email, setEmail] = useState("");
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
+  const [authorReply, setAuthorReply] = useState<AuthorReply | null>(null);
+
+  // When the modal opens and the reader has already asked, check for a reply
+  useEffect(() => {
+    if (!isOpen || !hasAlreadyAsked) return;
+
+    // Get the email the reader used when asking (stored locally)
+    const questions = getQuestions(chapterSlug);
+    const lastQ = questions[questions.length - 1];
+    if (!lastQ?.readerEmail) return;
+
+    fetch(`/api/signal/reply?chapter=${chapterSlug}&email=${encodeURIComponent(lastQ.readerEmail)}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.reply) setAuthorReply(data as AuthorReply);
+      })
+      .catch(() => {});
+  }, [isOpen, hasAlreadyAsked, chapterSlug]);
   const signalConfig = INK_CONFIGS.signal;
 
   const handleSubmit = async () => {
@@ -181,7 +205,7 @@ export default function SignalInkModal({
               <div style={{ padding: "1.5rem", overflowY: "auto", flex: 1, minHeight: 0 }}>
 
                 {hasAlreadyAsked ? (
-                  <AlreadyAsked onClose={onClose} />
+                  <AlreadyAsked onClose={onClose} reply={authorReply} />
                 ) : submitState === "sent" ? (
                   <SentConfirmation />
                 ) : (
@@ -350,50 +374,165 @@ export default function SignalInkModal({
 
 // ─── ALREADY ASKED ───────────────────────────────────────────────────────────
 
-function AlreadyAsked({ onClose }: { onClose: () => void }) {
+interface AuthorReplyForDisplay {
+  reply:        string;
+  question:     string;
+  selectedText: string | null;
+}
+
+function AlreadyAsked({ onClose, reply }: { onClose: () => void; reply: AuthorReplyForDisplay | null }) {
   return (
-    <div style={{ textAlign: "center", padding: "1rem 0" }}>
-      <p
-        style={{
-          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-          fontSize: "1.1rem",
-          fontStyle: "italic",
-          color: "rgba(245,230,200,0.6)",
-          lineHeight: 1.7,
-          marginBottom: "1rem",
-        }}
-      >
-        Your question has already been sent into the Archive for this chapter.
-        <br />
-        The chamber does not open twice on first read.
-      </p>
-      <p
-        style={{
-          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-          fontSize: "0.85rem",
-          color: "rgba(245,230,200,0.3)",
-          fontStyle: "italic",
-          marginBottom: "1.5rem",
-        }}
-      >
-        On your second read — if you return — it opens again.
-      </p>
-      <button
-        onClick={onClose}
-        style={{
-          fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.6rem",
-          letterSpacing: "0.2em",
-          color: "rgba(201,168,76,0.6)",
-          background: "transparent",
-          border: "1px solid rgba(201,168,76,0.3)",
-          padding: "0.5rem 1.2rem",
-          cursor: "pointer",
-          borderRadius: "1px",
-        }}
-      >
-        CLOSE THE CHAMBER
-      </button>
+    <div style={{ padding: "0.5rem 0" }}>
+      {reply ? (
+        // ── Author has replied ──────────────────────────────────────────────
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <p
+            style={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontSize: "0.52rem",
+              letterSpacing: "0.2em",
+              color: "rgba(0,229,204,0.6)",
+              textTransform: "uppercase",
+              marginBottom: "1.25rem",
+            }}
+          >
+            ◉ The Archive has replied
+          </p>
+
+          {/* Reader's original question */}
+          <div
+            style={{
+              borderLeft: "2px solid rgba(0,229,204,0.25)",
+              paddingLeft: "0.75rem",
+              marginBottom: "1.25rem",
+            }}
+          >
+            <p
+              style={{
+                fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                fontSize: "0.8rem",
+                fontStyle: "italic",
+                color: "rgba(245,230,200,0.3)",
+                lineHeight: 1.6,
+                marginBottom: "0.3rem",
+              }}
+            >
+              Your question:
+            </p>
+            <p
+              style={{
+                fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                fontSize: "0.9rem",
+                fontStyle: "italic",
+                color: "rgba(245,230,200,0.5)",
+                lineHeight: 1.65,
+              }}
+            >
+              {reply.question}
+            </p>
+          </div>
+
+          {/* Author's reply */}
+          <div
+            style={{
+              borderLeft: "2px solid rgba(201,168,76,0.4)",
+              paddingLeft: "0.75rem",
+              marginBottom: "1.75rem",
+            }}
+          >
+            <p
+              style={{
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: "0.48rem",
+                letterSpacing: "0.15em",
+                color: "rgba(201,168,76,0.5)",
+                textTransform: "uppercase",
+                marginBottom: "0.5rem",
+              }}
+            >
+              Chico Montecristi
+            </p>
+            <p
+              style={{
+                fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                fontSize: "1rem",
+                lineHeight: 1.75,
+                color: "rgba(245,230,200,0.85)",
+              }}
+            >
+              {reply.reply}
+            </p>
+          </div>
+
+          <div style={{ textAlign: "center" }}>
+            <button
+              onClick={onClose}
+              style={{
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: "0.6rem",
+                letterSpacing: "0.2em",
+                color: "rgba(201,168,76,0.6)",
+                background: "transparent",
+                border: "1px solid rgba(201,168,76,0.3)",
+                padding: "0.5rem 1.2rem",
+                cursor: "pointer",
+                borderRadius: "1px",
+              }}
+            >
+              CLOSE THE CHAMBER
+            </button>
+          </div>
+        </motion.div>
+      ) : (
+        // ── Waiting for reply ──────────────────────────────────────────────
+        <div style={{ textAlign: "center", padding: "0.5rem 0" }}>
+          <p
+            style={{
+              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+              fontSize: "1.1rem",
+              fontStyle: "italic",
+              color: "rgba(245,230,200,0.6)",
+              lineHeight: 1.7,
+              marginBottom: "1rem",
+            }}
+          >
+            Your question has already been sent into the Archive for this chapter.
+            <br />
+            The chamber does not open twice on first read.
+          </p>
+          <p
+            style={{
+              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+              fontSize: "0.85rem",
+              color: "rgba(245,230,200,0.3)",
+              fontStyle: "italic",
+              marginBottom: "1.5rem",
+            }}
+          >
+            Return here when the author has replied.
+          </p>
+          <button
+            onClick={onClose}
+            style={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontSize: "0.6rem",
+              letterSpacing: "0.2em",
+              color: "rgba(201,168,76,0.6)",
+              background: "transparent",
+              border: "1px solid rgba(201,168,76,0.3)",
+              padding: "0.5rem 1.2rem",
+              cursor: "pointer",
+              borderRadius: "1px",
+            }}
+          >
+            CLOSE THE CHAMBER
+          </button>
+        </div>
+      )}
     </div>
   );
 }

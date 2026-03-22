@@ -2,7 +2,7 @@
 // All Supabase operations go through here. Server-side only.
 
 import { supabase } from "./supabase";
-import type { ReaderRow, ReaderTier, AuthorPlan, SignalRow } from "./db-types";
+import type { ReaderRow, ReaderTier, AuthorPlan, SignalRow, WhisperRow } from "./db-types";
 
 // ── Readers ───────────────────────────────────────────────────────────────────
 
@@ -292,4 +292,115 @@ export async function getReaderStats(): Promise<{
   }
 
   return { total: rows.length, active, byTier };
+}
+
+// ── Whispers ───────────────────────────────────────────────────────────────────
+
+/**
+ * Insert an author whisper anchored to a chapter passage.
+ */
+export async function insertWhisper(params: {
+  chapterSlug:  string;
+  chapterTitle: string | null;
+  anchorText:   string;
+  content:      string;
+  authorName?:  string;
+  whisperType?: "whisper" | "anchor";
+}): Promise<WhisperRow | null> {
+  const { data, error } = await supabase
+    .from("whispers")
+    .insert({
+      chapter_slug:  params.chapterSlug,
+      chapter_title: params.chapterTitle,
+      anchor_text:   params.anchorText,
+      content:       params.content,
+      author_name:   params.authorName ?? "Chico Montecristi",
+      whisper_type:  params.whisperType ?? "whisper",
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("[db] insertWhisper error:", error.message);
+    return null;
+  }
+  return data as WhisperRow;
+}
+
+/**
+ * List whispers for a specific chapter, ordered by creation date.
+ */
+export async function listWhispersByChapter(chapterSlug: string): Promise<WhisperRow[]> {
+  const { data, error } = await supabase
+    .from("whispers")
+    .select("*")
+    .eq("chapter_slug", chapterSlug)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("[db] listWhispersByChapter error:", error.message);
+    return [];
+  }
+  return (data ?? []) as WhisperRow[];
+}
+
+/**
+ * List all whispers across all chapters (author dashboard view).
+ */
+export async function listAllWhispers(): Promise<WhisperRow[]> {
+  const { data, error } = await supabase
+    .from("whispers")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("[db] listAllWhispers error:", error.message);
+    return [];
+  }
+  return (data ?? []) as WhisperRow[];
+}
+
+// ── Signal reply — reader-facing ──────────────────────────────────────────────
+
+/**
+ * Get the author's answered reply to a specific reader's signal question.
+ * Returns null if no answered reply exists.
+ */
+export async function getSignalReply(
+  chapterSlug: string,
+  readerEmail: string
+): Promise<{ reply: string; question: string; selectedText: string | null } | null> {
+  const { data, error } = await supabase
+    .from("signals")
+    .select("reply, question, selected_text")
+    .eq("chapter_slug", chapterSlug)
+    .eq("reader_email", readerEmail)
+    .eq("answered", true)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+
+  if (error || !data || !data.reply) return null;
+
+  return {
+    reply:        data.reply,
+    question:     data.question,
+    selectedText: data.selected_text ?? null,
+  };
+}
+
+/**
+ * Delete a whisper by ID.
+ */
+export async function deleteWhisper(id: string): Promise<boolean> {
+  const { error } = await supabase
+    .from("whispers")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.error("[db] deleteWhisper error:", error.message);
+    return false;
+  }
+  return true;
 }

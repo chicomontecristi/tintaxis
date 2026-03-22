@@ -395,7 +395,7 @@ interface LiveStats {
 export default function AuthorDashboard() {
   const [activeTab, setActiveTab] = useState<DashTab>("signals");
   const [signals, setSignals] = useState<SignalQuestion[]>([]);
-  const [whispers, setWhispers] = useState<WhisperEntry[]>(MOCK_WHISPERS);
+  const [whispers, setWhispers] = useState<WhisperEntry[]>([]);
   const [whisperForm, setWhisperForm] = useState({ chapterSlug: "one", anchorText: "", whisper: "" });
   const [whisperStatus, setWhisperStatus] = useState<"idle" | "saved">("idle");
   const [stats, setStats] = useState<LiveStats | null>(null);
@@ -438,6 +438,24 @@ export default function AuthorDashboard() {
       })
       .catch(() => {})
       .finally(() => setStatsLoading(false));
+
+    // Fetch whispers
+    fetch("/api/author/whispers")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.whispers) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setWhispers(data.whispers.map((w: any) => ({
+            id:           w.id,
+            chapterSlug:  w.chapter_slug,
+            chapterTitle: w.chapter_title ?? w.chapter_slug,
+            anchorText:   w.anchor_text,
+            whisper:      w.content,
+            createdAt:    w.created_at,
+          })));
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const openSignals = signals.filter((s) => !s.answered);
@@ -465,22 +483,59 @@ export default function AuthorDashboard() {
     window.location.href = "/author/login";
   };
 
-  const handleAddWhisper = (e: FormEvent) => {
+  const handleAddWhisper = async (e: FormEvent) => {
     e.preventDefault();
     if (!whisperForm.anchorText.trim() || !whisperForm.whisper.trim()) return;
-    const chapter = MOCK_CHAPTERS.find((c) => c.slug === whisperForm.chapterSlug);
-    const newWhisper: WhisperEntry = {
-      id: `w${Date.now()}`,
-      chapterSlug: whisperForm.chapterSlug,
-      chapterTitle: chapter?.title ?? whisperForm.chapterSlug,
-      anchorText: whisperForm.anchorText,
-      whisper: whisperForm.whisper,
-      createdAt: new Date().toISOString(),
-    };
-    setWhispers((prev) => [newWhisper, ...prev]);
+
+    try {
+      const res = await fetch("/api/author/whispers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chapterSlug: whisperForm.chapterSlug,
+          anchorText:  whisperForm.anchorText.trim(),
+          content:     whisperForm.whisper.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (data.whisper) {
+        const w = data.whisper;
+        setWhispers((prev) => [{
+          id:           w.id,
+          chapterSlug:  w.chapter_slug,
+          chapterTitle: w.chapter_title ?? w.chapter_slug,
+          anchorText:   w.anchor_text,
+          whisper:      w.content,
+          createdAt:    w.created_at,
+        }, ...prev]);
+      }
+    } catch (err) {
+      console.error("[dashboard] whisper persist failed:", err);
+      // Optimistic local fallback
+      const chapter = MOCK_CHAPTERS.find((c) => c.slug === whisperForm.chapterSlug);
+      setWhispers((prev) => [{
+        id: `w${Date.now()}`,
+        chapterSlug:  whisperForm.chapterSlug,
+        chapterTitle: chapter?.title ?? whisperForm.chapterSlug,
+        anchorText:   whisperForm.anchorText,
+        whisper:      whisperForm.whisper,
+        createdAt:    new Date().toISOString(),
+      }, ...prev]);
+    }
+
     setWhisperForm((prev) => ({ ...prev, anchorText: "", whisper: "" }));
     setWhisperStatus("saved");
     setTimeout(() => setWhisperStatus("idle"), 2000);
+  };
+
+  const handleDeleteWhisper = async (id: string) => {
+    // Optimistic removal
+    setWhispers((prev) => prev.filter((w) => w.id !== id));
+    try {
+      await fetch(`/api/author/whispers/${id}`, { method: "DELETE" });
+    } catch (err) {
+      console.error("[dashboard] whisper delete failed:", err);
+    }
   };
 
   const TABS: { id: DashTab; label: string; badge?: number }[] = [
@@ -888,6 +943,20 @@ export default function AuthorDashboard() {
 
               {/* Existing whispers */}
               <SectionHeader label={`Placed · ${whispers.length}`} />
+              {whispers.length === 0 && (
+                <p
+                  style={{
+                    fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                    fontSize: "1rem",
+                    fontStyle: "italic",
+                    color: "rgba(245,230,200,0.25)",
+                    textAlign: "center",
+                    paddingTop: "2rem",
+                  }}
+                >
+                  No whispers placed yet. Add one above.
+                </p>
+              )}
               {whispers.map((w) => (
                 <motion.div
                   key={w.id}
@@ -898,7 +967,7 @@ export default function AuthorDashboard() {
                     marginBottom: "0.75rem",
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
                     <span
                       style={{
                         fontFamily: '"JetBrains Mono", monospace',
@@ -910,15 +979,34 @@ export default function AuthorDashboard() {
                     >
                       {w.chapterTitle}
                     </span>
-                    <span
-                      style={{
-                        fontFamily: '"JetBrains Mono", monospace',
-                        fontSize: "0.44rem",
-                        color: "rgba(245,230,200,0.2)",
-                      }}
-                    >
-                      {formatDate(w.createdAt)}
-                    </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                      <span
+                        style={{
+                          fontFamily: '"JetBrains Mono", monospace',
+                          fontSize: "0.44rem",
+                          color: "rgba(245,230,200,0.2)",
+                        }}
+                      >
+                        {formatDate(w.createdAt)}
+                      </span>
+                      <button
+                        onClick={() => handleDeleteWhisper(w.id)}
+                        style={{
+                          fontFamily: '"JetBrains Mono", monospace',
+                          fontSize: "0.44rem",
+                          letterSpacing: "0.1em",
+                          color: "rgba(245,230,200,0.2)",
+                          background: "transparent",
+                          border: "none",
+                          cursor: "pointer",
+                          padding: "0 0.2rem",
+                          lineHeight: 1,
+                        }}
+                        title="Remove whisper"
+                      >
+                        ×
+                      </button>
+                    </div>
                   </div>
                   <p
                     style={{

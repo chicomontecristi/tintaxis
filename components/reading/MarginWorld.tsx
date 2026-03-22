@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { Annotation, MarginLayer } from "@/lib/types";
 import { INK_CONFIGS } from "@/lib/types";
 import { deleteAnnotation, updateAnnotationNote } from "@/lib/ink";
-import AuthorWhisper, { DEMO_WHISPERS } from "./AuthorWhisper";
+import AuthorWhisper, { DEMO_WHISPERS, type WhisperData } from "./AuthorWhisper";
 import type { SubscriptionTierName } from "@/components/ui/SubscriptionModal";
 
 // ─── MARGIN WORLD ────────────────────────────────────────────────────────────
@@ -21,6 +21,7 @@ interface MarginWorldProps {
   onAnnotationUpdated: (annotation: Annotation) => void;
   onAnnotationDeleted: (id: string) => void;
   onGateTriggered: (tier: SubscriptionTierName, featureName: string) => void;
+  liveWhispers?: WhisperData[];
 }
 
 export default function MarginWorld({
@@ -31,8 +32,16 @@ export default function MarginWorld({
   onAnnotationUpdated,
   onAnnotationDeleted,
   onGateTriggered,
+  liveWhispers: liveWhispersProp,
 }: MarginWorldProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  // Use whispers passed from parent (already fetched by ReadingSurface).
+  // Fall back to DEMO_WHISPERS only if nothing provided yet.
+  const liveWhispers: WhisperData[] =
+    liveWhispersProp && liveWhispersProp.length > 0
+      ? liveWhispersProp
+      : DEMO_WHISPERS;
 
   // Sort by paragraph order
   const sorted = [...annotations].sort(
@@ -70,7 +79,7 @@ export default function MarginWorld({
         >
           Author
         </p>
-        {DEMO_WHISPERS.map((whisper) => (
+        {liveWhispers.map((whisper) => (
           <AuthorWhisper key={whisper.id} whisper={whisper} />
         ))}
       </div>

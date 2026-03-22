@@ -26,6 +26,8 @@ interface AnnotatableTextProps {
   onGateTriggered?: (tier: SubscriptionTierName, featureName: string) => void;
   isEpigraph?: boolean;
   isFirstParagraph?: boolean;
+  /** True if the author has placed a Whisper anchored to text in this paragraph */
+  hasWhisperAnchor?: boolean;
 }
 
 interface SelectionState {
@@ -44,6 +46,7 @@ export default function AnnotatableText({
   onGateTriggered,
   isEpigraph = false,
   isFirstParagraph = false,
+  hasWhisperAnchor = false,
 }: AnnotatableTextProps) {
   const paragraphRef = useRef<HTMLParagraphElement>(null);
   const [pendingSelection, setPendingSelection] = useState<SelectionState | null>(null);
@@ -237,22 +240,37 @@ export default function AnnotatableText({
         {renderAnnotatedText(text, paragraphAnnotations)}
       </p>
 
-      {/* ── Annotation count indicator ──────────────────────── */}
-      {paragraphAnnotations.length > 0 && (
-        <div
-          className="absolute -left-6 top-1"
-          style={{ display: "flex", flexDirection: "column", gap: "3px" }}
-        >
-          {paragraphAnnotations.slice(0, 3).map((a) => (
-            <div
-              key={a.id}
-              className="w-1 h-1 rounded-full opacity-60"
-              style={{ backgroundColor: INK_CONFIGS[a.inkType].color }}
-              title={`${INK_CONFIGS[a.inkType].label}`}
-            />
-          ))}
-        </div>
-      )}
+      {/* ── Margin indicators: annotation dots + whisper marker ─── */}
+      <div
+        className="absolute -left-6 top-1"
+        style={{ display: "flex", flexDirection: "column", gap: "3px", alignItems: "center" }}
+      >
+        {paragraphAnnotations.slice(0, 3).map((a) => (
+          <div
+            key={a.id}
+            className="w-1 h-1 rounded-full opacity-60"
+            style={{ backgroundColor: INK_CONFIGS[a.inkType].color }}
+            title={`${INK_CONFIGS[a.inkType].label}`}
+          />
+        ))}
+        {hasWhisperAnchor && (
+          <motion.div
+            title="Author whisper anchored here — see margin"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            style={{
+              width: "5px",
+              height: "5px",
+              borderRadius: "50%",
+              background: "rgba(201,168,76,0.55)",
+              boxShadow: "0 0 6px rgba(201,168,76,0.4)",
+              marginTop: paragraphAnnotations.length > 0 ? "2px" : "0",
+              flexShrink: 0,
+            }}
+          />
+        )}
+      </div>
 
       {/* ── Ink tooltip + Note panel (portaled to body) ─────── */}
       <TooltipPortal>
@@ -300,24 +318,82 @@ export default function AnnotatableText({
 }
 
 // ─── RENDER ANNOTATED TEXT ──────────────────────────────────────────────────
-// Phase 1: highlights the full text of any annotation that matches this paragraph.
-// Phase 2: split into character spans for precise offset-based highlighting.
+// Splits the paragraph string into highlighted and plain segments.
+// Uses annotation.selection.text (the exact selected string) to locate the
+// range inside the paragraph via indexOf — handles precise character-level
+// highlighting without DOM offset complexity.
+//
+// Multiple annotations are applied in paragraph order. Overlapping ranges are
+// handled by merging them into a single span using the ink of the first match.
+
+interface Segment {
+  text: string;
+  annotation?: Annotation;
+}
+
+function buildSegments(text: string, annotations: Annotation[]): Segment[] {
+  if (annotations.length === 0) return [{ text }];
+
+  // Build a list of [start, end, annotation] ranges using indexOf
+  type Range = { start: number; end: number; annotation: Annotation };
+  const ranges: Range[] = [];
+
+  for (const ann of annotations) {
+    const needle = ann.selection.text;
+    if (!needle) continue;
+    const idx = text.indexOf(needle);
+    if (idx === -1) continue;
+    ranges.push({ start: idx, end: idx + needle.length, annotation: ann });
+  }
+
+  if (ranges.length === 0) return [{ text }];
+
+  // Sort by start position
+  ranges.sort((a, b) => a.start - b.start);
+
+  // Build non-overlapping segments
+  const segments: Segment[] = [];
+  let cursor = 0;
+
+  for (const range of ranges) {
+    if (range.start < cursor) continue; // skip overlapping ranges
+    if (range.start > cursor) {
+      segments.push({ text: text.slice(cursor, range.start) });
+    }
+    segments.push({
+      text: text.slice(range.start, range.end),
+      annotation: range.annotation,
+    });
+    cursor = range.end;
+  }
+
+  if (cursor < text.length) {
+    segments.push({ text: text.slice(cursor) });
+  }
+
+  return segments;
+}
 
 function renderAnnotatedText(text: string, annotations: Annotation[]): React.ReactNode {
-  if (annotations.length === 0) return text;
-
-  // For Phase 1, apply the first annotation's highlight class to the full paragraph
-  // (real span splitting is Phase 2)
-  const topAnnotation = annotations[0];
-  const config = INK_CONFIGS[topAnnotation.inkType];
+  const segments = buildSegments(text, annotations);
+  if (segments.length === 1 && !segments[0].annotation) return text;
 
   return (
-    <span
-      className={`ink-highlight ${config.highlightClass}`}
-      title={topAnnotation.note || config.label}
-    >
-      {text}
-    </span>
+    <>
+      {segments.map((seg, i) => {
+        if (!seg.annotation) return <span key={i}>{seg.text}</span>;
+        const config = INK_CONFIGS[seg.annotation.inkType];
+        return (
+          <span
+            key={i}
+            className={`ink-highlight ${config.highlightClass}`}
+            title={seg.annotation.note || config.label}
+          >
+            {seg.text}
+          </span>
+        );
+      })}
+    </>
   );
 }
 

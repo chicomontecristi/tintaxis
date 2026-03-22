@@ -43,6 +43,18 @@ export interface SignalRow {
   updated_at:    string;
 }
 
+export interface WhisperRow {
+  id:            string;
+  chapter_slug:  string;
+  chapter_title: string | null;
+  anchor_text:   string;
+  content:       string;
+  author_name:   string;
+  whisper_type:  "whisper" | "anchor";
+  created_at:    string;
+  updated_at:    string;
+}
+
 // Supabase Database type expected by createClient<Database>
 export interface Database {
   public: {
@@ -61,6 +73,11 @@ export interface Database {
         Row:    SignalRow;
         Insert: Omit<SignalRow, "id" | "created_at" | "updated_at">;
         Update: Partial<Omit<SignalRow, "id" | "created_at">>;
+      };
+      whispers: {
+        Row:    WhisperRow;
+        Insert: Omit<WhisperRow, "id" | "created_at" | "updated_at">;
+        Update: Partial<Omit<WhisperRow, "id" | "created_at">>;
       };
     };
     Views:     Record<string, never>;
