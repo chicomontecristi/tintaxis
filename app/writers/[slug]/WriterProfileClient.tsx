@@ -255,6 +255,23 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
                   {writer.website}
                 </a>
               )}
+              {writer.email && (
+                <a
+                  href={`mailto:${writer.email}`}
+                  style={{
+                    fontFamily: '"JetBrains Mono", monospace',
+                    fontSize: "0.5rem",
+                    letterSpacing: "0.15em",
+                    color: "rgba(201,168,76,0.45)",
+                    textDecoration: "none",
+                    textTransform: "uppercase",
+                    border: "1px solid rgba(201,168,76,0.15)",
+                    padding: "0.35rem 0.75rem",
+                  }}
+                >
+                  {writer.email}
+                </a>
+              )}
             </div>
           </div>
         </motion.div>

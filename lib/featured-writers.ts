@@ -24,6 +24,7 @@ export interface FeaturedWriter {
   works: FeaturedWork[];
   instagram?: string;     // handle without @
   website?: string;
+  email?: string;
 }
 
 // ─── ROSTER ──────────────────────────────────────────────────────────────────
@@ -49,8 +50,9 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
         comingSoon: true,
       },
     ],
-    instagram: undefined,
+    instagram: "rosalva.bp",
     website: undefined,
+    email: "rfaleman12@gmail.com",
   },
   {
     slug: "jose-la-luz",
