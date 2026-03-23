@@ -1,1126 +1,126 @@
-"use client";
+import type { Metadata } from "next";
+import HomeClient from "./HomeClient";
 
-import { useEffect, useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
-import TintaxisLogo from "@/components/ui/TintaxisLogo";
+const BASE_URL = "https://tintaxis.vercel.app";
 
-// ─── INITIATION SCREEN ─────────────────────────────────────────────────────
-// The entry point. The reader is not yet a reader — they are a supplicant.
-// The platform reveals itself slowly. Awe before access.
+// ─── HOME PAGE — SERVER WRAPPER ──────────────────────────────────────────────
+// Exports metadata + JSON-LD for SEO. Delegates render to HomeClient.
 
-const TAGLINE_LINES = [
-  "A book is not a document.",
-  "It is a living entity.",
-  "You are about to read differently.",
-];
+export const metadata: Metadata = {
+  title: {
+    absolute: "Tintaxis — Read Free Books by Chico Montecristi",
+  },
+  description:
+    "Tintaxis is a living reading platform by Chico Montecristi. Read The Hunt, Recoleta, Noches de maya, and Mi Pájaro del Río — free, in English, Spanish, and Mandarin.",
+  keywords: [
+    "Chico Montecristi",
+    "Tintaxis",
+    "The Hunt novella",
+    "Recoleta",
+    "Noches de maya",
+    "read free books online",
+    "Dominican American writer",
+    "bilingual literature",
+    "literary fiction",
+    "dark thriller novella",
+    "free online reading platform",
+    "independent author",
+    "South Bronx writer",
+    "Caribbean literature",
+  ],
+  openGraph: {
+    title: "Tintaxis — Read Free Books by Chico Montecristi",
+    description:
+      "Four books. Three languages. Read free. A living archive by Chico Montecristi.",
+    type: "website",
+    url: BASE_URL,
+    siteName: "Tintaxis",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tintaxis — Read Free Books by Chico Montecristi",
+    description:
+      "Four books. Three languages. Read free. A living archive by Chico Montecristi.",
+    creator: "@chicomontecristi",
+  },
+  alternates: {
+    canonical: BASE_URL,
+  },
+};
 
-const EDITION_TEXT = "TINTAXIS · CHICO MONTECRISTI · INAUGURAL ARCHIVE";
-const SUBJECT_LINE = "THE HUNT — A NOVELLA · FEATURED WORK";
-
-// Mechanical boot-up sequence for the decorative UI chrome
-const BOOT_LINES = [
-  "TINTAXIS v0.1.0 ... ONLINE",
-  "INK CHAMBER PRESSURIZED ... READY",
-  "MARGIN WORLD INITIALIZED ... STABLE",
-  "QUESTION QUEUE OPEN ... LISTENING",
-  "AUTHOR PRESENCE DETECTED ... STANDING BY",
-];
-
-export default function InitiationScreen() {
-  const [phase, setPhase] = useState<"boot" | "title" | "ready">("boot");
-  const [bootIndex, setBootIndex] = useState(0);
-  const [titleVisible, setTitleVisible] = useState(false);
-  const [taglineIndex, setTaglineIndex] = useState(-1);
-  const [enterReady, setEnterReady] = useState(false);
-
-  // Boot sequence
-  useEffect(() => {
-    if (phase !== "boot") return;
-
-    const interval = setInterval(() => {
-      setBootIndex((i) => {
-        if (i >= BOOT_LINES.length - 1) {
-          clearInterval(interval);
-          setTimeout(() => setPhase("title"), 600);
-          return i;
-        }
-        return i + 1;
-      });
-    }, 380);
-
-    return () => clearInterval(interval);
-  }, [phase]);
-
-  // Title reveal sequence
-  useEffect(() => {
-    if (phase !== "title") return;
-
-    const t1 = setTimeout(() => setTitleVisible(true), 100);
-    const t2 = setTimeout(() => setTaglineIndex(0), 900);
-    const t3 = setTimeout(() => setTaglineIndex(1), 1600);
-    const t4 = setTimeout(() => setTaglineIndex(2), 2300);
-    const t5 = setTimeout(() => {
-      setPhase("ready");
-      setEnterReady(true);
-    }, 3400);
-
-    return () => [t1, t2, t3, t4, t5].forEach(clearTimeout);
-  }, [phase]);
+function HomeJsonLd() {
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "Tintaxis",
+      url: BASE_URL,
+      description:
+        "A living reading platform by Chico Montecristi — four books in English, Spanish, and Mandarin, free to read.",
+      author: {
+        "@type": "Person",
+        name: "Chico Montecristi",
+        url: "https://chicomontecristi.com",
+        sameAs: [
+          "https://www.instagram.com/chicomontecristi",
+          "https://chicomontecristi.com",
+        ],
+      },
+      inLanguage: ["en", "es", "zh"],
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: "Tintaxis — Books by Chico Montecristi",
+      url: BASE_URL,
+      description:
+        "Read The Hunt, Recoleta, Noches de maya, and Mi Pájaro del Río — free on Tintaxis.",
+      mainEntity: {
+        "@type": "ItemList",
+        numberOfItems: 4,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            url: `${BASE_URL}/book/the-hunt`,
+            name: "The Hunt",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            url: `${BASE_URL}/book/recoleta`,
+            name: "Recoleta",
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            url: `${BASE_URL}/book/noches-de-maya`,
+            name: "Noches de maya",
+          },
+          {
+            "@type": "ListItem",
+            position: 4,
+            url: `${BASE_URL}/book/mi-pajaro-del-rio`,
+            name: "Mi Pájaro del Río",
+          },
+        ],
+      },
+    },
+  ];
 
   return (
-    <div
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-x-hidden"
-      style={{ backgroundColor: "#0D0B08" }}
-    >
-      {/* ── TOP NAV ───────────────────────────────────────────── */}
-      <nav
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 50,
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          gap: "1.75rem",
-          padding: "0.85rem clamp(1rem, 4vw, 2rem)",
-          borderBottom: "1px solid rgba(201,168,76,0.07)",
-          background: "rgba(13,11,8,0.85)",
-          backdropFilter: "blur(8px)",
-        }}
-      >
-        <a
-          href="/publish"
-          style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
-            letterSpacing: "0.25em",
-            color: "rgba(201,168,76,0.45)",
-            textDecoration: "none",
-            textTransform: "uppercase",
-          }}
-        >
-          Publish on Tintaxis
-        </a>
-        <a
-          href="/library"
-          style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
-            letterSpacing: "0.25em",
-            color: "rgba(201,168,76,0.7)",
-            textDecoration: "none",
-            textTransform: "uppercase",
-          }}
-        >
-          Library
-        </a>
-        <a
-          href="/writers"
-          style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
-            letterSpacing: "0.25em",
-            color: "rgba(201,168,76,0.6)",
-            textDecoration: "none",
-            textTransform: "uppercase",
-          }}
-        >
-          Featured Artists
-        </a>
-        <a
-          href="/account"
-          style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
-            letterSpacing: "0.25em",
-            color: "rgba(245,230,200,0.35)",
-            textDecoration: "none",
-            textTransform: "uppercase",
-          }}
-        >
-          My Account
-        </a>
-        <a
-          href="/author/login"
-          style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
-            letterSpacing: "0.25em",
-            color: "rgba(245,230,200,0.2)",
-            textDecoration: "none",
-            textTransform: "uppercase",
-          }}
-        >
-          Author Login →
-        </a>
-      </nav>
-
-      {/* ── BACKGROUND RADIAL GLOW ─────────────────────────────── */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 40%, rgba(44,26,0,0.55) 0%, transparent 65%)",
-        }}
-      />
-
-      {/* ── CORNER BRASS ORNAMENTS ────────────────────────────── */}
-      <CornerOrnament position="top-left" />
-      <CornerOrnament position="top-right" />
-      <CornerOrnament position="bottom-left" />
-      <CornerOrnament position="bottom-right" />
-
-      {/* ── HORIZONTAL BRASS RULES ────────────────────────────── */}
-      <div
-        className="absolute top-16 left-16 right-16 h-px"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent, rgba(201,168,76,0.4) 20%, rgba(201,168,76,0.6) 50%, rgba(201,168,76,0.4) 80%, transparent)",
-        }}
-      />
-      <div
-        className="absolute bottom-16 left-16 right-16 h-px"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent, rgba(201,168,76,0.4) 20%, rgba(201,168,76,0.6) 50%, rgba(201,168,76,0.4) 80%, transparent)",
-        }}
-      />
-
-      {/* ── BOOT SEQUENCE ─────────────────────────────────────── */}
-      <AnimatePresence>
-        {phase === "boot" && (
-          <motion.div
-            key="boot"
-            className="absolute top-24 left-1/2 -translate-x-1/2 w-full max-w-lg px-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.5 } }}
-          >
-            {BOOT_LINES.slice(0, bootIndex + 1).map((line, i) => (
-              <motion.p
-                key={line}
-                className="font-mono text-xs mb-1"
-                style={{
-                  color: i === bootIndex ? "#C9A84C" : "rgba(201,168,76,0.35)",
-                  letterSpacing: "0.12em",
-                  fontFamily: '"JetBrains Mono", monospace',
-                }}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.25 }}
-              >
-                {">"} {line}
-              </motion.p>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ── MAIN CONTENT ──────────────────────────────────────── */}
-      <div className="relative z-10 flex flex-col items-center text-center px-8 max-w-3xl w-full">
-
-        {/* Edition label */}
-        <AnimatePresence>
-          {titleVisible && (
-            <motion.p
-              className="chapter-number mb-8 tracking-widest"
-              style={{
-                color: "rgba(201,168,76,0.6)",
-                fontSize: "0.625rem",
-                letterSpacing: "0.3em",
-                fontFamily: '"JetBrains Mono", monospace',
-              }}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            >
-              {EDITION_TEXT}
-            </motion.p>
-          )}
-        </AnimatePresence>
-
-        {/* TINTAXIS sigil + wordmark */}
-        <AnimatePresence>
-          {titleVisible && (
-            <motion.div
-              className="relative mb-3 select-none flex flex-col items-center"
-              initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{ duration: 1.0, ease: [0.2, 0, 0.1, 1] }}
-            >
-              {/* Brass sigil — pulsing glow */}
-              <motion.div
-                className="mb-5"
-                animate={{
-                  filter: [
-                    "drop-shadow(0 0 8px rgba(201,168,76,0.3))",
-                    "drop-shadow(0 0 20px rgba(201,168,76,0.55))",
-                    "drop-shadow(0 0 8px rgba(201,168,76,0.3))",
-                  ],
-                }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <TintaxisLogo size={72} />
-              </motion.div>
-
-              <h1
-                style={{
-                  fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                  fontSize: "clamp(2.5rem, 8vw, 5.5rem)",
-                  fontWeight: 400,
-                  letterSpacing: "0.12em",
-                  lineHeight: 1,
-                  color: "#F5E6C8",
-                  textShadow:
-                    "0 0 60px rgba(201,168,76,0.2), 0 2px 4px rgba(0,0,0,0.8)",
-                }}
-              >
-                TINTAXIS
-              </h1>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Brass rule under title */}
-        <AnimatePresence>
-          {titleVisible && (
-            <motion.div
-              className="mb-6"
-              style={{ width: "100%", maxWidth: "420px" }}
-              initial={{ scaleX: 0, opacity: 0 }}
-              animate={{ scaleX: 1, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-            >
-              <div className="brass-line" />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Subject line */}
-        <AnimatePresence>
-          {titleVisible && (
-            <motion.div
-              className="mb-12"
-              style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
-              <p
-                style={{
-                  fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.7rem",
-                  letterSpacing: "0.22em",
-                  color: "rgba(201,168,76,0.75)",
-                  textTransform: "uppercase",
-                  margin: 0,
-                }}
-              >
-                {SUBJECT_LINE}
-              </p>
-              <p
-                style={{
-                  fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.48rem",
-                  letterSpacing: "0.2em",
-                  color: "rgba(201,168,76,0.35)",
-                  textTransform: "uppercase",
-                  margin: 0,
-                }}
-              >
-                + Recoleta · Noches de maya · Mi Pájaro del Río
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Taglines */}
-        <div className="mb-14 space-y-2 min-h-[5rem]">
-          {TAGLINE_LINES.map((line, i) => (
-            <AnimatePresence key={line}>
-              {taglineIndex >= i && (
-                <motion.p
-                  style={{
-                    fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                    fontSize: "clamp(1rem, 2.5vw, 1.3rem)",
-                    fontStyle: "italic",
-                    color:
-                      i === 2
-                        ? "rgba(245,230,200,0.9)"
-                        : "rgba(245,230,200,0.55)",
-                    lineHeight: 1.5,
-                  }}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, ease: "easeOut" }}
-                >
-                  {line}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          ))}
-        </div>
-
-        {/* ENTER button */}
-        <AnimatePresence>
-          {enterReady && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            >
-              <Link href="/book/the-hunt/chapter/one" passHref>
-                <motion.button
-                  className="relative group"
-                  style={{
-                    fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.7rem",
-                    letterSpacing: "0.3em",
-                    textTransform: "uppercase",
-                    color: "#C9A84C",
-                    background: "transparent",
-                    border: "1px solid rgba(201,168,76,0.5)",
-                    padding: "1rem 3rem",
-                    cursor: "pointer",
-                    transition: "all 0.3s ease",
-                  }}
-                  whileHover={{
-                    borderColor: "rgba(201,168,76,0.9)",
-                    boxShadow: "0 0 24px rgba(201,168,76,0.2)",
-                    color: "#E8C97A",
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  {/* Corner accents */}
-                  <span
-                    className="absolute top-0 left-0 w-2 h-2 border-t border-l"
-                    style={{ borderColor: "#C9A84C" }}
-                  />
-                  <span
-                    className="absolute top-0 right-0 w-2 h-2 border-t border-r"
-                    style={{ borderColor: "#C9A84C" }}
-                  />
-                  <span
-                    className="absolute bottom-0 left-0 w-2 h-2 border-b border-l"
-                    style={{ borderColor: "#C9A84C" }}
-                  />
-                  <span
-                    className="absolute bottom-0 right-0 w-2 h-2 border-b border-r"
-                    style={{ borderColor: "#C9A84C" }}
-                  />
-                  OPEN THE ARCHIVE
-                </motion.button>
-              </Link>
-
-              <motion.p
-                className="mt-4 text-center"
-                style={{
-                  fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                  fontSize: "0.8rem",
-                  fontStyle: "italic",
-                  color: "rgba(245,230,200,0.3)",
-                  letterSpacing: "0.04em",
-                }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4, duration: 0.6 }}
-              >
-                First read. Unrepeatable.
-              </motion.p>
-
-              {/* ── Chapter index strip ── */}
-              <motion.div
-                className="mt-10"
-                style={{
-                  display: "flex",
-                  gap: "0.75rem",
-                  justifyContent: "center",
-                  flexWrap: "wrap",
-                  maxWidth: "min(900px, 100%)",
-                  margin: "0 auto",
-                  padding: "0 0.5rem",
-                }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8, duration: 0.6 }}
-              >
-                <ChapterIndexCard
-                  number="I"
-                  title="What Robbin Told Alma"
-                  subtitle="The Diner at the Edge of Little Pines"
-                  href="/book/the-hunt/chapter/one"
-                  isLocked={false}
-                />
-                <ChapterIndexCard
-                  number="II"
-                  title="Corridor B"
-                  subtitle="The Clinic, Earlier That Morning"
-                  href="/book/the-hunt/chapter/two"
-                  isLocked={true}
-                />
-                <ChapterIndexCard
-                  number="III"
-                  title="Regular Hours"
-                  subtitle="Alma Mae, at Her Desk"
-                  href="/book/the-hunt/chapter/three"
-                  isLocked={true}
-                />
-                <ChapterIndexCard
-                  number="IV"
-                  title="The Smell of Coffee and Syrup"
-                  subtitle="The Family Cabin, the Barrow History"
-                  href="/book/the-hunt/chapter/four"
-                  isLocked={true}
-                />
-                <ChapterIndexCard
-                  number="V"
-                  title="What Blood Requires"
-                  subtitle="Michelle, Grown"
-                  href="/book/the-hunt/chapter/five"
-                  isLocked={true}
-                />
-                <ChapterIndexCard
-                  number="VI"
-                  title="The Stories People Tell"
-                  subtitle="The Pines, the Town, the Years"
-                  href="/book/the-hunt/chapter/six"
-                  isLocked={true}
-                />
-                <ChapterIndexCard
-                  number="VII"
-                  title="Once Again"
-                  subtitle="The Cabin. The Lake. The End."
-                  href="/book/the-hunt/chapter/seven"
-                  isLocked={true}
-                />
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* ── FULL ARCHIVE CATALOG ─────────────────────────────── */}
-      <AnimatePresence>
-        {phase === "ready" && (
-          <motion.div
-            className="w-full"
-            style={{ maxWidth: "960px", padding: "0 clamp(1rem, 4vw, 2rem)", marginBottom: "4rem" }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.2, duration: 0.8 }}
-          >
-            {/* Section divider */}
-            <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "2rem" }}>
-              <div style={{ flex: 1, height: "1px", background: "linear-gradient(90deg, transparent, rgba(201,168,76,0.15))" }} />
-              <p style={{
-                fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.5rem",
-                letterSpacing: "0.3em",
-                color: "rgba(201,168,76,0.3)",
-                textTransform: "uppercase",
-                whiteSpace: "nowrap",
-              }}>
-                THE FULL ARCHIVE
-              </p>
-              <div style={{ flex: 1, height: "1px", background: "linear-gradient(90deg, rgba(201,168,76,0.15), transparent)" }} />
-            </div>
-
-            {/* The Hunt — featured row */}
-            <Link href="/book/the-hunt" style={{ textDecoration: "none", display: "block", marginBottom: "1rem" }}>
-              <motion.div
-                style={{
-                  width: "100%",
-                  padding: "1.25rem 1.5rem",
-                  border: "1px solid rgba(192,57,43,0.35)",
-                  borderRadius: "2px",
-                  background: "rgba(192,57,43,0.05)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: "1rem",
-                  flexWrap: "wrap",
-                  cursor: "pointer",
-                }}
-                whileHover={{
-                  borderColor: "rgba(192,57,43,0.6)",
-                  background: "rgba(192,57,43,0.09)",
-                }}
-                transition={{ duration: 0.2 }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
-                  <span style={{
-                    fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.45rem",
-                    letterSpacing: "0.25em",
-                    color: "rgba(192,57,43,0.7)",
-                    textTransform: "uppercase",
-                    background: "rgba(192,57,43,0.1)",
-                    border: "1px solid rgba(192,57,43,0.25)",
-                    padding: "2px 6px",
-                    borderRadius: "2px",
-                    whiteSpace: "nowrap",
-                  }}>
-                    ★ FEATURED · EN
-                  </span>
-                  <div>
-                    <p style={{
-                      fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                      fontSize: "1.2rem",
-                      fontStyle: "italic",
-                      color: "rgba(245,230,200,0.9)",
-                      margin: 0,
-                      lineHeight: 1.2,
-                    }}>
-                      The Hunt
-                    </p>
-                    <p style={{
-                      fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                      fontSize: "0.8rem",
-                      fontStyle: "italic",
-                      color: "rgba(245,230,200,0.4)",
-                      margin: "2px 0 0",
-                    }}>
-                      A Novella · Dark psychological thriller · 7 chapters
-                    </p>
-                  </div>
-                </div>
-                <span style={{
-                  fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.5rem",
-                  letterSpacing: "0.2em",
-                  color: "rgba(192,57,43,0.55)",
-                  textTransform: "uppercase",
-                }}>
-                  25,003 words → Enter
-                </span>
-              </motion.div>
-            </Link>
-
-            {/* Other three works */}
-            <div className="library-section-inner" style={{ display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
-              <LibraryWorkCard
-                title="Recoleta"
-                subtitle="Novela corta · Español"
-                byline="~12,000 palabras"
-                description="Dedicado a todas las madres. A narrator arrives in the Bronx — cold February, an uncle, a tenement, and the weight of belonging."
-                language="ES"
-                href="/book/recoleta"
-              />
-              <LibraryWorkCard
-                title="Noches de maya"
-                subtitle="Cuentos · Español"
-                byline="9 relatos"
-                description="Triste de cuna. Old men, river birds, and the silence of old buildings. Nine stories of the Caribbean and the desert."
-                language="ES"
-                href="/book/noches-de-maya"
-              />
-              <LibraryWorkCard
-                title="Mi Pájaro del Río"
-                subtitle="Cartas · ZH / ES"
-                byline="Diciembre 2017"
-                description="Letters written in Mandarin and Spanish to the one called the river mouth bird. Rochester and Montauk."
-                language="ZH/ES"
-                href="/book/mi-pajaro-del-rio"
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ── EMAIL CAPTURE ─────────────────────────────────────── */}
-      <AnimatePresence>
-        {phase === "ready" && (
-          <motion.div
-            style={{
-              width: "100%",
-              maxWidth: "520px",
-              padding: "0 clamp(1rem, 4vw, 2rem)",
-              marginBottom: "5rem",
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.6, duration: 0.8 }}
-          >
-            <EmailCapture />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ── BOTTOM SYSTEM STATUS ──────────────────────────────── */}
-      <AnimatePresence>
-        {phase === "ready" && (
-          <motion.div
-            className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-wrap items-center justify-center gap-4 px-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-          >
-            <StatusDot label="ARCHIVE" active />
-            <StatusDot label="INK" active />
-            <StatusDot label="MARGINS" active />
-            <StatusDot label="AUTHOR" pulse />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    />
   );
 }
 
-// ─── SUB-COMPONENTS ──────────────────────────────────────────────────────────
-
-function CornerOrnament({
-  position,
-}: {
-  position: "top-left" | "top-right" | "bottom-left" | "bottom-right";
-}) {
-  const styles: Record<string, string> = {
-    "top-left":     "top-8 left-8",
-    "top-right":    "top-8 right-8",
-    "bottom-left":  "bottom-8 left-8",
-    "bottom-right": "bottom-8 right-8",
-  };
-
-  const rotate: Record<string, string> = {
-    "top-left":     "rotate-0",
-    "top-right":    "rotate-90",
-    "bottom-left":  "-rotate-90",
-    "bottom-right": "rotate-180",
-  };
-
+export default function HomePage() {
   return (
-    <svg
-      className={`absolute ${styles[position]} ${rotate[position]} opacity-40`}
-      width="32"
-      height="32"
-      viewBox="0 0 32 32"
-      fill="none"
-    >
-      <path
-        d="M2 30 L2 2 L30 2"
-        stroke="#C9A84C"
-        strokeWidth="1"
-        fill="none"
-      />
-      <path d="M2 10 L8 10" stroke="#C9A84C" strokeWidth="0.5" />
-      <path d="M10 2 L10 8" stroke="#C9A84C" strokeWidth="0.5" />
-      <circle cx="2" cy="2" r="1.5" fill="#C9A84C" />
-    </svg>
-  );
-}
-
-function StatusDot({ label, active, pulse }: { label: string; active?: boolean; pulse?: boolean }) {
-  return (
-    <div className="flex items-center gap-1.5">
-      <motion.div
-        className="w-1.5 h-1.5 rounded-full"
-        style={{
-          backgroundColor: pulse ? "#00E5CC" : active ? "#C9A84C" : "rgba(201,168,76,0.3)",
-        }}
-        animate={pulse ? { opacity: [1, 0.3, 1] } : undefined}
-        transition={pulse ? { duration: 2, repeat: Infinity, ease: "easeInOut" } : undefined}
-      />
-      <span
-        style={{
-          fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.55rem",
-          letterSpacing: "0.18em",
-          color: active || pulse ? "rgba(201,168,76,0.6)" : "rgba(201,168,76,0.25)",
-        }}
-      >
-        {label}
-      </span>
-    </div>
-  );
-}
-
-// ─── CHAPTER INDEX CARD ───────────────────────────────────────────────────────
-// Small chapter preview cards on the initiation screen.
-// Locked chapters show a seal indicator.
-
-function ChapterIndexCard({
-  number,
-  title,
-  subtitle,
-  href,
-  isLocked,
-}: {
-  number: string;
-  title: string;
-  subtitle: string;
-  href: string;
-  isLocked: boolean;
-}) {
-  return (
-    <Link href={href} style={{ textDecoration: "none" }}>
-      <motion.div
-        style={{
-          flex: "1 1 160px",
-          minWidth: "140px",
-          maxWidth: "210px",
-          padding: "0.9rem 1rem",
-          border: isLocked
-            ? "1px solid rgba(201,168,76,0.12)"
-            : "1px solid rgba(201,168,76,0.28)",
-          borderRadius: "1px",
-          background: isLocked
-            ? "rgba(13,11,8,0.4)"
-            : "rgba(201,168,76,0.04)",
-          cursor: "pointer",
-          textAlign: "left",
-          position: "relative",
-          overflow: "hidden",
-        }}
-        whileHover={
-          isLocked
-            ? { borderColor: "rgba(201,168,76,0.22)" }
-            : {
-                borderColor: "rgba(201,168,76,0.5)",
-                background: "rgba(201,168,76,0.07)",
-              }
-        }
-        transition={{ duration: 0.2 }}
-      >
-        {/* Chapter number */}
-        <p
-          style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
-            letterSpacing: "0.25em",
-            color: isLocked ? "rgba(201,168,76,0.3)" : "rgba(201,168,76,0.6)",
-            textTransform: "uppercase",
-            marginBottom: "0.3rem",
-          }}
-        >
-          {isLocked ? (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
-              CHAPTER {number}
-              <span style={{ fontSize: "0.6rem" }}>⚿</span>
-            </span>
-          ) : (
-            `CHAPTER ${number}`
-          )}
-        </p>
-
-        {/* Title */}
-        <p
-          style={{
-            fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-            fontSize: "0.9rem",
-            fontStyle: "italic",
-            color: isLocked ? "rgba(245,230,200,0.25)" : "rgba(245,230,200,0.75)",
-            lineHeight: 1.3,
-            marginBottom: "0.25rem",
-          }}
-        >
-          {title}
-        </p>
-
-        {/* Subtitle */}
-        <p
-          style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
-            letterSpacing: "0.1em",
-            color: isLocked ? "rgba(201,168,76,0.2)" : "rgba(201,168,76,0.4)",
-            textTransform: "uppercase",
-          }}
-        >
-          {subtitle}
-        </p>
-
-        {/* Locked overlay stripe */}
-        {isLocked && (
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              padding: "0.15rem 0.35rem",
-              background: "rgba(201,168,76,0.06)",
-              borderLeft: "1px solid rgba(201,168,76,0.1)",
-              borderBottom: "1px solid rgba(201,168,76,0.1)",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.45rem",
-                letterSpacing: "0.15em",
-                color: "rgba(201,168,76,0.3)",
-                textTransform: "uppercase",
-              }}
-            >
-              SEALED
-            </span>
-          </div>
-        )}
-      </motion.div>
-    </Link>
-  );
-}
-
-// ─── LIBRARY WORK CARD ───────────────────────────────────────────────────────
-// Shows other works by the author — sealed, coming to Tintaxis.
-
-function LibraryWorkCard({
-  title,
-  subtitle,
-  byline,
-  description,
-  language,
-  href,
-}: {
-  title: string;
-  subtitle: string;
-  byline: string;
-  description: string;
-  language: string;
-  href?: string;
-}) {
-  return (
-    <Link href={href ?? "#"} style={{ textDecoration: "none" }}>
-    <motion.div
-      style={{
-        flex: "1 1 180px",
-        minWidth: "160px",
-        maxWidth: "240px",
-        padding: "1rem",
-        border: "1px solid rgba(201,168,76,0.1)",
-        borderRadius: "1px",
-        background: "rgba(13,11,8,0.5)",
-        cursor: href ? "pointer" : "default",
-        textAlign: "left",
-        position: "relative",
-        overflow: "hidden",
-      }}
-      whileHover={{
-        borderColor: "rgba(201,168,76,0.28)",
-        background: "rgba(201,168,76,0.05)",
-      }}
-      transition={{ duration: 0.25 }}
-    >
-      {/* Language badge */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-          padding: "0.2rem 0.4rem",
-          background: "rgba(201,168,76,0.06)",
-          borderLeft: "1px solid rgba(201,168,76,0.1)",
-          borderBottom: "1px solid rgba(201,168,76,0.1)",
-        }}
-      >
-        <span style={{
-          fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.45rem",
-          letterSpacing: "0.1em",
-          color: "rgba(201,168,76,0.4)",
-          textTransform: "uppercase",
-        }}>
-          {language}
-        </span>
-      </div>
-
-      {/* Title */}
-      <p style={{
-        fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-        fontSize: "1rem",
-        fontStyle: "italic",
-        color: "rgba(245,230,200,0.4)",
-        lineHeight: 1.2,
-        marginBottom: "0.2rem",
-        paddingRight: "1.5rem",
-      }}>
-        {title}
-      </p>
-
-      {/* Subtitle */}
-      <p style={{
-        fontFamily: '"JetBrains Mono", monospace',
-        fontSize: "0.45rem",
-        letterSpacing: "0.1em",
-        color: "rgba(201,168,76,0.25)",
-        textTransform: "uppercase",
-        marginBottom: "0.15rem",
-      }}>
-        {subtitle}
-      </p>
-
-      {/* Byline */}
-      <p style={{
-        fontFamily: '"JetBrains Mono", monospace',
-        fontSize: "0.45rem",
-        letterSpacing: "0.08em",
-        color: "rgba(201,168,76,0.2)",
-        marginBottom: "0.6rem",
-      }}>
-        {byline}
-      </p>
-
-      {/* Brass divider */}
-      <div style={{ height: "1px", background: "rgba(201,168,76,0.08)", marginBottom: "0.6rem" }} />
-
-      {/* Description */}
-      <p style={{
-        fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-        fontSize: "0.75rem",
-        fontStyle: "italic",
-        color: "rgba(245,230,200,0.25)",
-        lineHeight: 1.5,
-        marginBottom: "0.6rem",
-      }}>
-        {description}
-      </p>
-
-      {/* CTA */}
-      <p style={{
-        fontFamily: '"JetBrains Mono", monospace',
-        fontSize: "0.45rem",
-        letterSpacing: "0.2em",
-        color: "rgba(201,168,76,0.4)",
-        textTransform: "uppercase",
-      }}>
-        {href ? "→ ENTER ARCHIVE" : "⚿ COMING SOON"}
-      </p>
-    </motion.div>
-    </Link>
-  );
-}
-
-// ─── EMAIL CAPTURE COMPONENT ──────────────────────────────────────────────────
-
-function EmailCapture() {
-  const [email, setEmail] = useState("");
-  const [state, setState] = useState<"idle" | "submitting" | "done" | "error">("idle");
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setState("submitting");
-    try {
-      const res = await fetch("/api/email-capture", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), source: "homepage" }),
-      });
-      if (res.ok) {
-        setState("done");
-      } else {
-        setState("error");
-      }
-    } catch {
-      setState("error");
-    }
-  }
-
-  return (
-    <div style={{ textAlign: "center" }}>
-      {/* Divider */}
-      <div style={{
-        height: "1px",
-        background: "linear-gradient(90deg, transparent, rgba(201,168,76,0.15) 40%, rgba(201,168,76,0.15) 60%, transparent)",
-        marginBottom: "2rem",
-      }} />
-
-      {state === "done" ? (
-        <motion.p
-          initial={{ opacity: 0, y: 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          style={{
-            fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-            fontSize: "0.95rem",
-            fontStyle: "italic",
-            color: "rgba(245,230,200,0.45)",
-            letterSpacing: "0.02em",
-          }}
-        >
-          You're on the list. New chapters find you.
-        </motion.p>
-      ) : (
-        <>
-          <p style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.45rem",
-            letterSpacing: "0.3em",
-            color: "rgba(201,168,76,0.3)",
-            textTransform: "uppercase",
-            marginBottom: "0.75rem",
-          }}>
-            When new work arrives
-          </p>
-          <p style={{
-            fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-            fontSize: "1rem",
-            fontStyle: "italic",
-            color: "rgba(245,230,200,0.35)",
-            marginBottom: "1.25rem",
-            lineHeight: 1.6,
-          }}>
-            New chapters. New writers. No noise.
-          </p>
-
-          <form
-            onSubmit={handleSubmit}
-            style={{ display: "flex", gap: "0", maxWidth: "420px", margin: "0 auto" }}
-          >
-            <input
-              ref={inputRef}
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              required
-              style={{
-                flex: 1,
-                background: "rgba(201,168,76,0.03)",
-                border: "1px solid rgba(201,168,76,0.15)",
-                borderRight: "none",
-                color: "rgba(245,230,200,0.7)",
-                fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                fontSize: "0.9rem",
-                padding: "0.6rem 0.9rem",
-                outline: "none",
-              }}
-            />
-            <motion.button
-              type="submit"
-              disabled={state === "submitting"}
-              style={{
-                background: state === "submitting" ? "rgba(201,168,76,0.3)" : "rgba(201,168,76,0.12)",
-                border: "1px solid rgba(201,168,76,0.15)",
-                color: "rgba(201,168,76,0.6)",
-                fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.45rem",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                padding: "0.6rem 1.1rem",
-                cursor: state === "submitting" ? "default" : "pointer",
-                whiteSpace: "nowrap",
-              }}
-              whileHover={state === "idle" ? { background: "rgba(201,168,76,0.2)" } : {}}
-            >
-              {state === "submitting" ? "…" : "Notify me"}
-            </motion.button>
-          </form>
-
-          {state === "error" && (
-            <p style={{
-              marginTop: "0.5rem",
-              fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.4rem",
-              letterSpacing: "0.1em",
-              color: "rgba(220,60,60,0.6)",
-            }}>
-              Something went wrong. Try again.
-            </p>
-          )}
-        </>
-      )}
-    </div>
+    <>
+      <HomeJsonLd />
+      <HomeClient />
+    </>
   );
 }
