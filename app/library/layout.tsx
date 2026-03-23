@@ -6,9 +6,9 @@ const BASE_URL = "https://tintaxis.vercel.app";
 export const metadata: Metadata = {
   title: "The Library",
   description:
-    "All works by Chico Montecristi — The Hunt, Recoleta, Noches de maya, Mi Pájaro del Río. A living reading platform in English, Spanish, and Mandarin.",
+    "The Tintaxis library — The Hunt, Recoleta, Noches de maya, Mi Pájaro del Río, and more on the way. Read free in English, Spanish, and Mandarin.",
   keywords: [
-    "Chico Montecristi books",
+    "Tintaxis library",
     "The Hunt novella",
     "Recoleta",
     "Noches de maya",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "The Library — Tintaxis",
     description:
-      "Four books. Three languages. One writer. The complete catalog of Chico Montecristi on Tintaxis.",
+      "Three writers. Six works. Three languages. The Tintaxis catalog — more arriving soon.",
     type: "website",
     url: `${BASE_URL}/library`,
   },
@@ -30,8 +30,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "The Library — Tintaxis",
     description:
-      "Four books. Three languages. One writer. The complete catalog of Chico Montecristi on Tintaxis.",
-    creator: "@chicomontecristi",
+      "Three writers. Six works. Three languages. The Tintaxis catalog — more arriving soon.",
   },
   alternates: {
     canonical: `${BASE_URL}/library`,
@@ -48,7 +47,7 @@ function LibraryJsonLd() {
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: "The Library — Tintaxis",
-    description: "The complete catalog of works by Chico Montecristi on Tintaxis.",
+    description: "The Tintaxis catalog — works by multiple writers, more arriving soon.",
     url: `${BASE_URL}/library`,
     numberOfItems: books.length,
     itemListElement: books.map((book, i) => ({

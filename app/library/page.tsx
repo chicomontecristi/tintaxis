@@ -122,7 +122,7 @@ export default function LibraryPage() {
             color: "rgba(245,230,200,0.35)",
             margin: 0,
           }}>
-            {allBooks.length} works by Chico Montecristi
+            {allBooks.length} works available · More writers coming soon
           </p>
         </motion.div>
 
