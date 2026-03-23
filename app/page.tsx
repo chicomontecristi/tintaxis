@@ -10,13 +10,13 @@ import TintaxisLogo from "@/components/ui/TintaxisLogo";
 // The platform reveals itself slowly. Awe before access.
 
 const TAGLINE_LINES = [
-  "Four books. Four languages. One author.",
-  "Every margin remembers.",
+  "A book is not a document.",
+  "It is a living entity.",
   "You are about to read differently.",
 ];
 
-const EDITION_TEXT = "TINTAXIS · FOUR BOOKS · ONE LIVING ARCHIVE";
-const SUBJECT_LINE = "THE HUNT · RECOLETA · NOCHES DE MAYA · MI PÁJARO DEL RÍO";
+const EDITION_TEXT = "TINTAXIS · CHICO MONTECRISTI · INAUGURAL ARCHIVE";
+const SUBJECT_LINE = "THE HUNT — A NOVELLA · FEATURED WORK";
 
 // Mechanical boot-up sequence for the decorative UI chrome
 const BOOT_LINES = [
@@ -289,21 +289,38 @@ export default function InitiationScreen() {
         {/* Subject line */}
         <AnimatePresence>
           {titleVisible && (
-            <motion.p
+            <motion.div
               className="mb-12"
-              style={{
-                fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.7rem",
-                letterSpacing: "0.22em",
-                color: "rgba(201,168,76,0.75)",
-                textTransform: "uppercase",
-              }}
+              style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.5 }}
             >
-              {SUBJECT_LINE}
-            </motion.p>
+              <p
+                style={{
+                  fontFamily: '"JetBrains Mono", monospace',
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.22em",
+                  color: "rgba(201,168,76,0.75)",
+                  textTransform: "uppercase",
+                  margin: 0,
+                }}
+              >
+                {SUBJECT_LINE}
+              </p>
+              <p
+                style={{
+                  fontFamily: '"JetBrains Mono", monospace',
+                  fontSize: "0.48rem",
+                  letterSpacing: "0.2em",
+                  color: "rgba(201,168,76,0.35)",
+                  textTransform: "uppercase",
+                  margin: 0,
+                }}
+              >
+                + Recoleta · Noches de maya · Mi Pájaro del Río
+              </p>
+            </motion.div>
           )}
         </AnimatePresence>
 
@@ -472,7 +489,7 @@ export default function InitiationScreen() {
         </AnimatePresence>
       </div>
 
-      {/* ── OTHER WORKS LIBRARY ──────────────────────────────── */}
+      {/* ── FULL ARCHIVE CATALOG ─────────────────────────────── */}
       <AnimatePresence>
         {phase === "ready" && (
           <motion.div
@@ -483,7 +500,7 @@ export default function InitiationScreen() {
             transition={{ delay: 1.2, duration: 0.8 }}
           >
             {/* Section divider */}
-            <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.5rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "2rem" }}>
               <div style={{ flex: 1, height: "1px", background: "linear-gradient(90deg, transparent, rgba(201,168,76,0.15))" }} />
               <p style={{
                 fontFamily: '"JetBrains Mono", monospace',
@@ -493,12 +510,83 @@ export default function InitiationScreen() {
                 textTransform: "uppercase",
                 whiteSpace: "nowrap",
               }}>
-                THE ARCHIVE — FOUR BOOKS
+                THE FULL ARCHIVE
               </p>
               <div style={{ flex: 1, height: "1px", background: "linear-gradient(90deg, rgba(201,168,76,0.15), transparent)" }} />
             </div>
 
-            {/* Work cards */}
+            {/* The Hunt — featured row */}
+            <Link href="/book/the-hunt" style={{ textDecoration: "none", display: "block", marginBottom: "1rem" }}>
+              <motion.div
+                style={{
+                  width: "100%",
+                  padding: "1.25rem 1.5rem",
+                  border: "1px solid rgba(192,57,43,0.35)",
+                  borderRadius: "2px",
+                  background: "rgba(192,57,43,0.05)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "1rem",
+                  flexWrap: "wrap",
+                  cursor: "pointer",
+                }}
+                whileHover={{
+                  borderColor: "rgba(192,57,43,0.6)",
+                  background: "rgba(192,57,43,0.09)",
+                }}
+                transition={{ duration: 0.2 }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
+                  <span style={{
+                    fontFamily: '"JetBrains Mono", monospace',
+                    fontSize: "0.45rem",
+                    letterSpacing: "0.25em",
+                    color: "rgba(192,57,43,0.7)",
+                    textTransform: "uppercase",
+                    background: "rgba(192,57,43,0.1)",
+                    border: "1px solid rgba(192,57,43,0.25)",
+                    padding: "2px 6px",
+                    borderRadius: "2px",
+                    whiteSpace: "nowrap",
+                  }}>
+                    ★ FEATURED · EN
+                  </span>
+                  <div>
+                    <p style={{
+                      fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                      fontSize: "1.2rem",
+                      fontStyle: "italic",
+                      color: "rgba(245,230,200,0.9)",
+                      margin: 0,
+                      lineHeight: 1.2,
+                    }}>
+                      The Hunt
+                    </p>
+                    <p style={{
+                      fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                      fontSize: "0.8rem",
+                      fontStyle: "italic",
+                      color: "rgba(245,230,200,0.4)",
+                      margin: "2px 0 0",
+                    }}>
+                      A Novella · Dark psychological thriller · 7 chapters
+                    </p>
+                  </div>
+                </div>
+                <span style={{
+                  fontFamily: '"JetBrains Mono", monospace',
+                  fontSize: "0.5rem",
+                  letterSpacing: "0.2em",
+                  color: "rgba(192,57,43,0.55)",
+                  textTransform: "uppercase",
+                }}>
+                  25,003 words → Enter
+                </span>
+              </motion.div>
+            </Link>
+
+            {/* Other three works */}
             <div className="library-section-inner" style={{ display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
               <LibraryWorkCard
                 title="Recoleta"
