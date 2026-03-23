@@ -1,471 +1,133 @@
-"use client";
+import type { Metadata } from "next";
+import { getBook, getAllBookSlugs } from "@/lib/content/books";
+import BookPageClient from "./BookPageClient";
 
-import { notFound } from "next/navigation";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import TintaxisLogo from "@/components/ui/TintaxisLogo";
-import type { Book, Chapter } from "@/lib/types";
+const BASE_URL = "https://tintaxis.vercel.app";
 
-// ─── BOOK LANDING PAGE ───────────────────────────────────────────────────────
-// Table of contents for a single book.
-// Shows: cover, description, chapter list with lock status.
+interface Props {
+  params: { bookSlug: string };
+}
 
-export default function BookPage() {
-  const params = useParams<{ bookSlug: string }>();
-  const bookSlug = params?.bookSlug ?? "";
+// ─── STATIC PARAMS ───────────────────────────────────────────────────────────
+export function generateStaticParams() {
+  return getAllBookSlugs().map((slug) => ({ bookSlug: slug }));
+}
 
-  const [book, setBook] = useState<Book | null>(null);
-  const [chapters, setChapters] = useState<Chapter[]>([]);
-  const [ready, setReady] = useState(false);
+// ─── METADATA ────────────────────────────────────────────────────────────────
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const book = getBook(params.bookSlug);
+  if (!book) return { title: "Book not found" };
 
-  useEffect(() => {
-    // Load book data from API to avoid SSR issues with dynamic client component
-    fetch(`/api/book/${bookSlug}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (data) {
-          setBook(data.book);
-          setChapters(data.chapters);
-        }
-        setReady(true);
-      })
-      .catch(() => setReady(true));
-  }, [bookSlug]);
+  const title = book.subtitle
+    ? `${book.title} — ${book.subtitle}`
+    : book.title;
 
-  if (!ready) {
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          backgroundColor: "#0D0B08",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <span
-          style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.6rem",
-            letterSpacing: "0.3em",
-            color: "rgba(201,168,76,0.4)",
-            textTransform: "uppercase",
-          }}
-        >
-          Loading…
-        </span>
-      </div>
-    );
-  }
+  const description = `${book.tagline} — ${book.description}`;
 
-  if (!book) {
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          backgroundColor: "#0D0B08",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "1.5rem",
-        }}
-      >
-        <span
-          style={{
-            fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-            fontSize: "1.5rem",
-            color: "rgba(245,230,200,0.5)",
-          }}
-        >
-          Book not found.
-        </span>
-        <Link
-          href="/"
-          style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.6rem",
-            letterSpacing: "0.25em",
-            color: "rgba(201,168,76,0.6)",
-            textDecoration: "none",
-            textTransform: "uppercase",
-          }}
-        >
-          ← Back to Tintaxis
-        </Link>
-      </div>
-    );
-  }
+  const languageLabel: Record<string, string> = {
+    en: "English",
+    es: "Español",
+    "es-zh": "Español / 中文",
+    zh: "中文",
+  };
 
-  const accentRgb = hexToRgb(book.accentColor);
-  const accentFade = accentRgb ? `rgba(${accentRgb}, 0.15)` : "rgba(201,168,76,0.1)";
-  const accentMid = accentRgb ? `rgba(${accentRgb}, 0.6)` : "rgba(201,168,76,0.6)";
-  const accentFull = book.accentColor;
+  return {
+    title,
+    description,
+    keywords: [
+      book.title,
+      "Chico Montecristi",
+      book.genre,
+      languageLabel[book.language] ?? book.language,
+      "Tintaxis",
+      "literary fiction",
+      "read online",
+      "free chapter",
+    ],
+    openGraph: {
+      title: `${title} · Tintaxis`,
+      description,
+      type: "book",
+      url: `${BASE_URL}/book/${book.slug}`,
+      siteName: "Tintaxis",
+      authors: [book.author],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} · Tintaxis`,
+      description,
+      creator: "@chicomontecristi",
+    },
+    alternates: {
+      canonical: `${BASE_URL}/book/${book.slug}`,
+    },
+  };
+}
+
+// ─── JSON-LD BOOK SCHEMA ─────────────────────────────────────────────────────
+// Rendered server-side as inline <script> so crawlers see it on first paint.
+function BookJsonLd({ bookSlug }: { bookSlug: string }) {
+  const book = getBook(bookSlug);
+  if (!book) return null;
+
+  const langMap: Record<string, string> = {
+    en: "en",
+    es: "es",
+    "es-zh": "es",
+    zh: "zh",
+  };
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Book",
+    name: book.title,
+    alternateName: book.subtitle ?? undefined,
+    author: {
+      "@type": "Person",
+      name: book.author,
+      url: "https://chicomontecristi.com",
+      sameAs: [
+        "https://www.instagram.com/chicomontecristi",
+        `${BASE_URL}/writers/chico-montecristi`,
+      ],
+    },
+    description: book.description,
+    abstract: book.tagline,
+    inLanguage: langMap[book.language] ?? "en",
+    datePublished: String(book.year),
+    genre: book.genre,
+    numberOfPages: book.totalChapters,
+    wordCount: book.wordCount,
+    url: `${BASE_URL}/book/${book.slug}`,
+    isAccessibleForFree: true,
+    publisher: {
+      "@type": "Organization",
+      name: "Tintaxis",
+      url: BASE_URL,
+    },
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      url: `${BASE_URL}/book/${book.slug}/chapter/${book.firstChapterSlug}`,
+    },
+  };
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#0D0B08" }}>
-      {/* ── Top nav ───────────────────────────────────── */}
-      <header
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "52px",
-          zIndex: 40,
-          background: "rgba(13,11,8,0.92)",
-          borderBottom: "1px solid rgba(201,168,76,0.1)",
-          backdropFilter: "blur(8px)",
-          display: "flex",
-          alignItems: "center",
-          padding: "0 1.5rem",
-          justifyContent: "space-between",
-        }}
-      >
-        <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "8px" }}>
-          <TintaxisLogo size={20} />
-          <span
-            style={{
-              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-              fontSize: "0.875rem",
-              letterSpacing: "0.1em",
-              color: "rgba(245,230,200,0.65)",
-            }}
-          >
-            Tintaxis
-          </span>
-        </Link>
-        <Link
-          href="/library"
-          style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
-            letterSpacing: "0.2em",
-            color: "rgba(201,168,76,0.45)",
-            textDecoration: "none",
-            textTransform: "uppercase",
-          }}
-        >
-          ← Library
-        </Link>
-      </header>
-
-      {/* ── Main content ──────────────────────────────── */}
-      <main
-        style={{
-          maxWidth: "680px",
-          margin: "0 auto",
-          padding: "100px 2rem 4rem",
-        }}
-      >
-        {/* Book header */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.2, 0, 0.1, 1] }}
-        >
-          {/* Cover label badge */}
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "6px",
-              background: accentFade,
-              border: `1px solid ${accentFull}30`,
-              borderRadius: "3px",
-              padding: "3px 10px",
-              marginBottom: "1.5rem",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.5rem",
-                letterSpacing: "0.3em",
-                color: accentMid,
-                textTransform: "uppercase",
-              }}
-            >
-              {book.coverLabel} · {book.year}
-            </span>
-          </div>
-
-          {/* Title */}
-          <h1
-            style={{
-              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-              fontSize: "clamp(2.2rem, 5vw, 3.5rem)",
-              fontStyle: "italic",
-              color: "rgba(245,230,200,0.92)",
-              margin: "0 0 0.4rem",
-              lineHeight: 1.1,
-              letterSpacing: "-0.01em",
-            }}
-          >
-            {book.title}
-          </h1>
-
-          {/* Subtitle */}
-          {book.subtitle && (
-            <p
-              style={{
-                fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                fontSize: "1.1rem",
-                color: "rgba(245,230,200,0.45)",
-                margin: "0 0 0.5rem",
-                fontStyle: "italic",
-              }}
-            >
-              {book.subtitle}
-            </p>
-          )}
-
-          {/* Author */}
-          <p
-            style={{
-              fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.6rem",
-              letterSpacing: "0.25em",
-              color: "rgba(201,168,76,0.5)",
-              textTransform: "uppercase",
-              margin: "0 0 2rem",
-            }}
-          >
-            {book.author}
-          </p>
-
-          {/* Tagline */}
-          <p
-            style={{
-              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-              fontSize: "1.25rem",
-              fontStyle: "italic",
-              color: "rgba(245,230,200,0.55)",
-              borderLeft: `2px solid ${accentFull}60`,
-              paddingLeft: "1rem",
-              margin: "0 0 1.5rem",
-              lineHeight: 1.5,
-            }}
-          >
-            "{book.tagline}"
-          </p>
-
-          {/* Description */}
-          <p
-            style={{
-              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-              fontSize: "1.05rem",
-              color: "rgba(245,230,200,0.65)",
-              lineHeight: 1.75,
-              margin: "0 0 2.5rem",
-            }}
-          >
-            {book.description}
-          </p>
-
-          {/* Start reading CTA */}
-          <Link
-            href={`/book/${book.slug}/chapter/${book.firstChapterSlug}`}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "10px",
-              background: `${accentFull}18`,
-              border: `1px solid ${accentFull}50`,
-              borderRadius: "4px",
-              padding: "12px 24px",
-              textDecoration: "none",
-              marginBottom: "3.5rem",
-              transition: "all 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.background = `${accentFull}28`;
-              (e.currentTarget as HTMLAnchorElement).style.borderColor = `${accentFull}80`;
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.background = `${accentFull}18`;
-              (e.currentTarget as HTMLAnchorElement).style.borderColor = `${accentFull}50`;
-            }}
-          >
-            <span
-              style={{
-                fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                fontSize: "1.1rem",
-                color: "rgba(245,230,200,0.85)",
-              }}
-            >
-              Begin Reading
-            </span>
-            <span style={{ color: accentMid, fontSize: "1rem" }}>→</span>
-          </Link>
-        </motion.div>
-
-        {/* Divider */}
-        <div
-          style={{
-            borderTop: "1px solid rgba(201,168,76,0.12)",
-            marginBottom: "2.5rem",
-          }}
-        />
-
-        {/* Chapter list */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          <p
-            style={{
-              fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.5rem",
-              letterSpacing: "0.3em",
-              color: "rgba(201,168,76,0.4)",
-              textTransform: "uppercase",
-              marginBottom: "1.5rem",
-            }}
-          >
-            Contents · {chapters.length} {book.chapterLabel}{chapters.length !== 1 ? "s" : ""}
-          </p>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
-            {chapters.map((ch, i) => (
-              <ChapterRow
-                key={ch.slug}
-                chapter={ch}
-                bookSlug={book.slug}
-                chapterLabel={book.chapterLabel}
-                accentColor={accentFull}
-                delay={i * 0.06}
-              />
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Footer */}
-        <div style={{ marginTop: "4rem", textAlign: "center" }}>
-          <span
-            style={{
-              fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.45rem",
-              letterSpacing: "0.3em",
-              color: "rgba(245,230,200,0.15)",
-              textTransform: "uppercase",
-            }}
-          >
-            Tintaxis · {book.wordCount.toLocaleString()} words
-          </span>
-        </div>
-      </main>
-    </div>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
   );
 }
 
-// ─── CHAPTER ROW ─────────────────────────────────────────────────────────────
-
-function ChapterRow({
-  chapter,
-  bookSlug,
-  chapterLabel,
-  accentColor,
-  delay,
-}: {
-  chapter: Chapter;
-  bookSlug: string;
-  chapterLabel: string;
-  accentColor: string;
-  delay: number;
-}) {
-  const href = `/book/${bookSlug}/chapter/${chapter.slug}`;
-
-  const content = (
-    <motion.div
-      initial={{ opacity: 0, x: -12 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.4, delay }}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        padding: "1rem 0",
-        borderBottom: "1px solid rgba(201,168,76,0.07)",
-        cursor: chapter.isLocked ? "default" : "pointer",
-        gap: "1rem",
-      }}
-    >
-      {/* Number */}
-      <span
-        style={{
-          fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.5rem",
-          letterSpacing: "0.2em",
-          color: chapter.isLocked
-            ? "rgba(245,230,200,0.15)"
-            : `${accentColor}80`,
-          textTransform: "uppercase",
-          minWidth: "60px",
-        }}
-      >
-        {chapterLabel} {chapter.romanNumeral}
-      </span>
-
-      {/* Title */}
-      <div style={{ flex: 1 }}>
-        <span
-          style={{
-            fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-            fontSize: "1.05rem",
-            fontStyle: "italic",
-            color: chapter.isLocked
-              ? "rgba(245,230,200,0.3)"
-              : "rgba(245,230,200,0.85)",
-          }}
-        >
-          {chapter.title}
-        </span>
-        {chapter.subtitle && (
-          <span
-            style={{
-              display: "block",
-              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-              fontSize: "0.8rem",
-              color: "rgba(245,230,200,0.25)",
-              marginTop: "2px",
-            }}
-          >
-            {chapter.subtitle}
-          </span>
-        )}
-      </div>
-
-      {/* Lock / word count */}
-      <span
-        style={{
-          fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.45rem",
-          letterSpacing: "0.15em",
-          color: chapter.isLocked
-            ? "rgba(201,168,76,0.25)"
-            : "rgba(245,230,200,0.2)",
-          textTransform: "uppercase",
-          minWidth: "60px",
-          textAlign: "right",
-        }}
-      >
-        {chapter.isLocked ? "🔒 Sealed" : `${chapter.wordCount.toLocaleString()} wds`}
-      </span>
-    </motion.div>
+// ─── PAGE ────────────────────────────────────────────────────────────────────
+export default function BookPage({ params }: Props) {
+  return (
+    <>
+      <BookJsonLd bookSlug={params.bookSlug} />
+      <BookPageClient />
+    </>
   );
-
-  if (chapter.isLocked) return <div>{content}</div>;
-  return <Link href={href} style={{ textDecoration: "none" }}>{content}</Link>;
-}
-
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
-
-function hexToRgb(hex: string): string | null {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result
-    ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
-    : null;
 }
