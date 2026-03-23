@@ -10,6 +10,7 @@ import type { Chapter } from "@/lib/types";
 export const CHAPTERS: Record<string, Chapter> = {
   one: {
     slug: "one",
+    bookSlug: "the-hunt",
     number: 1,
     romanNumeral: "ONE",
     title: "What Robbin Told Alma",
@@ -149,6 +150,7 @@ export const CHAPTERS: Record<string, Chapter> = {
   },
 
   two: {
+    bookSlug: "the-hunt",
     slug: "two",
     number: 2,
     romanNumeral: "TWO",
@@ -166,6 +168,7 @@ export const CHAPTERS: Record<string, Chapter> = {
   },
 
   three: {
+    bookSlug: "the-hunt",
     slug: "three",
     number: 3,
     romanNumeral: "THREE",
@@ -183,6 +186,7 @@ export const CHAPTERS: Record<string, Chapter> = {
   },
 
   four: {
+    bookSlug: "the-hunt",
     slug: "four",
     number: 4,
     romanNumeral: "FOUR",
@@ -200,6 +204,7 @@ export const CHAPTERS: Record<string, Chapter> = {
   },
 
   five: {
+    bookSlug: "the-hunt",
     slug: "five",
     number: 5,
     romanNumeral: "FIVE",
@@ -217,6 +222,7 @@ export const CHAPTERS: Record<string, Chapter> = {
   },
 
   six: {
+    bookSlug: "the-hunt",
     slug: "six",
     number: 6,
     romanNumeral: "SIX",
@@ -234,6 +240,7 @@ export const CHAPTERS: Record<string, Chapter> = {
   },
 
   seven: {
+    bookSlug: "the-hunt",
     slug: "seven",
     number: 7,
     romanNumeral: "SEVEN",

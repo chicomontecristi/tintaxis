@@ -10,13 +10,13 @@ import TintaxisLogo from "@/components/ui/TintaxisLogo";
 // The platform reveals itself slowly. Awe before access.
 
 const TAGLINE_LINES = [
-  "A book is not a document.",
-  "It is a living entity.",
+  "Four books. Four languages. One author.",
+  "Every margin remembers.",
   "You are about to read differently.",
 ];
 
-const EDITION_TEXT = "TINTAXIS · INAUGURAL EDITION";
-const SUBJECT_LINE = "THE HUNT — A NOVELLA";
+const EDITION_TEXT = "TINTAXIS · FOUR BOOKS · ONE LIVING ARCHIVE";
+const SUBJECT_LINE = "THE HUNT · RECOLETA · NOCHES DE MAYA · MI PÁJARO DEL RÍO";
 
 // Mechanical boot-up sequence for the decorative UI chrome
 const BOOT_LINES = [
@@ -342,7 +342,7 @@ export default function InitiationScreen() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
-              <Link href="/chapter/one" passHref>
+              <Link href="/book/the-hunt/chapter/one" passHref>
                 <motion.button
                   className="relative group"
                   style={{
@@ -421,49 +421,49 @@ export default function InitiationScreen() {
                   number="I"
                   title="What Robbin Told Alma"
                   subtitle="The Diner at the Edge of Little Pines"
-                  href="/chapter/one"
+                  href="/book/the-hunt/chapter/one"
                   isLocked={false}
                 />
                 <ChapterIndexCard
                   number="II"
                   title="Corridor B"
                   subtitle="The Clinic, Earlier That Morning"
-                  href="/chapter/two"
+                  href="/book/the-hunt/chapter/two"
                   isLocked={true}
                 />
                 <ChapterIndexCard
                   number="III"
                   title="Regular Hours"
                   subtitle="Alma Mae, at Her Desk"
-                  href="/chapter/three"
+                  href="/book/the-hunt/chapter/three"
                   isLocked={true}
                 />
                 <ChapterIndexCard
                   number="IV"
                   title="The Smell of Coffee and Syrup"
                   subtitle="The Family Cabin, the Barrow History"
-                  href="/chapter/four"
+                  href="/book/the-hunt/chapter/four"
                   isLocked={true}
                 />
                 <ChapterIndexCard
                   number="V"
                   title="What Blood Requires"
                   subtitle="Michelle, Grown"
-                  href="/chapter/five"
+                  href="/book/the-hunt/chapter/five"
                   isLocked={true}
                 />
                 <ChapterIndexCard
                   number="VI"
                   title="The Stories People Tell"
                   subtitle="The Pines, the Town, the Years"
-                  href="/chapter/six"
+                  href="/book/the-hunt/chapter/six"
                   isLocked={true}
                 />
                 <ChapterIndexCard
                   number="VII"
                   title="Once Again"
                   subtitle="The Cabin. The Lake. The End."
-                  href="/chapter/seven"
+                  href="/book/the-hunt/chapter/seven"
                   isLocked={true}
                 />
               </motion.div>
@@ -493,7 +493,7 @@ export default function InitiationScreen() {
                 textTransform: "uppercase",
                 whiteSpace: "nowrap",
               }}>
-                MORE FROM THIS ARCHIVE
+                THE ARCHIVE — FOUR BOOKS
               </p>
               <div style={{ flex: 1, height: "1px", background: "linear-gradient(90deg, rgba(201,168,76,0.15), transparent)" }} />
             </div>
@@ -503,23 +503,26 @@ export default function InitiationScreen() {
               <LibraryWorkCard
                 title="Recoleta"
                 subtitle="Novela corta · Español"
-                byline="~11,600 palabras"
-                description="Dedicado a todas las madres. A story of Rita, her asthma, and the silence left by the dead."
+                byline="~12,000 palabras"
+                description="Dedicado a todas las madres. A narrator arrives in the Bronx — cold February, an uncle, a tenement, and the weight of belonging."
                 language="ES"
+                href="/book/recoleta"
               />
               <LibraryWorkCard
-                title="Noches de Maya"
-                subtitle="Novela · Español"
-                byline="~32,000 palabras"
-                description="Triste de cuna. A novel of old men, river birds, and the weight of ordinary life in the tropics."
+                title="Noches de maya"
+                subtitle="Cuentos · Español"
+                byline="9 relatos"
+                description="Triste de cuna. Old men, river birds, and the silence of old buildings. Nine stories of the Caribbean and the desert."
                 language="ES"
+                href="/book/noches-de-maya"
               />
               <LibraryWorkCard
                 title="Mi Pájaro del Río"
-                subtitle="Colección · ES · 中文 · EN"
+                subtitle="Cartas · ZH / ES"
                 byline="Diciembre 2017"
-                description="Letters written in three languages to the one called the river mouth bird. Rochester and Montauk."
-                language="三"
+                description="Letters written in Mandarin and Spanish to the one called the river mouth bird. Rochester and Montauk."
+                language="ZH/ES"
+                href="/book/mi-pajaro-del-rio"
               />
             </div>
           </motion.div>
@@ -767,14 +770,17 @@ function LibraryWorkCard({
   byline,
   description,
   language,
+  href,
 }: {
   title: string;
   subtitle: string;
   byline: string;
   description: string;
   language: string;
+  href?: string;
 }) {
   return (
+    <Link href={href ?? "#"} style={{ textDecoration: "none" }}>
     <motion.div
       style={{
         flex: "1 1 180px",
@@ -784,14 +790,14 @@ function LibraryWorkCard({
         border: "1px solid rgba(201,168,76,0.1)",
         borderRadius: "1px",
         background: "rgba(13,11,8,0.5)",
-        cursor: "default",
+        cursor: href ? "pointer" : "default",
         textAlign: "left",
         position: "relative",
         overflow: "hidden",
       }}
       whileHover={{
-        borderColor: "rgba(201,168,76,0.2)",
-        background: "rgba(201,168,76,0.03)",
+        borderColor: "rgba(201,168,76,0.28)",
+        background: "rgba(201,168,76,0.05)",
       }}
       transition={{ duration: 0.25 }}
     >
@@ -869,17 +875,18 @@ function LibraryWorkCard({
         {description}
       </p>
 
-      {/* Sealed badge */}
+      {/* CTA */}
       <p style={{
         fontFamily: '"JetBrains Mono", monospace',
         fontSize: "0.45rem",
         letterSpacing: "0.2em",
-        color: "rgba(201,168,76,0.2)",
+        color: "rgba(201,168,76,0.4)",
         textTransform: "uppercase",
       }}>
-        ⚿ COMING TO TINTAXIS
+        {href ? "→ ENTER ARCHIVE" : "⚿ COMING SOON"}
       </p>
     </motion.div>
+    </Link>
   );
 }
 

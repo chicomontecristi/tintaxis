@@ -150,6 +150,7 @@ export interface ChapterParagraph {
 
 export interface Chapter {
   slug: string;
+  bookSlug?: string;         // Parent book identifier (e.g. "the-hunt", "recoleta")
   number: number;           // Chapter number (1-indexed)
   romanNumeral: string;     // "ONE", "TWO", etc.
   title: string;
@@ -162,6 +163,26 @@ export interface Chapter {
   authorNote?: string;       // Optional pre/post chapter note from author
   isLocked: boolean;         // Requires Codex Key to read
   wordCount: number;
+}
+
+// ─── BOOK ────────────────────────────────────────────────────────────────────
+
+export interface Book {
+  slug: string;              // URL identifier
+  title: string;
+  subtitle?: string;
+  author: string;
+  language: "en" | "es" | "zh" | "es-zh";
+  genre: string;
+  description: string;
+  tagline: string;
+  accentColor: string;       // CSS color for book theming
+  coverLabel: string;        // Short display label
+  firstChapterSlug: string;  // Entry point for readers
+  chapterLabel: string;      // "Chapter", "Capítulo", "Letter", etc.
+  totalChapters: number;
+  wordCount: number;
+  year: number;
 }
 
 // ─── READER STATE ────────────────────────────────────────────────────────────

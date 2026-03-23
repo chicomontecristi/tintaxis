@@ -740,7 +740,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
       {/* ── Previous chapter ── */}
       <div style={{ flex: 1 }}>
         {prevChapter && (
-          <Link href={`/chapter/${prevChapter.slug}`} style={{ textDecoration: "none" }}>
+          <Link href={prevChapter.bookSlug ? `/book/${prevChapter.bookSlug}/chapter/${prevChapter.slug}` : `/chapter/${prevChapter.slug}`} style={{ textDecoration: "none" }}>
             <motion.div
               style={{
                 padding: "1rem",
@@ -872,7 +872,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
             </motion.button>
           ) : (
             // Open chapter
-            <Link href={`/chapter/${nextChapter.slug}`} style={{ textDecoration: "none", width: "100%" }}>
+            <Link href={nextChapter.bookSlug ? `/book/${nextChapter.bookSlug}/chapter/${nextChapter.slug}` : `/chapter/${nextChapter.slug}`} style={{ textDecoration: "none", width: "100%" }}>
               <motion.div
                 style={{
                   padding: "1rem",
