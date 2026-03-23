@@ -58,9 +58,8 @@ export const metadata: Metadata = {
   alternates: {
     canonical: BASE_URL,
   },
-  // Google Search Console — replace with your verification code after setup
   verification: {
-    google: "PASTE_YOUR_GSC_VERIFICATION_CODE_HERE",
+    google: "google4e1b9f75f9d53898",
   },
   other: {
     "pinterest-rich-pin": "true",
