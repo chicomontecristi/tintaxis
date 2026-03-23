@@ -98,7 +98,7 @@ export default function HomeClient() {
           href="/publish"
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
+            fontSize: "0.7rem",
             letterSpacing: "0.25em",
             color: "rgba(201,168,76,0.45)",
             textDecoration: "none",
@@ -111,7 +111,7 @@ export default function HomeClient() {
           href="/library"
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
+            fontSize: "0.7rem",
             letterSpacing: "0.25em",
             color: "rgba(201,168,76,0.7)",
             textDecoration: "none",
@@ -124,7 +124,7 @@ export default function HomeClient() {
           href="/writers"
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
+            fontSize: "0.7rem",
             letterSpacing: "0.25em",
             color: "rgba(201,168,76,0.6)",
             textDecoration: "none",
@@ -137,7 +137,7 @@ export default function HomeClient() {
           href="/account"
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
+            fontSize: "0.7rem",
             letterSpacing: "0.25em",
             color: "rgba(245,230,200,0.35)",
             textDecoration: "none",
@@ -150,7 +150,7 @@ export default function HomeClient() {
           href="/author/login"
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
+            fontSize: "0.7rem",
             letterSpacing: "0.25em",
             color: "rgba(245,230,200,0.2)",
             textDecoration: "none",
@@ -232,7 +232,7 @@ export default function HomeClient() {
               className="chapter-number mb-8 tracking-widest"
               style={{
                 color: "rgba(201,168,76,0.6)",
-                fontSize: "0.625rem",
+                fontSize: "0.75rem",
                 letterSpacing: "0.3em",
                 fontFamily: '"JetBrains Mono", monospace',
               }}
@@ -246,6 +246,7 @@ export default function HomeClient() {
         </AnimatePresence>
 
         {/* TINTAXIS sigil + wordmark */}
+
         <AnimatePresence>
           {titleVisible && (
             <motion.div
@@ -315,7 +316,7 @@ export default function HomeClient() {
               <p
                 style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.7rem",
+                  fontSize: "0.85rem",
                   letterSpacing: "0.22em",
                   color: "rgba(201,168,76,0.75)",
                   textTransform: "uppercase",
@@ -327,7 +328,7 @@ export default function HomeClient() {
               <p
                 style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.48rem",
+                  fontSize: "0.7rem",
                   letterSpacing: "0.2em",
                   color: "rgba(201,168,76,0.35)",
                   textTransform: "uppercase",
@@ -380,7 +381,7 @@ export default function HomeClient() {
                   className="relative group"
                   style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.7rem",
+                    fontSize: "0.85rem",
                     letterSpacing: "0.3em",
                     textTransform: "uppercase",
                     color: "#C9A84C",
@@ -422,7 +423,7 @@ export default function HomeClient() {
                 className="mt-4 text-center"
                 style={{
                   fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                  fontSize: "0.8rem",
+                  fontSize: "0.95rem",
                   fontStyle: "italic",
                   color: "rgba(245,230,200,0.3)",
                   letterSpacing: "0.04em",
@@ -536,7 +537,7 @@ export default function HomeClient() {
               <div style={{ flex: 1, height: "1px", background: "linear-gradient(90deg, transparent, rgba(201,168,76,0.15))" }} />
               <p style={{
                 fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.5rem",
+                fontSize: "0.7rem",
                 letterSpacing: "0.3em",
                 color: "rgba(201,168,76,0.3)",
                 textTransform: "uppercase",
@@ -572,7 +573,7 @@ export default function HomeClient() {
                 <div style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
                   <span style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.45rem",
+                    fontSize: "0.65rem",
                     letterSpacing: "0.25em",
                     color: "rgba(192,57,43,0.7)",
                     textTransform: "uppercase",
@@ -608,7 +609,7 @@ export default function HomeClient() {
                 </div>
                 <span style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.5rem",
+                  fontSize: "0.7rem",
                   letterSpacing: "0.2em",
                   color: "rgba(192,57,43,0.55)",
                   textTransform: "uppercase",
@@ -750,7 +751,7 @@ function StatusDot({ label, active, pulse }: { label: string; active?: boolean; 
       <span
         style={{
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.55rem",
+          fontSize: "0.7rem",
           letterSpacing: "0.18em",
           color: active || pulse ? "rgba(201,168,76,0.6)" : "rgba(201,168,76,0.25)",
         }}

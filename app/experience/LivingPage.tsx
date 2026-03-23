@@ -155,6 +155,79 @@ export default function LivingPage() {
         overflow: "hidden",
       }}
     >
+      {/* ── Top navigation bar ────────────────────────────────── */}
+      <nav
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "0.75rem clamp(1rem, 4vw, 2rem)",
+          borderBottom: "1px solid rgba(201,168,76,0.07)",
+          background: "rgba(13,11,8,0.9)",
+          backdropFilter: "blur(8px)",
+        }}
+      >
+        <Link
+          href="/"
+          style={{
+            fontFamily: MONO,
+            fontSize: "0.7rem",
+            letterSpacing: "0.2em",
+            color: "rgba(201,168,76,0.5)",
+            textDecoration: "none",
+            textTransform: "uppercase",
+          }}
+        >
+          Tintaxis
+        </Link>
+        <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
+          <Link
+            href="/library"
+            style={{
+              fontFamily: MONO,
+              fontSize: "0.7rem",
+              letterSpacing: "0.2em",
+              color: "rgba(201,168,76,0.4)",
+              textDecoration: "none",
+              textTransform: "uppercase",
+            }}
+          >
+            Library
+          </Link>
+          <Link
+            href="/writers"
+            style={{
+              fontFamily: MONO,
+              fontSize: "0.7rem",
+              letterSpacing: "0.2em",
+              color: "rgba(201,168,76,0.35)",
+              textDecoration: "none",
+              textTransform: "uppercase",
+            }}
+          >
+            Writers
+          </Link>
+          <Link
+            href="#choose-book"
+            style={{
+              fontFamily: MONO,
+              fontSize: "0.7rem",
+              letterSpacing: "0.2em",
+              color: "rgba(192,57,43,0.6)",
+              textDecoration: "none",
+              textTransform: "uppercase",
+            }}
+          >
+            Start Reading
+          </Link>
+        </div>
+      </nav>
+
       {/* ── Ambient noise texture ──────────────────────────────── */}
       <div
         className="vault-noise"
@@ -191,7 +264,7 @@ export default function LivingPage() {
             <span
               style={{
                 fontFamily: MONO,
-                fontSize: "0.35rem",
+                fontSize: "0.65rem",
                 letterSpacing: "0.15em",
                 color: "rgba(201,168,76,0.3)",
                 textTransform: "uppercase",
@@ -226,7 +299,7 @@ export default function LivingPage() {
             <motion.p
               style={{
                 fontFamily: MONO,
-                fontSize: "0.4rem",
+                fontSize: "0.75rem",
                 letterSpacing: "0.35em",
                 color: "rgba(201,168,76,0.3)",
                 textTransform: "uppercase",
@@ -261,7 +334,7 @@ export default function LivingPage() {
             <motion.p
               style={{
                 fontFamily: SERIF,
-                fontSize: "clamp(0.9rem, 2.5vw, 1.05rem)",
+                fontSize: "clamp(1.05rem, 2.8vw, 1.2rem)",
                 fontStyle: "italic",
                 color: "rgba(245,230,200,0.35)",
                 textAlign: "center",
@@ -280,7 +353,7 @@ export default function LivingPage() {
               onClick={() => setEntered(true)}
               style={{
                 fontFamily: MONO,
-                fontSize: "0.5rem",
+                fontSize: "0.8rem",
                 letterSpacing: "0.25em",
                 textTransform: "uppercase",
                 padding: "14px 36px",
@@ -308,7 +381,7 @@ export default function LivingPage() {
             <motion.p
               style={{
                 fontFamily: MONO,
-                fontSize: "0.32rem",
+                fontSize: "0.65rem",
                 letterSpacing: "0.2em",
                 color: "rgba(245,230,200,0.12)",
                 textTransform: "uppercase",
@@ -337,7 +410,8 @@ export default function LivingPage() {
           >
             {/* ── Chapter header ──────────────────────────────── */}
             <motion.div
-              style={{ marginBottom: "3rem", textAlign: "center" }}
+              id="chapter-text"
+              style={{ marginBottom: "3rem", textAlign: "center", scrollMarginTop: "4rem" }}
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
@@ -345,7 +419,7 @@ export default function LivingPage() {
               <p
                 style={{
                   fontFamily: MONO,
-                  fontSize: "0.4rem",
+                  fontSize: "0.75rem",
                   letterSpacing: "0.35em",
                   color: "rgba(192,57,43,0.5)",
                   textTransform: "uppercase",
@@ -370,7 +444,7 @@ export default function LivingPage() {
               <p
                 style={{
                   fontFamily: SERIF,
-                  fontSize: "0.9rem",
+                  fontSize: "1.05rem",
                   fontStyle: "italic",
                   color: "rgba(245,230,200,0.3)",
                   margin: 0,
@@ -395,7 +469,7 @@ export default function LivingPage() {
               <p
                 style={{
                   fontFamily: SERIF,
-                  fontSize: "0.95rem",
+                  fontSize: "1.1rem",
                   fontStyle: "italic",
                   color: "rgba(245,230,200,0.45)",
                   lineHeight: 1.7,
@@ -407,7 +481,7 @@ export default function LivingPage() {
               <p
                 style={{
                   fontFamily: MONO,
-                  fontSize: "0.35rem",
+                  fontSize: "0.65rem",
                   letterSpacing: "0.15em",
                   color: "rgba(192,57,43,0.35)",
                   textTransform: "uppercase",
@@ -431,7 +505,7 @@ export default function LivingPage() {
             <motion.p
               style={{
                 fontFamily: MONO,
-                fontSize: "0.35rem",
+                fontSize: "0.65rem",
                 letterSpacing: "0.2em",
                 color: "rgba(201,168,76,0.2)",
                 textTransform: "uppercase",
@@ -471,7 +545,7 @@ export default function LivingPage() {
                 <motion.p
                   style={{
                     fontFamily: SERIF,
-                    fontSize: "clamp(1.1rem, 3vw, 1.35rem)",
+                    fontSize: "clamp(1.25rem, 3.5vw, 1.5rem)",
                     fontStyle: "italic",
                     color: "rgba(245,230,200,0.65)",
                     lineHeight: 1.6,
@@ -489,50 +563,70 @@ export default function LivingPage() {
                 <motion.p
                   style={{
                     fontFamily: MONO,
-                    fontSize: "0.38rem",
+                    fontSize: "0.7rem",
                     letterSpacing: "0.2em",
                     color: "rgba(201,168,76,0.3)",
                     textTransform: "uppercase",
-                    marginBottom: "2rem",
+                    marginBottom: "2.5rem",
                   }}
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.2, duration: 0.6 }}
                 >
-                  The rest of Chapter One is waiting
+                  Choose where to begin
                 </motion.p>
 
+                {/* ── Book chooser grid ──────────────────────── */}
                 <motion.div
-                  initial={{ opacity: 0, y: 8 }}
+                  id="choose-book"
+                  initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.3, duration: 0.5 }}
+                  transition={{ delay: 0.3, duration: 0.6 }}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                    gap: "1rem",
+                    maxWidth: "720px",
+                    margin: "0 auto 2rem",
+                    scrollMarginTop: "4rem",
+                  }}
                 >
-                  <Link
+                  <BookChoiceCard
+                    title="The Hunt"
+                    subtitle="Dark psychological thriller"
+                    detail="25,003 words · English · 7 chapters"
                     href="/book/the-hunt/chapter/one"
-                    style={{
-                      display: "inline-block",
-                      fontFamily: MONO,
-                      fontSize: "0.5rem",
-                      letterSpacing: "0.25em",
-                      textTransform: "uppercase",
-                      padding: "14px 36px",
-                      border: "1px solid rgba(192,57,43,0.4)",
-                      borderRadius: "2px",
-                      background: "rgba(192,57,43,0.06)",
-                      color: "rgba(192,57,43,0.8)",
-                      textDecoration: "none",
-                      transition: "all 0.25s ease",
-                    }}
-                  >
-                    Continue Reading
-                  </Link>
+                    accent="rgba(192,57,43"
+                    featured
+                  />
+                  <BookChoiceCard
+                    title="Recoleta"
+                    subtitle="Novela corta"
+                    detail="~12,000 palabras · Español"
+                    href="/book/recoleta"
+                    accent="rgba(184,115,51"
+                  />
+                  <BookChoiceCard
+                    title="Noches de maya"
+                    subtitle="Cuentos"
+                    detail="9 relatos · Español"
+                    href="/book/noches-de-maya"
+                    accent="rgba(86,130,89"
+                  />
+                  <BookChoiceCard
+                    title="Mi Pájaro del Río"
+                    subtitle="Cartas"
+                    detail="Diciembre 2017 · ZH / ES"
+                    href="/book/mi-pajaro-del-rio"
+                    accent="rgba(70,130,180"
+                  />
                 </motion.div>
 
                 <motion.div
                   style={{
-                    marginTop: "2rem",
+                    marginTop: "1.5rem",
                     display: "flex",
                     justifyContent: "center",
                     gap: "1.5rem",
@@ -547,20 +641,20 @@ export default function LivingPage() {
                     href="/library"
                     style={{
                       fontFamily: MONO,
-                      fontSize: "0.38rem",
+                      fontSize: "0.7rem",
                       letterSpacing: "0.15em",
                       color: "rgba(201,168,76,0.35)",
                       textDecoration: "none",
                       textTransform: "uppercase",
                     }}
                   >
-                    Browse the library →
+                    Browse the full library →
                   </Link>
                   <Link
                     href="/"
                     style={{
                       fontFamily: MONO,
-                      fontSize: "0.38rem",
+                      fontSize: "0.7rem",
                       letterSpacing: "0.15em",
                       color: "rgba(201,168,76,0.2)",
                       textDecoration: "none",
@@ -642,7 +736,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
         <p
           style={{
             fontFamily: SERIF,
-            fontSize: "clamp(1rem, 2.5vw, 1.1rem)",
+            fontSize: "clamp(1.12rem, 2.8vw, 1.25rem)",
             lineHeight: 1.85,
             color: "rgba(245,230,200,0.78)",
             margin: 0,
@@ -664,7 +758,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
               bottom: "-12px",
               left: "0",
               fontFamily: MONO,
-              fontSize: "0.3rem",
+              fontSize: "0.6rem",
               letterSpacing: "0.12em",
               color: "rgba(192,57,43,0.3)",
               textTransform: "uppercase",
@@ -691,7 +785,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
                 <p
                   style={{
                     fontFamily: MONO,
-                    fontSize: "0.32rem",
+                    fontSize: "0.65rem",
                     letterSpacing: "0.2em",
                     color: "rgba(201,168,76,0.4)",
                     textTransform: "uppercase",
@@ -703,7 +797,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
                 <p
                   style={{
                     fontFamily: SERIF,
-                    fontSize: "0.85rem",
+                    fontSize: "1rem",
                     fontStyle: "italic",
                     color: "rgba(201,168,76,0.55)",
                     lineHeight: 1.65,
@@ -739,7 +833,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
               <p
                 style={{
                   fontFamily: MONO,
-                  fontSize: "0.3rem",
+                  fontSize: "0.6rem",
                   letterSpacing: "0.12em",
                   color: "rgba(245,230,200,0.2)",
                   textTransform: "uppercase",
@@ -751,7 +845,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
               <p
                 style={{
                   fontFamily: SERIF,
-                  fontSize: "0.8rem",
+                  fontSize: "0.95rem",
                   fontStyle: "italic",
                   color: "rgba(245,230,200,0.4)",
                   lineHeight: 1.55,
@@ -780,7 +874,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
               <p
                 style={{
                   fontFamily: MONO,
-                  fontSize: "0.3rem",
+                  fontSize: "0.6rem",
                   letterSpacing: "0.12em",
                   color: "rgba(245,230,200,0.18)",
                   textTransform: "uppercase",
@@ -792,7 +886,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
               <p
                 style={{
                   fontFamily: SERIF,
-                  fontSize: "0.8rem",
+                  fontSize: "0.95rem",
                   fontStyle: "italic",
                   color: "rgba(245,230,200,0.4)",
                   lineHeight: 1.55,
@@ -811,7 +905,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
                 <p
                   style={{
                     fontFamily: MONO,
-                    fontSize: "0.3rem",
+                    fontSize: "0.6rem",
                     letterSpacing: "0.12em",
                     color: "rgba(201,168,76,0.35)",
                     textTransform: "uppercase",
@@ -823,7 +917,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
                 <p
                   style={{
                     fontFamily: SERIF,
-                    fontSize: "0.8rem",
+                    fontSize: "0.95rem",
                     fontStyle: "italic",
                     color: "rgba(201,168,76,0.5)",
                     lineHeight: 1.55,
@@ -838,5 +932,94 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
         </AnimatePresence>
       </div>
     </motion.div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BOOK CHOICE CARD — Lets the reader pick which book to start
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function BookChoiceCard({
+  title,
+  subtitle,
+  detail,
+  href,
+  accent,
+  featured,
+}: {
+  title: string;
+  subtitle: string;
+  detail: string;
+  href: string;
+  accent: string; // e.g. "rgba(192,57,43"
+  featured?: boolean;
+}) {
+  return (
+    <Link href={href} style={{ textDecoration: "none" }}>
+      <motion.div
+        style={{
+          padding: "1.25rem 1.5rem",
+          border: `1px solid ${accent},${featured ? 0.4 : 0.2})`,
+          borderRadius: "2px",
+          background: `${accent},${featured ? 0.06 : 0.03})`,
+          cursor: "pointer",
+          transition: "all 0.25s ease",
+        }}
+        whileHover={{
+          borderColor: `${accent},0.6)`,
+          background: `${accent},0.1)`,
+        }}
+      >
+        {featured && (
+          <p
+            style={{
+              fontFamily: MONO,
+              fontSize: "0.6rem",
+              letterSpacing: "0.2em",
+              color: `${accent},0.6)`,
+              textTransform: "uppercase",
+              marginBottom: "6px",
+            }}
+          >
+            ★ Featured
+          </p>
+        )}
+        <p
+          style={{
+            fontFamily: SERIF,
+            fontSize: "1.15rem",
+            fontStyle: "italic",
+            color: "rgba(245,230,200,0.85)",
+            margin: "0 0 4px",
+            lineHeight: 1.2,
+          }}
+        >
+          {title}
+        </p>
+        <p
+          style={{
+            fontFamily: SERIF,
+            fontSize: "0.9rem",
+            fontStyle: "italic",
+            color: "rgba(245,230,200,0.4)",
+            margin: "0 0 8px",
+          }}
+        >
+          {subtitle}
+        </p>
+        <p
+          style={{
+            fontFamily: MONO,
+            fontSize: "0.65rem",
+            letterSpacing: "0.12em",
+            color: `${accent},0.45)`,
+            textTransform: "uppercase",
+            margin: 0,
+          }}
+        >
+          {detail}
+        </p>
+      </motion.div>
+    </Link>
   );
 }
