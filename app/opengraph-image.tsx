@@ -86,7 +86,7 @@ export default async function Image() {
               display: "flex",
             }}
           >
-            INAUGURAL EDITION
+            A LITERARY PLATFORM
           </div>
 
           {/* Sigil — simplified SVG inline */}
@@ -152,7 +152,7 @@ export default async function Image() {
               display: "flex",
             }}
           >
-            THE HUNT — A NOVELLA BY CHICO MONTECRISTI
+            THREE WRITERS · SIX WORKS · THREE LANGUAGES
           </div>
 
           {/* Tagline */}
@@ -165,7 +165,7 @@ export default async function Image() {
               display: "flex",
             }}
           >
-            A living reading platform · Year 2250
+            Read free · tintaxis.vercel.app
           </div>
         </div>
 
@@ -179,7 +179,7 @@ export default async function Image() {
             alignItems: "center",
           }}
         >
-          {["ARCHIVE", "INK", "MARGINS", "AUTHOR"].map((label, i) => (
+          {["ENGLISH", "SPANISH", "MANDARIN", "LIVE"].map((label, i) => (
             <div key={label} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <div
                 style={{
