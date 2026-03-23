@@ -27,6 +27,7 @@ import ContinueReadingToast from "@/components/ui/ContinueReadingToast";
 import InkTutorial from "@/components/ui/InkTutorial";
 import Link from "next/link";
 import ChapterRain from "./ChapterRain";
+import { QuoteSelector, MilestoneCard, SendToFriend } from "./ViralLoops";
 
 // Tier access order — must match SubscriptionModal's TIER_ORDER
 const TIER_ORDER: SubscriptionTierName[] = ["codex", "scribe", "archive", "chronicler"];
@@ -285,8 +286,11 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
             borderLeft: "1px solid rgba(201,168,76,0.08)",
             borderRight: "1px solid rgba(201,168,76,0.08)",
             boxShadow: "0 0 60px rgba(44,26,0,0.4)",
+            position: "relative",
           }}
         >
+          {/* ── Viral: Quote selector (floating on text selection) ── */}
+          <QuoteSelector chapter={chapter} />
           {/* ── Chapter header ──────────────────────────────── */}
           <ChapterHeader chapter={chapter} />
 
@@ -366,6 +370,10 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
 
           {/* ── Share bar ─────────────────────────────────── */}
           <ShareBar chapter={chapter} />
+
+          {/* ── Viral loops: milestone + send to friend ───────── */}
+          <MilestoneCard chapter={chapter} />
+          <SendToFriend chapter={chapter} />
 
           {/* ── Chapter navigation ───────────────────────────── */}
           <ChapterEndNav
