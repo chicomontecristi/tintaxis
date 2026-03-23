@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/react";
+import SiteNav from "@/components/ui/SiteNav";
 import "./globals.css";
 
 const BASE_URL = "https://tintaxis.vercel.app";
@@ -10,28 +11,25 @@ export const metadata: Metadata = {
     template: "%s — Tintaxis",
   },
   description:
-    "Tintaxis is a living reading platform by Chico Montecristi — featuring The Hunt (a psychological thriller novella), Recoleta, Noches de maya, and Mi Pájaro del Río. Read free chapters in English, Spanish, and Mandarin.",
+    "Tintaxis is a living literary platform. Read free books by Chico Montecristi, José La Luz, and Rosalva Flores-Alemán — in English, Spanish, and Mandarin.",
   keywords: [
     "Tintaxis",
+    "literary platform",
     "Chico Montecristi",
-    "The Hunt novella",
-    "Recoleta",
-    "Noches de maya",
-    "Mi Pájaro del Río",
-    "literary fiction",
+    "José La Luz",
+    "Rosalva Flores-Alemán",
     "read online free",
-    "Dominican American writer",
-    "psychological thriller",
+    "literary fiction",
     "bilingual literature",
-    "Spanish literature",
+    "Caribbean literature",
+    "Latin American literature",
     "interactive reading",
-    "annotations",
   ],
   metadataBase: new URL(BASE_URL),
   openGraph: {
-    title: "Tintaxis — A Living Reading Platform",
+    title: "Tintaxis — A Living Literary Platform",
     description:
-      "Four books. Three languages. One writer. Read free chapters from The Hunt, Recoleta, Noches de maya, and Mi Pájaro del Río by Chico Montecristi.",
+      "Three writers. Six works. Three languages. Read free on Tintaxis.",
     type: "website",
     url: BASE_URL,
     siteName: "Tintaxis",
@@ -39,10 +37,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tintaxis — A Living Reading Platform",
+    title: "Tintaxis — A Living Literary Platform",
     description:
-      "Four books. Three languages. Read free chapters from The Hunt, Recoleta, Noches de maya, and Mi Pájaro del Río by Chico Montecristi.",
-    creator: "@chicomontecristi",
+      "Three writers. Six works. Three languages. Read free on Tintaxis.",
   },
   robots: {
     index: true,
@@ -81,47 +78,16 @@ const WEBSITE_JSONLD = JSON.stringify([
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Tintaxis",
-    alternateName: "Tintaxis Reading Platform",
+    alternateName: "Tintaxis Literary Platform",
     url: BASE_URL,
     description:
-      "A living reading platform by Chico Montecristi. Four books in English, Spanish, and Mandarin.",
-    publisher: {
-      "@type": "Person",
-      name: "Chico Montecristi",
-      alternateName: "José Elisaúl Chávez Martínez",
-      url: "https://chicomontecristi.com",
-      sameAs: [
-        "https://www.instagram.com/chicomontecristi",
-        `${BASE_URL}/writers/chico-montecristi`,
-      ],
-      jobTitle: "Writer and Oil Painter",
-      knowsLanguage: ["en", "es", "pt", "zh"],
-    },
-    inLanguage: ["en", "es", "zh"],
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: "Tintaxis — A Living Reading Platform by Chico Montecristi",
-    description:
-      "Four books. Three languages. Read free chapters from The Hunt, Recoleta, Noches de maya, and Mi Pájaro del Río.",
-    author: {
-      "@type": "Person",
-      name: "Chico Montecristi",
-      url: "https://chicomontecristi.com",
-    },
+      "A living literary platform featuring writers from the Americas. Read free in English, Spanish, and Mandarin.",
     publisher: {
       "@type": "Organization",
       name: "Tintaxis",
       url: BASE_URL,
     },
-    datePublished: "2024-01-01",
-    dateModified: "2026-03-22",
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": BASE_URL,
-    },
-    url: BASE_URL,
+    inLanguage: ["en", "es", "zh"],
   },
 ]);
 
@@ -146,6 +112,7 @@ export default function RootLayout({
         />
       </head>
       <body className="vault-noise antialiased">
+        <SiteNav />
         {children}
         <Analytics />
       </body>
