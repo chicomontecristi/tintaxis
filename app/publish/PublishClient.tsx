@@ -13,6 +13,7 @@ interface FormState {
   wordCount: string;
   synopsis: string;
   whyTintaxis: string;
+  chapterFile: File | null;
 }
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
@@ -325,6 +326,7 @@ export default function PublishClient() {
     wordCount: "",
     synopsis: "",
     whyTintaxis: "",
+    chapterFile: null,
   });
   const [submitStatus, setSubmitStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -342,17 +344,23 @@ export default function PublishClient() {
     setSubmitStatus("loading");
     setErrorMsg("");
     try {
+      const fd = new FormData();
+      fd.append("name", form.name);
+      fd.append("email", form.email);
+      fd.append("bookTitle", form.bookTitle);
+      fd.append("genre", form.genre);
+      if (form.wordCount) fd.append("wordCount", form.wordCount);
+      fd.append("synopsis", form.synopsis);
+      fd.append("whyTintaxis", form.whyTintaxis);
+      if (form.chapterFile) fd.append("chapterFile", form.chapterFile);
+
       const res = await fetch("/api/apply", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          wordCount: form.wordCount ? parseInt(form.wordCount) : undefined,
-        }),
+        body: fd,
       });
       if (res.ok) {
         setSubmitStatus("success");
-        setForm({ name: "", email: "", bookTitle: "", genre: "", wordCount: "", synopsis: "", whyTintaxis: "" });
+        setForm({ name: "", email: "", bookTitle: "", genre: "", wordCount: "", synopsis: "", whyTintaxis: "", chapterFile: null });
       } else {
         const data = await res.json();
         setErrorMsg(data.error ?? "Submission failed. Try again.");
@@ -982,6 +990,91 @@ export default function PublishClient() {
                         onFocus={(e) => (e.target.style.borderColor = "rgba(201,168,76,0.4)")}
                         onBlur={(e) => (e.target.style.borderColor = "rgba(201,168,76,0.15)")}
                       />
+                    </div>
+
+                    {/* Chapter Upload */}
+                    <div style={{ marginBottom: "2rem" }}>
+                      <label style={labelStyle}>First Chapter (Required)</label>
+                      <p
+                        style={{
+                          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                          fontSize: "0.85rem",
+                          fontStyle: "italic",
+                          color: "rgba(245,230,200,0.3)",
+                          marginBottom: "0.75rem",
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        Upload the first chapter of your work. This is how we evaluate your prose.
+                      </p>
+                      <label
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "0.75rem",
+                          width: "100%",
+                          padding: "1.25rem",
+                          border: form.chapterFile
+                            ? "1px solid rgba(201,168,76,0.4)"
+                            : "1px dashed rgba(201,168,76,0.2)",
+                          background: form.chapterFile
+                            ? "rgba(201,168,76,0.04)"
+                            : "rgba(255,255,255,0.02)",
+                          cursor: "pointer",
+                          transition: "border-color 0.2s, background 0.2s",
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!form.chapterFile) {
+                            e.currentTarget.style.borderColor = "rgba(201,168,76,0.35)";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!form.chapterFile) {
+                            e.currentTarget.style.borderColor = "rgba(201,168,76,0.2)";
+                          }
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: "1.2rem",
+                            color: form.chapterFile
+                              ? "rgba(201,168,76,0.7)"
+                              : "rgba(201,168,76,0.3)",
+                          }}
+                        >
+                          {form.chapterFile ? "◆" : "◇"}
+                        </span>
+                        <span
+                          style={{
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: "0.65rem",
+                            letterSpacing: "0.1em",
+                            color: form.chapterFile
+                              ? "rgba(245,230,200,0.7)"
+                              : "rgba(245,230,200,0.35)",
+                          }}
+                        >
+                          {form.chapterFile
+                            ? form.chapterFile.name
+                            : "Click to upload — .docx, .pdf, or .txt (max 4 MB)"}
+                        </span>
+                        <input
+                          type="file"
+                          accept=".docx,.pdf,.txt,.md,.rtf"
+                          style={{ display: "none" }}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0] ?? null;
+                            if (file && file.size > 4 * 1024 * 1024) {
+                              setErrorMsg("File must be under 4 MB.");
+                              setSubmitStatus("error");
+                              return;
+                            }
+                            setForm((prev) => ({ ...prev, chapterFile: file }));
+                          }}
+                        />
+                      </label>
                     </div>
 
                     {/* Error */}
