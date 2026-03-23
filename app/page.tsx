@@ -8,40 +8,39 @@ const BASE_URL = "https://tintaxis.vercel.app";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "Tintaxis — Read Free Books by Chico Montecristi",
+    absolute: "Tintaxis — A Living Literary Platform",
   },
   description:
-    "Tintaxis is a living reading platform by Chico Montecristi. Read The Hunt, Recoleta, Noches de maya, and Mi Pájaro del Río — free, in English, Spanish, and Mandarin.",
+    "Tintaxis is a literary platform where writers publish and readers arrive. Featuring Chico Montecristi, José La Luz, and Rosalva Flores-Alemán — free to read, in English, Spanish, and Mandarin.",
   keywords: [
-    "Chico Montecristi",
     "Tintaxis",
-    "The Hunt novella",
-    "Recoleta",
-    "Noches de maya",
+    "literary platform",
     "read free books online",
-    "Dominican American writer",
+    "Chico Montecristi",
+    "José La Luz",
+    "Rosalva Flores-Alemán",
+    "The Hunt novella",
     "bilingual literature",
     "literary fiction",
-    "dark thriller novella",
-    "free online reading platform",
-    "independent author",
-    "South Bronx writer",
+    "Dominican American writer",
+    "Latin American literature",
     "Caribbean literature",
+    "free online reading platform",
+    "independent writers",
   ],
   openGraph: {
-    title: "Tintaxis — Read Free Books by Chico Montecristi",
+    title: "Tintaxis — A Living Literary Platform",
     description:
-      "Four books. Three languages. Read free. A living archive by Chico Montecristi.",
+      "Three writers. Six works. Three languages. Read free. Where writers publish and readers arrive.",
     type: "website",
     url: BASE_URL,
     siteName: "Tintaxis",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tintaxis — Read Free Books by Chico Montecristi",
+    title: "Tintaxis — A Living Literary Platform",
     description:
-      "Four books. Three languages. Read free. A living archive by Chico Montecristi.",
-    creator: "@chicomontecristi",
+      "Three writers. Six works. Three languages. Read free. Where writers publish and readers arrive.",
   },
   alternates: {
     canonical: BASE_URL,
@@ -56,52 +55,60 @@ function HomeJsonLd() {
       name: "Tintaxis",
       url: BASE_URL,
       description:
-        "A living reading platform by Chico Montecristi — four books in English, Spanish, and Mandarin, free to read.",
-      author: {
-        "@type": "Person",
-        name: "Chico Montecristi",
-        url: "https://chicomontecristi.com",
-        sameAs: [
-          "https://www.instagram.com/chicomontecristi",
-          "https://chicomontecristi.com",
-        ],
+        "A living literary platform featuring writers from the Americas. Read free in English, Spanish, and Mandarin.",
+      publisher: {
+        "@type": "Organization",
+        name: "Tintaxis",
+        url: BASE_URL,
       },
       inLanguage: ["en", "es", "zh"],
     },
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
-      name: "Tintaxis — Books by Chico Montecristi",
+      name: "Tintaxis — A Living Literary Platform",
       url: BASE_URL,
       description:
-        "Read The Hunt, Recoleta, Noches de maya, and Mi Pájaro del Río — free on Tintaxis.",
+        "Featuring Chico Montecristi, José La Luz, and Rosalva Flores-Alemán. Free to read.",
       mainEntity: {
         "@type": "ItemList",
-        numberOfItems: 4,
+        numberOfItems: 6,
         itemListElement: [
           {
             "@type": "ListItem",
             position: 1,
             url: `${BASE_URL}/book/the-hunt`,
-            name: "The Hunt",
+            name: "The Hunt — Chico Montecristi",
           },
           {
             "@type": "ListItem",
             position: 2,
             url: `${BASE_URL}/book/recoleta`,
-            name: "Recoleta",
+            name: "Recoleta — Chico Montecristi",
           },
           {
             "@type": "ListItem",
             position: 3,
             url: `${BASE_URL}/book/noches-de-maya`,
-            name: "Noches de maya",
+            name: "Noches de maya — Chico Montecristi",
           },
           {
             "@type": "ListItem",
             position: 4,
             url: `${BASE_URL}/book/mi-pajaro-del-rio`,
-            name: "Mi Pájaro del Río",
+            name: "Mi Pájaro del Río — Chico Montecristi",
+          },
+          {
+            "@type": "ListItem",
+            position: 5,
+            url: `${BASE_URL}/writers/jose-la-luz`,
+            name: "Escritos de un Hombre Político — José La Luz",
+          },
+          {
+            "@type": "ListItem",
+            position: 6,
+            url: `${BASE_URL}/writers/rosalva-flores-aleman`,
+            name: "Subalternity, 21st Century Diaspora — Rosalva Flores-Alemán",
           },
         ],
       },

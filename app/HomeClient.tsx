@@ -18,8 +18,8 @@ const TAGLINE_LINES = [
   "You are about to read differently.",
 ];
 
-const EDITION_TEXT = "TINTAXIS · CHICO MONTECRISTI · INAUGURAL ARCHIVE";
-const SUBJECT_LINE = "THE HUNT — A NOVELLA · FEATURED WORK";
+const EDITION_TEXT = "TINTAXIS · A LITERARY PLATFORM · EST. 2026";
+const SUBJECT_LINE = "WHERE WRITERS PUBLISH. WHERE READERS ARRIVE.";
 
 // Mechanical boot-up sequence for the decorative UI chrome
 const BOOT_LINES = [
@@ -335,7 +335,7 @@ export default function HomeClient() {
                   margin: 0,
                 }}
               >
-                + Recoleta · Noches de maya · Mi Pájaro del Río
+                3 Writers · 6 Works · English · Spanish · Mandarin
               </p>
             </motion.div>
           )}
@@ -435,15 +435,15 @@ export default function HomeClient() {
                 A page that remembers everyone who read it.
               </motion.p>
 
-              {/* ── Chapter index strip ── */}
+              {/* ── Featured Writers strip ── */}
               <motion.div
                 className="mt-10"
                 style={{
                   display: "flex",
-                  gap: "0.75rem",
+                  gap: "1rem",
                   justifyContent: "center",
                   flexWrap: "wrap",
-                  maxWidth: "min(900px, 100%)",
+                  maxWidth: "min(960px, 100%)",
                   margin: "0 auto",
                   padding: "0 0.5rem",
                 }}
@@ -451,54 +451,29 @@ export default function HomeClient() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
               >
-                <ChapterIndexCard
-                  number="I"
-                  title="What Robbin Told Alma"
-                  subtitle="The Diner at the Edge of Little Pines"
-                  href="/book/the-hunt/chapter/one"
-                  isLocked={false}
+                <WriterCard
+                  name="Chico Montecristi"
+                  genre="Fiction · Oil Painter"
+                  origin="Dominican Republic · South Bronx"
+                  work="The Hunt, Recoleta, +2"
+                  href="/writers/chico-montecristi"
+                  accent="rgba(192,57,43"
                 />
-                <ChapterIndexCard
-                  number="II"
-                  title="Corridor B"
-                  subtitle="The Clinic, Earlier That Morning"
-                  href="/book/the-hunt/chapter/two"
-                  isLocked={true}
+                <WriterCard
+                  name="José La Luz"
+                  genre="Political Essay · Dominican Letters"
+                  origin="Dominican Republic"
+                  work="Escritos de un Hombre Político"
+                  href="/writers/jose-la-luz"
+                  accent="rgba(70,130,180"
                 />
-                <ChapterIndexCard
-                  number="III"
-                  title="Regular Hours"
-                  subtitle="Alma Mae, at Her Desk"
-                  href="/book/the-hunt/chapter/three"
-                  isLocked={true}
-                />
-                <ChapterIndexCard
-                  number="IV"
-                  title="The Smell of Coffee and Syrup"
-                  subtitle="The Family Cabin, the Barrow History"
-                  href="/book/the-hunt/chapter/four"
-                  isLocked={true}
-                />
-                <ChapterIndexCard
-                  number="V"
-                  title="What Blood Requires"
-                  subtitle="Michelle, Grown"
-                  href="/book/the-hunt/chapter/five"
-                  isLocked={true}
-                />
-                <ChapterIndexCard
-                  number="VI"
-                  title="The Stories People Tell"
-                  subtitle="The Pines, the Town, the Years"
-                  href="/book/the-hunt/chapter/six"
-                  isLocked={true}
-                />
-                <ChapterIndexCard
-                  number="VII"
-                  title="Once Again"
-                  subtitle="The Cabin. The Lake. The End."
-                  href="/book/the-hunt/chapter/seven"
-                  isLocked={true}
+                <WriterCard
+                  name="Rosalva Flores-Alemán"
+                  genre="Scholarship · Latin American Fiction"
+                  origin="Sonora, México · Tucson · Tennessee"
+                  work="Subalternity, 21st Century Diaspora"
+                  href="/writers/rosalva-flores-aleman"
+                  accent="rgba(184,115,51"
                 />
               </motion.div>
             </motion.div>
@@ -543,109 +518,80 @@ export default function HomeClient() {
                 textTransform: "uppercase",
                 whiteSpace: "nowrap",
               }}>
-                THE FULL ARCHIVE
+                THE ARCHIVE
               </p>
               <div style={{ flex: 1, height: "1px", background: "linear-gradient(90deg, rgba(201,168,76,0.15), transparent)" }} />
             </div>
 
-            {/* The Hunt — featured row */}
-            <Link href="/book/the-hunt" style={{ textDecoration: "none", display: "block", marginBottom: "1rem" }}>
-              <motion.div
-                style={{
-                  width: "100%",
-                  padding: "1.25rem 1.5rem",
-                  border: "1px solid rgba(192,57,43,0.35)",
-                  borderRadius: "2px",
-                  background: "rgba(192,57,43,0.05)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: "1rem",
-                  flexWrap: "wrap",
-                  cursor: "pointer",
-                }}
-                whileHover={{
-                  borderColor: "rgba(192,57,43,0.6)",
-                  background: "rgba(192,57,43,0.09)",
-                }}
-                transition={{ duration: 0.2 }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
-                  <span style={{
-                    fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.65rem",
-                    letterSpacing: "0.25em",
-                    color: "rgba(192,57,43,0.7)",
-                    textTransform: "uppercase",
-                    background: "rgba(192,57,43,0.1)",
-                    border: "1px solid rgba(192,57,43,0.25)",
-                    padding: "2px 6px",
-                    borderRadius: "2px",
-                    whiteSpace: "nowrap",
-                  }}>
-                    ★ FEATURED · EN
-                  </span>
-                  <div>
-                    <p style={{
-                      fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                      fontSize: "1.2rem",
-                      fontStyle: "italic",
-                      color: "rgba(245,230,200,0.9)",
-                      margin: 0,
-                      lineHeight: 1.2,
-                    }}>
-                      The Hunt
-                    </p>
-                    <p style={{
-                      fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                      fontSize: "0.8rem",
-                      fontStyle: "italic",
-                      color: "rgba(245,230,200,0.4)",
-                      margin: "2px 0 0",
-                    }}>
-                      A Novella · Dark psychological thriller · 7 chapters
-                    </p>
-                  </div>
-                </div>
-                <span style={{
-                  fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.7rem",
-                  letterSpacing: "0.2em",
-                  color: "rgba(192,57,43,0.55)",
-                  textTransform: "uppercase",
-                }}>
-                  25,003 words → Enter
-                </span>
-              </motion.div>
-            </Link>
-
-            {/* Other three works */}
-            <div className="library-section-inner" style={{ display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
+            {/* ── Chico Montecristi ── */}
+            <WriterSection
+              writerName="Chico Montecristi"
+              accent="rgba(192,57,43"
+              writerHref="/writers/chico-montecristi"
+            >
+              <LibraryWorkCard
+                title="The Hunt"
+                subtitle="Novella · Dark psychological thriller"
+                byline="25,003 words · 7 chapters"
+                description="A teacher's death in a small Colorado town. Gossip, guilt, and a monster hiding in plain sight."
+                language="EN"
+                href="/book/the-hunt"
+              />
               <LibraryWorkCard
                 title="Recoleta"
-                subtitle="Novela corta · Español"
+                subtitle="Novela corta"
                 byline="~12,000 palabras"
-                description="Dedicado a todas las madres. A narrator arrives in the Bronx — cold February, an uncle, a tenement, and the weight of belonging."
+                description="A narrator arrives in the Bronx — cold February, an uncle, a tenement, and the weight of belonging."
                 language="ES"
                 href="/book/recoleta"
               />
               <LibraryWorkCard
                 title="Noches de maya"
-                subtitle="Cuentos · Español"
+                subtitle="Cuentos"
                 byline="9 relatos"
-                description="Triste de cuna. Old men, river birds, and the silence of old buildings. Nine stories of the Caribbean and the desert."
+                description="Old men, river birds, and the silence of old buildings. Nine stories of the Caribbean and the desert."
                 language="ES"
                 href="/book/noches-de-maya"
               />
               <LibraryWorkCard
                 title="Mi Pájaro del Río"
-                subtitle="Cartas · ZH / ES"
+                subtitle="Cartas"
                 byline="Diciembre 2017"
-                description="Letters written in Mandarin and Spanish to the one called the river mouth bird. Rochester and Montauk."
+                description="Letters written in Mandarin and Spanish to the one called the river mouth bird."
                 language="ZH/ES"
                 href="/book/mi-pajaro-del-rio"
               />
-            </div>
+            </WriterSection>
+
+            {/* ── José La Luz ── */}
+            <WriterSection
+              writerName="José La Luz"
+              accent="rgba(70,130,180"
+              writerHref="/writers/jose-la-luz"
+            >
+              <LibraryWorkCard
+                title="Escritos de un Hombre Político"
+                subtitle="Ensayos · Español"
+                byline="Coming Soon"
+                description="Political essays from thirty years of public life in the Dominican Republic. On power, community, and conviction."
+                language="ES"
+              />
+            </WriterSection>
+
+            {/* ── Rosalva Flores-Alemán ── */}
+            <WriterSection
+              writerName="Rosalva Flores-Alemán, Ph.D."
+              accent="rgba(184,115,51"
+              writerHref="/writers/rosalva-flores-aleman"
+            >
+              <LibraryWorkCard
+                title="Subalternity, 21st Century Diaspora"
+                subtitle="Essays · Poetry · PHaiLOSOPHY"
+                byline="Coming Soon"
+                description="On silence, inheritance, and what it means to carry a culture across borders, languages, and generations."
+                language="EN"
+              />
+            </WriterSection>
           </motion.div>
         )}
       </AnimatePresence>
@@ -679,9 +625,9 @@ export default function HomeClient() {
             transition={{ delay: 0.5, duration: 0.6 }}
           >
             <StatusDot label="ARCHIVE" active />
-            <StatusDot label="INK" active />
-            <StatusDot label="MARGINS" active />
-            <StatusDot label="AUTHOR" pulse />
+            <StatusDot label="3 WRITERS" active />
+            <StatusDot label="6 WORKS" active />
+            <StatusDot label="LIVE" pulse />
           </motion.div>
         )}
       </AnimatePresence>
@@ -762,129 +708,151 @@ function StatusDot({ label, active, pulse }: { label: string; active?: boolean; 
   );
 }
 
-// ─── CHAPTER INDEX CARD ───────────────────────────────────────────────────────
-// Small chapter preview cards on the initiation screen.
-// Locked chapters show a seal indicator.
+// ─── WRITER CARD ────────────────────────────────────────────────────────────
+// Featured writer card on the initiation screen.
 
-function ChapterIndexCard({
-  number,
-  title,
-  subtitle,
+function WriterCard({
+  name,
+  genre,
+  origin,
+  work,
   href,
-  isLocked,
+  accent,
 }: {
-  number: string;
-  title: string;
-  subtitle: string;
+  name: string;
+  genre: string;
+  origin: string;
+  work: string;
   href: string;
-  isLocked: boolean;
+  accent: string; // e.g. "rgba(192,57,43"
 }) {
   return (
     <Link href={href} style={{ textDecoration: "none" }}>
       <motion.div
         style={{
-          flex: "1 1 160px",
-          minWidth: "140px",
-          maxWidth: "210px",
-          padding: "0.9rem 1rem",
-          border: isLocked
-            ? "1px solid rgba(201,168,76,0.12)"
-            : "1px solid rgba(201,168,76,0.28)",
-          borderRadius: "1px",
-          background: isLocked
-            ? "rgba(13,11,8,0.4)"
-            : "rgba(201,168,76,0.04)",
+          flex: "1 1 220px",
+          minWidth: "200px",
+          maxWidth: "280px",
+          padding: "1.1rem 1.2rem",
+          border: `1px solid ${accent},0.25)`,
+          borderRadius: "2px",
+          background: `${accent},0.04)`,
           cursor: "pointer",
           textAlign: "left",
-          position: "relative",
-          overflow: "hidden",
         }}
-        whileHover={
-          isLocked
-            ? { borderColor: "rgba(201,168,76,0.22)" }
-            : {
-                borderColor: "rgba(201,168,76,0.5)",
-                background: "rgba(201,168,76,0.07)",
-              }
-        }
+        whileHover={{
+          borderColor: `${accent},0.5)`,
+          background: `${accent},0.08)`,
+        }}
         transition={{ duration: 0.2 }}
       >
-        {/* Chapter number */}
-        <p
-          style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
-            letterSpacing: "0.25em",
-            color: isLocked ? "rgba(201,168,76,0.3)" : "rgba(201,168,76,0.6)",
-            textTransform: "uppercase",
-            marginBottom: "0.3rem",
-          }}
-        >
-          {isLocked ? (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
-              CHAPTER {number}
-              <span style={{ fontSize: "0.6rem" }}>⚿</span>
-            </span>
-          ) : (
-            `CHAPTER ${number}`
-          )}
-        </p>
-
-        {/* Title */}
         <p
           style={{
             fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-            fontSize: "0.9rem",
+            fontSize: "1.1rem",
             fontStyle: "italic",
-            color: isLocked ? "rgba(245,230,200,0.25)" : "rgba(245,230,200,0.75)",
-            lineHeight: 1.3,
-            marginBottom: "0.25rem",
+            color: "rgba(245,230,200,0.85)",
+            lineHeight: 1.2,
+            marginBottom: "0.3rem",
           }}
         >
-          {title}
+          {name}
         </p>
-
-        {/* Subtitle */}
         <p
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
-            letterSpacing: "0.1em",
-            color: isLocked ? "rgba(201,168,76,0.2)" : "rgba(201,168,76,0.4)",
+            fontSize: "0.65rem",
+            letterSpacing: "0.12em",
+            color: `${accent},0.6)`,
             textTransform: "uppercase",
+            marginBottom: "0.4rem",
           }}
         >
-          {subtitle}
+          {genre}
         </p>
-
-        {/* Locked overlay stripe */}
-        {isLocked && (
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              padding: "0.15rem 0.35rem",
-              background: "rgba(201,168,76,0.06)",
-              borderLeft: "1px solid rgba(201,168,76,0.1)",
-              borderBottom: "1px solid rgba(201,168,76,0.1)",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.45rem",
-                letterSpacing: "0.15em",
-                color: "rgba(201,168,76,0.3)",
-                textTransform: "uppercase",
-              }}
-            >
-              SEALED
-            </span>
-          </div>
-        )}
+        <p
+          style={{
+            fontFamily: '"JetBrains Mono", monospace',
+            fontSize: "0.6rem",
+            letterSpacing: "0.08em",
+            color: "rgba(245,230,200,0.3)",
+            marginBottom: "0.5rem",
+          }}
+        >
+          {origin}
+        </p>
+        <div style={{ height: "1px", background: `${accent},0.12)`, marginBottom: "0.5rem" }} />
+        <p
+          style={{
+            fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+            fontSize: "0.85rem",
+            fontStyle: "italic",
+            color: "rgba(245,230,200,0.4)",
+            lineHeight: 1.4,
+          }}
+        >
+          {work}
+        </p>
       </motion.div>
     </Link>
+  );
+}
+
+// ─── WRITER SECTION ─────────────────────────────────────────────────────────
+// Groups a writer's works in the archive.
+
+function WriterSection({
+  writerName,
+  accent,
+  writerHref,
+  children,
+}: {
+  writerName: string;
+  accent: string;
+  writerHref: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div style={{ marginBottom: "2rem" }}>
+      <Link href={writerHref} style={{ textDecoration: "none" }}>
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.75rem",
+          marginBottom: "0.75rem",
+          cursor: "pointer",
+        }}>
+          <div style={{
+            width: "8px",
+            height: "8px",
+            borderRadius: "50%",
+            background: `${accent},0.5)`,
+            flexShrink: 0,
+          }} />
+          <p style={{
+            fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+            fontSize: "1.05rem",
+            fontStyle: "italic",
+            color: "rgba(245,230,200,0.7)",
+            margin: 0,
+          }}>
+            {writerName}
+          </p>
+          <span style={{
+            fontFamily: '"JetBrains Mono", monospace',
+            fontSize: "0.6rem",
+            letterSpacing: "0.15em",
+            color: `${accent},0.4)`,
+            textTransform: "uppercase",
+          }}>
+            View profile →
+          </span>
+        </div>
+      </Link>
+      <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+        {children}
+      </div>
+    </div>
   );
 }
 
