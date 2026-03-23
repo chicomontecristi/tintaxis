@@ -13,66 +13,6 @@ export default function WritersClient() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#0D0B08" }}>
 
-      {/* ── Top Nav ─────────────────────────────────────────────── */}
-      <nav
-        style={{
-          position: "fixed",
-          top: 0, left: 0, right: 0,
-          zIndex: 50,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "0.85rem clamp(1rem, 4vw, 2rem)",
-          borderBottom: "1px solid rgba(201,168,76,0.07)",
-          background: "rgba(13,11,8,0.9)",
-          backdropFilter: "blur(8px)",
-        }}
-      >
-        <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <TintaxisLogo size={20} />
-          <span style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
-            letterSpacing: "0.25em",
-            color: "rgba(201,168,76,0.55)",
-            textTransform: "uppercase",
-          }}>
-            Tintaxis
-          </span>
-        </Link>
-        <div style={{ display: "flex", gap: "1.75rem", alignItems: "center" }}>
-          <Link href="/publish" style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
-            letterSpacing: "0.25em",
-            color: "rgba(201,168,76,0.45)",
-            textDecoration: "none",
-            textTransform: "uppercase",
-          }}>
-            Publish on Tintaxis
-          </Link>
-          <span style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
-            letterSpacing: "0.25em",
-            color: "#C9A84C",
-            textTransform: "uppercase",
-          }}>
-            Featured Artists
-          </span>
-          <Link href="/author/login" style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
-            letterSpacing: "0.25em",
-            color: "rgba(245,230,200,0.2)",
-            textDecoration: "none",
-            textTransform: "uppercase",
-          }}>
-            Author Login →
-          </Link>
-        </div>
-      </nav>
-
       {/* ── Page content ────────────────────────────────────────── */}
       <div style={{
         maxWidth: "960px",

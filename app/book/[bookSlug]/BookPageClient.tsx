@@ -106,52 +106,6 @@ export default function BookPageClient() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#0D0B08" }}>
-      {/* ── Top nav ───────────────────────────────────── */}
-      <header
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "52px",
-          zIndex: 40,
-          background: "rgba(13,11,8,0.92)",
-          borderBottom: "1px solid rgba(201,168,76,0.1)",
-          backdropFilter: "blur(8px)",
-          display: "flex",
-          alignItems: "center",
-          padding: "0 1.5rem",
-          justifyContent: "space-between",
-        }}
-      >
-        <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "8px" }}>
-          <TintaxisLogo size={20} />
-          <span
-            style={{
-              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-              fontSize: "0.875rem",
-              letterSpacing: "0.1em",
-              color: "rgba(245,230,200,0.65)",
-            }}
-          >
-            Tintaxis
-          </span>
-        </Link>
-        <Link
-          href="/library"
-          style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
-            letterSpacing: "0.2em",
-            color: "rgba(201,168,76,0.45)",
-            textDecoration: "none",
-            textTransform: "uppercase",
-          }}
-        >
-          ← Library
-        </Link>
-      </header>
-
       {/* ── Main content ──────────────────────────────── */}
       <main
         style={{

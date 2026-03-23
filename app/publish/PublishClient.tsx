@@ -401,52 +401,6 @@ export default function PublishClient() {
         }}
       />
 
-      {/* ── NAV ────────────────────────────────────────────────────────────── */}
-      <nav
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 50,
-          borderBottom: "1px solid rgba(201,168,76,0.08)",
-          background: "rgba(13,11,8,0.92)",
-          backdropFilter: "blur(8px)",
-          padding: "0.85rem 2rem",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <a href="/" style={{ display: "flex", alignItems: "center", gap: "0.75rem", textDecoration: "none" }}>
-          <TintaxisLogo size={22} />
-          <span
-            style={{
-              fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.55rem",
-              letterSpacing: "0.3em",
-              color: "rgba(201,168,76,0.5)",
-              textTransform: "uppercase",
-            }}
-          >
-            TINTAXIS
-          </span>
-        </a>
-        <a href="/author/login" style={{ textDecoration: "none" }}>
-          <span
-            style={{
-              fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.5rem",
-              letterSpacing: "0.2em",
-              color: "rgba(201,168,76,0.35)",
-              textTransform: "uppercase",
-            }}
-          >
-            Author Login →
-          </span>
-        </a>
-      </nav>
-
       <div style={{ position: "relative", zIndex: 1 }}>
         {/* ── HERO ──────────────────────────────────────────────────────────── */}
         <section

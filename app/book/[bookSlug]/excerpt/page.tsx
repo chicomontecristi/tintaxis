@@ -106,50 +106,6 @@ export default function ExcerptPage({ params }: Props) {
 
       <div style={{ minHeight: "100vh", backgroundColor: "#0D0B08" }}>
 
-        {/* ── Minimal nav ──────────────────────────────── */}
-        <header
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: "48px",
-            zIndex: 40,
-            background: "rgba(13,11,8,0.94)",
-            borderBottom: `1px solid rgba(${rgb}, 0.1)`,
-            backdropFilter: "blur(8px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "0 1.5rem",
-          }}
-        >
-          <Link
-            href="/"
-            style={{
-              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-              fontSize: "0.85rem",
-              letterSpacing: "0.1em",
-              color: "rgba(245,230,200,0.55)",
-              textDecoration: "none",
-            }}
-          >
-            Tintaxis
-          </Link>
-          <Link
-            href={readUrl}
-            style={{
-              fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.5rem",
-              letterSpacing: "0.2em",
-              color: `rgba(${rgb}, 0.6)`,
-              textDecoration: "none",
-              textTransform: "uppercase",
-            }}
-          >
-            Read Full Chapter →
-          </Link>
-        </header>
 
         {/* ── Prose ────────────────────────────────────── */}
         <main
