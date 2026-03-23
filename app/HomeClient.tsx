@@ -375,7 +375,7 @@ export default function HomeClient() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
-              <Link href="/book/the-hunt/chapter/one" passHref>
+              <Link href="/experience" passHref>
                 <motion.button
                   className="relative group"
                   style={{
@@ -414,7 +414,7 @@ export default function HomeClient() {
                     className="absolute bottom-0 right-0 w-2 h-2 border-b border-r"
                     style={{ borderColor: "#C9A84C" }}
                   />
-                  OPEN THE ARCHIVE
+                  EXPERIENCE A LIVING PAGE
                 </motion.button>
               </Link>
 
@@ -431,7 +431,7 @@ export default function HomeClient() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
               >
-                First read. Unrepeatable.
+                A page that remembers everyone who read it.
               </motion.p>
 
               {/* ── Chapter index strip ── */}
