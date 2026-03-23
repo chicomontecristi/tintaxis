@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
+import { TrustLine } from "@/components/ui/TrustSignals";
 import type { Book, Chapter } from "@/lib/types";
 
 // ─── BOOK LANDING PAGE (client) ───────────────────────────────────────────────
@@ -263,6 +264,9 @@ export default function BookPageClient() {
           >
             {book.description}
           </p>
+
+          {/* Trust signals */}
+          <TrustLine />
 
           {/* Start reading CTA */}
           <Link

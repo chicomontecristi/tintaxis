@@ -28,6 +28,9 @@ import InkTutorial from "@/components/ui/InkTutorial";
 import Link from "next/link";
 import ChapterRain from "./ChapterRain";
 import { QuoteSelector, MilestoneCard, SendToFriend } from "./ViralLoops";
+import { useTrackReading, BookmarkPrompt } from "@/components/ui/ReturnCapture";
+import { DepthEmailCapture } from "@/components/ui/SessionDepth";
+import { BOOKS } from "@/lib/content/books";
 
 // Tier access order — must match SubscriptionModal's TIER_ORDER
 const TIER_ORDER: SubscriptionTierName[] = ["codex", "scribe", "archive", "chronicler"];
@@ -61,6 +64,18 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
   const [readerTier,  setReaderTier]  = useState<SubscriptionTierName | null>(null);
   const [readerId,    setReaderId]    = useState<string | null>(null);
   const [readerEmail, setReaderEmail] = useState<string | null>(null);
+
+  // ── Track reading for return path captures ──────────────────────────────
+  const book = chapter.bookSlug ? BOOKS[chapter.bookSlug] : null;
+  useTrackReading({
+    bookSlug: chapter.bookSlug ?? "",
+    bookTitle: book?.title ?? "",
+    chapterSlug: chapter.slug,
+    chapterTitle: chapter.title,
+    chapterNumber: chapter.number,
+    totalChapters: book?.totalChapters ?? 7,
+    url: typeof window !== "undefined" ? window.location.pathname : "",
+  });
 
   // ── Live whispers — fetched on mount, used for inline paragraph markers ──
   const [whispers, setWhispers] = useState<WhisperData[]>([]);
@@ -443,6 +458,12 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
 
       {/* ── First-visit ink tutorial ─────────────────────────── */}
       <InkTutorial />
+
+      {/* ── Return path: bookmark prompt (first-time deep readers) ── */}
+      <BookmarkPrompt />
+
+      {/* ── Session depth: email capture on 2nd page view ────────── */}
+      <DepthEmailCapture />
     </div>
   );
 }

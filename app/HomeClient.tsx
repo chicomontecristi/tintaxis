@@ -4,6 +4,9 @@ import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
+import { WelcomeBackToast } from "@/components/ui/ReturnCapture";
+import { DeepReaderNudge } from "@/components/ui/SessionDepth";
+import { SocialProofStrip, FeaturedAt } from "@/components/ui/TrustSignals";
 
 // ─── INITIATION SCREEN ─────────────────────────────────────────────────────
 // The entry point. The reader is not yet a reader — they are a supplicant.
@@ -502,6 +505,22 @@ export default function HomeClient() {
         </AnimatePresence>
       </div>
 
+      {/* ── TRUST & AUTHORITY SIGNALS ─────────────────────────── */}
+      <AnimatePresence>
+        {phase === "ready" && (
+          <motion.div
+            className="w-full"
+            style={{ maxWidth: "960px", padding: "0 clamp(1rem, 4vw, 2rem)", marginBottom: "2rem" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.0, duration: 0.8 }}
+          >
+            <SocialProofStrip />
+            <FeaturedAt />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* ── FULL ARCHIVE CATALOG ─────────────────────────────── */}
       <AnimatePresence>
         {phase === "ready" && (
@@ -665,6 +684,12 @@ export default function HomeClient() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── RETURN PATH: Welcome back toast (returning visitors) ── */}
+      <WelcomeBackToast />
+
+      {/* ── SESSION DEPTH: Library nudge (3+ pages deep) ────────── */}
+      <DeepReaderNudge />
     </div>
   );
 }
