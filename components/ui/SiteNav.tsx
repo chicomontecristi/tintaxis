@@ -11,9 +11,10 @@ const MONO = '"JetBrains Mono", monospace';
 const LINKS = [
   { href: "/library", label: "Library" },
   { href: "/writers", label: "Writers" },
-  { href: "/publish", label: "Publish" },
   { href: "/experience", label: "Experience" },
-  { href: "/account", label: "Account" },
+  { href: "/publish", label: "Publish" },
+  { href: "/reader/login", label: "Sign In" },
+  { href: "/author/login", label: "Author Login" },
 ];
 
 export default function SiteNav() {
@@ -54,25 +55,28 @@ export default function SiteNav() {
       </Link>
 
       <div style={{ display: "flex", gap: "clamp(0.75rem, 2.5vw, 1.5rem)", alignItems: "center" }}>
-        {LINKS.map(({ href, label }) => (
-          <Link
-            key={href}
-            href={href}
-            style={{
-              fontFamily: MONO,
-              fontSize: "0.65rem",
-              letterSpacing: "0.2em",
-              color: pathname === href
-                ? "rgba(201,168,76,0.8)"
-                : "rgba(201,168,76,0.4)",
-              textDecoration: "none",
-              textTransform: "uppercase",
-              transition: "color 0.2s ease",
-            }}
-          >
-            {label}
-          </Link>
-        ))}
+        {LINKS.map(({ href, label }) => {
+          const isActive = pathname === href || pathname.startsWith(href + "/");
+          return (
+            <Link
+              key={href}
+              href={href}
+              style={{
+                fontFamily: MONO,
+                fontSize: "0.65rem",
+                letterSpacing: "0.2em",
+                color: isActive
+                  ? "rgba(201,168,76,0.8)"
+                  : "rgba(201,168,76,0.4)",
+                textDecoration: "none",
+                textTransform: "uppercase",
+                transition: "color 0.2s ease",
+              }}
+            >
+              {label}
+            </Link>
+          );
+        })}
       </div>
     </nav>
   );
