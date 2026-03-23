@@ -105,6 +105,19 @@ export default function InitiationScreen() {
           Publish on Tintaxis
         </a>
         <a
+          href="/library"
+          style={{
+            fontFamily: '"JetBrains Mono", monospace',
+            fontSize: "0.5rem",
+            letterSpacing: "0.25em",
+            color: "rgba(201,168,76,0.7)",
+            textDecoration: "none",
+            textTransform: "uppercase",
+          }}
+        >
+          Library
+        </a>
+        <a
           href="/writers"
           style={{
             fontFamily: '"JetBrains Mono", monospace',

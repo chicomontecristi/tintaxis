@@ -138,7 +138,7 @@ export default function BookPage() {
           </span>
         </Link>
         <Link
-          href="/"
+          href="/library"
           style={{
             fontFamily: '"JetBrains Mono", monospace',
             fontSize: "0.5rem",
@@ -148,7 +148,7 @@ export default function BookPage() {
             textTransform: "uppercase",
           }}
         >
-          ← All Books
+          ← Library
         </Link>
       </header>
 
