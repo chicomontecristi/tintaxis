@@ -39,7 +39,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.5,
     },
+    {
+      url: `${BASE_URL}/links`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
   ];
+
+  // ── Excerpt pages ──────────────────────────────────────────────────────────
+  const excerptPages: MetadataRoute.Sitemap = getAllBookSlugs().map((slug) => ({
+    url: `${BASE_URL}/book/${slug}/excerpt`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: slug === "the-hunt" ? 0.9 : 0.8,
+  }));
 
   // ── Book landing pages ────────────────────────────────────────────────────
   const bookPages: MetadataRoute.Sitemap = getAllBookSlugs().map((slug) => ({
@@ -65,5 +79,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
   }
 
-  return [...staticPages, ...bookPages, ...chapterPages];
+  return [...staticPages, ...bookPages, ...excerptPages, ...chapterPages];
 }

@@ -413,6 +413,20 @@ function SealedChamber({ chapter }: { chapter: Chapter }) {
           </Link>
         </motion.div>
 
+        {/* ── Email capture ── */}
+        <motion.div
+          style={{
+            marginTop: "2rem",
+            maxWidth: "320px",
+            width: "100%",
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.0, duration: 0.6 }}
+        >
+          <SealedEmailCapture />
+        </motion.div>
+
       </div>
 
       {/* ── Bottom brass rule ── */}
@@ -428,6 +442,88 @@ function SealedChamber({ chapter }: { chapter: Chapter }) {
         }}
       />
     </div>
+  );
+}
+
+// ─── SEALED EMAIL CAPTURE ────────────────────────────────────────────────────
+// Compact email capture on locked chapter pages.
+function SealedEmailCapture() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/email-capture", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), source: "sealed-chapter" }),
+      });
+      setStatus(res.ok ? "done" : "error");
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  if (status === "done") {
+    return (
+      <p
+        style={{
+          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+          fontSize: "0.9rem",
+          fontStyle: "italic",
+          color: "rgba(0,229,204,0.6)",
+          textAlign: "center",
+        }}
+      >
+        You're in. We'll write when the seal breaks.
+      </p>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} style={{ display: "flex", gap: "0" }}>
+      <input
+        type="email"
+        placeholder="your@email.com"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        style={{
+          flex: 1,
+          fontFamily: '"JetBrains Mono", monospace',
+          fontSize: "0.5rem",
+          letterSpacing: "0.1em",
+          padding: "8px 12px",
+          border: "1px solid rgba(201,168,76,0.15)",
+          borderRight: "none",
+          borderRadius: "2px 0 0 2px",
+          background: "rgba(201,168,76,0.03)",
+          color: "rgba(245,230,200,0.7)",
+          outline: "none",
+        }}
+      />
+      <button
+        type="submit"
+        disabled={status === "sending"}
+        style={{
+          fontFamily: '"JetBrains Mono", monospace',
+          fontSize: "0.45rem",
+          letterSpacing: "0.15em",
+          textTransform: "uppercase",
+          padding: "8px 14px",
+          border: "1px solid rgba(201,168,76,0.2)",
+          borderRadius: "0 2px 2px 0",
+          background: "rgba(201,168,76,0.08)",
+          color: "rgba(201,168,76,0.6)",
+          cursor: status === "sending" ? "wait" : "pointer",
+        }}
+      >
+        {status === "sending" ? "..." : "Notify Me"}
+      </button>
+    </form>
   );
 }
 
