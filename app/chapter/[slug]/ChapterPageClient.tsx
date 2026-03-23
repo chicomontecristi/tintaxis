@@ -268,7 +268,7 @@ function SealedChamber({ chapter }: { chapter: Chapter }) {
             fontStyle: "italic",
             color: "rgba(245,230,200,0.3)",
             lineHeight: 1.7,
-            marginBottom: "2.5rem",
+            marginBottom: "1.5rem",
             maxWidth: "34ch",
           }}
           initial={{ opacity: 0 }}
@@ -279,13 +279,114 @@ function SealedChamber({ chapter }: { chapter: Chapter }) {
           the Archive will open this door.
         </motion.p>
 
+        {/* ── Epigraph teaser — a taste of what's sealed ── */}
+        {chapter.epigraph && (
+          <motion.div
+            style={{
+              marginBottom: "2.5rem",
+              maxWidth: "28ch",
+              position: "relative",
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.6, duration: 0.8 }}
+          >
+            <div
+              style={{
+                borderLeft: "2px solid rgba(201,168,76,0.15)",
+                paddingLeft: "1rem",
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                  fontSize: "0.95rem",
+                  fontStyle: "italic",
+                  color: "rgba(245,230,200,0.35)",
+                  lineHeight: 1.7,
+                  margin: "0 0 0.5rem",
+                }}
+              >
+                "{chapter.epigraph.text}"
+              </p>
+              <p
+                style={{
+                  fontFamily: '"JetBrains Mono", monospace',
+                  fontSize: "0.4rem",
+                  letterSpacing: "0.2em",
+                  color: "rgba(201,168,76,0.3)",
+                  textTransform: "uppercase",
+                  margin: 0,
+                }}
+              >
+                — {chapter.epigraph.attribution}
+              </p>
+            </div>
+            {/* Fade-out gradient over bottom of quote */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: "24px",
+                background: "linear-gradient(transparent, #0D0B08)",
+                pointerEvents: "none",
+              }}
+            />
+          </motion.div>
+        )}
+
+        {/* ── Subtitle teaser ── */}
+        {chapter.subtitle && !chapter.epigraph && (
+          <motion.p
+            style={{
+              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+              fontSize: "0.9rem",
+              fontStyle: "italic",
+              color: "rgba(245,230,200,0.25)",
+              lineHeight: 1.6,
+              marginBottom: "2.5rem",
+              maxWidth: "28ch",
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.6, duration: 0.8 }}
+          >
+            {chapter.subtitle}
+          </motion.p>
+        )}
+
+        {/* ── Email capture teaser ── */}
+        <motion.p
+          style={{
+            fontFamily: '"JetBrains Mono", monospace',
+            fontSize: "0.4rem",
+            letterSpacing: "0.2em",
+            color: "rgba(201,168,76,0.25)",
+            textTransform: "uppercase",
+            marginBottom: "2rem",
+            maxWidth: "30ch",
+            textAlign: "center",
+            lineHeight: 1.8,
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.8, duration: 0.6 }}
+        >
+          Join the archive to be notified when this chapter opens.
+        </motion.p>
+
         {/* Return link */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.5, duration: 0.6 }}
         >
-          <Link href="/chapter/one" style={{ textDecoration: "none" }}>
+          <Link
+            href={chapter.bookSlug ? `/book/${chapter.bookSlug}` : "/"}
+            style={{ textDecoration: "none" }}
+          >
             <motion.div
               style={{
                 display: "inline-flex",
@@ -307,7 +408,7 @@ function SealedChamber({ chapter }: { chapter: Chapter }) {
                 boxShadow: "0 0 16px rgba(201,168,76,0.1)",
               }}
             >
-              ← Return to Chapter One
+              ← Return to Book
             </motion.div>
           </Link>
         </motion.div>

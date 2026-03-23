@@ -364,6 +364,9 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
           {/* ── Chapter rain — generated from chapter vocabulary ─── */}
           <ChapterRain chapterSlug={chapter.slug} height={320} />
 
+          {/* ── Share bar ─────────────────────────────────── */}
+          <ShareBar chapter={chapter} />
+
           {/* ── Chapter navigation ───────────────────────────── */}
           <ChapterEndNav
             prevChapter={prevChapter}
@@ -711,6 +714,127 @@ function CompletionEvent({
 // ─── CHAPTER END NAV ─────────────────────────────────────────────────────────
 // Navigation strip at the bottom of the reading column.
 // Shows prev chapter (if any) and next chapter (open or sealed).
+
+// ─── SHARE BAR ───────────────────────────────────────────────────────────────
+// Appears between chapter rain and chapter navigation.
+// Copy link + share on X/Twitter.
+
+function ShareBar({ chapter }: { chapter: Chapter }) {
+  const [copied, setCopied] = useState(false);
+  const pathname = usePathname();
+
+  const fullUrl = typeof window !== "undefined"
+    ? `${window.location.origin}${pathname}`
+    : `https://tintaxis.vercel.app${pathname}`;
+
+  const twitterText = encodeURIComponent(
+    `I just read "${chapter.title}" on Tintaxis — a living reading platform by Chico Montecristi.\n\n`
+  );
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${twitterText}&url=${encodeURIComponent(fullUrl)}`;
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(fullUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2200);
+    });
+  };
+
+  return (
+    <motion.div
+      style={{
+        marginTop: "2rem",
+        paddingTop: "1.5rem",
+        paddingBottom: "0.5rem",
+        borderTop: "1px solid rgba(201,168,76,0.06)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "0.75rem",
+      }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, delay: 0.5 }}
+    >
+      <p
+        style={{
+          fontFamily: '"JetBrains Mono", monospace',
+          fontSize: "0.45rem",
+          letterSpacing: "0.3em",
+          color: "rgba(201,168,76,0.3)",
+          textTransform: "uppercase",
+          margin: 0,
+        }}
+      >
+        Share this chapter
+      </p>
+
+      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        {/* Copy link */}
+        <motion.button
+          onClick={handleCopy}
+          style={{
+            fontFamily: '"JetBrains Mono", monospace',
+            fontSize: "0.45rem",
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            padding: "6px 14px",
+            border: copied
+              ? "1px solid rgba(0,229,204,0.35)"
+              : "1px solid rgba(201,168,76,0.15)",
+            borderRadius: "2px",
+            background: copied
+              ? "rgba(0,229,204,0.06)"
+              : "rgba(201,168,76,0.03)",
+            color: copied
+              ? "rgba(0,229,204,0.7)"
+              : "rgba(201,168,76,0.45)",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+          }}
+          whileHover={{
+            borderColor: "rgba(201,168,76,0.35)",
+            background: "rgba(201,168,76,0.06)",
+          }}
+        >
+          {copied ? "✓ Copied" : "⎘ Copy Link"}
+        </motion.button>
+
+        {/* Twitter/X share */}
+        <motion.a
+          href={twitterUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            fontFamily: '"JetBrains Mono", monospace',
+            fontSize: "0.45rem",
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            padding: "6px 14px",
+            border: "1px solid rgba(201,168,76,0.15)",
+            borderRadius: "2px",
+            background: "rgba(201,168,76,0.03)",
+            color: "rgba(201,168,76,0.45)",
+            cursor: "pointer",
+            textDecoration: "none",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            transition: "all 0.2s ease",
+          }}
+          whileHover={{
+            borderColor: "rgba(201,168,76,0.35)",
+            background: "rgba(201,168,76,0.06)",
+          }}
+        >
+          𝕏 Share
+        </motion.a>
+      </div>
+    </motion.div>
+  );
+}
 
 interface ChapterEndNavProps {
   prevChapter?: Chapter | null;
