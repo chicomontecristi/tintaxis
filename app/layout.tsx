@@ -69,28 +69,55 @@ export const viewport: Viewport = {
 };
 
 // ─── JSON-LD: WEBSITE + PERSON (AUTHOR) ──────────────────────────────────────
-// Injected globally so Google associates the site with the author.
-const WEBSITE_JSONLD = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: "Tintaxis",
-  url: BASE_URL,
-  description:
-    "A living reading platform by Chico Montecristi. Four books in English, Spanish, and Mandarin.",
-  publisher: {
-    "@type": "Person",
-    name: "Chico Montecristi",
-    alternateName: "José Elisaúl Chávez Martínez",
-    url: "https://chicomontecristi.com",
-    sameAs: [
-      "https://www.instagram.com/chicomontecristi",
-      `${BASE_URL}/writers/chico-montecristi`,
-    ],
-    jobTitle: "Writer and Oil Painter",
-    knowsLanguage: ["en", "es", "pt", "zh"],
+// WebSite schema — Google uses this for sitelinks. Injected globally.
+const WEBSITE_JSONLD = JSON.stringify([
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Tintaxis",
+    alternateName: "Tintaxis Reading Platform",
+    url: BASE_URL,
+    description:
+      "A living reading platform by Chico Montecristi. Four books in English, Spanish, and Mandarin.",
+    publisher: {
+      "@type": "Person",
+      name: "Chico Montecristi",
+      alternateName: "José Elisaúl Chávez Martínez",
+      url: "https://chicomontecristi.com",
+      sameAs: [
+        "https://www.instagram.com/chicomontecristi",
+        `${BASE_URL}/writers/chico-montecristi`,
+      ],
+      jobTitle: "Writer and Oil Painter",
+      knowsLanguage: ["en", "es", "pt", "zh"],
+    },
+    inLanguage: ["en", "es", "zh"],
   },
-  inLanguage: ["en", "es", "zh"],
-});
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "Tintaxis — A Living Reading Platform by Chico Montecristi",
+    description:
+      "Four books. Three languages. Read free chapters from The Hunt, Recoleta, Noches de maya, and Mi Pájaro del Río.",
+    author: {
+      "@type": "Person",
+      name: "Chico Montecristi",
+      url: "https://chicomontecristi.com",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Tintaxis",
+      url: BASE_URL,
+    },
+    datePublished: "2024-01-01",
+    dateModified: "2026-03-22",
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": BASE_URL,
+    },
+    url: BASE_URL,
+  },
+]);
 
 export default function RootLayout({
   children,

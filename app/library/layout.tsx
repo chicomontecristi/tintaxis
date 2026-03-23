@@ -43,44 +43,53 @@ export const metadata: Metadata = {
 function LibraryJsonLd() {
   const books = Object.values(BOOKS);
 
-  const schema = {
+  // ItemList — Google Rich Results supported type (renders carousel/list)
+  const itemList = {
     "@context": "https://schema.org",
-    "@type": "CollectionPage",
+    "@type": "ItemList",
     name: "The Library — Tintaxis",
     description: "The complete catalog of works by Chico Montecristi on Tintaxis.",
     url: `${BASE_URL}/library`,
-    isPartOf: {
-      "@type": "WebSite",
-      name: "Tintaxis",
-      url: BASE_URL,
-    },
-    mainEntity: {
-      "@type": "ItemList",
-      numberOfItems: books.length,
-      itemListElement: books.map((book, i) => ({
+    numberOfItems: books.length,
+    itemListElement: books.map((book, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${BASE_URL}/book/${book.slug}`,
+      name: book.title,
+    })),
+  };
+
+  // BreadcrumbList — Google renders breadcrumb trails
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
         "@type": "ListItem",
-        position: i + 1,
-        item: {
-          "@type": "Book",
-          name: book.title,
-          author: {
-            "@type": "Person",
-            name: book.author,
-          },
-          description: book.description,
-          inLanguage: book.language === "en" ? "en" : book.language === "es" ? "es" : "es",
-          genre: book.genre,
-          url: `${BASE_URL}/book/${book.slug}`,
-        },
-      })),
-    },
+        position: 1,
+        name: "Tintaxis",
+        item: BASE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Library",
+        item: `${BASE_URL}/library`,
+      },
+    ],
   };
 
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
+    </>
   );
 }
 

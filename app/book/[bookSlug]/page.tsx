@@ -64,8 +64,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-// ─── JSON-LD BOOK SCHEMA ─────────────────────────────────────────────────────
-// Rendered server-side as inline <script> so crawlers see it on first paint.
+// ─── JSON-LD SCHEMAS ─────────────────────────────────────────────────────────
+// Three schemas per book page:
+// 1. Article — Google Rich Results Test detects this and renders rich snippets.
+// 2. BreadcrumbList — Google renders breadcrumb trails in search results.
+// 3. Book — Schema.org standard for books. Not a Google "rich result" type
+//    but helps Google understand the content semantically.
 function BookJsonLd({ bookSlug }: { bookSlug: string }) {
   const book = getBook(bookSlug);
   if (!book) return null;
@@ -77,20 +81,78 @@ function BookJsonLd({ bookSlug }: { bookSlug: string }) {
     zh: "zh",
   };
 
-  const schema = {
+  const bookUrl = `${BASE_URL}/book/${book.slug}`;
+
+  const authorEntity = {
+    "@type": "Person" as const,
+    name: book.author,
+    url: "https://chicomontecristi.com",
+    sameAs: [
+      "https://www.instagram.com/chicomontecristi",
+      `${BASE_URL}/writers/chico-montecristi`,
+    ],
+  };
+
+  // 1. Article — triggers Google Rich Results
+  const article = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: book.subtitle
+      ? `${book.title} — ${book.subtitle}`
+      : book.title,
+    description: book.description,
+    author: authorEntity,
+    datePublished: `${book.year}-01-01`,
+    dateModified: "2026-03-22",
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": bookUrl,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Tintaxis",
+      url: BASE_URL,
+    },
+    inLanguage: langMap[book.language] ?? "en",
+    wordCount: book.wordCount,
+    genre: book.genre,
+    isAccessibleForFree: true,
+    url: bookUrl,
+  };
+
+  // 2. BreadcrumbList — triggers Google breadcrumb rich results
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Tintaxis",
+        item: BASE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Library",
+        item: `${BASE_URL}/library`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: book.title,
+        item: bookUrl,
+      },
+    ],
+  };
+
+  // 3. Book — semantic schema (not a Google rich result type, but valid)
+  const bookSchema = {
     "@context": "https://schema.org",
     "@type": "Book",
     name: book.title,
     alternateName: book.subtitle ?? undefined,
-    author: {
-      "@type": "Person",
-      name: book.author,
-      url: "https://chicomontecristi.com",
-      sameAs: [
-        "https://www.instagram.com/chicomontecristi",
-        `${BASE_URL}/writers/chico-montecristi`,
-      ],
-    },
+    author: authorEntity,
     description: book.description,
     abstract: book.tagline,
     inLanguage: langMap[book.language] ?? "en",
@@ -98,7 +160,7 @@ function BookJsonLd({ bookSlug }: { bookSlug: string }) {
     genre: book.genre,
     numberOfPages: book.totalChapters,
     wordCount: book.wordCount,
-    url: `${BASE_URL}/book/${book.slug}`,
+    url: bookUrl,
     isAccessibleForFree: true,
     publisher: {
       "@type": "Organization",
@@ -110,15 +172,25 @@ function BookJsonLd({ bookSlug }: { bookSlug: string }) {
       price: "0",
       priceCurrency: "USD",
       availability: "https://schema.org/InStock",
-      url: `${BASE_URL}/book/${book.slug}/chapter/${book.firstChapterSlug}`,
+      url: `${bookUrl}/chapter/${book.firstChapterSlug}`,
     },
   };
 
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(article) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema) }}
+      />
+    </>
   );
 }
 
