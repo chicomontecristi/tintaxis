@@ -122,7 +122,7 @@ export default function LibraryPage() {
             color: "rgba(245,230,200,0.35)",
             margin: 0,
           }}>
-            {allBooks.length} works · Free to read · No account required
+            {allBooks.length} works · First chapter free · No account required
           </p>
         </motion.div>
 
@@ -435,7 +435,7 @@ function BookCard({
               transition: "color 0.2s ease",
               marginTop: "4px",
             }}>
-              Read Free →
+              Read →
             </span>
           </div>
         </div>

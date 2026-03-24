@@ -165,7 +165,7 @@ export default async function Image() {
               display: "flex",
             }}
           >
-            Read free · tintaxis.vercel.app
+            First chapter free · tintaxis.vercel.app
           </div>
         </div>
 

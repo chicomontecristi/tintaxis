@@ -233,7 +233,7 @@ export default function BookPageClient() {
               marginBottom: "0.75rem",
             }}
           >
-            Free to read · No account required
+            First chapter free · No account required
           </p>
 
           {/* Start reading CTA */}
