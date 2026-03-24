@@ -73,7 +73,7 @@ export default function SiteNav() {
         href="/"
         style={{
           fontFamily: MONO,
-          fontSize: "0.7rem",
+          fontSize: "0.85rem",
           letterSpacing: "0.25em",
           color: "rgba(201,168,76,0.6)",
           textDecoration: "none",
@@ -92,7 +92,7 @@ export default function SiteNav() {
               href={href}
               style={{
                 fontFamily: MONO,
-                fontSize: "0.65rem",
+                fontSize: "0.8rem",
                 letterSpacing: "0.2em",
                 color: isActive
                   ? "rgba(201,168,76,0.8)"
@@ -111,7 +111,7 @@ export default function SiteNav() {
             onClick={handleLogout}
             style={{
               fontFamily: MONO,
-              fontSize: "0.65rem",
+              fontSize: "0.8rem",
               letterSpacing: "0.2em",
               color: "rgba(192,57,43,0.45)",
               background: "none",

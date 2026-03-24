@@ -152,7 +152,7 @@ export default function AuthorVoiceover({
         <p
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.25em",
             textTransform: "uppercase",
             color: `${accentColor}99`,
@@ -167,7 +167,7 @@ export default function AuthorVoiceover({
           onClick={onSkip}
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.45rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.15em",
             textTransform: "uppercase",
             color: "rgba(245,230,200,0.3)",
@@ -248,7 +248,7 @@ export default function AuthorVoiceover({
         <p
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.55rem",
+            fontSize: "0.8rem",
             color: "rgba(245,230,200,0.4)",
             margin: 0,
             minWidth: "60px",
@@ -289,7 +289,7 @@ export default function AuthorVoiceover({
           transition={{ delay: 1.2, duration: 0.6 }}
           style={{
             fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-            fontSize: "0.8rem",
+            fontSize: "0.95rem",
             fontStyle: "italic",
             color: "rgba(245,230,200,0.35)",
             textAlign: "center",

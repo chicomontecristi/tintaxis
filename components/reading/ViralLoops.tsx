@@ -112,7 +112,7 @@ export function QuoteSelector({ chapter }: { chapter: Chapter }) {
               transform: "translate(-50%, -100%)",
               zIndex: 60,
               fontFamily: MONO,
-              fontSize: "0.42rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.2em",
               textTransform: "uppercase",
               padding: "5px 12px",
@@ -197,7 +197,7 @@ export function QuoteSelector({ chapter }: { chapter: Chapter }) {
               <p
                 style={{
                   fontFamily: MONO,
-                  fontSize: "0.42rem",
+                  fontSize: "0.75rem",
                   letterSpacing: "0.2em",
                   textTransform: "uppercase",
                   color: `${accent}`,
@@ -262,7 +262,7 @@ function QuoteButton({
       onClick={onClick}
       style={{
         fontFamily: MONO,
-        fontSize: "0.42rem",
+        fontSize: "0.75rem",
         letterSpacing: "0.18em",
         textTransform: "uppercase",
         padding: "6px 14px",
@@ -344,7 +344,7 @@ export function MilestoneCard({ chapter }: { chapter: Chapter }) {
           onClick={() => setShowCard(true)}
           style={{
             fontFamily: MONO,
-            fontSize: "0.42rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.18em",
             textTransform: "uppercase",
             padding: "8px 18px",
@@ -430,7 +430,7 @@ export function MilestoneCard({ chapter }: { chapter: Chapter }) {
               <p
                 style={{
                   fontFamily: MONO,
-                  fontSize: "0.42rem",
+                  fontSize: "0.75rem",
                   letterSpacing: "0.3em",
                   textTransform: "uppercase",
                   color: `${accent}`,
@@ -577,7 +577,7 @@ export function SendToFriend({ chapter }: { chapter: Chapter }) {
           onClick={() => setIsOpen(true)}
           style={{
             fontFamily: MONO,
-            fontSize: "0.42rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.18em",
             textTransform: "uppercase",
             padding: "8px 18px",
@@ -637,7 +637,7 @@ export function SendToFriend({ chapter }: { chapter: Chapter }) {
               <p
                 style={{
                   fontFamily: MONO,
-                  fontSize: "0.45rem",
+                  fontSize: "0.75rem",
                   letterSpacing: "0.3em",
                   textTransform: "uppercase",
                   color: `${BRASS}0.4)`,
@@ -688,7 +688,7 @@ export function SendToFriend({ chapter }: { chapter: Chapter }) {
                   <p
                     style={{
                       fontFamily: MONO,
-                      fontSize: "0.4rem",
+                      fontSize: "0.75rem",
                       letterSpacing: "0.15em",
                       color: `${CREAM}0.3)`,
                       textTransform: "uppercase",
@@ -704,7 +704,7 @@ export function SendToFriend({ chapter }: { chapter: Chapter }) {
                     <label
                       style={{
                         fontFamily: MONO,
-                        fontSize: "0.4rem",
+                        fontSize: "0.75rem",
                         letterSpacing: "0.2em",
                         textTransform: "uppercase",
                         color: `${BRASS}0.3)`,
@@ -740,7 +740,7 @@ export function SendToFriend({ chapter }: { chapter: Chapter }) {
                     <label
                       style={{
                         fontFamily: MONO,
-                        fontSize: "0.4rem",
+                        fontSize: "0.75rem",
                         letterSpacing: "0.2em",
                         textTransform: "uppercase",
                         color: `${BRASS}0.3)`,
@@ -776,7 +776,7 @@ export function SendToFriend({ chapter }: { chapter: Chapter }) {
                     <p
                       style={{
                         fontFamily: MONO,
-                        fontSize: "0.4rem",
+                        fontSize: "0.75rem",
                         color: "rgba(192,57,43,0.7)",
                         marginBottom: "0.75rem",
                       }}
@@ -797,7 +797,7 @@ export function SendToFriend({ chapter }: { chapter: Chapter }) {
                       disabled={status === "sending" || !friendEmail}
                       style={{
                         fontFamily: MONO,
-                        fontSize: "0.45rem",
+                        fontSize: "0.75rem",
                         letterSpacing: "0.2em",
                         textTransform: "uppercase",
                         padding: "8px 20px",

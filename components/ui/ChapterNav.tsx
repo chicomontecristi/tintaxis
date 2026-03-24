@@ -122,7 +122,7 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
               <span
                 style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.55rem",
+                  fontSize: "0.8rem",
                   letterSpacing: "0.25em",
                   color: "rgba(201,168,76,0.45)",
                   textTransform: "uppercase",
@@ -161,7 +161,7 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
                     href="/account"
                     style={{
                       fontFamily: '"JetBrains Mono", monospace',
-                      fontSize: "0.45rem",
+                      fontSize: "0.75rem",
                       letterSpacing: "0.2em",
                       color: "rgba(201,168,76,0.55)",
                       textDecoration: "none",
@@ -187,7 +187,7 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
                     href={`/reader/login?from=${encodeURIComponent(pathname ?? "/")}`}
                     style={{
                       fontFamily: '"JetBrains Mono", monospace',
-                      fontSize: "0.45rem",
+                      fontSize: "0.75rem",
                       letterSpacing: "0.2em",
                       color: "rgba(201,168,76,0.35)",
                       textDecoration: "none",
@@ -247,7 +247,7 @@ function InkStatusDot() {
       <span
         style={{
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.5rem",
+          fontSize: "0.75rem",
           letterSpacing: "0.15em",
           color: activeColor,
           textTransform: "uppercase",

@@ -172,7 +172,7 @@ export default function SignalInkModal({
                   <p
                     style={{
                       fontFamily: '"JetBrains Mono", monospace',
-                      fontSize: "0.6rem",
+                      fontSize: "0.85rem",
                       letterSpacing: "0.25em",
                       color: signalConfig.color,
                       textTransform: "uppercase",
@@ -245,7 +245,7 @@ export default function SignalInkModal({
                       <label
                         style={{
                           fontFamily: '"JetBrains Mono", monospace',
-                          fontSize: "0.55rem",
+                          fontSize: "0.8rem",
                           letterSpacing: "0.2em",
                           color: "rgba(245,230,200,0.4)",
                           textTransform: "uppercase",
@@ -294,7 +294,7 @@ export default function SignalInkModal({
                       <div style={{ marginBottom: "1.5rem" }}>
                         <p style={{
                           fontFamily: '"JetBrains Mono", monospace',
-                          fontSize: "0.5rem",
+                          fontSize: "0.75rem",
                           letterSpacing: "0.15em",
                           color: "rgba(0,229,204,0.45)",
                           textTransform: "uppercase",
@@ -307,7 +307,7 @@ export default function SignalInkModal({
                         <label
                           style={{
                             fontFamily: '"JetBrains Mono", monospace',
-                            fontSize: "0.55rem",
+                            fontSize: "0.8rem",
                             letterSpacing: "0.2em",
                             color: "rgba(245,230,200,0.3)",
                             textTransform: "uppercase",
@@ -360,7 +360,7 @@ export default function SignalInkModal({
                         disabled={!question.trim() || submitState === "sending"}
                         style={{
                           fontFamily: '"JetBrains Mono", monospace',
-                          fontSize: "0.65rem",
+                          fontSize: "0.85rem",
                           letterSpacing: "0.2em",
                           textTransform: "uppercase",
                           color: question.trim() ? signalConfig.color : "rgba(0,229,204,0.3)",
@@ -414,7 +414,7 @@ function AlreadyAsked({ onClose, reply }: { onClose: () => void; reply: AuthorRe
           <p
             style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.52rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.2em",
               color: "rgba(0,229,204,0.6)",
               textTransform: "uppercase",
@@ -468,7 +468,7 @@ function AlreadyAsked({ onClose, reply }: { onClose: () => void; reply: AuthorRe
             <p
               style={{
                 fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.48rem",
+                fontSize: "0.75rem",
                 letterSpacing: "0.15em",
                 color: "rgba(201,168,76,0.5)",
                 textTransform: "uppercase",
@@ -494,7 +494,7 @@ function AlreadyAsked({ onClose, reply }: { onClose: () => void; reply: AuthorRe
               onClick={onClose}
               style={{
                 fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.6rem",
+                fontSize: "0.85rem",
                 letterSpacing: "0.2em",
                 color: "rgba(201,168,76,0.6)",
                 background: "transparent",
@@ -540,7 +540,7 @@ function AlreadyAsked({ onClose, reply }: { onClose: () => void; reply: AuthorRe
             onClick={onClose}
             style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.6rem",
+              fontSize: "0.85rem",
               letterSpacing: "0.2em",
               color: "rgba(201,168,76,0.6)",
               background: "transparent",

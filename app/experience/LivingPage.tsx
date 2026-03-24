@@ -191,7 +191,7 @@ export default function LivingPage() {
             <span
               style={{
                 fontFamily: MONO,
-                fontSize: "0.65rem",
+                fontSize: "1.05rem",
                 letterSpacing: "0.15em",
                 color: "rgba(201,168,76,0.3)",
                 textTransform: "uppercase",
@@ -280,7 +280,7 @@ export default function LivingPage() {
               onClick={() => setEntered(true)}
               style={{
                 fontFamily: MONO,
-                fontSize: "0.8rem",
+                fontSize: "0.9rem",
                 letterSpacing: "0.25em",
                 textTransform: "uppercase",
                 padding: "14px 36px",
@@ -308,7 +308,7 @@ export default function LivingPage() {
             <motion.p
               style={{
                 fontFamily: MONO,
-                fontSize: "0.65rem",
+                fontSize: "1.05rem",
                 letterSpacing: "0.2em",
                 color: "rgba(245,230,200,0.12)",
                 textTransform: "uppercase",
@@ -408,7 +408,7 @@ export default function LivingPage() {
               <p
                 style={{
                   fontFamily: MONO,
-                  fontSize: "0.65rem",
+                  fontSize: "1.05rem",
                   letterSpacing: "0.15em",
                   color: "rgba(192,57,43,0.35)",
                   textTransform: "uppercase",
@@ -432,7 +432,7 @@ export default function LivingPage() {
             <motion.p
               style={{
                 fontFamily: MONO,
-                fontSize: "0.65rem",
+                fontSize: "1.05rem",
                 letterSpacing: "0.2em",
                 color: "rgba(201,168,76,0.2)",
                 textTransform: "uppercase",
@@ -490,7 +490,7 @@ export default function LivingPage() {
                 <motion.p
                   style={{
                     fontFamily: MONO,
-                    fontSize: "0.7rem",
+                    fontSize: "1.05rem",
                     letterSpacing: "0.2em",
                     color: "rgba(201,168,76,0.3)",
                     textTransform: "uppercase",
@@ -568,7 +568,7 @@ export default function LivingPage() {
                     href="/library"
                     style={{
                       fontFamily: MONO,
-                      fontSize: "0.7rem",
+                      fontSize: "1.05rem",
                       letterSpacing: "0.15em",
                       color: "rgba(201,168,76,0.35)",
                       textDecoration: "none",
@@ -581,7 +581,7 @@ export default function LivingPage() {
                     href="/"
                     style={{
                       fontFamily: MONO,
-                      fontSize: "0.7rem",
+                      fontSize: "1.05rem",
                       letterSpacing: "0.15em",
                       color: "rgba(201,168,76,0.2)",
                       textDecoration: "none",
@@ -608,7 +608,7 @@ export default function LivingPage() {
                 <p
                   style={{
                     fontFamily: MONO,
-                    fontSize: "0.5rem",
+                    fontSize: "0.75rem",
                     letterSpacing: "0.35em",
                     color: "rgba(201,168,76,0.5)",
                     textTransform: "uppercase",
@@ -633,7 +633,7 @@ export default function LivingPage() {
                 <p
                   style={{
                     fontFamily: SERIF,
-                    fontSize: "0.95rem",
+                    fontSize: "1.05rem",
                     fontStyle: "italic",
                     color: "rgba(245,230,200,0.35)",
                     textAlign: "center",
@@ -666,10 +666,10 @@ export default function LivingPage() {
                     >
                       {/* Tier header */}
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "0.35rem" }}>
-                        <p style={{ fontFamily: MONO, fontSize: "0.5rem", letterSpacing: "0.2em", color: "rgba(201,168,76,0.5)", textTransform: "uppercase" }}>
+                        <p style={{ fontFamily: MONO, fontSize: "0.75rem", letterSpacing: "0.2em", color: "rgba(201,168,76,0.5)", textTransform: "uppercase" }}>
                           {t.tier} · ${t.price.toFixed(2)}/mo
                         </p>
-                        <p style={{ fontFamily: SERIF, fontSize: "0.8rem", fontStyle: "italic", color: "rgba(245,230,200,0.3)" }}>
+                        <p style={{ fontFamily: SERIF, fontSize: "0.9rem", fontStyle: "italic", color: "rgba(245,230,200,0.3)" }}>
                           {t.what}
                         </p>
                       </div>
@@ -694,7 +694,7 @@ export default function LivingPage() {
                           alignItems: "center",
                           paddingLeft: "0.5rem",
                         }}>
-                          <span style={{ fontFamily: MONO, fontSize: "0.5rem", color: "rgba(0,229,204,0.85)", letterSpacing: "0.05em" }}>
+                          <span style={{ fontFamily: MONO, fontSize: "0.75rem", color: "rgba(0,229,204,0.85)", letterSpacing: "0.05em" }}>
                             ${t.writerCut.toFixed(2)} → the writer
                           </span>
                         </div>
@@ -708,7 +708,7 @@ export default function LivingPage() {
                           alignItems: "center",
                           justifyContent: "center",
                         }}>
-                          <span style={{ fontFamily: MONO, fontSize: "0.4rem", color: "rgba(245,230,200,0.2)" }}>
+                          <span style={{ fontFamily: MONO, fontSize: "0.75rem", color: "rgba(245,230,200,0.2)" }}>
                             ${t.platformCut.toFixed(2)}
                           </span>
                         </div>
@@ -725,7 +725,7 @@ export default function LivingPage() {
                   transition={{ delay: 1, duration: 0.5 }}
                   style={{
                     fontFamily: SERIF,
-                    fontSize: "0.95rem",
+                    fontSize: "1.05rem",
                     color: "rgba(245,230,200,0.4)",
                     textAlign: "center",
                     lineHeight: 1.7,
@@ -829,7 +829,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
               bottom: "-12px",
               left: "0",
               fontFamily: MONO,
-              fontSize: "0.6rem",
+              fontSize: "0.9rem",
               letterSpacing: "0.12em",
               color: "rgba(192,57,43,0.3)",
               textTransform: "uppercase",
@@ -856,7 +856,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
                 <p
                   style={{
                     fontFamily: MONO,
-                    fontSize: "0.65rem",
+                    fontSize: "1.05rem",
                     letterSpacing: "0.2em",
                     color: "rgba(201,168,76,0.4)",
                     textTransform: "uppercase",
@@ -904,7 +904,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
               <p
                 style={{
                   fontFamily: MONO,
-                  fontSize: "0.6rem",
+                  fontSize: "0.9rem",
                   letterSpacing: "0.12em",
                   color: "rgba(245,230,200,0.2)",
                   textTransform: "uppercase",
@@ -916,7 +916,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
               <p
                 style={{
                   fontFamily: SERIF,
-                  fontSize: "0.95rem",
+                  fontSize: "1.05rem",
                   fontStyle: "italic",
                   color: "rgba(245,230,200,0.4)",
                   lineHeight: 1.55,
@@ -945,7 +945,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
               <p
                 style={{
                   fontFamily: MONO,
-                  fontSize: "0.6rem",
+                  fontSize: "0.9rem",
                   letterSpacing: "0.12em",
                   color: "rgba(245,230,200,0.18)",
                   textTransform: "uppercase",
@@ -957,7 +957,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
               <p
                 style={{
                   fontFamily: SERIF,
-                  fontSize: "0.95rem",
+                  fontSize: "1.05rem",
                   fontStyle: "italic",
                   color: "rgba(245,230,200,0.4)",
                   lineHeight: 1.55,
@@ -976,7 +976,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
                 <p
                   style={{
                     fontFamily: MONO,
-                    fontSize: "0.6rem",
+                    fontSize: "0.9rem",
                     letterSpacing: "0.12em",
                     color: "rgba(201,168,76,0.35)",
                     textTransform: "uppercase",
@@ -988,7 +988,7 @@ function LivingParagraphBlock({ para, index }: { para: LivingParagraph; index: n
                 <p
                   style={{
                     fontFamily: SERIF,
-                    fontSize: "0.95rem",
+                    fontSize: "1.05rem",
                     fontStyle: "italic",
                     color: "rgba(201,168,76,0.5)",
                     lineHeight: 1.55,
@@ -1045,7 +1045,7 @@ function BookChoiceCard({
           <p
             style={{
               fontFamily: MONO,
-              fontSize: "0.6rem",
+              fontSize: "0.9rem",
               letterSpacing: "0.2em",
               color: `${accent},0.6)`,
               textTransform: "uppercase",
@@ -1081,7 +1081,7 @@ function BookChoiceCard({
         <p
           style={{
             fontFamily: MONO,
-            fontSize: "0.65rem",
+            fontSize: "1.05rem",
             letterSpacing: "0.12em",
             color: `${accent},0.45)`,
             textTransform: "uppercase",

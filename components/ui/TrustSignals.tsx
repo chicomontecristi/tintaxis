@@ -49,7 +49,7 @@ export function AuthorCredentials() {
           <p
             style={{
               fontFamily: MONO,
-              fontSize: "0.38rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.2em",
               textTransform: "uppercase",
               color: `${BRASS}0.45)`,
@@ -109,7 +109,7 @@ function TrustBadge({ text }: { text: string }) {
     <span
       style={{
         fontFamily: MONO,
-        fontSize: "0.38rem",
+        fontSize: "0.75rem",
         letterSpacing: "0.2em",
         textTransform: "uppercase",
         color: `${BRASS}0.4)`,
@@ -179,7 +179,7 @@ function ProofItem({ number, label }: { number: string; label: string }) {
       <p
         style={{
           fontFamily: MONO,
-          fontSize: "0.35rem",
+          fontSize: "0.75rem",
           letterSpacing: "0.15em",
           textTransform: "uppercase",
           color: `${BRASS}0.35)`,
@@ -215,7 +215,7 @@ export function FeaturedAt() {
       <p
         style={{
           fontFamily: MONO,
-          fontSize: "0.35rem",
+          fontSize: "0.75rem",
           letterSpacing: "0.3em",
           textTransform: "uppercase",
           color: `${BRASS}0.25)`,

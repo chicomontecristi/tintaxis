@@ -155,7 +155,7 @@ function FeatureCard({ feature, index }: { feature: typeof FEATURES[0]; index: n
       <p
         style={{
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.55rem",
+          fontSize: "0.9rem",
           letterSpacing: "0.25em",
           color: "rgba(201,168,76,0.7)",
           textTransform: "uppercase",
@@ -167,7 +167,7 @@ function FeatureCard({ feature, index }: { feature: typeof FEATURES[0]; index: n
       <p
         style={{
           fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-          fontSize: "0.95rem",
+          fontSize: "1.05rem",
           lineHeight: 1.7,
           color: "rgba(245,230,200,0.55)",
           fontStyle: "italic",
@@ -209,7 +209,7 @@ function PricingCard({ plan, onSelect }: { plan: typeof PLANS[0]; onSelect: () =
             background: "#0D0B08",
             padding: "0 0.75rem",
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.45rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.3em",
             color: "rgba(201,168,76,0.8)",
             textTransform: "uppercase",
@@ -222,7 +222,7 @@ function PricingCard({ plan, onSelect }: { plan: typeof PLANS[0]; onSelect: () =
       <p
         style={{
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.5rem",
+          fontSize: "0.75rem",
           letterSpacing: "0.3em",
           color: plan.accent,
           textTransform: "uppercase",
@@ -245,7 +245,7 @@ function PricingCard({ plan, onSelect }: { plan: typeof PLANS[0]; onSelect: () =
         <span
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.55rem",
+            fontSize: "0.9rem",
             color: "rgba(245,230,200,0.35)",
             letterSpacing: "0.1em",
           }}
@@ -277,11 +277,11 @@ function PricingCard({ plan, onSelect }: { plan: typeof PLANS[0]; onSelect: () =
               marginBottom: "0.6rem",
             }}
           >
-            <span style={{ color: "rgba(201,168,76,0.5)", fontSize: "0.6rem" }}>◆</span>
+            <span style={{ color: "rgba(201,168,76,0.5)", fontSize: "0.9rem" }}>◆</span>
             <span
               style={{
                 fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.55rem",
+                fontSize: "0.9rem",
                 letterSpacing: "0.05em",
                 color: "rgba(245,230,200,0.5)",
               }}
@@ -299,7 +299,7 @@ function PricingCard({ plan, onSelect }: { plan: typeof PLANS[0]; onSelect: () =
         style={{
           width: "100%",
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.55rem",
+          fontSize: "0.9rem",
           letterSpacing: "0.25em",
           textTransform: "uppercase",
           color: "#C9A84C",
@@ -356,7 +356,7 @@ function WriterEarningsBreakdown() {
         viewport={{ once: true }}
         style={{
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.5rem",
+          fontSize: "0.75rem",
           letterSpacing: "0.35em",
           color: "rgba(201,168,76,0.4)",
           textTransform: "uppercase",
@@ -430,7 +430,7 @@ function WriterEarningsBreakdown() {
                 <div>
                   <p style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.5rem",
+                    fontSize: "0.75rem",
                     letterSpacing: "0.25em",
                     color: t.accent,
                     textTransform: "uppercase",
@@ -440,7 +440,7 @@ function WriterEarningsBreakdown() {
                   </p>
                   <p style={{
                     fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                    fontSize: "0.85rem",
+                    fontSize: "1.05rem",
                     fontStyle: "italic",
                     color: "rgba(245,230,200,0.35)",
                     maxWidth: "320px",
@@ -451,7 +451,7 @@ function WriterEarningsBreakdown() {
                 <div style={{ textAlign: "right" }}>
                   <p style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.45rem",
+                    fontSize: "0.75rem",
                     letterSpacing: "0.15em",
                     color: "rgba(245,230,200,0.3)",
                     textTransform: "uppercase",
@@ -493,7 +493,7 @@ function WriterEarningsBreakdown() {
                 }}>
                   <span style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.5rem",
+                    fontSize: "0.75rem",
                     letterSpacing: "0.1em",
                     color: "rgba(0,229,204,0.9)",
                   }}>
@@ -513,7 +513,7 @@ function WriterEarningsBreakdown() {
                 }}>
                   <span style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.45rem",
+                    fontSize: "0.75rem",
                     letterSpacing: "0.05em",
                     color: "rgba(245,230,200,0.25)",
                   }}>
@@ -526,7 +526,7 @@ function WriterEarningsBreakdown() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                 <p style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.45rem",
+                  fontSize: "0.75rem",
                   color: "rgba(245,230,200,0.25)",
                   letterSpacing: "0.1em",
                 }}>
@@ -562,7 +562,7 @@ function WriterEarningsBreakdown() {
         <CornerAccents color="rgba(0,229,204,0.3)" />
         <p style={{
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.5rem",
+          fontSize: "0.75rem",
           letterSpacing: "0.25em",
           color: "rgba(0,229,204,0.6)",
           textTransform: "uppercase",
@@ -583,19 +583,19 @@ function WriterEarningsBreakdown() {
         </p>
         <div style={{ display: "flex", justifyContent: "center", alignItems: "baseline", gap: "1.5rem", flexWrap: "wrap" }}>
           <div style={{ textAlign: "center" }}>
-            <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.45rem", color: "rgba(245,230,200,0.3)", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "0.2rem" }}>
+            <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.75rem", color: "rgba(245,230,200,0.3)", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "0.2rem" }}>
               Reader revenue
             </p>
             <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "1.1rem", color: "rgba(245,230,200,0.55)" }}>$239.60</p>
           </div>
           <div style={{ textAlign: "center" }}>
-            <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.45rem", color: "rgba(245,230,200,0.3)", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "0.2rem" }}>
+            <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.75rem", color: "rgba(245,230,200,0.3)", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "0.2rem" }}>
               Tintaxis cut + fee
             </p>
             <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "1.1rem", color: "rgba(214,83,60,0.6)" }}>−$42.94</p>
           </div>
           <div style={{ textAlign: "center" }}>
-            <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.45rem", color: "rgba(0,229,204,0.6)", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "0.2rem" }}>
+            <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.75rem", color: "rgba(0,229,204,0.6)", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "0.2rem" }}>
               YOU TAKE HOME
             </p>
             <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "2rem", fontWeight: 400, color: "rgba(0,229,204,0.9)" }}>$196.66</p>
@@ -610,7 +610,7 @@ function WriterEarningsBreakdown() {
         transition={{ delay: 0.4 }}
         style={{
           fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-          fontSize: "0.95rem",
+          fontSize: "1.05rem",
           fontStyle: "italic",
           color: "rgba(245,230,200,0.3)",
           textAlign: "center",
@@ -686,7 +686,7 @@ export default function PublishClient() {
     padding: "0.65rem 0.85rem",
     color: "#F5E6C8",
     fontFamily: '"JetBrains Mono", monospace',
-    fontSize: "0.8rem",
+    fontSize: "0.9rem",
     outline: "none",
     borderRadius: "1px",
     boxSizing: "border-box" as const,
@@ -694,7 +694,7 @@ export default function PublishClient() {
 
   const labelStyle: React.CSSProperties = {
     fontFamily: '"JetBrains Mono", monospace',
-    fontSize: "0.5rem",
+    fontSize: "0.75rem",
     letterSpacing: "0.2em",
     color: "rgba(245,230,200,0.35)",
     textTransform: "uppercase",
@@ -738,7 +738,7 @@ export default function PublishClient() {
             <p
               style={{
                 fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.5rem",
+                fontSize: "0.75rem",
                 letterSpacing: "0.4em",
                 color: "rgba(201,168,76,0.4)",
                 textTransform: "uppercase",
@@ -786,7 +786,7 @@ export default function PublishClient() {
                 whileTap={{ scale: 0.98 }}
                 style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.6rem",
+                  fontSize: "0.9rem",
                   letterSpacing: "0.25em",
                   textTransform: "uppercase",
                   color: "#C9A84C",
@@ -803,7 +803,7 @@ export default function PublishClient() {
                   whileHover={{ borderColor: "rgba(201,168,76,0.3)" }}
                   style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.6rem",
+                    fontSize: "0.9rem",
                     letterSpacing: "0.25em",
                     textTransform: "uppercase",
                     color: "rgba(245,230,200,0.3)",
@@ -827,7 +827,7 @@ export default function PublishClient() {
               position: "absolute",
               bottom: "2.5rem",
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.45rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.3em",
               color: "rgba(201,168,76,0.2)",
               textTransform: "uppercase",
@@ -851,7 +851,7 @@ export default function PublishClient() {
             <p
               style={{
                 fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.5rem",
+                fontSize: "0.75rem",
                 letterSpacing: "0.35em",
                 color: "rgba(201,168,76,0.4)",
                 textTransform: "uppercase",
@@ -914,7 +914,7 @@ export default function PublishClient() {
             viewport={{ once: true }}
             style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.5rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.35em",
               color: "rgba(201,168,76,0.4)",
               textTransform: "uppercase",
@@ -950,7 +950,7 @@ export default function PublishClient() {
             <p
               style={{
                 fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.5rem",
+                fontSize: "0.75rem",
                 letterSpacing: "0.35em",
                 color: "rgba(201,168,76,0.4)",
                 textTransform: "uppercase",
@@ -971,7 +971,7 @@ export default function PublishClient() {
               <p
                 style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.45rem",
+                  fontSize: "0.75rem",
                   letterSpacing: "0.2em",
                   color: "rgba(201,168,76,0.4)",
                   textTransform: "uppercase",
@@ -994,7 +994,7 @@ export default function PublishClient() {
               <p
                 style={{
                   fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                  fontSize: "0.95rem",
+                  fontSize: "1.05rem",
                   fontStyle: "italic",
                   color: "rgba(245,230,200,0.4)",
                   marginBottom: "1.25rem",
@@ -1021,7 +1021,7 @@ export default function PublishClient() {
                   whileHover={{ color: "rgba(201,168,76,0.9)" }}
                   style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.5rem",
+                    fontSize: "0.75rem",
                     letterSpacing: "0.25em",
                     color: "rgba(201,168,76,0.5)",
                     textTransform: "uppercase",
@@ -1045,7 +1045,7 @@ export default function PublishClient() {
             viewport={{ once: true }}
             style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.5rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.35em",
               color: "rgba(201,168,76,0.4)",
               textTransform: "uppercase",
@@ -1101,7 +1101,7 @@ export default function PublishClient() {
             <p
               style={{
                 fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.5rem",
+                fontSize: "0.75rem",
                 letterSpacing: "0.35em",
                 color: "rgba(201,168,76,0.4)",
                 textTransform: "uppercase",
@@ -1164,7 +1164,7 @@ export default function PublishClient() {
                     <p
                       style={{
                         fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                        fontSize: "0.95rem",
+                        fontSize: "1.05rem",
                         fontStyle: "italic",
                         color: "rgba(245,230,200,0.4)",
                       }}
@@ -1312,7 +1312,7 @@ export default function PublishClient() {
                       <p
                         style={{
                           fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                          fontSize: "0.85rem",
+                          fontSize: "1.05rem",
                           fontStyle: "italic",
                           color: "rgba(245,230,200,0.3)",
                           marginBottom: "0.75rem",
@@ -1363,7 +1363,7 @@ export default function PublishClient() {
                         <span
                           style={{
                             fontFamily: '"JetBrains Mono", monospace',
-                            fontSize: "0.65rem",
+                            fontSize: "1.05rem",
                             letterSpacing: "0.1em",
                             color: form.chapterFile
                               ? "rgba(245,230,200,0.7)"
@@ -1398,7 +1398,7 @@ export default function PublishClient() {
                         animate={{ opacity: 1 }}
                         style={{
                           fontFamily: '"JetBrains Mono", monospace',
-                          fontSize: "0.55rem",
+                          fontSize: "0.9rem",
                           letterSpacing: "0.1em",
                           color: "rgba(192,57,43,0.8)",
                           marginBottom: "1rem",
@@ -1422,7 +1422,7 @@ export default function PublishClient() {
                       style={{
                         width: "100%",
                         fontFamily: '"JetBrains Mono", monospace',
-                        fontSize: "0.6rem",
+                        fontSize: "0.9rem",
                         letterSpacing: "0.25em",
                         textTransform: "uppercase",
                         color: submitStatus === "loading" ? "rgba(201,168,76,0.4)" : "#C9A84C",
@@ -1452,7 +1452,7 @@ export default function PublishClient() {
           <p
             style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.45rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.2em",
               color: "rgba(201,168,76,0.2)",
               textTransform: "uppercase",

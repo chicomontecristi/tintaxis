@@ -97,7 +97,7 @@ export default function LibraryPage() {
         >
           <p style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.45rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.35em",
             color: "rgba(201,168,76,0.35)",
             textTransform: "uppercase",
@@ -170,7 +170,7 @@ export default function LibraryPage() {
                     }}>
                       <p style={{
                         fontFamily: '"JetBrains Mono", monospace',
-                        fontSize: "0.45rem",
+                        fontSize: "0.75rem",
                         letterSpacing: "0.3em",
                         color: "rgba(201,168,76,0.35)",
                         textTransform: "uppercase",
@@ -228,7 +228,7 @@ export default function LibraryPage() {
           </p>
           <Link href="/experience" style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.55rem",
+            fontSize: "0.8rem",
             letterSpacing: "0.2em",
             color: "rgba(201,168,76,0.6)",
             textDecoration: "none",
@@ -245,7 +245,7 @@ export default function LibraryPage() {
         <div style={{ marginTop: "3rem", textAlign: "center" }}>
           <span style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.4rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.3em",
             color: "rgba(245,230,200,0.1)",
             textTransform: "uppercase",
@@ -322,7 +322,7 @@ function BookCard({
                 {featured && (
                   <span style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.4rem",
+                    fontSize: "0.75rem",
                     letterSpacing: "0.2em",
                     color: `rgba(${rgb}, 0.75)`,
                     background: `rgba(${rgb}, 0.1)`,
@@ -337,7 +337,7 @@ function BookCard({
                 )}
                 <span style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.4rem",
+                  fontSize: "0.75rem",
                   letterSpacing: "0.2em",
                   color: "rgba(201,168,76,0.35)",
                   background: "rgba(201,168,76,0.06)",
@@ -351,7 +351,7 @@ function BookCard({
                 </span>
                 <span style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.4rem",
+                  fontSize: "0.75rem",
                   letterSpacing: "0.15em",
                   color: "rgba(245,230,200,0.2)",
                   textTransform: "uppercase",
@@ -410,7 +410,7 @@ function BookCard({
           }}>
             <span style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.45rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.15em",
               color: "rgba(245,230,200,0.22)",
               textTransform: "uppercase",
@@ -419,7 +419,7 @@ function BookCard({
             </span>
             <span style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.45rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.15em",
               color: "rgba(245,230,200,0.18)",
               textTransform: "uppercase",
@@ -428,7 +428,7 @@ function BookCard({
             </span>
             <span style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.45rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.15em",
               color: `rgba(${rgb}, ${hovered ? 0.7 : 0.4})`,
               textTransform: "uppercase",
@@ -460,7 +460,7 @@ function SortButton({
       onClick={onClick}
       style={{
         fontFamily: '"JetBrains Mono", monospace',
-        fontSize: "0.45rem",
+        fontSize: "0.75rem",
         letterSpacing: "0.2em",
         textTransform: "uppercase",
         padding: "4px 10px",

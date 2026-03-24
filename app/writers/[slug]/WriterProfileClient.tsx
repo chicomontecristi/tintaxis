@@ -50,7 +50,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
         }}>
           <span style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.12em",
             color: "#fff",
           }}>
@@ -121,7 +121,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
           <div style={{ flex: 1, minWidth: "240px" }}>
             <p style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.5rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.3em",
               color: "rgba(201,168,76,0.4)",
               textTransform: "uppercase",
@@ -155,7 +155,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
 
             <p style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.5rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.1em",
               color: "rgba(201,168,76,0.3)",
               textTransform: "uppercase",
@@ -173,7 +173,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
                   rel="noopener noreferrer"
                   style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.5rem",
+                    fontSize: "0.75rem",
                     letterSpacing: "0.15em",
                     color: "rgba(201,168,76,0.45)",
                     textDecoration: "none",
@@ -192,7 +192,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
                   rel="noopener noreferrer"
                   style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.5rem",
+                    fontSize: "0.75rem",
                     letterSpacing: "0.15em",
                     color: "rgba(201,168,76,0.45)",
                     textDecoration: "none",
@@ -209,7 +209,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
                   href={`mailto:${writer.email}`}
                   style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.5rem",
+                    fontSize: "0.75rem",
                     letterSpacing: "0.15em",
                     color: "rgba(201,168,76,0.45)",
                     textDecoration: "none",
@@ -244,7 +244,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
         >
           <p style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.3em",
             color: "rgba(201,168,76,0.35)",
             textTransform: "uppercase",
@@ -292,7 +292,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
             </p>
             <p style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.5rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.15em",
               color: "rgba(201,168,76,0.35)",
               textTransform: "uppercase",
@@ -304,7 +304,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
             onClick={() => setSubModalOpen(true)}
             style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.6rem",
+              fontSize: "0.8rem",
               letterSpacing: "0.2em",
               textTransform: "uppercase",
               color: "#0D0B08",
@@ -330,7 +330,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
         >
           <p style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.3em",
             color: "rgba(201,168,76,0.35)",
             textTransform: "uppercase",
@@ -399,7 +399,7 @@ function WorkCard({ work, index }: { work: FeaturedWork; index: number }) {
         }}>
           <span style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.45rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.05em",
             color: "rgba(201,168,76,0.4)",
           }}>
@@ -423,7 +423,7 @@ function WorkCard({ work, index }: { work: FeaturedWork; index: number }) {
           {work.subtitle && (
             <p style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.45rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.1em",
               color: isLive ? "rgba(201,168,76,0.4)" : "rgba(201,168,76,0.2)",
               textTransform: "uppercase",
@@ -436,7 +436,7 @@ function WorkCard({ work, index }: { work: FeaturedWork; index: number }) {
         {work.wordCount && (
           <p style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.45rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.08em",
             color: "rgba(201,168,76,0.25)",
             marginBottom: "0.5rem",
@@ -461,7 +461,7 @@ function WorkCard({ work, index }: { work: FeaturedWork; index: number }) {
         {isLive ? (
           <span style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.45rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.15em",
             color: "#C9A84C",
             textTransform: "uppercase",
@@ -471,7 +471,7 @@ function WorkCard({ work, index }: { work: FeaturedWork; index: number }) {
         ) : (
           <span style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.45rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.15em",
             color: "rgba(201,168,76,0.2)",
             textTransform: "uppercase",

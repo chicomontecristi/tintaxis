@@ -26,6 +26,21 @@
   --scrollbar-track: #0D0B08;
   --scrollbar-thumb: #2C1A00;
   --scrollbar-hover: #3D2A0A;
+
+  /* ─── E-INK TYPOGRAPHY SCALE ─────────────────────────────────────
+     Inspired by front-lit e-readers (Kindle Paperwhite, Nook GlowLight).
+     Warm diffused light, generous sizing, no squinting.
+     Minimum readable size: 0.75rem (never below).                    */
+  --t-micro:    0.75rem;   /* smallest allowed — labels, timestamps   */
+  --t-small:    0.85rem;   /* secondary labels, metadata              */
+  --t-body:     1.05rem;   /* default body / UI text                  */
+  --t-reading:  1.25rem;   /* prose reading size — the main event     */
+  --t-lead:     1.4rem;    /* lead paragraphs, subtitles              */
+  --t-heading:  1.8rem;    /* section headings                        */
+
+  /* E-ink glow — warm front-lit diffusion                            */
+  --eink-glow:  0 0 80px rgba(245, 230, 200, 0.03),
+                0 0 160px rgba(201, 168, 76, 0.02);
 }
 
 /* ─── RESET & BASE ────────────────────────────────────────────────── */
@@ -37,14 +52,20 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* E-ink base: 18px root gives generous rem scaling across platform */
+  font-size: 18px;
 }
 
 body {
   background-color: var(--vault);
   color: var(--parchment);
   font-family: "EB Garamond", Garamond, Georgia, serif;
+  font-size: var(--t-body);
+  line-height: 1.7;
   overflow-x: hidden;
   min-height: 100vh;
+  /* Subtle front-lit e-ink diffusion */
+  text-rendering: optimizeLegibility;
 }
 
 /* ─── SCROLLBAR ───────────────────────────────────────────────────── */
@@ -126,18 +147,20 @@ body {
   opacity: 0.5;
 }
 
-/* ─── PARCHMENT READING SURFACE ──────────────────────────────────── */
+/* ─── PARCHMENT READING SURFACE (e-ink inspired) ────────────────── */
 .parchment-surface {
   background-color: #1C1408;
   background-image:
     radial-gradient(ellipse at 20% 50%, rgba(44, 26, 0, 0.3) 0%, transparent 60%),
     radial-gradient(ellipse at 80% 20%, rgba(44, 26, 0, 0.2) 0%, transparent 50%);
+  /* Front-lit LED glow — warm light diffusing across the reading surface */
+  box-shadow: var(--eink-glow);
 }
 
 /* ─── CHAPTER NUMBER LABEL ────────────────────────────────────────── */
 .chapter-number {
   font-family: "JetBrains Mono", monospace;
-  font-size: 0.6875rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--brass);
@@ -294,7 +317,7 @@ body {
   /* Chapter nav: limit title width so it doesn't overlap wordmark */
   .chapter-nav-title {
     max-width: 140px !important;
-    font-size: 0.7rem !important;
+    font-size: var(--t-micro) !important;
   }
 
   /* Library cards: go full-width when stacked */
@@ -376,10 +399,10 @@ button, a, [role="button"] {
 
 /* ─── MOBILE — READING SURFACE ────────────────────────────────────── */
 @media (max-width: 640px) {
-  /* Reading text: slightly tighter line width */
+  /* Reading text: e-ink comfortable on mobile */
   .reading-surface p {
-    font-size: clamp(1rem, 4vw, 1.15rem);
-    line-height: 1.85;
+    font-size: clamp(1.05rem, 4.5vw, 1.25rem);
+    line-height: 1.9;
   }
 
   /* Chapter header: don't overflow */

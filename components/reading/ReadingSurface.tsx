@@ -452,7 +452,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
               <p
                 style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.6rem",
+                  fontSize: "0.85rem",
                   letterSpacing: "0.18em",
                   color: "rgba(201,168,76,0.5)",
                   textTransform: "uppercase",
@@ -641,7 +641,7 @@ function ChapterHeader({ chapter }: { chapter: Chapter }) {
       <p
         style={{
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.6rem",
+          fontSize: "0.85rem",
           letterSpacing: "0.3em",
           color: "rgba(201,168,76,0.55)",
           textTransform: "uppercase",
@@ -654,7 +654,7 @@ function ChapterHeader({ chapter }: { chapter: Chapter }) {
       <h1
         style={{
           fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-          fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
+          fontSize: "clamp(2rem, 4vw, 2.5rem)",
           fontWeight: 400,
           color: "#F5E6C8",
           lineHeight: 1.2,
@@ -669,7 +669,7 @@ function ChapterHeader({ chapter }: { chapter: Chapter }) {
         <p
           style={{
             fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-            fontSize: "1rem",
+            fontSize: "1.05rem",
             fontStyle: "italic",
             color: "rgba(245,230,200,0.45)",
             lineHeight: 1.5,
@@ -779,7 +779,7 @@ function CompletionEvent({
         <motion.p
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.55rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.35em",
             color: "rgba(201,168,76,0.4)",
             textTransform: "uppercase",
@@ -813,7 +813,7 @@ function CompletionEvent({
               <p
                 style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.55rem",
+                  fontSize: "0.75rem",
                   letterSpacing: "0.25em",
                   color: "rgba(201,168,76,0.5)",
                   textTransform: "uppercase",
@@ -825,7 +825,7 @@ function CompletionEvent({
               <p
                 style={{
                   fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                  fontSize: "clamp(1.25rem, 4vw, 1.75rem)",
+                  fontSize: "clamp(1.4rem, 4vw, 1.75rem)",
                   fontStyle: "italic",
                   color: "rgba(245,230,200,0.85)",
                   lineHeight: 1.4,
@@ -838,7 +838,7 @@ function CompletionEvent({
               <p
                 style={{
                   fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                  fontSize: "0.95rem",
+                  fontSize: "1.05rem",
                   fontStyle: "italic",
                   color: "rgba(245,230,200,0.3)",
                   lineHeight: 1.6,
@@ -868,7 +868,7 @@ function CompletionEvent({
           onClick={onDismiss}
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.6rem",
+            fontSize: "0.85rem",
             letterSpacing: "0.25em",
             color: "#C9A84C",
             background: "transparent",
@@ -947,7 +947,7 @@ function ShareBar({ chapter }: { chapter: Chapter }) {
       <p
         style={{
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.45rem",
+          fontSize: "0.75rem",
           letterSpacing: "0.3em",
           color: "rgba(201,168,76,0.3)",
           textTransform: "uppercase",
@@ -963,7 +963,7 @@ function ShareBar({ chapter }: { chapter: Chapter }) {
           onClick={handleCopy}
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.45rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.18em",
             textTransform: "uppercase",
             padding: "6px 14px",
@@ -998,7 +998,7 @@ function ShareBar({ chapter }: { chapter: Chapter }) {
           rel="noopener noreferrer"
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.45rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.18em",
             textTransform: "uppercase",
             padding: "6px 14px",
@@ -1073,7 +1073,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
               <span
                 style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.5rem",
+                  fontSize: "0.75rem",
                   letterSpacing: "0.2em",
                   color: "rgba(201,168,76,0.4)",
                   textTransform: "uppercase",
@@ -1095,7 +1095,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
               <span
                 style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.5rem",
+                  fontSize: "0.75rem",
                   letterSpacing: "0.1em",
                   color: "rgba(201,168,76,0.3)",
                   textTransform: "uppercase",
@@ -1148,7 +1148,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
               <span
                 style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.5rem",
+                  fontSize: "0.75rem",
                   letterSpacing: "0.2em",
                   color: "rgba(201,168,76,0.3)",
                   textTransform: "uppercase",
@@ -1158,7 +1158,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                 }}
               >
                 Next →
-                <span style={{ fontSize: "0.65rem" }}>⚿</span>
+                <span style={{ fontSize: "0.85rem" }}>⚿</span>
               </span>
               <span
                 style={{
@@ -1174,7 +1174,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
               <span
                 style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.5rem",
+                  fontSize: "0.75rem",
                   letterSpacing: "0.1em",
                   color: "rgba(201,168,76,0.2)",
                   textTransform: "uppercase",
@@ -1207,7 +1207,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                 <span
                   style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.5rem",
+                    fontSize: "0.75rem",
                     letterSpacing: "0.2em",
                     color: "rgba(201,168,76,0.5)",
                     textTransform: "uppercase",
@@ -1218,7 +1218,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                 <span
                   style={{
                     fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                    fontSize: "0.95rem",
+                    fontSize: "1.05rem",
                     fontStyle: "italic",
                     color: "rgba(245,230,200,0.7)",
                     lineHeight: 1.3,
@@ -1229,7 +1229,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                 <span
                   style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.5rem",
+                    fontSize: "0.75rem",
                     letterSpacing: "0.1em",
                     color: "rgba(201,168,76,0.35)",
                     textTransform: "uppercase",

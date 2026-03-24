@@ -203,7 +203,7 @@ export default function AnnotatableText({
   // ── Paragraph styles ──────────────────────────────────────────
   const paragraphStyle: React.CSSProperties = {
     fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-    fontSize: "clamp(1.0625rem, 2vw, 1.1875rem)",
+    fontSize: "clamp(1.15rem, 2.5vw, 1.35rem)",
     lineHeight: 1.9,
     letterSpacing: "0.01em",
     color: "#F5E6C8",
@@ -218,7 +218,7 @@ export default function AnnotatableText({
     Object.assign(paragraphStyle, {
       fontStyle: "italic",
       color: "rgba(245,230,200,0.65)",
-      fontSize: "1rem",
+      fontSize: "1.05rem",
       lineHeight: 1.7,
       textAlign: "center" as const,
       textIndent: "0",
@@ -448,7 +448,7 @@ function InkTooltip({ rect, inkConfig, onApply, onApplyWithNote, onDismiss }: In
       <span
         style={{
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.6rem",
+          fontSize: "0.85rem",
           letterSpacing: "0.15em",
           color: inkConfig.color,
           textTransform: "uppercase",
@@ -463,7 +463,7 @@ function InkTooltip({ rect, inkConfig, onApply, onApplyWithNote, onDismiss }: In
         onPointerUp={(e) => { e.preventDefault(); onApply(); }}
         style={{
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.6rem",
+          fontSize: "0.85rem",
           letterSpacing: "0.1em",
           color: inkConfig.color,
           background: `rgba(${hexToRgb(inkConfig.color)}, 0.12)`,
@@ -483,7 +483,7 @@ function InkTooltip({ rect, inkConfig, onApply, onApplyWithNote, onDismiss }: In
         onPointerUp={(e) => { e.preventDefault(); onApplyWithNote(); }}
         style={{
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.6rem",
+          fontSize: "0.85rem",
           letterSpacing: "0.1em",
           color: "rgba(245,230,200,0.5)",
           background: "transparent",
@@ -569,7 +569,7 @@ function NoteInputPanel({
       <p
         style={{
           fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-          fontSize: "0.8rem",
+          fontSize: "0.9rem",
           fontStyle: "italic",
           color: "rgba(245,230,200,0.45)",
           marginBottom: "0.5rem",
@@ -585,7 +585,7 @@ function NoteInputPanel({
       <div
         style={{
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.55rem",
+          fontSize: "0.75rem",
           letterSpacing: "0.2em",
           color: inkConfig.color,
           textTransform: "uppercase",
@@ -610,7 +610,7 @@ function NoteInputPanel({
           padding: "0.5rem",
           color: "#F5E6C8",
           fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-          fontSize: "0.9rem",
+          fontSize: "1rem",
           lineHeight: 1.6,
           resize: "none",
           outline: "none",
@@ -628,7 +628,7 @@ function NoteInputPanel({
           onClick={onDismiss}
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.6rem",
+            fontSize: "0.85rem",
             letterSpacing: "0.1em",
             color: "rgba(245,230,200,0.3)",
             background: "transparent",
@@ -644,7 +644,7 @@ function NoteInputPanel({
           onClick={onSave}
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.6rem",
+            fontSize: "0.85rem",
             letterSpacing: "0.1em",
             color: inkConfig.color,
             background: `rgba(${hexToRgb(inkConfig.color)}, 0.12)`,

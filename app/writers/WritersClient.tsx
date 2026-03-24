@@ -29,7 +29,7 @@ export default function WritersClient() {
         >
           <p style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.55rem",
+            fontSize: "0.8rem",
             letterSpacing: "0.35em",
             color: "rgba(201,168,76,0.4)",
             textTransform: "uppercase",
@@ -84,7 +84,7 @@ export default function WritersClient() {
           <div className="brass-line" style={{ maxWidth: "200px", margin: "0 auto 1.5rem" }} />
           <p style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.2em",
             color: "rgba(201,168,76,0.25)",
             textTransform: "uppercase",
@@ -168,7 +168,7 @@ function WriterCard({ writer, index }: { writer: FeaturedWriter; index: number }
           {/* Genre tag */}
           <p style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.45rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.2em",
             color: "rgba(201,168,76,0.45)",
             textTransform: "uppercase",
@@ -192,7 +192,7 @@ function WriterCard({ writer, index }: { writer: FeaturedWriter; index: number }
           {/* Origin */}
           <p style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.45rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.1em",
             color: "rgba(201,168,76,0.3)",
             textTransform: "uppercase",
@@ -219,7 +219,7 @@ function WriterCard({ writer, index }: { writer: FeaturedWriter; index: number }
           {/* Works count */}
           <p style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.45rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.15em",
             color: "rgba(201,168,76,0.35)",
             textTransform: "uppercase",

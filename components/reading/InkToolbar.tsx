@@ -132,7 +132,7 @@ export default function InkToolbar({
                     <p
                       style={{
                         fontFamily: '"JetBrains Mono", monospace',
-                        fontSize: "0.6rem",
+                        fontSize: "0.85rem",
                         letterSpacing: "0.15em",
                         color: config.color,
                         textTransform: "uppercase",

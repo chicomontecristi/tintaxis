@@ -195,7 +195,7 @@ export default function SubscriptionModal({
                 cursor: "pointer",
                 color: "rgba(201,168,76,0.4)",
                 fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.7rem",
+                fontSize: "0.85rem",
                 letterSpacing: "0.1em",
                 padding: "0.25rem 0.5rem",
               }}
@@ -209,7 +209,7 @@ export default function SubscriptionModal({
                 <p
                   style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.55rem",
+                    fontSize: "0.8rem",
                     letterSpacing: "0.3em",
                     color: "rgba(0,229,204,0.7)",
                     textTransform: "uppercase",
@@ -287,7 +287,7 @@ export default function SubscriptionModal({
               style={{
                 textAlign: "center",
                 fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.45rem",
+                fontSize: "0.75rem",
                 letterSpacing: "0.15em",
                 color: "rgba(201,168,76,0.25)",
                 textTransform: "uppercase",
@@ -351,7 +351,7 @@ function TierCard({
           <span
             style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.45rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.15em",
               color: "#0D0B08",
               textTransform: "uppercase",
@@ -367,7 +367,7 @@ function TierCard({
       <p
         style={{
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.5rem",
+          fontSize: "0.75rem",
           letterSpacing: "0.2em",
           color: isHighlighted ? tier.accentColor : "rgba(201,168,76,0.4)",
           textTransform: "uppercase",
@@ -394,7 +394,7 @@ function TierCard({
         <span
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
+            fontSize: "0.75rem",
             color: "rgba(245,230,200,0.25)",
             letterSpacing: "0.1em",
           }}
@@ -463,7 +463,7 @@ function TierCard({
         style={{
           width: "100%",
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.5rem",
+          fontSize: "0.75rem",
           letterSpacing: "0.2em",
           textTransform: "uppercase",
           color: isLoading ? "rgba(201,168,76,0.3)" : (isHighlighted ? "#0D0B08" : "#C9A84C"),
