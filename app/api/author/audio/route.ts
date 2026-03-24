@@ -46,8 +46,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate file type
-    if (!ALLOWED_TYPES.includes(file.type)) {
+    // Validate file type (strip codec suffix like "audio/webm;codecs=opus" → "audio/webm")
+    const baseType = file.type.split(";")[0].trim();
+    if (!ALLOWED_TYPES.includes(baseType)) {
       return NextResponse.json(
         { error: `Invalid audio type: ${file.type}. Accepted: mp3, m4a, wav, webm` },
         { status: 400 }
