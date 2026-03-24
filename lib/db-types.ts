@@ -72,6 +72,20 @@ export interface WhisperRow {
   updated_at:    string;
 }
 
+// ─── PER-WRITER READER SUBSCRIPTIONS ─────────────────────────────────────────
+// A reader subscribes to a specific writer, not the whole platform.
+// One reader can have subscriptions to multiple writers.
+export interface ReaderSubscriptionRow {
+  id:                      string;
+  reader_id:               string;          // FK → readers.id
+  writer_slug:             string;          // FK → featured writer slug
+  tier:                    ReaderTier;       // codex | scribe | archive | chronicler
+  stripe_subscription_id:  string | null;
+  active:                  boolean;
+  created_at:              string;
+  updated_at:              string;
+}
+
 // Supabase Database type expected by createClient<Database>
 export interface Database {
   public: {
@@ -100,6 +114,11 @@ export interface Database {
         Row:    WhisperRow;
         Insert: Omit<WhisperRow, "id" | "created_at" | "updated_at">;
         Update: Partial<Omit<WhisperRow, "id" | "created_at">>;
+      };
+      reader_subscriptions: {
+        Row:    ReaderSubscriptionRow;
+        Insert: Omit<ReaderSubscriptionRow, "id" | "created_at" | "updated_at">;
+        Update: Partial<Omit<ReaderSubscriptionRow, "id" | "created_at">>;
       };
     };
     Views:     Record<string, never>;

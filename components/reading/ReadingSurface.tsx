@@ -212,7 +212,12 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
   }, [chapter.slug]);
 
   useEffect(() => {
-    fetch("/api/reader/session")
+    // Pass writerSlug to check per-writer subscription tier
+    const writerSlug = book?.writerSlug ?? "";
+    const url = writerSlug
+      ? `/api/reader/session?writerSlug=${encodeURIComponent(writerSlug)}`
+      : "/api/reader/session";
+    fetch(url)
       .then((r) => r.json())
       .then((data) => {
         if (data.subscribed && data.tier) {
@@ -222,7 +227,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
         if (data.email) setReaderEmail(data.email);
       })
       .catch(() => {/* session check fails silently — treat as unsubscribed */});
-  }, []);
+  }, [book?.writerSlug]);
 
   // Returns true if the reader's tier meets or exceeds the required tier
   const hasAccess = useCallback((required: SubscriptionTierName): boolean => {
@@ -587,6 +592,8 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
         featureName={gateFeatureName}
         onClose={() => setSubscriptionModalOpen(false)}
         returnUrl={pathname ?? "/"}
+        writerSlug={book?.writerSlug ?? "chico-montecristi"}
+        writerName={book?.author}
       />
 
       {/* ── Continue Reading toast ───────────────────────────── */}

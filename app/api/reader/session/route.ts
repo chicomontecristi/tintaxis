@@ -7,11 +7,12 @@
 //   2. Cross-check Supabase for live subscription state (tier, active).
 //      This ensures cancellations / upgrades are reflected immediately,
 //      even if the cookie hasn't expired yet.
-//   3. Fall back to cookie data if Supabase is unreachable.
+//   3. If writerSlug is provided, check per-writer subscription first.
+//   4. Fall back to cookie data if Supabase is unreachable.
 
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromCookie } from "@/lib/auth";
-import { getReaderByEmail } from "@/lib/db";
+import { getReaderByEmail, getReaderTierForWriter } from "@/lib/db";
 
 export async function GET(req: NextRequest) {
   const session = getSessionFromCookie(req.headers.get("cookie"));
@@ -20,6 +21,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ subscribed: false });
   }
 
+  // Optional: check per-writer subscription
+  const writerSlug = req.nextUrl.searchParams.get("writerSlug");
+
   // Attempt to refresh state from Supabase
   try {
     const dbReader = await getReaderByEmail(session.sub);
@@ -27,20 +31,34 @@ export async function GET(req: NextRequest) {
     if (dbReader) {
       // Reader found in DB — use live state
       if (!dbReader.active) {
-        // Subscription cancelled or payment failed
+        // Account-level deactivation (e.g. banned)
         return NextResponse.json({ subscribed: false, reason: "inactive" });
       }
 
+      // If a writerSlug was requested, check per-writer subscription
+      let effectiveTier = dbReader.tier ?? null;
+      let subscriptionType = dbReader.stripe_subscription_id ? "subscription" : "one-time";
+
+      if (writerSlug && dbReader.id) {
+        const writerTier = await getReaderTierForWriter(dbReader.id, writerSlug);
+        if (writerTier) {
+          effectiveTier = writerTier;
+          subscriptionType = "subscription";
+        } else {
+          // No per-writer subscription — fall back to global tier for legacy compat
+          // Once all readers are migrated, this fallback can be removed
+        }
+      }
+
       return NextResponse.json({
-        subscribed: true,
+        subscribed: !!effectiveTier,
         role:       dbReader.role,
-        tier:       dbReader.tier ?? null,
+        tier:       effectiveTier,
         plan:       dbReader.plan ?? null,
         name:       dbReader.name ?? session.name,
         email:      session.sub,
         id:         dbReader.id,
-        // Convenience: tell client if this is a subscriber vs one-time purchaser
-        type:       dbReader.stripe_subscription_id ? "subscription" : "one-time",
+        type:       subscriptionType,
       });
     }
   } catch (err) {

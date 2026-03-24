@@ -355,6 +355,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
         onClose={() => setSubModalOpen(false)}
         returnUrl={`/writers/${writer.slug}`}
         writerSlug={writer.slug}
+        writerName={displayName}
       />
     </div>
   );

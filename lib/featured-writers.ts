@@ -143,8 +143,8 @@ export function getWriterConnectId(slug: string): string | undefined {
 }
 
 /**
- * Returns the TINTAXIS_PLATFORM_SHARE (default 0.25).
- * Writers receive 1 - TINTAXIS_PLATFORM_SHARE of each payment.
+ * Revenue split: Tintaxis keeps 15%, writer keeps 85%.
+ * Applied to every reader subscription payment.
  */
-export const PLATFORM_SHARE = 0.25;
-export const WRITER_SHARE   = 0.75;
+export const PLATFORM_SHARE = 0.15;
+export const WRITER_SHARE   = 0.85;

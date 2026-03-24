@@ -12,11 +12,18 @@ export async function POST(req: NextRequest) {
       plan: PlanId;
       returnUrl?: string;
       email?: string;
-      writerSlug?: string; // attribution — which writer's page drove this subscription
+      writerSlug?: string; // REQUIRED for reader tiers — subscription is per-writer
     };
 
     if (!plan || !PLAN_PRICE_IDS[plan]) {
       return NextResponse.json({ error: "Invalid plan." }, { status: 400 });
+    }
+
+    const role = roleForPlan(plan);
+
+    // Reader subscriptions MUST specify which writer they're subscribing to
+    if (role === "reader" && !writerSlug) {
+      return NextResponse.json({ error: "writerSlug is required for reader subscriptions." }, { status: 400 });
     }
 
     const priceId = PLAN_PRICE_IDS[plan];
@@ -29,8 +36,6 @@ export async function POST(req: NextRequest) {
 
     const origin = req.headers.get("origin") ?? process.env.NEXT_PUBLIC_URL ?? "https://tintaxis.vercel.app";
     const safeReturn = returnUrl ?? "/";
-
-    const role = roleForPlan(plan);
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
@@ -51,9 +56,13 @@ export async function POST(req: NextRequest) {
       success_url: `${origin}/api/stripe/activate?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url:  `${origin}${safeReturn}`,
 
-      // Subscription settings
+      // Subscription settings — include writerSlug so webhooks can route correctly
       subscription_data: {
-        metadata: { plan, role },
+        metadata: {
+          plan,
+          role,
+          ...(writerSlug ? { writerSlug } : {}),
+        },
       },
     });
 

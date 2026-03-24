@@ -16,7 +16,8 @@ interface SubscriptionModalProps {
   featureName?: string;
   onClose: () => void;
   returnUrl?: string;   // where to send the reader after successful payment
-  writerSlug?: string;  // attribution — which writer drove this subscription
+  writerSlug: string;   // REQUIRED — subscription is always tied to one writer
+  writerName?: string;  // display name for header (e.g. "Chico Montecristi")
 }
 
 interface Tier {
@@ -34,7 +35,7 @@ const TIERS: Tier[] = [
   {
     id: "codex",
     name: "Codex",
-    price: "$3",
+    price: "$1.99",
     period: "/month",
     tagline: "Less than a coffee. The whole archive.",
     features: [
@@ -49,7 +50,7 @@ const TIERS: Tier[] = [
   {
     id: "scribe",
     name: "Scribe",
-    price: "$6",
+    price: "$3.99",
     period: "/month",
     tagline: "Read what the author left behind.",
     features: [
@@ -64,7 +65,7 @@ const TIERS: Tier[] = [
   {
     id: "archive",
     name: "Archive",
-    price: "$9",
+    price: "$7.99",
     period: "/month",
     tagline: "You are not reading alone.",
     features: [
@@ -79,7 +80,7 @@ const TIERS: Tier[] = [
   {
     id: "chronicler",
     name: "Chronicler",
-    price: "$15",
+    price: "$9.99",
     period: "/month",
     tagline: "Your name lives in the book.",
     features: [
@@ -107,6 +108,7 @@ export default function SubscriptionModal({
   onClose,
   returnUrl,
   writerSlug,
+  writerName,
 }: SubscriptionModalProps) {
   const [loadingTier, setLoadingTier] = useState<SubscriptionTierName | null>(null);
 
@@ -128,7 +130,7 @@ export default function SubscriptionModal({
         body: JSON.stringify({
           plan: tierId,
           returnUrl: returnUrl ?? window.location.pathname,
-          ...(writerSlug ? { writerSlug } : {}),
+          writerSlug,
         }),
       });
       const data = await res.json();
@@ -227,7 +229,7 @@ export default function SubscriptionModal({
                   marginBottom: "0.5rem",
                 }}
               >
-                Open the Archive
+                {writerName ? `Subscribe to ${writerName}` : "Open the Archive"}
               </h2>
               <p
                 style={{
@@ -237,7 +239,9 @@ export default function SubscriptionModal({
                   color: "rgba(245,230,200,0.35)",
                 }}
               >
-                Tintaxis is a living book. Choose how deeply you want to live inside it.
+                {writerName
+                  ? `Support this writer directly. Choose how deeply you want to read.`
+                  : "Tintaxis is a living book. Choose how deeply you want to live inside it."}
               </p>
             </div>
 

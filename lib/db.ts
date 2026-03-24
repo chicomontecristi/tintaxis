@@ -2,7 +2,7 @@
 // All Supabase operations go through here. Server-side only.
 
 import { supabase } from "./supabase";
-import type { ReaderRow, ReaderTier, AuthorPlan, SignalRow, WhisperRow, AnnotationRow } from "./db-types";
+import type { ReaderRow, ReaderTier, AuthorPlan, SignalRow, WhisperRow, AnnotationRow, ReaderSubscriptionRow } from "./db-types";
 
 // ── Readers ───────────────────────────────────────────────────────────────────
 
@@ -143,6 +143,160 @@ export async function deactivateReader(customerId: string): Promise<void> {
     tier:   null,
     stripeSubscriptionId: null,
   });
+}
+
+// ── Per-Writer Reader Subscriptions ──────────────────────────────────────────
+
+/**
+ * Get a reader's active subscription tier for a specific writer.
+ * Returns null if no active subscription exists.
+ */
+export async function getReaderTierForWriter(
+  readerId:   string,
+  writerSlug: string
+): Promise<ReaderTier | null> {
+  const { data, error } = await supabase
+    .from("reader_subscriptions")
+    .select("tier")
+    .eq("reader_id", readerId)
+    .eq("writer_slug", writerSlug)
+    .eq("active", true)
+    .single();
+
+  if (error) {
+    if (error.code !== "PGRST116") {
+      console.error("[db] getReaderTierForWriter error:", error.message);
+    }
+    return null;
+  }
+  return data?.tier ?? null;
+}
+
+/**
+ * Get all active subscriptions for a reader (across all writers).
+ */
+export async function getReaderSubscriptions(
+  readerId: string
+): Promise<ReaderSubscriptionRow[]> {
+  const { data, error } = await supabase
+    .from("reader_subscriptions")
+    .select("*")
+    .eq("reader_id", readerId)
+    .eq("active", true)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("[db] getReaderSubscriptions error:", error.message);
+    return [];
+  }
+  return data ?? [];
+}
+
+/**
+ * Upsert a reader's subscription for a specific writer.
+ * Creates or updates (one subscription per reader per writer).
+ */
+export async function upsertReaderSubscription(params: {
+  readerId:              string;
+  writerSlug:            string;
+  tier:                  ReaderTier;
+  stripeSubscriptionId?: string | null;
+  active?:               boolean;
+}): Promise<ReaderSubscriptionRow | null> {
+  const { data, error } = await supabase
+    .from("reader_subscriptions")
+    .upsert(
+      {
+        reader_id:              params.readerId,
+        writer_slug:            params.writerSlug,
+        tier:                   params.tier,
+        stripe_subscription_id: params.stripeSubscriptionId ?? null,
+        active:                 params.active ?? true,
+        updated_at:             new Date().toISOString(),
+      },
+      { onConflict: "reader_id,writer_slug", ignoreDuplicates: false }
+    )
+    .select()
+    .single();
+
+  if (error) {
+    console.error("[db] upsertReaderSubscription error:", error.message);
+    return null;
+  }
+  return data;
+}
+
+/**
+ * Deactivate a per-writer subscription by its Stripe subscription ID.
+ * Called from webhook on subscription.deleted.
+ */
+export async function deactivateReaderSubscription(
+  stripeSubscriptionId: string
+): Promise<void> {
+  const { error } = await supabase
+    .from("reader_subscriptions")
+    .update({ active: false, updated_at: new Date().toISOString() })
+    .eq("stripe_subscription_id", stripeSubscriptionId);
+
+  if (error) {
+    console.error("[db] deactivateReaderSubscription error:", error.message);
+  }
+}
+
+/**
+ * Update a per-writer subscription's tier or active state by Stripe subscription ID.
+ * Called from webhook on subscription.updated.
+ */
+export async function updateReaderSubscriptionByStripe(
+  stripeSubscriptionId: string,
+  params: {
+    tier?:   ReaderTier;
+    active?: boolean;
+  }
+): Promise<void> {
+  const { error } = await supabase
+    .from("reader_subscriptions")
+    .update({
+      ...(params.tier !== undefined ? { tier: params.tier } : {}),
+      ...(params.active !== undefined ? { active: params.active } : {}),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("stripe_subscription_id", stripeSubscriptionId);
+
+  if (error) {
+    console.error("[db] updateReaderSubscriptionByStripe error:", error.message);
+  }
+}
+
+/**
+ * Get subscription stats for a specific writer (author dashboard).
+ */
+export async function getWriterSubscriptionStats(writerSlug: string): Promise<{
+  total: number;
+  active: number;
+  byTier: Record<string, number>;
+}> {
+  const { data, error } = await supabase
+    .from("reader_subscriptions")
+    .select("tier, active")
+    .eq("writer_slug", writerSlug);
+
+  if (error) {
+    console.error("[db] getWriterSubscriptionStats error:", error.message);
+    return { total: 0, active: 0, byTier: {} };
+  }
+
+  const rows = data ?? [];
+  const active = rows.filter((r) => r.active).length;
+  const byTier: Record<string, number> = {};
+
+  for (const row of rows) {
+    if (row.active && row.tier) {
+      byTier[row.tier] = (byTier[row.tier] ?? 0) + 1;
+    }
+  }
+
+  return { total: rows.length, active, byTier };
 }
 
 // ── Purchases (one-time) ─────────────────────────────────────────────────────

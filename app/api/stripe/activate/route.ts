@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe, type PlanId } from "@/lib/stripe";
 import { createSessionCookie } from "@/lib/auth";
-import { upsertReader, recordPurchase } from "@/lib/db";
+import { upsertReader, recordPurchase, upsertReaderSubscription } from "@/lib/db";
 import type { ReaderTier, AuthorPlan } from "@/lib/auth";
 
 // One-time chapter plans (not subscriptions)
@@ -70,6 +70,17 @@ export async function GET(req: NextRequest) {
           stripeSessionId: sessionId,
           amount:          checkoutSession.amount_total,
           writerSlug,
+        });
+      }
+
+      // For per-writer subscriptions, create the reader_subscriptions row
+      if (!isOneTime && role === "reader" && reader && writerSlug) {
+        await upsertReaderSubscription({
+          readerId:              reader.id,
+          writerSlug,
+          tier:                  plan as ReaderTier,
+          stripeSubscriptionId:  subscriptionId || null,
+          active:                true,
         });
       }
     }
