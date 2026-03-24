@@ -1,20 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getSessionFromCookie } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 
 // ─── AUTHOR AUDIO UPLOAD API ────────────────────────────────────────────────
-// POST /api/author/audio
-// Accepts an audio file upload for chapter voiceovers.
-// Stores to /public/audio/voiceovers/{bookSlug}/{chapterSlug}.mp3
+// POST /api/author/audio — upload a chapter voiceover to Supabase Storage
+// GET  /api/author/audio?book={bookSlug} — list voiceovers for a book
 //
-// Phase 2: Store in Supabase Storage instead of public directory.
-//
-// FormData fields:
-// - file: audio file (mp3, m4a, wav, webm — max 10MB)
-// - bookSlug: string
-// - chapterSlug: string
-
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
-import { getSessionFromCookie } from "@/lib/auth";
+// Storage bucket: "voiceovers"
+// Path pattern:   {bookSlug}/{chapterSlug}.webm (or .mp4, .mp3, etc.)
 
 const MAX_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = [
@@ -26,6 +19,8 @@ const ALLOWED_TYPES = [
   "audio/webm",
   "audio/x-m4a",
 ];
+
+const BUCKET = "voiceovers";
 
 export async function POST(req: NextRequest) {
   try {
@@ -63,19 +58,42 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Save to public directory
-    const dir = join(process.cwd(), "public", "audio", "voiceovers", bookSlug);
-    await mkdir(dir, { recursive: true });
+    // Determine extension from MIME type
+    const ext = baseType.includes("mp4") || baseType.includes("m4a")
+      ? "mp4"
+      : baseType.includes("webm")
+      ? "webm"
+      : baseType.includes("wav")
+      ? "wav"
+      : "mp3";
 
-    const filePath = join(dir, `${chapterSlug}.mp3`);
+    const storagePath = `${bookSlug}/${chapterSlug}.${ext}`;
     const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(filePath, buffer);
 
-    const publicUrl = `/audio/voiceovers/${bookSlug}/${chapterSlug}.mp3`;
+    // Upload to Supabase Storage (upsert to overwrite previous recording)
+    const { error: uploadError } = await supabase.storage
+      .from(BUCKET)
+      .upload(storagePath, buffer, {
+        contentType: baseType,
+        upsert: true,
+      });
+
+    if (uploadError) {
+      console.error("[author/audio] Supabase upload error:", uploadError);
+      return NextResponse.json(
+        { error: `Storage error: ${uploadError.message}` },
+        { status: 500 }
+      );
+    }
+
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from(BUCKET)
+      .getPublicUrl(storagePath);
 
     return NextResponse.json({
       success: true,
-      url: publicUrl,
+      url: urlData.publicUrl,
       size: file.size,
       chapter: chapterSlug,
     });
@@ -89,7 +107,7 @@ export async function POST(req: NextRequest) {
 }
 
 // GET /api/author/audio?book={bookSlug}
-// List all voiceovers for a book
+// List all voiceovers for a book from Supabase Storage
 export async function GET(req: NextRequest) {
   const bookSlug = req.nextUrl.searchParams.get("book");
   if (!bookSlug) {
@@ -97,16 +115,26 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const { readdir } = await import("fs/promises");
-    const dir = join(process.cwd(), "public", "audio", "voiceovers", bookSlug);
-    const files = await readdir(dir).catch(() => [] as string[]);
+    const { data: files, error } = await supabase.storage
+      .from(BUCKET)
+      .list(bookSlug);
+
+    if (error || !files) {
+      return NextResponse.json({ voiceovers: [] });
+    }
 
     const voiceovers = files
-      .filter((f: string) => f.endsWith(".mp3"))
-      .map((f: string) => ({
-        chapterSlug: f.replace(".mp3", ""),
-        url: `/audio/voiceovers/${bookSlug}/${f}`,
-      }));
+      .filter((f) => f.name && /\.(mp3|webm|mp4|wav|m4a)$/.test(f.name))
+      .map((f) => {
+        const chapterSlug = f.name.replace(/\.(mp3|webm|mp4|wav|m4a)$/, "");
+        const { data: urlData } = supabase.storage
+          .from(BUCKET)
+          .getPublicUrl(`${bookSlug}/${f.name}`);
+        return {
+          chapterSlug,
+          url: urlData.publicUrl,
+        };
+      });
 
     return NextResponse.json({ voiceovers });
   } catch {
