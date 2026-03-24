@@ -163,6 +163,9 @@ export interface Chapter {
   authorNote?: string;       // Optional pre/post chapter note from author
   isLocked: boolean;         // Requires Codex Key to read
   wordCount: number;
+  authorAudioUrl?: string;   // Author voice-over for page 1 (uploaded recording)
+  authorAudioDuration?: number; // Duration in seconds
+  pageOneEnd?: number;       // Paragraph index where "page 1" ends (default: first section break or 8)
 }
 
 // ─── BOOK ────────────────────────────────────────────────────────────────────
@@ -222,6 +225,24 @@ export type SubscriptionTier =
   | "author_sub"        // Tier 2 — monthly/annual author subscription
   | "subject_archive"   // Tier 3 — subject archive subscription
   | "master_chronicler"; // Tier 4 — annual, limited seats
+
+// ─── NARRATOR VOICES ────────────────────────────────────────────────────────
+
+export interface NarratorVoice {
+  id: string;
+  label: string;
+  description: string;
+  ttsVoice: string;         // TTS provider voice ID (e.g. "alloy", "nova", "shimmer" for OpenAI)
+  accent: string;           // Display accent color for the voice card
+  sampleText?: string;      // Short sample for preview
+}
+
+export type NarratorState =
+  | "idle"            // No narrator active
+  | "author_playing"  // Author voice-over is playing (page 1)
+  | "selecting"       // Author audio ended, reader choosing AI narrator
+  | "narrating"       // AI narrator is reading aloud
+  | "paused";         // AI narrator paused by reader
 
 // ─── UTILITY TYPES ──────────────────────────────────────────────────────────
 

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { playArchiveMode } from "@/lib/sound";
 import { motion, AnimatePresence } from "framer-motion";
-import type { Annotation, InkType, MarginLayer, Chapter } from "@/lib/types";
+import type { Annotation, InkType, MarginLayer, Chapter, NarratorVoice, NarratorState } from "@/lib/types";
 import type { WhisperData } from "./AuthorWhisper";
 import {
   getAnnotations,
@@ -15,7 +15,10 @@ import {
   markChapterComplete,
   hasAskedQuestion,
 } from "@/lib/ink";
+import { getPageOneEnd, createWebSpeechNarrator, fetchTTSAudio, scrollParagraphIntoView } from "@/lib/narration";
 import AnnotatableText from "./AnnotatableText";
+import AuthorVoiceover from "./AuthorVoiceover";
+import NarratorSelector, { NarratorControlBar } from "./NarratorSelector";
 import InkToolbar from "./InkToolbar";
 import MarginWorld from "./MarginWorld";
 import SignalInkModal from "./SignalInkModal";
@@ -60,13 +63,121 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
   const [gateFeatureName, setGateFeatureName] = useState<string | undefined>(undefined);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  // ── Narrator state ─────────────────────────────────────────────────
+  const [narratorState, setNarratorState] = useState<NarratorState>("idle");
+  const [selectedNarrator, setSelectedNarrator] = useState<NarratorVoice | null>(null);
+  const [narratorParagraph, setNarratorParagraph] = useState(0);
+  const narratorAudioRef = useRef<HTMLAudioElement | null>(null);
+  const webSpeechRef = useRef<ReturnType<typeof createWebSpeechNarrator> | null>(null);
+
+  // ── Book ref (needed by narrator + reading tracker) ─────────────────
+  const book = chapter.bookSlug ? BOOKS[chapter.bookSlug] : null;
+
+  const pageOneEnd = getPageOneEnd(chapter.paragraphs, chapter.pageOneEnd);
+  const hasAuthorAudio = !!chapter.authorAudioUrl;
+
+  // ── Narrator: read a paragraph ─────────────────────────────────────
+  const narrateParagraph = useCallback(async (paraIndex: number, voice: NarratorVoice) => {
+    const para = chapter.paragraphs[paraIndex];
+    if (!para || para.isSectionBreak) {
+      // Skip section breaks, advance to next
+      if (paraIndex < chapter.paragraphs.length - 1) {
+        setNarratorParagraph(paraIndex + 1);
+        narrateParagraph(paraIndex + 1, voice);
+      } else {
+        setNarratorState("idle");
+      }
+      return;
+    }
+
+    scrollParagraphIntoView(para.index);
+
+    const bookLang = book?.language ?? "en";
+
+    // Try server TTS first
+    const { audioUrl, fallback } = await fetchTTSAudio(para.text, voice.ttsVoice, bookLang);
+
+    if (!fallback && audioUrl) {
+      // Play server-generated audio
+      const audio = new Audio(audioUrl);
+      narratorAudioRef.current = audio;
+      audio.onended = () => {
+        URL.revokeObjectURL(audioUrl);
+        const nextIdx = paraIndex + 1;
+        if (nextIdx < chapter.paragraphs.length) {
+          setNarratorParagraph(nextIdx);
+          narrateParagraph(nextIdx, voice);
+        } else {
+          setNarratorState("idle");
+        }
+      };
+      audio.play();
+    } else {
+      // Web Speech API fallback
+      if (!webSpeechRef.current) {
+        webSpeechRef.current = createWebSpeechNarrator(voice, bookLang as "en" | "es" | "zh" | "es-zh");
+      }
+      webSpeechRef.current.speak(
+        para.text,
+        () => {
+          const nextIdx = paraIndex + 1;
+          if (nextIdx < chapter.paragraphs.length) {
+            setNarratorParagraph(nextIdx);
+            narrateParagraph(nextIdx, voice);
+          } else {
+            setNarratorState("idle");
+          }
+        },
+        () => {
+          setNarratorState("idle");
+        }
+      );
+    }
+  }, [chapter.paragraphs, book?.language]);
+
+  // ── Narrator: handle voice selection ───────────────────────────────
+  const handleNarratorSelect = useCallback((voice: NarratorVoice) => {
+    setSelectedNarrator(voice);
+    setNarratorState("narrating");
+    const startPara = pageOneEnd;
+    setNarratorParagraph(startPara);
+    narrateParagraph(startPara, voice);
+  }, [pageOneEnd, narrateParagraph]);
+
+  // ── Narrator: toggle play/pause ────────────────────────────────────
+  const handleNarratorToggle = useCallback(() => {
+    if (narratorState === "narrating") {
+      narratorAudioRef.current?.pause();
+      webSpeechRef.current?.stop();
+      setNarratorState("paused");
+    } else if (narratorState === "paused" && selectedNarrator) {
+      setNarratorState("narrating");
+      narrateParagraph(narratorParagraph, selectedNarrator);
+    }
+  }, [narratorState, selectedNarrator, narratorParagraph, narrateParagraph]);
+
+  // ── Narrator: stop completely ──────────────────────────────────────
+  const handleNarratorStop = useCallback(() => {
+    narratorAudioRef.current?.pause();
+    webSpeechRef.current?.stop();
+    setNarratorState("idle");
+    setSelectedNarrator(null);
+  }, []);
+
+  // ── Cleanup narrator on unmount ────────────────────────────────────
+  useEffect(() => {
+    return () => {
+      narratorAudioRef.current?.pause();
+      webSpeechRef.current?.stop();
+    };
+  }, []);
+
   // ── Reader session — determines which ink features are unlocked ────
   const [readerTier,  setReaderTier]  = useState<SubscriptionTierName | null>(null);
   const [readerId,    setReaderId]    = useState<string | null>(null);
   const [readerEmail, setReaderEmail] = useState<string | null>(null);
 
   // ── Track reading for return path captures ──────────────────────────────
-  const book = chapter.bookSlug ? BOOKS[chapter.bookSlug] : null;
   useTrackReading({
     bookSlug: chapter.bookSlug ?? "",
     bookTitle: book?.title ?? "",
@@ -348,6 +459,31 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
             </div>
           )}
 
+          {/* ── Author Voiceover — page 1 audio ─────────────── */}
+          {hasAuthorAudio && narratorState === "idle" && (
+            <AuthorVoiceover
+              audioUrl={chapter.authorAudioUrl!}
+              authorName={book?.author ?? "The Author"}
+              chapterTitle={chapter.title}
+              accentColor={book?.accentColor}
+              onComplete={() => setNarratorState("selecting")}
+              onSkip={() => setNarratorState("selecting")}
+            />
+          )}
+
+          {/* ── Narrator selector — after voiceover ends ───── */}
+          <AnimatePresence>
+            {narratorState === "selecting" && (
+              <NarratorSelector
+                authorName={book?.author ?? "The Author"}
+                bookLanguage={book?.language ?? "en"}
+                accentColor={book?.accentColor}
+                onSelect={handleNarratorSelect}
+                onDismiss={() => setNarratorState("idle")}
+              />
+            )}
+          </AnimatePresence>
+
           {/* ── Paragraphs ──────────────────────────────────── */}
           {chapter.paragraphs.map((para, i) => {
             if (para.isSectionBreak) {
@@ -361,22 +497,25 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
               w.anchoredText && para.text.includes(w.anchoredText)
             );
 
+            const isNarrating = narratorState === "narrating" && narratorParagraph === para.index;
+
             return (
-              <AnnotatableText
-                key={`para-${para.index}`}
-                text={para.text}
-                paragraphIndex={para.index}
-                chapterSlug={chapter.slug}
-                activeInkType={activeInkType}
-                annotations={annotations.filter(
-                  (a) => a.selection.paragraphIndex === para.index
-                )}
-                onAnnotationCreated={handleAnnotationCreated}
-                canAnnotate={hasAccess("codex")}
-                onGateTriggered={handleGateTriggered}
-                isFirstParagraph={i === 0 || (i > 0 && chapter.paragraphs[i - 1]?.isSectionBreak)}
-                hasWhisperAnchor={paraHasWhisper}
-              />
+              <div key={`para-${para.index}`} data-paragraph={para.index}>
+                <AnnotatableText
+                  text={para.text}
+                  paragraphIndex={para.index}
+                  chapterSlug={chapter.slug}
+                  activeInkType={activeInkType}
+                  annotations={annotations.filter(
+                    (a) => a.selection.paragraphIndex === para.index
+                  )}
+                  onAnnotationCreated={handleAnnotationCreated}
+                  canAnnotate={hasAccess("codex")}
+                  onGateTriggered={handleGateTriggered}
+                  isFirstParagraph={i === 0 || (i > 0 && chapter.paragraphs[i - 1]?.isSectionBreak)}
+                  hasWhisperAnchor={paraHasWhisper}
+                />
+              </div>
             );
           })}
 
@@ -464,6 +603,20 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
 
       {/* ── Session depth: email capture on 2nd page view ────────── */}
       <DepthEmailCapture />
+
+      {/* ── Narrator control bar — floating bottom bar when AI narrator is active ── */}
+      <AnimatePresence>
+        {(narratorState === "narrating" || narratorState === "paused") && selectedNarrator && (
+          <NarratorControlBar
+            voice={selectedNarrator}
+            isPlaying={narratorState === "narrating"}
+            currentParagraph={narratorParagraph + 1}
+            totalParagraphs={chapter.paragraphs.filter(p => !p.isSectionBreak).length}
+            onTogglePlay={handleNarratorToggle}
+            onStop={handleNarratorStop}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

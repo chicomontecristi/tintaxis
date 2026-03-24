@@ -417,6 +417,29 @@ button, a, [role="button"] {
   }
 }
 
+/* ─── NARRATOR HIGHLIGHT ──────────────────────────────────────────── */
+/* Brief glow on the paragraph currently being read by the AI narrator */
+.narrator-highlight {
+  position: relative;
+}
+.narrator-highlight::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, var(--brass) 20%, var(--brass) 80%, transparent);
+  opacity: 0.4;
+  animation: narrator-pulse 2s ease-in-out;
+}
+@keyframes narrator-pulse {
+  0%   { opacity: 0; }
+  20%  { opacity: 0.5; }
+  80%  { opacity: 0.3; }
+  100% { opacity: 0; }
+}
+
 /* ─── MOBILE — MINIMUM TOUCH TARGET SIZE ─────────────────────────── */
 /* Only apply to standalone interactive elements, not inline text links */
 @media (max-width: 640px) {

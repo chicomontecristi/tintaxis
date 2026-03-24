@@ -382,7 +382,7 @@ function SignalCard({ signal, onReply }: { signal: SignalQuestion; onReply: (id:
 }
 
 // ─── MAIN DASHBOARD ────────────────────────────────────────────────────────────
-type DashTab = "signals" | "whispers" | "chapters" | "analytics";
+type DashTab = "signals" | "whispers" | "chapters" | "voiceover" | "analytics";
 
 interface LiveStats {
   readers: { total: number; active: number; byTier: Record<string, number> };
@@ -398,6 +398,17 @@ export default function AuthorDashboard() {
   const [whispers, setWhispers] = useState<WhisperEntry[]>([]);
   const [whisperForm, setWhisperForm] = useState({ chapterSlug: "one", anchorText: "", whisper: "" });
   const [whisperStatus, setWhisperStatus] = useState<"idle" | "saved">("idle");
+
+  // ── Voiceover state ──────────────────────────────────────────────────────
+  const [voiceovers, setVoiceovers] = useState<Record<string, string>>({}); // chapterSlug → url
+  const [uploadingChapter, setUploadingChapter] = useState<string | null>(null);
+  const [recordingChapter, setRecordingChapter] = useState<string | null>(null);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const recordingTimerRef = { current: null as NodeJS.Timeout | null };
+  const [voiceoverPreview, setVoiceoverPreview] = useState<string | null>(null); // object URL
+
   const [stats, setStats] = useState<LiveStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
 
@@ -439,6 +450,19 @@ export default function AuthorDashboard() {
       .catch(() => {})
       .finally(() => setStatsLoading(false));
 
+    // Fetch existing voiceovers
+    fetch("/api/author/audio?book=the-hunt")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.voiceovers) {
+          const map: Record<string, string> = {};
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          data.voiceovers.forEach((v: any) => { map[v.chapterSlug] = v.url; });
+          setVoiceovers(map);
+        }
+      })
+      .catch(() => {});
+
     // Fetch whispers
     fetch("/api/author/whispers")
       .then((r) => r.json())
@@ -475,6 +499,83 @@ export default function AuthorDashboard() {
       });
     } catch (err) {
       console.error("[dashboard] reply persist failed:", err);
+    }
+  };
+
+  // ── Voiceover upload handler ────────────────────────────────────────────
+  const handleVoiceoverUpload = async (chapterSlug: string, file: File) => {
+    setUploadingChapter(chapterSlug);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("bookSlug", "the-hunt");
+      fd.append("chapterSlug", chapterSlug);
+
+      const res = await fetch("/api/author/audio", {
+        method: "POST",
+        headers: { "x-author-key": "tintaxis-author-2026" }, // Phase 2: real auth
+        body: fd,
+      });
+      const data = await res.json();
+      if (data.url) {
+        setVoiceovers((prev) => ({ ...prev, [chapterSlug]: data.url }));
+      }
+    } catch (err) {
+      console.error("[voiceover] upload failed:", err);
+    } finally {
+      setUploadingChapter(null);
+    }
+  };
+
+  // ── Browser recording handlers ────────────────────────────────────────
+  const startRecording = async (chapterSlug: string) => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
+      const chunks: Blob[] = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        stream.getTracks().forEach((t) => t.stop());
+        setRecordedChunks(chunks);
+        const blob = new Blob(chunks, { type: "audio/webm" });
+        setVoiceoverPreview(URL.createObjectURL(blob));
+        setRecordingChapter(null);
+        if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+      };
+
+      recorder.start();
+      setMediaRecorder(recorder);
+      setRecordingChapter(chapterSlug);
+      setRecordingTime(0);
+      setRecordedChunks([]);
+      setVoiceoverPreview(null);
+
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingTime((t) => t + 1);
+      }, 1000);
+    } catch (err) {
+      console.error("[voiceover] mic access denied:", err);
+    }
+  };
+
+  const stopRecording = () => {
+    mediaRecorder?.stop();
+    if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+  };
+
+  const saveRecording = async (chapterSlug: string) => {
+    if (recordedChunks.length === 0) return;
+    const blob = new Blob(recordedChunks, { type: "audio/webm" });
+    const file = new File([blob], `${chapterSlug}.webm`, { type: "audio/webm" });
+    await handleVoiceoverUpload(chapterSlug, file);
+    setRecordedChunks([]);
+    if (voiceoverPreview) {
+      URL.revokeObjectURL(voiceoverPreview);
+      setVoiceoverPreview(null);
     }
   };
 
@@ -542,6 +643,7 @@ export default function AuthorDashboard() {
     { id: "signals",   label: "SIGNALS",   badge: openSignals.length || undefined },
     { id: "whispers",  label: "WHISPERS" },
     { id: "chapters",  label: "CHAPTERS" },
+    { id: "voiceover", label: "VOICE" },
     { id: "analytics", label: "ANALYTICS" },
   ];
 
@@ -1073,6 +1175,287 @@ export default function AuthorDashboard() {
                 }}
               >
                 To unlock a chapter — contact Tintaxis or update chapters.ts directly
+              </p>
+            </motion.div>
+          )}
+
+          {/* VOICEOVER TAB */}
+          {activeTab === "voiceover" && (
+            <motion.div
+              key="voiceover"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+            >
+              <SectionHeader label="Chapter Voice-Overs" />
+
+              <p
+                style={{
+                  fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                  fontSize: "0.95rem",
+                  fontStyle: "italic",
+                  color: "rgba(245,230,200,0.4)",
+                  lineHeight: 1.7,
+                  marginBottom: "1.5rem",
+                  maxWidth: "56ch",
+                }}
+              >
+                Record or upload your voice reading the opening of each chapter.
+                Readers hear you first — then choose an AI narrator for the rest.
+              </p>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
+                {MOCK_CHAPTERS.map((ch) => {
+                  const hasAudio = !!voiceovers[ch.slug];
+                  const isUploading = uploadingChapter === ch.slug;
+                  const isRecording = recordingChapter === ch.slug;
+
+                  return (
+                    <div
+                      key={ch.slug}
+                      style={{
+                        border: `1px solid ${hasAudio ? "rgba(201,168,76,0.18)" : "rgba(201,168,76,0.08)"}`,
+                        padding: "1.25rem 1.5rem",
+                        background: hasAudio ? "rgba(201,168,76,0.02)" : "transparent",
+                        marginBottom: "0.5rem",
+                      }}
+                    >
+                      {/* Chapter header row */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+                        <div>
+                          <span
+                            style={{
+                              fontFamily: '"JetBrains Mono", monospace',
+                              fontSize: "0.48rem",
+                              letterSpacing: "0.15em",
+                              color: "rgba(201,168,76,0.4)",
+                              marginRight: "0.5rem",
+                            }}
+                          >
+                            CH. {ch.number}
+                          </span>
+                          <span
+                            style={{
+                              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                              fontSize: "1rem",
+                              color: "rgba(245,230,200,0.7)",
+                            }}
+                          >
+                            {ch.title}
+                          </span>
+                        </div>
+                        <span
+                          style={{
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: "0.44rem",
+                            letterSpacing: "0.15em",
+                            color: hasAudio ? "rgba(201,168,76,0.5)" : "rgba(245,230,200,0.15)",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {hasAudio ? "✓ UPLOADED" : "NO AUDIO"}
+                        </span>
+                      </div>
+
+                      {/* Existing audio playback */}
+                      {hasAudio && (
+                        <div style={{ marginBottom: "0.75rem" }}>
+                          <audio
+                            src={voiceovers[ch.slug]}
+                            controls
+                            style={{
+                              width: "100%",
+                              height: "32px",
+                              opacity: 0.7,
+                              filter: "sepia(0.3) brightness(0.9)",
+                            }}
+                          />
+                        </div>
+                      )}
+
+                      {/* Recording preview */}
+                      {voiceoverPreview && !isRecording && recordedChunks.length > 0 && (
+                        <div style={{ marginBottom: "0.75rem" }}>
+                          <p
+                            style={{
+                              fontFamily: '"JetBrains Mono", monospace',
+                              fontSize: "0.44rem",
+                              letterSpacing: "0.15em",
+                              color: "rgba(201,168,76,0.4)",
+                              textTransform: "uppercase",
+                              marginBottom: "0.4rem",
+                            }}
+                          >
+                            Preview Recording
+                          </p>
+                          <audio
+                            src={voiceoverPreview}
+                            controls
+                            style={{
+                              width: "100%",
+                              height: "32px",
+                              opacity: 0.7,
+                              filter: "sepia(0.3) brightness(0.9)",
+                              marginBottom: "0.5rem",
+                            }}
+                          />
+                          <div style={{ display: "flex", gap: "0.5rem" }}>
+                            <button
+                              onClick={() => saveRecording(ch.slug)}
+                              disabled={isUploading}
+                              style={{
+                                fontFamily: '"JetBrains Mono", monospace',
+                                fontSize: "0.48rem",
+                                letterSpacing: "0.15em",
+                                textTransform: "uppercase",
+                                color: "#C9A84C",
+                                background: "transparent",
+                                border: "1px solid rgba(201,168,76,0.3)",
+                                padding: "0.4rem 1rem",
+                                cursor: isUploading ? "wait" : "pointer",
+                              }}
+                            >
+                              {isUploading ? "Saving…" : "Save & Upload"}
+                            </button>
+                            <button
+                              onClick={() => {
+                                setRecordedChunks([]);
+                                if (voiceoverPreview) URL.revokeObjectURL(voiceoverPreview);
+                                setVoiceoverPreview(null);
+                              }}
+                              style={{
+                                fontFamily: '"JetBrains Mono", monospace',
+                                fontSize: "0.48rem",
+                                letterSpacing: "0.15em",
+                                textTransform: "uppercase",
+                                color: "rgba(245,230,200,0.25)",
+                                background: "transparent",
+                                border: "none",
+                                cursor: "pointer",
+                                padding: "0.4rem 0.5rem",
+                              }}
+                            >
+                              Discard
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Action buttons */}
+                      <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+                        {/* Record button */}
+                        {isRecording ? (
+                          <button
+                            onClick={stopRecording}
+                            style={{
+                              fontFamily: '"JetBrains Mono", monospace',
+                              fontSize: "0.48rem",
+                              letterSpacing: "0.15em",
+                              textTransform: "uppercase",
+                              color: "#C0392B",
+                              background: "transparent",
+                              border: "1px solid rgba(192,57,43,0.4)",
+                              padding: "0.4rem 1rem",
+                              cursor: "pointer",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "0.4rem",
+                            }}
+                          >
+                            <span style={{
+                              width: "6px",
+                              height: "6px",
+                              borderRadius: "50%",
+                              backgroundColor: "#C0392B",
+                              display: "inline-block",
+                              animation: "narrator-pulse 1s ease-in-out infinite",
+                            }} />
+                            Stop · {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, "0")}
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => startRecording(ch.slug)}
+                            disabled={!!recordingChapter}
+                            style={{
+                              fontFamily: '"JetBrains Mono", monospace',
+                              fontSize: "0.48rem",
+                              letterSpacing: "0.15em",
+                              textTransform: "uppercase",
+                              color: "rgba(201,168,76,0.5)",
+                              background: "transparent",
+                              border: "1px solid rgba(201,168,76,0.15)",
+                              padding: "0.4rem 1rem",
+                              cursor: recordingChapter ? "not-allowed" : "pointer",
+                              opacity: recordingChapter && !isRecording ? 0.3 : 1,
+                            }}
+                          >
+                            ● Record
+                          </button>
+                        )}
+
+                        {/* Upload button */}
+                        <label
+                          style={{
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: "0.48rem",
+                            letterSpacing: "0.15em",
+                            textTransform: "uppercase",
+                            color: "rgba(201,168,76,0.5)",
+                            background: "transparent",
+                            border: "1px solid rgba(201,168,76,0.15)",
+                            padding: "0.4rem 1rem",
+                            cursor: isUploading ? "wait" : "pointer",
+                            display: "inline-block",
+                            opacity: isUploading ? 0.5 : 1,
+                          }}
+                        >
+                          {isUploading ? "Uploading…" : "↑ Upload File"}
+                          <input
+                            type="file"
+                            accept="audio/mpeg,audio/mp3,audio/mp4,audio/m4a,audio/wav,audio/webm,.mp3,.m4a,.wav,.webm"
+                            style={{ display: "none" }}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleVoiceoverUpload(ch.slug, file);
+                              e.target.value = "";
+                            }}
+                          />
+                        </label>
+
+                        {/* Replace indicator */}
+                        {hasAudio && (
+                          <span
+                            style={{
+                              fontFamily: '"JetBrains Mono", monospace',
+                              fontSize: "0.4rem",
+                              color: "rgba(245,230,200,0.15)",
+                              letterSpacing: "0.1em",
+                            }}
+                          >
+                            Recording or uploading will replace the current file
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <BrassRule />
+
+              <p
+                style={{
+                  fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                  fontSize: "0.85rem",
+                  fontStyle: "italic",
+                  color: "rgba(245,230,200,0.25)",
+                  lineHeight: 1.7,
+                  maxWidth: "52ch",
+                }}
+              >
+                Tip: Read the first page of each chapter — roughly 2–3 minutes. Speak naturally.
+                Your voice creates the first impression; the AI narrator carries the rest.
               </p>
             </motion.div>
           )}
