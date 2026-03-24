@@ -131,26 +131,9 @@ export default function HomeClient() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.15 }}
         >
-          Read books the way they were meant to be read.
-        </motion.p>
-
-        <motion.p
-          className="mb-10"
-          style={{
-            fontFamily: SERIF,
-            fontSize: "clamp(0.95rem, 2vw, 1.1rem)",
-            fontStyle: "italic",
-            color: "rgba(245,230,200,0.45)",
-            lineHeight: 1.6,
-            maxWidth: "480px",
-          }}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.25 }}
-        >
-          Three writers. Six works. English, Spanish, and Mandarin.
+          Step inside a book. Annotate it. Question it.
           <br />
-          No ads. No algorithm. Free to read.
+          Hear the author whisper back.
         </motion.p>
 
         {/* CTA — visible immediately */}
