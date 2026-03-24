@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
@@ -19,7 +19,15 @@ const PUBLIC_LINKS = [
 
 export default function SiteNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const [session, setSession] = useState<{ role: string | null; name?: string }>({ role: null });
+
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    setSession({ role: null });
+    router.push("/");
+    router.refresh();
+  };
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -98,6 +106,27 @@ export default function SiteNav() {
             </Link>
           );
         })}
+        {session.role && (
+          <button
+            onClick={handleLogout}
+            style={{
+              fontFamily: MONO,
+              fontSize: "0.65rem",
+              letterSpacing: "0.2em",
+              color: "rgba(192,57,43,0.45)",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              textTransform: "uppercase",
+              padding: 0,
+              transition: "color 0.2s ease",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(192,57,43,0.8)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(192,57,43,0.45)")}
+          >
+            Log Out
+          </button>
+        )}
       </div>
     </nav>
   );
