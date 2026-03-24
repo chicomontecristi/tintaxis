@@ -458,7 +458,7 @@ export default function AuthorDashboard() {
         if (data.voiceovers) {
           const map: Record<string, string> = {};
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          data.voiceovers.forEach((v: any) => { map[v.chapterSlug] = v.url; });
+          data.voiceovers.forEach((v: any) => { map[v.chapterSlug] = `${v.url}?t=${Date.now()}`; });
           setVoiceovers(map);
         }
       })
@@ -548,7 +548,8 @@ export default function AuthorDashboard() {
         alert(`Upload failed: ${data.error || "Unknown error"}`);
         return false;
       }
-      setVoiceovers((prev) => ({ ...prev, [chapterSlug]: data.url }));
+      // Append cache-buster so the browser doesn't serve stale audio
+      setVoiceovers((prev) => ({ ...prev, [chapterSlug]: `${data.url}?t=${Date.now()}` }));
       return true;
     } catch (err) {
       console.error("[voiceover] upload failed:", err);
