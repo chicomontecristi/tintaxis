@@ -222,6 +222,20 @@ export default function BookPageClient() {
           {/* Trust signals */}
           <TrustLine />
 
+          {/* Free signal */}
+          <p
+            style={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontSize: "0.5rem",
+              letterSpacing: "0.15em",
+              color: "rgba(0,229,204,0.5)",
+              textTransform: "uppercase",
+              marginBottom: "0.75rem",
+            }}
+          >
+            Free to read · No account required
+          </p>
+
           {/* Start reading CTA */}
           <Link
             href={`/book/${book.slug}/chapter/${book.firstChapterSlug}`}
@@ -409,7 +423,7 @@ function ChapterRow({
           textAlign: "right",
         }}
       >
-        {chapter.isLocked ? "🔒 Sealed" : `${chapter.wordCount.toLocaleString()} wds`}
+        {chapter.isLocked ? "Coming soon" : `${chapter.wordCount.toLocaleString()} wds`}
       </span>
     </motion.div>
   );

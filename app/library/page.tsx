@@ -103,7 +103,7 @@ export default function LibraryPage() {
             textTransform: "uppercase",
             marginBottom: "0.75rem",
           }}>
-            Tintaxis · Inaugural Archive
+            Tintaxis · Library
           </p>
           <h1 style={{
             fontFamily: '"EB Garamond", Garamond, Georgia, serif',
@@ -122,7 +122,7 @@ export default function LibraryPage() {
             color: "rgba(245,230,200,0.35)",
             margin: 0,
           }}>
-            {allBooks.length} works available · More writers coming soon
+            {allBooks.length} works · Free to read · No account required
           </p>
         </motion.div>
 
@@ -205,11 +205,11 @@ export default function LibraryPage() {
           )}
         </AnimatePresence>
 
-        {/* ── Email capture ─────────────────────────── */}
+        {/* ── Experience nudge ───────────────────────── */}
         <div style={{
           marginTop: "3.5rem",
           paddingTop: "2rem",
-          borderTop: "1px solid rgba(201,168,76,0.06)",
+          borderTop: "1px solid rgba(201,168,76,0.1)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -219,12 +219,26 @@ export default function LibraryPage() {
             fontFamily: '"EB Garamond", Garamond, Georgia, serif',
             fontSize: "1rem",
             fontStyle: "italic",
-            color: "rgba(245,230,200,0.4)",
+            color: "rgba(245,230,200,0.5)",
             textAlign: "center",
+            maxWidth: "400px",
+            lineHeight: 1.6,
           }}>
-            New chapters are coming. Get notified.
+            Curious how Tintaxis works? See how readers and authors connect inside the text.
           </p>
-          <LibraryEmailCapture />
+          <Link href="/experience" style={{
+            fontFamily: '"JetBrains Mono", monospace',
+            fontSize: "0.55rem",
+            letterSpacing: "0.2em",
+            color: "rgba(201,168,76,0.6)",
+            textDecoration: "none",
+            textTransform: "uppercase",
+            border: "1px solid rgba(201,168,76,0.2)",
+            padding: "0.6rem 1.5rem",
+            transition: "all 0.2s ease",
+          }}>
+            See the Experience →
+          </Link>
         </div>
 
         {/* Footer */}
@@ -236,7 +250,7 @@ export default function LibraryPage() {
             color: "rgba(245,230,200,0.1)",
             textTransform: "uppercase",
           }}>
-            Tintaxis · More works coming
+            Tintaxis · A Literary Platform
           </span>
         </div>
       </main>
@@ -421,7 +435,7 @@ function BookCard({
               transition: "color 0.2s ease",
               marginTop: "4px",
             }}>
-              Enter →
+              Read Free →
             </span>
           </div>
         </div>
@@ -462,86 +476,5 @@ function SortButton({
     >
       {label}
     </button>
-  );
-}
-
-// ─── LIBRARY EMAIL CAPTURE ───────────────────────────────────────────────────
-
-function LibraryEmailCapture() {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setStatus("sending");
-    try {
-      const res = await fetch("/api/email-capture", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), source: "library" }),
-      });
-      setStatus(res.ok ? "done" : "error");
-    } catch {
-      setStatus("error");
-    }
-  };
-
-  if (status === "done") {
-    return (
-      <p
-        style={{
-          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-          fontSize: "0.95rem",
-          fontStyle: "italic",
-          color: "rgba(0,229,204,0.55)",
-        }}
-      >
-        Welcome to the archive.
-      </p>
-    );
-  }
-
-  return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", gap: "0", maxWidth: "340px", width: "100%" }}>
-      <input
-        type="email"
-        placeholder="your@email.com"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        style={{
-          flex: 1,
-          fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.5rem",
-          letterSpacing: "0.1em",
-          padding: "9px 12px",
-          border: "1px solid rgba(201,168,76,0.15)",
-          borderRight: "none",
-          borderRadius: "2px 0 0 2px",
-          background: "rgba(201,168,76,0.03)",
-          color: "rgba(245,230,200,0.7)",
-          outline: "none",
-        }}
-      />
-      <button
-        type="submit"
-        disabled={status === "sending"}
-        style={{
-          fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.45rem",
-          letterSpacing: "0.15em",
-          textTransform: "uppercase",
-          padding: "9px 16px",
-          border: "1px solid rgba(201,168,76,0.2)",
-          borderRadius: "0 2px 2px 0",
-          background: "rgba(201,168,76,0.08)",
-          color: "rgba(201,168,76,0.6)",
-          cursor: status === "sending" ? "wait" : "pointer",
-        }}
-      >
-        {status === "sending" ? "..." : "Join"}
-      </button>
-    </form>
   );
 }
