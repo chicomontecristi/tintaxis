@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, useRef, FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
 
@@ -406,8 +406,9 @@ export default function AuthorDashboard() {
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
   const [recordingTime, setRecordingTime] = useState(0);
-  const recordingTimerRef = { current: null as NodeJS.Timeout | null };
+  const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [voiceoverPreview, setVoiceoverPreview] = useState<string | null>(null); // object URL
+  const [previewChapter, setPreviewChapter] = useState<string | null>(null); // which chapter the preview belongs to
 
   const [stats, setStats] = useState<LiveStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
@@ -528,26 +529,48 @@ export default function AuthorDashboard() {
   };
 
   // ── Browser recording handlers ────────────────────────────────────────
+  const chunksRef = useRef<Blob[]>([]);
+
   const startRecording = async (chapterSlug: string) => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
-      const chunks: Blob[] = [];
+
+      // Pick a supported mimeType — Safari doesn't support webm
+      const mimeType = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+        ? "audio/webm;codecs=opus"
+        : MediaRecorder.isTypeSupported("audio/webm")
+        ? "audio/webm"
+        : MediaRecorder.isTypeSupported("audio/mp4")
+        ? "audio/mp4"
+        : ""; // let browser pick default
+
+      const recorder = mimeType
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream);
+
+      chunksRef.current = [];
 
       recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunks.push(e.data);
+        if (e.data && e.data.size > 0) {
+          chunksRef.current.push(e.data);
+        }
       };
 
       recorder.onstop = () => {
         stream.getTracks().forEach((t) => t.stop());
-        setRecordedChunks(chunks);
-        const blob = new Blob(chunks, { type: "audio/webm" });
-        setVoiceoverPreview(URL.createObjectURL(blob));
+        const finalChunks = [...chunksRef.current];
+        setRecordedChunks(finalChunks);
+        if (finalChunks.length > 0) {
+          const blob = new Blob(finalChunks, { type: recorder.mimeType || "audio/webm" });
+          setVoiceoverPreview(URL.createObjectURL(blob));
+          setPreviewChapter(chapterSlug); // scope preview to this chapter
+        }
         setRecordingChapter(null);
         if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
       };
 
-      recorder.start();
+      // Start with 1-second timeslice so ondataavailable fires periodically
+      recorder.start(1000);
       setMediaRecorder(recorder);
       setRecordingChapter(chapterSlug);
       setRecordingTime(0);
@@ -559,24 +582,30 @@ export default function AuthorDashboard() {
       }, 1000);
     } catch (err) {
       console.error("[voiceover] mic access denied:", err);
+      alert("Microphone access denied. Check your browser permissions.");
     }
   };
 
   const stopRecording = () => {
-    mediaRecorder?.stop();
+    if (mediaRecorder && mediaRecorder.state !== "inactive") {
+      mediaRecorder.stop();
+    }
     if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
   };
 
   const saveRecording = async (chapterSlug: string) => {
     if (recordedChunks.length === 0) return;
-    const blob = new Blob(recordedChunks, { type: "audio/webm" });
-    const file = new File([blob], `${chapterSlug}.webm`, { type: "audio/webm" });
+    const mimeType = recordedChunks[0]?.type || "audio/webm";
+    const ext = mimeType.includes("mp4") ? "mp4" : "webm";
+    const blob = new Blob(recordedChunks, { type: mimeType });
+    const file = new File([blob], `${chapterSlug}.${ext}`, { type: mimeType });
     await handleVoiceoverUpload(chapterSlug, file);
     setRecordedChunks([]);
     if (voiceoverPreview) {
       URL.revokeObjectURL(voiceoverPreview);
       setVoiceoverPreview(null);
     }
+    setPreviewChapter(null);
   };
 
   const handleLogout = async () => {
@@ -1275,7 +1304,7 @@ export default function AuthorDashboard() {
                       )}
 
                       {/* Recording preview */}
-                      {voiceoverPreview && !isRecording && recordedChunks.length > 0 && (
+                      {voiceoverPreview && !isRecording && recordedChunks.length > 0 && previewChapter === ch.slug && (
                         <div style={{ marginBottom: "0.75rem" }}>
                           <p
                             style={{
@@ -1323,6 +1352,7 @@ export default function AuthorDashboard() {
                                 setRecordedChunks([]);
                                 if (voiceoverPreview) URL.revokeObjectURL(voiceoverPreview);
                                 setVoiceoverPreview(null);
+                                setPreviewChapter(null);
                               }}
                               style={{
                                 fontFamily: '"JetBrains Mono", monospace',
