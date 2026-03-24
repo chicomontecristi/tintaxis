@@ -69,6 +69,21 @@ function verifyJWT(token: string): SessionPayload | null {
 
 // ── Cookie helpers ────────────────────────────────────────────────────────────
 
+/** Sign a JWT and return just the token string (for use with response.cookies.set) */
+export function signSessionToken(payload: Omit<SessionPayload, "iat" | "exp">): string {
+  return signJWT(payload);
+}
+
+/** Cookie options for use with NextResponse.cookies.set() */
+export const SESSION_COOKIE_OPTIONS = {
+  httpOnly: true,
+  path: "/",
+  sameSite: "lax" as const,
+  maxAge: EXPIRES_IN,
+  secure: process.env.NODE_ENV === "production",
+};
+
+/** Legacy string-based cookie (kept for getSessionFromCookie) */
 export function createSessionCookie(payload: Omit<SessionPayload, "iat" | "exp">): string {
   const token = signJWT(payload);
   return `${COOKIE_NAME}=${token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${EXPIRES_IN}${

@@ -14,6 +14,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
+import { getSessionFromCookie } from "@/lib/auth";
 
 const MAX_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = [
@@ -28,9 +29,8 @@ const ALLOWED_TYPES = [
 
 export async function POST(req: NextRequest) {
   try {
-    // Phase 2: Verify author session here
-    const authHeader = req.headers.get("x-author-key");
-    if (authHeader !== process.env.AUTHOR_DASHBOARD_KEY) {
+    const session = getSessionFromCookie(req.headers.get("cookie"));
+    if (!session || session.role !== "author") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

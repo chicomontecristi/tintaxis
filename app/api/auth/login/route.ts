@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { validateAuthorCredentials, createSessionCookie } from "@/lib/auth";
+import { validateAuthorCredentials, signSessionToken, SESSION_COOKIE_OPTIONS, COOKIE_NAME } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,14 +10,14 @@ export async function POST(req: NextRequest) {
     }
 
     if (validateAuthorCredentials(email, password)) {
-      const cookie = createSessionCookie({
+      const token = signSessionToken({
         sub: email,
         role: "author",
         name: "Chico Montecristi",
       });
 
       const res = NextResponse.json({ ok: true, role: "author" });
-      res.headers.set("Set-Cookie", cookie);
+      res.cookies.set(COOKIE_NAME, token, SESSION_COOKIE_OPTIONS);
       return res;
     }
 

@@ -10,17 +10,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 const SESSION_COOKIE = "tintaxis_session";
 
-function hasSessionCookie(cookieHeader: string | null): boolean {
-  if (!cookieHeader) return false;
-  return cookieHeader.split(";").some((c) =>
-    c.trim().startsWith(SESSION_COOKIE + "=")
-  );
-}
-
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const cookieHeader = req.headers.get("cookie");
-  const authed       = hasSessionCookie(cookieHeader);
+  const sessionCookie = req.cookies.get(SESSION_COOKIE);
+  const authed = !!sessionCookie?.value;
 
   // ── Author dashboard ─────────────────────────────────────────────────────
   if (pathname.startsWith("/author") && !pathname.startsWith("/author/login")) {

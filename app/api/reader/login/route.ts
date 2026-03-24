@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { comparePassword } from "@/lib/crypto";
 import { getReaderByEmail, getReaderPasswordHash } from "@/lib/db";
-import { createSessionCookie } from "@/lib/auth";
+import { signSessionToken, SESSION_COOKIE_OPTIONS, COOKIE_NAME } from "@/lib/auth";
 
 // ─── POST /api/reader/login ───────────────────────────────────────────────────
 // Authenticate a reader with email + password.
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Account not found" }, { status: 404 });
   }
 
-  const cookie = createSessionCookie({
+  const token = signSessionToken({
     sub:                    reader.email,
     role:                   reader.role,
     name:                   reader.name ?? reader.email,
@@ -52,19 +52,15 @@ export async function POST(req: NextRequest) {
     stripeSubscriptionId:   reader.stripe_subscription_id ?? undefined,
   });
 
-  return NextResponse.json(
-    {
-      success:     true,
-      id:          reader.id,
-      email:       reader.email,
-      name:        reader.name,
-      readingName: reader.reading_name,
-      active:      reader.active,
-      tier:        reader.tier,
-    },
-    {
-      status: 200,
-      headers: { "Set-Cookie": cookie },
-    }
-  );
+  const res = NextResponse.json({
+    success:     true,
+    id:          reader.id,
+    email:       reader.email,
+    name:        reader.name,
+    readingName: reader.reading_name,
+    active:      reader.active,
+    tier:        reader.tier,
+  });
+  res.cookies.set(COOKIE_NAME, token, SESSION_COOKIE_OPTIONS);
+  return res;
 }

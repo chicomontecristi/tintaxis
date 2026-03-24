@@ -504,7 +504,7 @@ export default function AuthorDashboard() {
   };
 
   // ── Voiceover upload handler ────────────────────────────────────────────
-  const handleVoiceoverUpload = async (chapterSlug: string, file: File) => {
+  const handleVoiceoverUpload = async (chapterSlug: string, file: File): Promise<boolean> => {
     setUploadingChapter(chapterSlug);
     try {
       const fd = new FormData();
@@ -514,15 +514,19 @@ export default function AuthorDashboard() {
 
       const res = await fetch("/api/author/audio", {
         method: "POST",
-        headers: { "x-author-key": "tintaxis-author-2026" }, // Phase 2: real auth
         body: fd,
       });
       const data = await res.json();
-      if (data.url) {
-        setVoiceovers((prev) => ({ ...prev, [chapterSlug]: data.url }));
+      if (!res.ok || !data.url) {
+        alert(`Upload failed: ${data.error || "Unknown error"}`);
+        return false;
       }
+      setVoiceovers((prev) => ({ ...prev, [chapterSlug]: data.url }));
+      return true;
     } catch (err) {
       console.error("[voiceover] upload failed:", err);
+      alert("Upload failed — check your connection and try again.");
+      return false;
     } finally {
       setUploadingChapter(null);
     }
@@ -599,13 +603,15 @@ export default function AuthorDashboard() {
     const ext = mimeType.includes("mp4") ? "mp4" : "webm";
     const blob = new Blob(recordedChunks, { type: mimeType });
     const file = new File([blob], `${chapterSlug}.${ext}`, { type: mimeType });
-    await handleVoiceoverUpload(chapterSlug, file);
-    setRecordedChunks([]);
-    if (voiceoverPreview) {
-      URL.revokeObjectURL(voiceoverPreview);
-      setVoiceoverPreview(null);
+    const ok = await handleVoiceoverUpload(chapterSlug, file);
+    if (ok) {
+      setRecordedChunks([]);
+      if (voiceoverPreview) {
+        URL.revokeObjectURL(voiceoverPreview);
+        setVoiceoverPreview(null);
+      }
+      setPreviewChapter(null);
     }
-    setPreviewChapter(null);
   };
 
   const handleLogout = async () => {
