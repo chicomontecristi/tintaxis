@@ -315,6 +315,313 @@ function PricingCard({ plan, onSelect }: { plan: typeof PLANS[0]; onSelect: () =
   );
 }
 
+// ─── WRITER EARNINGS BREAKDOWN ─────────────────────────────────────────────────
+// Per-tier scenarios so writers see exactly what they earn.
+
+const EARNINGS_TIERS = [
+  {
+    tier: "Codex",
+    price: 1.99,
+    accent: "rgba(201,168,76,0.6)",
+    description: "Your reader gets full chapter access, personal annotations, and four ink types.",
+  },
+  {
+    tier: "Scribe",
+    price: 3.99,
+    accent: "rgba(0,229,204,0.6)",
+    description: "Your reader can ask you questions directly through Signal Ink and see your Author Whispers.",
+  },
+  {
+    tier: "Archive",
+    price: 7.99,
+    accent: "rgba(201,168,76,0.9)",
+    description: "Your reader joins the community margin — seeing how every other reader annotated your work.",
+  },
+  {
+    tier: "Chronicler",
+    price: 9.99,
+    accent: "rgba(245,230,200,0.75)",
+    description: "Your most dedicated reader. They get a signed copy, their name in the dedication, and a private session with you.",
+  },
+];
+
+function WriterEarningsBreakdown() {
+  const platformFee = 7; // Manuscript plan
+
+  return (
+    <>
+      <motion.p
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        style={{
+          fontFamily: '"JetBrains Mono", monospace',
+          fontSize: "0.5rem",
+          letterSpacing: "0.35em",
+          color: "rgba(201,168,76,0.4)",
+          textTransform: "uppercase",
+          textAlign: "center",
+          marginBottom: "0.75rem",
+        }}
+      >
+        YOUR EARNINGS
+      </motion.p>
+      <motion.h2
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.1 }}
+        style={{
+          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+          fontSize: "clamp(1.6rem, 3.5vw, 2.4rem)",
+          fontWeight: 400,
+          textAlign: "center",
+          color: "#F5E6C8",
+          marginBottom: "0.75rem",
+        }}
+      >
+        You keep 85%. We keep the lights on.
+      </motion.h2>
+      <motion.p
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.15 }}
+        style={{
+          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+          fontSize: "1rem",
+          fontStyle: "italic",
+          color: "rgba(245,230,200,0.35)",
+          textAlign: "center",
+          maxWidth: "480px",
+          margin: "0 auto 3rem",
+        }}
+      >
+        Every reader subscribes to you — not the platform. Tintaxis takes a flat 15% and a $7/month platform fee. No hidden cuts. Here is exactly what 10 readers at each tier puts in your pocket.
+      </motion.p>
+
+      {/* Per-tier cards */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "2rem" }}>
+        {EARNINGS_TIERS.map((t, i) => {
+          const readers = 10;
+          const totalRevenue = +(t.price * readers).toFixed(2);
+          const tintaxisCut = +(totalRevenue * 0.15).toFixed(2);
+          const writerEarns = +(totalRevenue * 0.85).toFixed(2);
+          const barWidth = Math.round((writerEarns / (9.99 * 10 * 0.85)) * 100);
+
+          return (
+            <motion.div
+              key={t.tier}
+              initial={{ opacity: 0, x: -16 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.08 }}
+              style={{
+                border: "1px solid rgba(201,168,76,0.12)",
+                padding: "1.5rem 1.75rem",
+                position: "relative",
+                background: "rgba(255,255,255,0.01)",
+              }}
+            >
+              <CornerAccents />
+
+              {/* Tier header row */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.6rem", flexWrap: "wrap", gap: "0.5rem" }}>
+                <div>
+                  <p style={{
+                    fontFamily: '"JetBrains Mono", monospace',
+                    fontSize: "0.5rem",
+                    letterSpacing: "0.25em",
+                    color: t.accent,
+                    textTransform: "uppercase",
+                    marginBottom: "0.2rem",
+                  }}>
+                    {readers} Readers · {t.tier} Tier
+                  </p>
+                  <p style={{
+                    fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                    fontSize: "0.85rem",
+                    fontStyle: "italic",
+                    color: "rgba(245,230,200,0.35)",
+                    maxWidth: "320px",
+                  }}>
+                    {t.description}
+                  </p>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <p style={{
+                    fontFamily: '"JetBrains Mono", monospace',
+                    fontSize: "0.45rem",
+                    letterSpacing: "0.15em",
+                    color: "rgba(245,230,200,0.3)",
+                    textTransform: "uppercase",
+                    marginBottom: "0.15rem",
+                  }}>
+                    ${t.price.toFixed(2)}/mo × {readers}
+                  </p>
+                  <p style={{
+                    fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                    fontSize: "1.1rem",
+                    color: "rgba(245,230,200,0.55)",
+                  }}>
+                    ${totalRevenue.toFixed(2)}/mo total
+                  </p>
+                </div>
+              </div>
+
+              {/* Visual earnings bar */}
+              <div style={{
+                position: "relative",
+                height: "28px",
+                background: "rgba(201,168,76,0.06)",
+                border: "1px solid rgba(201,168,76,0.08)",
+                marginBottom: "0.75rem",
+                overflow: "hidden",
+              }}>
+                {/* Writer share (85%) */}
+                <div style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: "85%",
+                  background: `linear-gradient(90deg, rgba(0,229,204,0.15), rgba(0,229,204,0.25))`,
+                  borderRight: "1px solid rgba(0,229,204,0.4)",
+                  display: "flex",
+                  alignItems: "center",
+                  paddingLeft: "0.6rem",
+                }}>
+                  <span style={{
+                    fontFamily: '"JetBrains Mono", monospace',
+                    fontSize: "0.5rem",
+                    letterSpacing: "0.1em",
+                    color: "rgba(0,229,204,0.9)",
+                  }}>
+                    YOU: ${writerEarns.toFixed(2)}
+                  </span>
+                </div>
+                {/* Tintaxis share (15%) */}
+                <div style={{
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: "15%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}>
+                  <span style={{
+                    fontFamily: '"JetBrains Mono", monospace',
+                    fontSize: "0.45rem",
+                    letterSpacing: "0.05em",
+                    color: "rgba(245,230,200,0.25)",
+                  }}>
+                    ${tintaxisCut.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Bottom summary */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                <p style={{
+                  fontFamily: '"JetBrains Mono", monospace',
+                  fontSize: "0.45rem",
+                  color: "rgba(245,230,200,0.25)",
+                  letterSpacing: "0.1em",
+                }}>
+                  TINTAXIS KEEPS ${tintaxisCut.toFixed(2)} (15%)
+                </p>
+                <p style={{
+                  fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                  fontSize: "1.3rem",
+                  color: "rgba(0,229,204,0.85)",
+                }}>
+                  You earn <strong>${writerEarns.toFixed(2)}</strong>/mo
+                </p>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* Combined scenario */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        style={{
+          border: "1px solid rgba(0,229,204,0.25)",
+          padding: "1.75rem",
+          position: "relative",
+          background: "rgba(0,229,204,0.02)",
+          marginBottom: "1.5rem",
+        }}
+      >
+        <CornerAccents color="rgba(0,229,204,0.3)" />
+        <p style={{
+          fontFamily: '"JetBrains Mono", monospace',
+          fontSize: "0.5rem",
+          letterSpacing: "0.25em",
+          color: "rgba(0,229,204,0.6)",
+          textTransform: "uppercase",
+          marginBottom: "0.75rem",
+          textAlign: "center",
+        }}>
+          ALL TIERS COMBINED · 40 READERS TOTAL
+        </p>
+        <p style={{
+          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+          fontSize: "0.9rem",
+          color: "rgba(245,230,200,0.4)",
+          textAlign: "center",
+          marginBottom: "1rem",
+          fontStyle: "italic",
+        }}>
+          10 Codex + 10 Scribe + 10 Archive + 10 Chronicler readers, on a Manuscript plan ($7/mo):
+        </p>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "baseline", gap: "1.5rem", flexWrap: "wrap" }}>
+          <div style={{ textAlign: "center" }}>
+            <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.45rem", color: "rgba(245,230,200,0.3)", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "0.2rem" }}>
+              Reader revenue
+            </p>
+            <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "1.1rem", color: "rgba(245,230,200,0.55)" }}>$239.60</p>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.45rem", color: "rgba(245,230,200,0.3)", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "0.2rem" }}>
+              Tintaxis cut + fee
+            </p>
+            <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "1.1rem", color: "rgba(214,83,60,0.6)" }}>−$42.94</p>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.45rem", color: "rgba(0,229,204,0.6)", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "0.2rem" }}>
+              YOU TAKE HOME
+            </p>
+            <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "2rem", fontWeight: 400, color: "rgba(0,229,204,0.9)" }}>$196.66</p>
+          </div>
+        </div>
+      </motion.div>
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.4 }}
+        style={{
+          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+          fontSize: "0.95rem",
+          fontStyle: "italic",
+          color: "rgba(245,230,200,0.3)",
+          textAlign: "center",
+        }}
+      >
+        Your readers pay you directly. No middlemen. No algorithms. Build your audience and your income grows with it.
+      </motion.p>
+    </>
+  );
+}
+
 // ─── MAIN PAGE ─────────────────────────────────────────────────────────────────
 export default function PublishClient() {
   const formRef = useRef<HTMLDivElement>(null);
@@ -775,227 +1082,7 @@ export default function PublishClient() {
 
         {/* ── YOUR EARNINGS — WRITER TRANSPARENCY ─────────────────────────── */}
         <section style={{ maxWidth: "900px", margin: "0 auto", padding: "4rem 2rem 2rem" }}>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            style={{
-              fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.5rem",
-              letterSpacing: "0.35em",
-              color: "rgba(201,168,76,0.4)",
-              textTransform: "uppercase",
-              textAlign: "center",
-              marginBottom: "0.75rem",
-            }}
-          >
-            YOUR EARNINGS
-          </motion.p>
-          <motion.h2
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            style={{
-              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-              fontSize: "clamp(1.6rem, 3.5vw, 2.4rem)",
-              fontWeight: 400,
-              textAlign: "center",
-              color: "#F5E6C8",
-              marginBottom: "0.75rem",
-            }}
-          >
-            You keep 85%. We keep the lights on.
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.15 }}
-            style={{
-              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-              fontSize: "1rem",
-              fontStyle: "italic",
-              color: "rgba(245,230,200,0.35)",
-              textAlign: "center",
-              marginBottom: "3rem",
-              maxWidth: "520px",
-              margin: "0 auto 3rem",
-            }}
-          >
-            Every reader subscription goes directly to the writer they chose. Tintaxis takes a flat 15%. No hidden fees, no ad revenue, no data deals. Here is exactly what you earn.
-          </motion.p>
-
-          {/* ── Scenario A: 40 readers ─────────────────────────── */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            style={{
-              border: "1px solid rgba(201,168,76,0.15)",
-              padding: "2rem",
-              marginBottom: "1.25rem",
-              position: "relative",
-              background: "rgba(255,255,255,0.01)",
-            }}
-          >
-            <CornerAccents />
-            <p
-              style={{
-                fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.5rem",
-                letterSpacing: "0.25em",
-                color: "rgba(201,168,76,0.6)",
-                textTransform: "uppercase",
-                marginBottom: "1.25rem",
-              }}
-            >
-              MANUSCRIPT PLAN · 40 READERS
-            </p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "0.75rem", marginBottom: "1.25rem" }}>
-              {[
-                { tier: "Codex", count: 10, price: "$1.99", sub: "$19.90" },
-                { tier: "Scribe", count: 10, price: "$3.99", sub: "$39.90" },
-                { tier: "Archive", count: 10, price: "$7.99", sub: "$79.90" },
-                { tier: "Chronicler", count: 10, price: "$9.99", sub: "$99.90" },
-              ].map((t) => (
-                <div key={t.tier} style={{ textAlign: "center", padding: "0.75rem", background: "rgba(201,168,76,0.03)", border: "1px solid rgba(201,168,76,0.08)" }}>
-                  <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.45rem", letterSpacing: "0.2em", color: "rgba(201,168,76,0.5)", textTransform: "uppercase", marginBottom: "0.3rem" }}>
-                    {t.count} {t.tier}
-                  </p>
-                  <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "0.85rem", color: "rgba(245,230,200,0.5)" }}>
-                    {t.count} × {t.price} = {t.sub}
-                  </p>
-                </div>
-              ))}
-            </div>
-            <div style={{
-              height: "1px",
-              background: "linear-gradient(90deg, transparent, rgba(201,168,76,0.2), transparent)",
-              margin: "1rem 0",
-            }} />
-            <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
-              <div>
-                <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.45rem", letterSpacing: "0.15em", color: "rgba(245,230,200,0.3)", textTransform: "uppercase", marginBottom: "0.25rem" }}>
-                  Total reader revenue
-                </p>
-                <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "1.1rem", color: "rgba(245,230,200,0.55)" }}>$239.60</p>
-              </div>
-              <div>
-                <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.45rem", letterSpacing: "0.15em", color: "rgba(245,230,200,0.3)", textTransform: "uppercase", marginBottom: "0.25rem" }}>
-                  Tintaxis takes (15%)
-                </p>
-                <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "1.1rem", color: "rgba(214,83,60,0.7)" }}>−$35.94</p>
-              </div>
-              <div>
-                <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.45rem", letterSpacing: "0.15em", color: "rgba(245,230,200,0.3)", textTransform: "uppercase", marginBottom: "0.25rem" }}>
-                  Platform fee
-                </p>
-                <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "1.1rem", color: "rgba(214,83,60,0.7)" }}>−$7.00</p>
-              </div>
-              <div>
-                <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.45rem", letterSpacing: "0.15em", color: "rgba(0,229,204,0.6)", textTransform: "uppercase", marginBottom: "0.25rem" }}>
-                  YOU TAKE HOME
-                </p>
-                <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "1.8rem", fontWeight: 400, color: "rgba(0,229,204,0.85)" }}>$196.66</p>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* ── Scenario B: 80 readers ─────────────────────────── */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            style={{
-              border: "1px solid rgba(201,168,76,0.3)",
-              padding: "2rem",
-              marginBottom: "1.25rem",
-              position: "relative",
-              background: "rgba(201,168,76,0.02)",
-            }}
-          >
-            <CornerAccents color="rgba(201,168,76,0.4)" />
-            <p
-              style={{
-                fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.5rem",
-                letterSpacing: "0.25em",
-                color: "rgba(201,168,76,0.8)",
-                textTransform: "uppercase",
-                marginBottom: "1.25rem",
-              }}
-            >
-              MANUSCRIPT PLAN · 80 READERS
-            </p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "0.75rem", marginBottom: "1.25rem" }}>
-              {[
-                { tier: "Codex", count: 20, price: "$1.99", sub: "$39.80" },
-                { tier: "Scribe", count: 20, price: "$3.99", sub: "$79.80" },
-                { tier: "Archive", count: 20, price: "$7.99", sub: "$159.80" },
-                { tier: "Chronicler", count: 20, price: "$9.99", sub: "$199.80" },
-              ].map((t) => (
-                <div key={t.tier} style={{ textAlign: "center", padding: "0.75rem", background: "rgba(201,168,76,0.03)", border: "1px solid rgba(201,168,76,0.08)" }}>
-                  <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.45rem", letterSpacing: "0.2em", color: "rgba(201,168,76,0.5)", textTransform: "uppercase", marginBottom: "0.3rem" }}>
-                    {t.count} {t.tier}
-                  </p>
-                  <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "0.85rem", color: "rgba(245,230,200,0.5)" }}>
-                    {t.count} × {t.price} = {t.sub}
-                  </p>
-                </div>
-              ))}
-            </div>
-            <div style={{
-              height: "1px",
-              background: "linear-gradient(90deg, transparent, rgba(201,168,76,0.2), transparent)",
-              margin: "1rem 0",
-            }} />
-            <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
-              <div>
-                <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.45rem", letterSpacing: "0.15em", color: "rgba(245,230,200,0.3)", textTransform: "uppercase", marginBottom: "0.25rem" }}>
-                  Total reader revenue
-                </p>
-                <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "1.1rem", color: "rgba(245,230,200,0.55)" }}>$479.20</p>
-              </div>
-              <div>
-                <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.45rem", letterSpacing: "0.15em", color: "rgba(245,230,200,0.3)", textTransform: "uppercase", marginBottom: "0.25rem" }}>
-                  Tintaxis takes (15%)
-                </p>
-                <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "1.1rem", color: "rgba(214,83,60,0.7)" }}>−$71.88</p>
-              </div>
-              <div>
-                <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.45rem", letterSpacing: "0.15em", color: "rgba(245,230,200,0.3)", textTransform: "uppercase", marginBottom: "0.25rem" }}>
-                  Platform fee
-                </p>
-                <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "1.1rem", color: "rgba(214,83,60,0.7)" }}>−$7.00</p>
-              </div>
-              <div>
-                <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.45rem", letterSpacing: "0.15em", color: "rgba(0,229,204,0.6)", textTransform: "uppercase", marginBottom: "0.25rem" }}>
-                  YOU TAKE HOME
-                </p>
-                <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "1.8rem", fontWeight: 400, color: "rgba(0,229,204,0.85)" }}>$400.32</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            style={{
-              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-              fontSize: "0.95rem",
-              fontStyle: "italic",
-              color: "rgba(245,230,200,0.3)",
-              textAlign: "center",
-              marginTop: "1.5rem",
-            }}
-          >
-            Your readers pay you directly. No middlemen. No algorithms. Build your audience and your income grows with it.
-          </motion.p>
+          <WriterEarningsBreakdown />
         </section>
 
         <BrassRule opacity={0.12} />

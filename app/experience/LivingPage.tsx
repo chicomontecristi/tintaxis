@@ -601,29 +601,10 @@ export default function LivingPage() {
                 transition={{ delay: 0.6, duration: 0.6 }}
                 style={{
                   marginTop: "4rem",
-                  padding: "2.5rem 2rem",
-                  border: "1px solid rgba(201,168,76,0.15)",
-                  background: "rgba(255,255,255,0.01)",
                   maxWidth: "620px",
                   margin: "4rem auto 0",
-                  position: "relative",
                 }}
               >
-                {/* Corner accents */}
-                {["top-0 left-0", "top-0 right-0", "bottom-0 left-0", "bottom-0 right-0"].map((pos, i) => (
-                  <span
-                    key={i}
-                    style={{
-                      position: "absolute",
-                      width: "10px",
-                      height: "10px",
-                      borderColor: "rgba(201,168,76,0.2)",
-                      ...(pos.includes("top") ? { top: 0 } : { bottom: 0 }),
-                      ...(pos.includes("left") ? { left: 0, borderLeft: "1px solid rgba(201,168,76,0.2)", ...(pos.includes("top") ? { borderTop: "1px solid rgba(201,168,76,0.2)" } : { borderBottom: "1px solid rgba(201,168,76,0.2)" }) } : { right: 0, borderRight: "1px solid rgba(201,168,76,0.2)", ...(pos.includes("top") ? { borderTop: "1px solid rgba(201,168,76,0.2)" } : { borderBottom: "1px solid rgba(201,168,76,0.2)" }) }),
-                    }}
-                  />
-                ))}
-
                 <p
                   style={{
                     fontFamily: MONO,
@@ -632,7 +613,7 @@ export default function LivingPage() {
                     color: "rgba(201,168,76,0.5)",
                     textTransform: "uppercase",
                     textAlign: "center",
-                    marginBottom: "1rem",
+                    marginBottom: "0.75rem",
                   }}
                 >
                   WHERE YOUR MONEY GOES
@@ -656,62 +637,104 @@ export default function LivingPage() {
                     fontStyle: "italic",
                     color: "rgba(245,230,200,0.35)",
                     textAlign: "center",
-                    marginBottom: "2rem",
-                    maxWidth: "380px",
+                    maxWidth: "400px",
                     margin: "0 auto 2rem",
                   }}
                 >
-                  When you subscribe to a writer on Tintaxis, this is exactly where every dollar goes.
+                  When you subscribe to a writer on Tintaxis, this is exactly where every dollar of your subscription goes — no hidden fees, no surprises.
                 </p>
 
-                {/* Tier breakdown grid */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", marginBottom: "1.5rem" }}>
+                {/* Per-tier cards with visual bars */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginBottom: "1.5rem" }}>
                   {[
-                    { tier: "Codex", price: "$1.99", writer: "$1.69", platform: "$0.30" },
-                    { tier: "Scribe", price: "$3.99", writer: "$3.39", platform: "$0.60" },
-                    { tier: "Archive", price: "$7.99", writer: "$6.79", platform: "$1.20" },
-                    { tier: "Chronicler", price: "$9.99", writer: "$8.49", platform: "$1.50" },
-                  ].map((t) => (
-                    <div
+                    { tier: "Codex", price: 1.99, writerCut: 1.69, platformCut: 0.30, what: "Full chapter access, annotations, and four ink types." },
+                    { tier: "Scribe", price: 3.99, writerCut: 3.39, platformCut: 0.60, what: "Ask the author questions directly. See their margin whispers." },
+                    { tier: "Archive", price: 7.99, writerCut: 6.79, platformCut: 1.20, what: "Join the community margin. See how every reader annotates." },
+                    { tier: "Chronicler", price: 9.99, writerCut: 8.49, platformCut: 1.50, what: "Signed copy, your name in the dedication, private reading session." },
+                  ].map((t, i) => (
+                    <motion.div
                       key={t.tier}
+                      initial={{ opacity: 0, x: -12 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.7 + i * 0.08, duration: 0.4 }}
                       style={{
-                        padding: "0.85rem",
-                        border: "1px solid rgba(201,168,76,0.08)",
-                        background: "rgba(201,168,76,0.02)",
+                        border: "1px solid rgba(201,168,76,0.1)",
+                        padding: "1.1rem 1.25rem",
+                        background: "rgba(255,255,255,0.01)",
                       }}
                     >
-                      <p style={{ fontFamily: MONO, fontSize: "0.45rem", letterSpacing: "0.2em", color: "rgba(201,168,76,0.5)", textTransform: "uppercase", marginBottom: "0.4rem" }}>
-                        {t.tier} · {t.price}/mo
-                      </p>
-                      <p style={{ fontFamily: SERIF, fontSize: "0.9rem", color: "rgba(0,229,204,0.8)", marginBottom: "0.15rem" }}>
-                        {t.writer} → the writer
-                      </p>
-                      <p style={{ fontFamily: SERIF, fontSize: "0.8rem", color: "rgba(245,230,200,0.25)" }}>
-                        {t.platform} → Tintaxis
-                      </p>
-                    </div>
+                      {/* Tier header */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "0.35rem" }}>
+                        <p style={{ fontFamily: MONO, fontSize: "0.5rem", letterSpacing: "0.2em", color: "rgba(201,168,76,0.5)", textTransform: "uppercase" }}>
+                          {t.tier} · ${t.price.toFixed(2)}/mo
+                        </p>
+                        <p style={{ fontFamily: SERIF, fontSize: "0.8rem", fontStyle: "italic", color: "rgba(245,230,200,0.3)" }}>
+                          {t.what}
+                        </p>
+                      </div>
+
+                      {/* Visual bar */}
+                      <div style={{
+                        position: "relative",
+                        height: "24px",
+                        background: "rgba(201,168,76,0.04)",
+                        border: "1px solid rgba(201,168,76,0.06)",
+                        overflow: "hidden",
+                      }}>
+                        <div style={{
+                          position: "absolute",
+                          left: 0,
+                          top: 0,
+                          bottom: 0,
+                          width: "85%",
+                          background: "linear-gradient(90deg, rgba(0,229,204,0.12), rgba(0,229,204,0.22))",
+                          borderRight: "1px solid rgba(0,229,204,0.35)",
+                          display: "flex",
+                          alignItems: "center",
+                          paddingLeft: "0.5rem",
+                        }}>
+                          <span style={{ fontFamily: MONO, fontSize: "0.5rem", color: "rgba(0,229,204,0.85)", letterSpacing: "0.05em" }}>
+                            ${t.writerCut.toFixed(2)} → the writer
+                          </span>
+                        </div>
+                        <div style={{
+                          position: "absolute",
+                          right: 0,
+                          top: 0,
+                          bottom: 0,
+                          width: "15%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}>
+                          <span style={{ fontFamily: MONO, fontSize: "0.4rem", color: "rgba(245,230,200,0.2)" }}>
+                            ${t.platformCut.toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    </motion.div>
                   ))}
                 </div>
 
-                <div style={{
-                  height: "1px",
-                  background: "linear-gradient(90deg, transparent, rgba(201,168,76,0.15), transparent)",
-                  margin: "1.25rem 0",
-                }} />
-
-                <p
+                {/* Closing message */}
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 1, duration: 0.5 }}
                   style={{
                     fontFamily: SERIF,
                     fontSize: "0.95rem",
-                    color: "rgba(245,230,200,0.45)",
+                    color: "rgba(245,230,200,0.4)",
                     textAlign: "center",
                     lineHeight: 1.7,
                   }}
                 >
                   <span style={{ color: "rgba(0,229,204,0.7)", fontWeight: 500 }}>85%</span> of your subscription goes directly to the writer you chose.
-                  Tintaxis keeps <span style={{ color: "rgba(245,230,200,0.55)" }}>15%</span> to maintain the platform.
-                  No ads. No data harvesting. No middlemen. Your subscription is a direct line to the person who wrote the words.
-                </p>
+                  Tintaxis keeps <span style={{ color: "rgba(245,230,200,0.5)" }}>15%</span> to keep the platform running.
+                  No ads. No data harvesting. No middlemen. Your money is a direct line to the person who wrote the words you just read.
+                </motion.p>
               </motion.div>
             </div>
           </motion.div>
