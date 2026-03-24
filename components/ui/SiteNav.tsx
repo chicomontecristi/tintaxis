@@ -1,27 +1,48 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 // ─── SITE NAV ───────────────────────────────────────────────────────────────
 // Minimal persistent navigation. Hidden on homepage (/) to keep it clean.
+// Shows context-aware auth links based on current session.
 
 const MONO = '"JetBrains Mono", monospace';
 
-const LINKS = [
+const PUBLIC_LINKS = [
   { href: "/library", label: "Library" },
   { href: "/writers", label: "Writers" },
   { href: "/experience", label: "Experience" },
   { href: "/publish", label: "Publish" },
-  { href: "/reader/login", label: "Sign In" },
-  { href: "/author/login", label: "Author Login" },
 ];
 
 export default function SiteNav() {
   const pathname = usePathname();
+  const [session, setSession] = useState<{ role: string | null; name?: string }>({ role: null });
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((data) => setSession(data))
+      .catch(() => {});
+  }, [pathname]); // Re-check session on route change
 
   // Hide on homepage — it has its own presentation
   if (pathname === "/") return null;
+
+  // Build auth links based on session state
+  const authLinks: { href: string; label: string }[] = [];
+  if (session.role === "author") {
+    authLinks.push({ href: "/author", label: "Studio" });
+  } else if (session.role === "reader") {
+    authLinks.push({ href: "/reader/login", label: "Account" });
+  } else {
+    authLinks.push({ href: "/reader/login", label: "Sign In" });
+    authLinks.push({ href: "/author/login", label: "Author Login" });
+  }
+
+  const allLinks = [...PUBLIC_LINKS, ...authLinks];
 
   return (
     <nav
@@ -55,7 +76,7 @@ export default function SiteNav() {
       </Link>
 
       <div style={{ display: "flex", gap: "clamp(0.75rem, 2.5vw, 1.5rem)", alignItems: "center" }}>
-        {LINKS.map(({ href, label }) => {
+        {allLinks.map(({ href, label }) => {
           const isActive = pathname === href || pathname.startsWith(href + "/");
           return (
             <Link

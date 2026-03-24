@@ -6,6 +6,10 @@ import { NextRequest, NextResponse } from "next/server";
 //   /api/reader/annotations — requires reader session (401)
 //   /api/reader/logout      — requires reader session (401)
 //
+// Also handles:
+//   /author/login  — redirect to /author if already authenticated
+//   /reader/login  — redirect to / if already authenticated
+//
 // Runs in Edge Runtime: no Node.js built-ins allowed.
 
 const SESSION_COOKIE = "tintaxis_session";
@@ -15,7 +19,15 @@ export function middleware(req: NextRequest) {
   const sessionCookie = req.cookies.get(SESSION_COOKIE);
   const authed = !!sessionCookie?.value;
 
-  // ── Author dashboard ─────────────────────────────────────────────────────
+  // ── Already authenticated → skip login pages ──────────────────────────
+  if (pathname === "/author/login" && authed) {
+    return NextResponse.redirect(new URL("/author", req.url));
+  }
+  if (pathname === "/reader/login" && authed) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  // ── Author dashboard — require session ─────────────────────────────────
   if (pathname.startsWith("/author") && !pathname.startsWith("/author/login")) {
     if (!authed) {
       const loginUrl = new URL("/author/login", req.url);
@@ -40,6 +52,7 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     "/author/:path*",
+    "/reader/login",
     "/api/reader/annotations/:path*",
     "/api/reader/logout",
   ],
