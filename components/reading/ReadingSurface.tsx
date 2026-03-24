@@ -414,8 +414,8 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
             minHeight: "100vh",
             // Mobile: tighter padding; desktop: generous
             padding: "clamp(5rem, 10vw, 8rem) clamp(1.25rem, 5vw, 3rem) 12rem",
-            borderLeft: "1px solid rgba(201,168,76,0.08)",
-            borderRight: "1px solid rgba(201,168,76,0.08)",
+            borderLeft: "1px solid var(--border-subtle)",
+            borderRight: "1px solid var(--border-subtle)",
             boxShadow: "0 0 60px rgba(44,26,0,0.4)",
             position: "relative",
           }}
@@ -450,11 +450,12 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
                 isEpigraph
               />
               <p
+                className="epigraph-attribution"
                 style={{
                   fontFamily: '"JetBrains Mono", monospace',
                   fontSize: "0.85rem",
                   letterSpacing: "0.18em",
-                  color: "rgba(201,168,76,0.5)",
+                  color: "var(--brass-dim)",
                   textTransform: "uppercase",
                   marginTop: "-0.5rem",
                 }}
@@ -639,11 +640,12 @@ function ChapterHeader({ chapter }: { chapter: Chapter }) {
       transition={{ duration: 0.8, ease: [0.2, 0, 0.1, 1] }}
     >
       <p
+        className="chapter-header-label"
         style={{
           fontFamily: '"JetBrains Mono", monospace',
           fontSize: "0.85rem",
           letterSpacing: "0.3em",
-          color: "rgba(201,168,76,0.55)",
+          color: "var(--brass-dim)",
           textTransform: "uppercase",
           marginBottom: "1.25rem",
         }}
@@ -697,8 +699,9 @@ function SectionBreak() {
     >
       <div className="brass-line" style={{ flex: 1 }} />
       <span
+        className="section-break-ornament"
         style={{
-          color: "rgba(201,168,76,0.4)",
+          color: "var(--brass-dim)",
           fontSize: "1rem",
           letterSpacing: "0.3em",
         }}
@@ -728,7 +731,7 @@ function CompletionEvent({
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className="fixed inset-0 z-50 flex items-center justify-center completion-overlay"
       style={{ backgroundColor: "rgba(13,11,8,0.97)" }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -930,11 +933,12 @@ function ShareBar({ chapter }: { chapter: Chapter }) {
 
   return (
     <motion.div
+      className="share-bar-section"
       style={{
         marginTop: "2rem",
         paddingTop: "1.5rem",
         paddingBottom: "0.5rem",
-        borderTop: "1px solid rgba(201,168,76,0.06)",
+        borderTop: "1px solid var(--border-subtle)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -949,7 +953,7 @@ function ShareBar({ chapter }: { chapter: Chapter }) {
           fontFamily: '"JetBrains Mono", monospace',
           fontSize: "0.75rem",
           letterSpacing: "0.3em",
-          color: "rgba(201,168,76,0.3)",
+          color: "var(--brass-dim)",
           textTransform: "uppercase",
           margin: 0,
         }}
@@ -969,14 +973,14 @@ function ShareBar({ chapter }: { chapter: Chapter }) {
             padding: "6px 14px",
             border: copied
               ? "1px solid rgba(0,229,204,0.35)"
-              : "1px solid rgba(201,168,76,0.15)",
+              : `1px solid var(--border-subtle)`,
             borderRadius: "2px",
             background: copied
               ? "rgba(0,229,204,0.06)"
-              : "rgba(201,168,76,0.03)",
+              : "transparent",
             color: copied
               ? "rgba(0,229,204,0.7)"
-              : "rgba(201,168,76,0.45)",
+              : "var(--brass-dim)",
             cursor: "pointer",
             transition: "all 0.2s ease",
             display: "flex",
@@ -1002,10 +1006,10 @@ function ShareBar({ chapter }: { chapter: Chapter }) {
             letterSpacing: "0.18em",
             textTransform: "uppercase",
             padding: "6px 14px",
-            border: "1px solid rgba(201,168,76,0.15)",
+            border: `1px solid var(--border-subtle)`,
             borderRadius: "2px",
-            background: "rgba(201,168,76,0.03)",
-            color: "rgba(201,168,76,0.45)",
+            background: "transparent",
+            color: "var(--brass-dim)",
             cursor: "pointer",
             textDecoration: "none",
             display: "flex",
@@ -1036,11 +1040,12 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
 
   return (
     <motion.div
+      className="chapter-end-nav"
       style={{
         marginTop: "4rem",
         paddingTop: "3rem",
         paddingBottom: "3rem",
-        borderTop: "1px solid rgba(201,168,76,0.1)",
+        borderTop: "1px solid var(--border-subtle)",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "stretch",
@@ -1057,16 +1062,15 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
             <motion.div
               style={{
                 padding: "1rem",
-                border: "1px solid rgba(201,168,76,0.12)",
-                background: "rgba(201,168,76,0.02)",
+                border: "1px solid var(--border-subtle)",
+                background: "transparent",
                 cursor: "pointer",
                 display: "flex",
                 flexDirection: "column",
                 gap: "0.3rem",
               }}
               whileHover={{
-                borderColor: "rgba(201,168,76,0.3)",
-                background: "rgba(201,168,76,0.05)",
+                borderColor: "rgba(var(--text-primary-rgb),0.2)",
               }}
               transition={{ duration: 0.2 }}
             >
@@ -1075,7 +1079,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                   fontFamily: '"JetBrains Mono", monospace',
                   fontSize: "0.75rem",
                   letterSpacing: "0.2em",
-                  color: "rgba(201,168,76,0.4)",
+                  color: "var(--brass-dim)",
                   textTransform: "uppercase",
                 }}
               >
@@ -1097,7 +1101,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                   fontFamily: '"JetBrains Mono", monospace',
                   fontSize: "0.75rem",
                   letterSpacing: "0.1em",
-                  color: "rgba(201,168,76,0.3)",
+                  color: "var(--text-dim)",
                   textTransform: "uppercase",
                 }}
               >
@@ -1114,7 +1118,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
           style={{
             width: "1px",
             background:
-              "linear-gradient(180deg, transparent, rgba(201,168,76,0.2) 30%, rgba(201,168,76,0.2) 70%, transparent)",
+              "linear-gradient(180deg, transparent, var(--border-subtle) 30%, var(--border-subtle) 70%, transparent)",
             alignSelf: "stretch",
           }}
         />
@@ -1130,8 +1134,8 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
               style={{
                 width: "100%",
                 padding: "1rem",
-                border: "1px solid rgba(201,168,76,0.08)",
-                background: "rgba(201,168,76,0.01)",
+                border: "1px solid var(--border-subtle)",
+                background: "transparent",
                 cursor: "pointer",
                 textAlign: "right",
                 display: "flex",
@@ -1140,8 +1144,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                 gap: "0.3rem",
               }}
               whileHover={{
-                borderColor: "rgba(201,168,76,0.18)",
-                background: "rgba(201,168,76,0.03)",
+                borderColor: "rgba(var(--text-primary-rgb),0.15)",
               }}
               transition={{ duration: 0.2 }}
             >
@@ -1150,7 +1153,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                   fontFamily: '"JetBrains Mono", monospace',
                   fontSize: "0.75rem",
                   letterSpacing: "0.2em",
-                  color: "rgba(201,168,76,0.3)",
+                  color: "var(--text-dim)",
                   textTransform: "uppercase",
                   display: "flex",
                   alignItems: "center",
@@ -1176,7 +1179,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                   fontFamily: '"JetBrains Mono", monospace',
                   fontSize: "0.75rem",
                   letterSpacing: "0.1em",
-                  color: "rgba(201,168,76,0.2)",
+                  color: "var(--text-dim)",
                   textTransform: "uppercase",
                 }}
               >
@@ -1189,8 +1192,8 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
               <motion.div
                 style={{
                   padding: "1rem",
-                  border: "1px solid rgba(201,168,76,0.15)",
-                  background: "rgba(201,168,76,0.03)",
+                  border: "1px solid var(--border-subtle)",
+                  background: "transparent",
                   cursor: "pointer",
                   textAlign: "right",
                   display: "flex",
@@ -1199,8 +1202,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                   gap: "0.3rem",
                 }}
                 whileHover={{
-                  borderColor: "rgba(201,168,76,0.4)",
-                  background: "rgba(201,168,76,0.07)",
+                  borderColor: "rgba(var(--text-primary-rgb),0.25)",
                 }}
                 transition={{ duration: 0.2 }}
               >
@@ -1209,7 +1211,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                     fontFamily: '"JetBrains Mono", monospace',
                     fontSize: "0.75rem",
                     letterSpacing: "0.2em",
-                    color: "rgba(201,168,76,0.5)",
+                    color: "var(--brass-dim)",
                     textTransform: "uppercase",
                   }}
                 >
@@ -1231,7 +1233,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                     fontFamily: '"JetBrains Mono", monospace',
                     fontSize: "0.75rem",
                     letterSpacing: "0.1em",
-                    color: "rgba(201,168,76,0.35)",
+                    color: "var(--text-dim)",
                     textTransform: "uppercase",
                   }}
                 >

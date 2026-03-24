@@ -263,8 +263,8 @@ export default function AnnotatableText({
               width: "5px",
               height: "5px",
               borderRadius: "50%",
-              background: "rgba(201,168,76,0.55)",
-              boxShadow: "0 0 6px rgba(201,168,76,0.4)",
+              background: "var(--brass-dim)",
+              boxShadow: "0 0 6px var(--brass-dim)",
               marginTop: paragraphAnnotations.length > 0 ? "2px" : "0",
               flexShrink: 0,
             }}
@@ -424,7 +424,7 @@ function InkTooltip({ rect, inkConfig, onApply, onApplyWithNote, onDismiss }: In
 
   return (
     <motion.div
-      className="z-50 flex items-center gap-1"
+      className="z-50 flex items-center gap-1 ink-tooltip-panel"
       onMouseDown={(e) => e.preventDefault()}
       style={{
         position: "fixed",      // viewport-relative — no scroll drift
@@ -432,7 +432,7 @@ function InkTooltip({ rect, inkConfig, onApply, onApplyWithNote, onDismiss }: In
         top,
         left,
         transform: "translateX(-50%)",
-        background: "#1A1208",
+        background: "var(--bg-surface)",
         border: `1px solid ${inkConfig.color}`,
         boxShadow: `0 4px 20px rgba(0,0,0,0.8), 0 0 12px ${inkConfig.glowColor}`,
         borderRadius: "2px",
@@ -485,9 +485,9 @@ function InkTooltip({ rect, inkConfig, onApply, onApplyWithNote, onDismiss }: In
           fontFamily: '"JetBrains Mono", monospace',
           fontSize: "0.85rem",
           letterSpacing: "0.1em",
-          color: "rgba(245,230,200,0.5)",
+          color: "var(--text-secondary)",
           background: "transparent",
-          border: "1px solid rgba(245,230,200,0.15)",
+          border: "1px solid var(--border-subtle)",
           padding: "0.5rem 0.9rem",
           cursor: "pointer",
           borderRadius: "1px",
@@ -502,7 +502,7 @@ function InkTooltip({ rect, inkConfig, onApply, onApplyWithNote, onDismiss }: In
       <button
         onPointerUp={(e) => { e.preventDefault(); onDismiss(); }}
         style={{
-          color: "rgba(245,230,200,0.25)",
+          color: "var(--text-dim)",
           background: "transparent",
           border: "none",
           cursor: "pointer",
@@ -547,14 +547,14 @@ function NoteInputPanel({
 
   return (
     <motion.div
-      className="z-50 w-full max-w-sm"
+      className="z-50 w-full max-w-sm ink-tooltip-panel"
       style={{
         position: "fixed",      // viewport-relative
         pointerEvents: "auto",  // enable interaction on panel only
         top,
         left,
         transform: "translateX(-50%)",
-        background: "#1A1208",
+        background: "var(--bg-surface)",
         border: `1px solid ${inkConfig.color}60`,
         boxShadow: `0 8px 32px rgba(0,0,0,0.9), 0 0 16px ${inkConfig.glowColor}`,
         borderRadius: "2px",
@@ -571,7 +571,7 @@ function NoteInputPanel({
           fontFamily: '"EB Garamond", Garamond, Georgia, serif',
           fontSize: "0.9rem",
           fontStyle: "italic",
-          color: "rgba(245,230,200,0.45)",
+          color: "var(--text-secondary)",
           marginBottom: "0.5rem",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -604,8 +604,8 @@ function NoteInputPanel({
         rows={3}
         style={{
           width: "100%",
-          background: "rgba(13,11,8,0.8)",
-          border: `1px solid rgba(201,168,76,0.2)`,
+          background: "var(--bg-page)",
+          border: `1px solid var(--border-subtle)`,
           borderRadius: "1px",
           padding: "0.5rem",
           color: "var(--text-primary)",
@@ -630,9 +630,9 @@ function NoteInputPanel({
             fontFamily: '"JetBrains Mono", monospace',
             fontSize: "0.85rem",
             letterSpacing: "0.1em",
-            color: "rgba(245,230,200,0.3)",
+            color: "var(--text-dim)",
             background: "transparent",
-            border: "1px solid rgba(245,230,200,0.15)",
+            border: "1px solid var(--border-subtle)",
             padding: "0.25rem 0.6rem",
             cursor: "pointer",
             borderRadius: "1px",

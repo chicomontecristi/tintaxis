@@ -387,27 +387,188 @@ body {
 }
 
 /* ─── DAY MODE OVERRIDES ─────────────────────────────────────────── */
+/*
+   CONTRAST FIX: In night mode, low-opacity brass (0.2–0.5) on dark bg
+   is subtle but readable. On cream (#FBF5E6), those same colors vanish.
+   These overrides boost all UI text to WCAG AA readable contrast.
+   Target: 65+ year-old readers should never squint.
+*/
+
+/* ── Noise & Panels ───────────────────────────────────────────────── */
 [data-theme="day"] .vault-noise::before {
   opacity: 0.08;
 }
 [data-theme="day"] .author-panel {
   background: linear-gradient(135deg, #F0E4CC 0%, #FBF5E6 100%);
-  border-color: rgba(139, 105, 20, 0.25);
-  box-shadow: inset 0 1px 0 rgba(139, 105, 20, 0.08), 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-color: rgba(100, 75, 20, 0.3);
+  box-shadow: inset 0 1px 0 rgba(100, 75, 20, 0.08), 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 [data-theme="day"] .anchored-note {
-  border-left-color: var(--brass-primary);
-  background: rgba(139, 105, 20, 0.06);
+  border-left-color: #7A5C10;
+  background: rgba(100, 75, 20, 0.08);
 }
 [data-theme="day"] .brass-line {
-  background: linear-gradient(90deg, transparent 0%, var(--brass-primary) 30%, #A07D1C 50%, var(--brass-primary) 70%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, #7A5C10 30%, #9A7A1A 50%, #7A5C10 70%, transparent 100%);
+  opacity: 0.6;
 }
+
+/* ── Toolbar & Modals ─────────────────────────────────────────────── */
 [data-theme="day"] .ink-toolbar-fixed {
-  background: rgba(251, 245, 230, 0.97) !important;
-  border-top-color: rgba(139, 105, 20, 0.15) !important;
+  background: rgba(245, 237, 218, 0.97) !important;
+  border-top-color: rgba(100, 75, 20, 0.2) !important;
+}
+[data-theme="day"] .ink-toolbar-fixed button {
+  color: #5A4510 !important;
+}
+[data-theme="day"] .ink-toolbar-fixed svg {
+  stroke: #5A4510 !important;
+  opacity: 0.7;
+}
+[data-theme="day"] .ink-tool-label {
+  color: #5A4510 !important;
 }
 [data-theme="day"] .question-chamber-backdrop {
   background: rgba(251, 245, 230, 0.92);
+}
+
+/* ── Navigation — SiteNav + ChapterNav ────────────────────────────── */
+[data-theme="day"] nav a,
+[data-theme="day"] nav button {
+  color: #5A4510 !important;
+  opacity: 0.8;
+}
+[data-theme="day"] nav a:hover,
+[data-theme="day"] nav button:hover {
+  opacity: 1 !important;
+}
+
+/* ── Chapter number label ─────────────────────────────────────────── */
+[data-theme="day"] .chapter-number {
+  color: #6B5215 !important;
+  opacity: 0.85;
+}
+
+/* ── Reading surface — all metadata, labels, timestamps ───────────── */
+/* These catch inline styles using rgba(var(--text-primary-rgb), low-opacity) */
+[data-theme="day"] .parchment-surface p[style*="letterSpacing"],
+[data-theme="day"] .parchment-surface span[style*="letterSpacing"] {
+  color: #5A4510 !important;
+  opacity: 0.75;
+}
+
+/* ── Margin world / whisper rail ──────────────────────────────────── */
+[data-theme="day"] .margin-world-rail {
+  border-left: 1px solid rgba(100, 75, 20, 0.12);
+}
+[data-theme="day"] .margin-world-rail p,
+[data-theme="day"] .margin-world-rail span,
+[data-theme="day"] .margin-world-rail a {
+  color: #4A3810 !important;
+}
+[data-theme="day"] .margin-annotation {
+  border-color: rgba(100, 75, 20, 0.2) !important;
+  background: rgba(100, 75, 20, 0.04) !important;
+}
+
+/* ── Ink highlight backgrounds — stronger on light bg ─────────────── */
+[data-theme="day"] .ink-ember-highlight   { background: rgba(160, 48, 31, 0.15); }
+[data-theme="day"] .ink-copper-highlight  { background: rgba(139, 90, 43, 0.15); }
+[data-theme="day"] .ink-ghost-highlight   { background: rgba(107, 112, 112, 0.12); }
+[data-theme="day"] .ink-archive-highlight { background: rgba(139, 105, 20, 0.15); }
+[data-theme="day"] .ink-signal-highlight  { background: rgba(10, 143, 128, 0.12); }
+[data-theme="day"] .ink-memory-highlight  { background: rgba(74, 45, 112, 0.12); }
+
+/* ── Scrollbar — visible on cream ─────────────────────────────────── */
+[data-theme="day"] ::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+[data-theme="day"] ::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+}
+
+/* ── Progress indicator ───────────────────────────────────────────── */
+[data-theme="day"] .progress-pct {
+  color: #5A4510 !important;
+}
+
+/* ── Share bar — copy link / X share buttons ──────────────────────── */
+[data-theme="day"] .share-bar-section p {
+  color: #5A4510 !important;
+}
+[data-theme="day"] .share-bar-section button,
+[data-theme="day"] .share-bar-section a {
+  color: #5A4510 !important;
+  border-color: rgba(90, 69, 16, 0.25) !important;
+  background: rgba(90, 69, 16, 0.05) !important;
+}
+[data-theme="day"] .share-bar-section button:hover,
+[data-theme="day"] .share-bar-section a:hover {
+  border-color: rgba(90, 69, 16, 0.45) !important;
+  background: rgba(90, 69, 16, 0.1) !important;
+}
+
+/* ── Chapter end nav — prev/next chapter links ────────────────────── */
+[data-theme="day"] .chapter-end-nav span[style*="letterSpacing"],
+[data-theme="day"] .chapter-end-nav span[style*="JetBrains"] {
+  color: #5A4510 !important;
+}
+[data-theme="day"] .chapter-end-nav > div > div,
+[data-theme="day"] .chapter-end-nav > div > a > div,
+[data-theme="day"] .chapter-end-nav > div > button {
+  border-color: rgba(90, 69, 16, 0.2) !important;
+  background: rgba(90, 69, 16, 0.04) !important;
+}
+
+/* ── Section break ornament ───────────────────────────────────────── */
+[data-theme="day"] .section-break-ornament {
+  color: #7A5C10 !important;
+  opacity: 0.7;
+}
+
+/* ── Epigraph attribution ─────────────────────────────────────────── */
+[data-theme="day"] .epigraph-attribution {
+  color: #5A4510 !important;
+  opacity: 0.75;
+}
+
+/* ── Chapter header label (CHAPTER VII) ───────────────────────────── */
+[data-theme="day"] .chapter-header-label {
+  color: #6B5215 !important;
+  opacity: 0.85;
+}
+
+/* ── Reading surface borders — stronger on cream ──────────────────── */
+[data-theme="day"] .parchment-surface {
+  border-left-color: rgba(90, 69, 16, 0.12) !important;
+  border-right-color: rgba(90, 69, 16, 0.12) !important;
+  box-shadow: 0 0 40px rgba(44, 26, 0, 0.08) !important;
+}
+
+/* ── Completion event overlay — day-aware ─────────────────────────── */
+[data-theme="day"] .completion-overlay {
+  background-color: rgba(251, 245, 230, 0.97) !important;
+}
+[data-theme="day"] .completion-overlay p,
+[data-theme="day"] .completion-overlay span {
+  color: #5A4510 !important;
+}
+[data-theme="day"] .completion-overlay button {
+  color: #7A5C10 !important;
+  border-color: rgba(122, 92, 16, 0.4) !important;
+}
+
+/* ── Ink tooltip & note panel — day-aware ─────────────────────────── */
+[data-theme="day"] .ink-tooltip-panel {
+  background: #F5EDDA !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12), 0 0 12px rgba(139, 105, 20, 0.1) !important;
+}
+[data-theme="day"] .ink-tooltip-panel button {
+  color: #5A4510 !important;
+}
+
+/* ── Broad catch-all: any mono-label inside parchment ─────────────── */
+[data-theme="day"] .parchment-surface [style*="JetBrains"] {
+  color: #5A4510 !important;
 }
 
 /* ─── VAULT BACKGROUND NOISE ─────────────────────────────────────── */
