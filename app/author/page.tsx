@@ -625,13 +625,16 @@ export default function AuthorDashboard() {
   };
 
   const saveRecording = async (chapterSlug: string) => {
-    if (recordedChunks.length === 0) return;
-    const mimeType = recordedChunks[0]?.type || "audio/webm";
+    // Use chunksRef (always current) instead of recordedChunks state (can be stale via closure)
+    const chunks = chunksRef.current;
+    if (chunks.length === 0) return;
+    const mimeType = chunks[0]?.type || "audio/webm";
     const ext = mimeType.includes("mp4") ? "mp4" : "webm";
-    const blob = new Blob(recordedChunks, { type: mimeType });
+    const blob = new Blob(chunks, { type: mimeType });
     const file = new File([blob], `${chapterSlug}.${ext}`, { type: mimeType });
     const ok = await handleVoiceoverUpload(chapterSlug, file);
     if (ok) {
+      chunksRef.current = [];
       setRecordedChunks([]);
       if (voiceoverPreview) {
         URL.revokeObjectURL(voiceoverPreview);
