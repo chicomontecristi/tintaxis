@@ -11,6 +11,8 @@ export default function AuthorLogin() {
   const [password, setPassword] = useState("");
   const [status, setStatus]     = useState<"idle" | "loading" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [resetMode, setResetMode]   = useState(false);
+  const [resetStatus, setResetStatus] = useState<"idle" | "sending" | "sent">("idle");
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -35,6 +37,24 @@ export default function AuthorLogin() {
     } catch {
       setErrorMsg("Connection failed. Try again.");
       setStatus("error");
+    }
+  };
+
+  const handleResetRequest = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) { setErrorMsg("Enter your email first."); setStatus("error"); return; }
+    setResetStatus("sending");
+    try {
+      await fetch("/api/auth/reset-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      setResetStatus("sent");
+    } catch {
+      setErrorMsg("Failed to send reset email.");
+      setStatus("error");
+      setResetStatus("idle");
     }
   };
 
@@ -222,6 +242,100 @@ export default function AuthorLogin() {
             >
               {status === "loading" ? "ENTERING..." : "ENTER THE STUDIO"}
             </motion.button>
+
+            {/* Forgot password */}
+            {!resetMode && (
+              <p style={{ textAlign: "center", marginTop: "1rem" }}>
+                <button
+                  type="button"
+                  onClick={() => { setResetMode(true); setStatus("idle"); setErrorMsg(""); }}
+                  style={{
+                    fontFamily: '"JetBrains Mono", monospace',
+                    fontSize: "0.45rem",
+                    letterSpacing: "0.15em",
+                    color: "rgba(245,230,200,0.25)",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Forgot password?
+                </button>
+              </p>
+            )}
+
+            {/* Reset mode */}
+            {resetMode && resetStatus !== "sent" && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                style={{ marginTop: "1rem", textAlign: "center", overflow: "hidden" }}
+              >
+                <p style={{
+                  fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                  fontSize: "0.85rem",
+                  fontStyle: "italic",
+                  color: "rgba(245,230,200,0.4)",
+                  marginBottom: "0.75rem",
+                }}>
+                  Enter your email above, then:
+                </p>
+                <motion.button
+                  type="button"
+                  onClick={handleResetRequest}
+                  disabled={resetStatus === "sending"}
+                  style={{
+                    fontFamily: '"JetBrains Mono", monospace',
+                    fontSize: "0.5rem",
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    color: "rgba(201,168,76,0.6)",
+                    background: "transparent",
+                    border: "1px solid rgba(201,168,76,0.2)",
+                    padding: "0.5rem 1.25rem",
+                    cursor: resetStatus === "sending" ? "wait" : "pointer",
+                  }}
+                  whileHover={{ borderColor: "rgba(201,168,76,0.5)" }}
+                >
+                  {resetStatus === "sending" ? "Sending…" : "Send Reset Link"}
+                </motion.button>
+                <p style={{ marginTop: "0.5rem" }}>
+                  <button
+                    type="button"
+                    onClick={() => { setResetMode(false); setResetStatus("idle"); }}
+                    style={{
+                      fontFamily: '"JetBrains Mono", monospace',
+                      fontSize: "0.4rem",
+                      color: "rgba(245,230,200,0.2)",
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Back to login
+                  </button>
+                </p>
+              </motion.div>
+            )}
+
+            {/* Reset email sent */}
+            {resetStatus === "sent" && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                style={{
+                  fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                  fontSize: "0.9rem",
+                  fontStyle: "italic",
+                  color: "rgba(0,229,204,0.6)",
+                  textAlign: "center",
+                  marginTop: "1rem",
+                }}
+              >
+                Reset link sent. Check your inbox.
+              </motion.p>
+            )}
           </form>
         </div>
 

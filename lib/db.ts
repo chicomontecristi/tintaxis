@@ -578,3 +578,23 @@ export async function listAllAnnotationsByReader(
   }
   return data ?? [];
 }
+
+/**
+ * Update a reader's password hash by email.
+ * Used by the password reset flow.
+ */
+export async function updateReaderPassword(
+  email: string,
+  newPasswordHash: string
+): Promise<boolean> {
+  const { error } = await supabase
+    .from("readers")
+    .update({ password_hash: newPasswordHash, updated_at: new Date().toISOString() })
+    .eq("email", email.toLowerCase().trim());
+
+  if (error) {
+    console.error("[db] updateReaderPassword error:", error.message);
+    return false;
+  }
+  return true;
+}
