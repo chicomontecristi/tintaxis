@@ -141,3 +141,44 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ voiceovers: [] });
   }
 }
+
+// DELETE /api/author/audio?book={bookSlug}&chapter={chapterSlug}
+// Remove a voiceover from Supabase Storage
+export async function DELETE(req: NextRequest) {
+  try {
+    const session = getSessionFromCookie(req.headers.get("cookie"));
+    if (!session || session.role !== "author") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const bookSlug = req.nextUrl.searchParams.get("book");
+    const chapterSlug = req.nextUrl.searchParams.get("chapter");
+    if (!bookSlug || !chapterSlug) {
+      return NextResponse.json({ error: "Missing book or chapter parameter" }, { status: 400 });
+    }
+
+    // List files to find the exact filename (could be .webm, .mp3, .mp4, etc.)
+    const { data: files } = await supabase.storage
+      .from(BUCKET)
+      .list(bookSlug);
+
+    const match = files?.find((f) => f.name.startsWith(chapterSlug + "."));
+    if (!match) {
+      return NextResponse.json({ error: "No recording found" }, { status: 404 });
+    }
+
+    const { error: deleteError } = await supabase.storage
+      .from(BUCKET)
+      .remove([`${bookSlug}/${match.name}`]);
+
+    if (deleteError) {
+      console.error("[author/audio] Delete error:", deleteError);
+      return NextResponse.json({ error: deleteError.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("[author/audio] Delete error:", err);
+    return NextResponse.json({ error: "Delete failed" }, { status: 500 });
+  }
+}

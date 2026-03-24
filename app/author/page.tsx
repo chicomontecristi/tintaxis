@@ -503,6 +503,33 @@ export default function AuthorDashboard() {
     }
   };
 
+  // ── Voiceover delete handler ────────────────────────────────────────────
+  const [deletingChapter, setDeletingChapter] = useState<string | null>(null);
+
+  const handleVoiceoverDelete = async (chapterSlug: string) => {
+    if (!confirm(`Delete the voiceover for this chapter?`)) return;
+    setDeletingChapter(chapterSlug);
+    try {
+      const res = await fetch(`/api/author/audio?book=the-hunt&chapter=${chapterSlug}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(`Delete failed: ${data.error || "Unknown error"}`);
+        return;
+      }
+      setVoiceovers((prev) => {
+        const next = { ...prev };
+        delete next[chapterSlug];
+        return next;
+      });
+    } catch {
+      alert("Delete failed — check your connection.");
+    } finally {
+      setDeletingChapter(null);
+    }
+  };
+
   // ── Voiceover upload handler ────────────────────────────────────────────
   const handleVoiceoverUpload = async (chapterSlug: string, file: File): Promise<boolean> => {
     setUploadingChapter(chapterSlug);
@@ -1304,8 +1331,26 @@ export default function AuthorDashboard() {
                               height: "32px",
                               opacity: 0.7,
                               filter: "sepia(0.3) brightness(0.9)",
+                              marginBottom: "0.4rem",
                             }}
                           />
+                          <button
+                            onClick={() => handleVoiceoverDelete(ch.slug)}
+                            disabled={deletingChapter === ch.slug}
+                            style={{
+                              fontFamily: '"JetBrains Mono", monospace',
+                              fontSize: "0.42rem",
+                              letterSpacing: "0.15em",
+                              textTransform: "uppercase",
+                              color: "rgba(192,57,43,0.5)",
+                              background: "transparent",
+                              border: "none",
+                              cursor: deletingChapter === ch.slug ? "wait" : "pointer",
+                              padding: "0.2rem 0",
+                            }}
+                          >
+                            {deletingChapter === ch.slug ? "Deleting…" : "Delete Recording"}
+                          </button>
                         </div>
                       )}
 
