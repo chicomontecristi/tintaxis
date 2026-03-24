@@ -105,6 +105,14 @@ function AccountPage() {
   const [annotations, setAnnotations] = useState<AnnotationSummary | null>(null);
   const [loading, setLoading]         = useState(true);
   const [signingOut, setSigningOut]   = useState(false);
+
+  // Feedback form state
+  const [feedbackOpen, setFeedbackOpen]       = useState(false);
+  const [feedbackCategory, setFeedbackCategory] = useState<string>("praise");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [feedbackSending, setFeedbackSending] = useState(false);
+  const [feedbackSent, setFeedbackSent]       = useState(false);
+
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
 
@@ -132,6 +140,30 @@ function AccountPage() {
     setSigningOut(true);
     await fetch("/api/reader/logout", { method: "POST" });
     window.location.href = "/";
+  }
+
+  async function handleFeedbackSubmit() {
+    if (!feedbackMessage.trim()) return;
+    setFeedbackSending(true);
+    try {
+      await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          category: feedbackCategory,
+          message: feedbackMessage.trim(),
+          email: session?.email ?? null,
+          name: session?.name ?? null,
+          tier: session?.tier ?? null,
+        }),
+      });
+      setFeedbackSent(true);
+      setFeedbackMessage("");
+    } catch {
+      // Silently fail — feedback is non-critical
+    } finally {
+      setFeedbackSending(false);
+    }
   }
 
   const tier = session?.tier ?? null;
@@ -179,7 +211,7 @@ function AccountPage() {
                 transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
                 style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.55rem",
+                  fontSize: "0.85rem",
                   letterSpacing: "0.3em",
                   color: "rgba(201,168,76,0.5)",
                   textTransform: "uppercase",
@@ -208,7 +240,7 @@ function AccountPage() {
               <p
                 style={{
                   fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.5rem",
+                  fontSize: "0.8rem",
                   letterSpacing: "0.3em",
                   color: "rgba(201,168,76,0.4)",
                   textTransform: "uppercase",
@@ -294,7 +326,7 @@ function AccountPage() {
                 <p
                   style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.5rem",
+                    fontSize: "0.8rem",
                     letterSpacing: "0.3em",
                     color: "rgba(201,168,76,0.45)",
                     textTransform: "uppercase",
@@ -369,7 +401,7 @@ function AccountPage() {
                     <p
                       style={{
                         fontFamily: '"JetBrains Mono", monospace',
-                        fontSize: "0.45rem",
+                        fontSize: "0.75rem",
                         letterSpacing: "0.25em",
                         color: "rgba(201,168,76,0.4)",
                         textTransform: "uppercase",
@@ -415,7 +447,7 @@ function AccountPage() {
                     <span
                       style={{
                         fontFamily: '"JetBrains Mono", monospace',
-                        fontSize: "0.45rem",
+                        fontSize: "0.75rem",
                         letterSpacing: "0.18em",
                         color: "rgba(201,168,76,0.7)",
                         textTransform: "uppercase",
@@ -456,7 +488,7 @@ function AccountPage() {
                         key={ink}
                         style={{
                           fontFamily: '"JetBrains Mono", monospace',
-                          fontSize: "0.4rem",
+                          fontSize: "0.75rem",
                           letterSpacing: "0.12em",
                           color: tierMeta.color,
                           border: `1px solid ${tierMeta.color}30`,
@@ -477,7 +509,7 @@ function AccountPage() {
                   <p
                     style={{
                       fontFamily: '"JetBrains Mono", monospace',
-                      fontSize: "0.42rem",
+                      fontSize: "0.75rem",
                       letterSpacing: "0.15em",
                       color: "rgba(201,168,76,0.25)",
                       textTransform: "uppercase",
@@ -496,7 +528,7 @@ function AccountPage() {
                   animate={{ opacity: 1 }}
                   style={{
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.45rem",
+                    fontSize: "0.75rem",
                     letterSpacing: "0.1em",
                     color: "rgba(220,60,60,0.6)",
                     textAlign: "center",
@@ -527,7 +559,7 @@ function AccountPage() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "1rem" }}>
                     <p style={{
                       fontFamily: '"JetBrains Mono", monospace',
-                      fontSize: "0.45rem",
+                      fontSize: "0.75rem",
                       letterSpacing: "0.25em",
                       color: "rgba(201,168,76,0.4)",
                       textTransform: "uppercase",
@@ -536,7 +568,7 @@ function AccountPage() {
                     </p>
                     <p style={{
                       fontFamily: '"JetBrains Mono", monospace',
-                      fontSize: "0.45rem",
+                      fontSize: "0.75rem",
                       letterSpacing: "0.15em",
                       color: "rgba(201,168,76,0.25)",
                       textTransform: "uppercase",
@@ -593,7 +625,7 @@ function AccountPage() {
                           </div>
                           <span style={{
                             fontFamily: '"JetBrains Mono", monospace',
-                            fontSize: "0.42rem",
+                            fontSize: "0.75rem",
                             letterSpacing: "0.12em",
                             color: "rgba(201,168,76,0.3)",
                             textTransform: "uppercase",
@@ -610,7 +642,7 @@ function AccountPage() {
                     <div style={{ borderTop: "1px solid rgba(201,168,76,0.07)", paddingTop: "0.75rem" }}>
                       <p style={{
                         fontFamily: '"JetBrains Mono", monospace',
-                        fontSize: "0.42rem",
+                        fontSize: "0.75rem",
                         letterSpacing: "0.2em",
                         color: "rgba(201,168,76,0.25)",
                         textTransform: "uppercase",
@@ -643,7 +675,7 @@ function AccountPage() {
                           {a.note && (
                             <p style={{
                               fontFamily: '"JetBrains Mono", monospace',
-                              fontSize: "0.42rem",
+                              fontSize: "0.75rem",
                               color: "rgba(245,230,200,0.25)",
                               marginTop: "0.2rem",
                               letterSpacing: "0.05em",
@@ -686,6 +718,180 @@ function AccountPage() {
                   </a>
                 )}
 
+                {/* ── Feedback Section ──────────────────────────────── */}
+                <div
+                  style={{
+                    borderTop: "1px solid rgba(201,168,76,0.08)",
+                    paddingTop: "1rem",
+                    marginTop: "0.5rem",
+                  }}
+                >
+                  {!feedbackOpen && !feedbackSent && (
+                    <button
+                      onClick={() => setFeedbackOpen(true)}
+                      style={{
+                        width: "100%",
+                        background: "transparent",
+                        border: "1px solid rgba(201,168,76,0.1)",
+                        cursor: "pointer",
+                        fontFamily: '"JetBrains Mono", monospace',
+                        fontSize: "0.75rem",
+                        letterSpacing: "0.15em",
+                        color: "rgba(245,230,200,0.3)",
+                        textTransform: "uppercase",
+                        padding: "0.8rem 1rem",
+                        textAlign: "center",
+                        transition: "all 0.3s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.target as HTMLButtonElement).style.color = "rgba(245,230,200,0.5)";
+                        (e.target as HTMLButtonElement).style.borderColor = "rgba(201,168,76,0.25)";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.target as HTMLButtonElement).style.color = "rgba(245,230,200,0.3)";
+                        (e.target as HTMLButtonElement).style.borderColor = "rgba(201,168,76,0.1)";
+                      }}
+                    >
+                      Send Feedback
+                    </button>
+                  )}
+
+                  {feedbackSent && (
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      style={{
+                        fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                        fontSize: "1rem",
+                        fontStyle: "italic",
+                        color: "rgba(0,229,204,0.6)",
+                        textAlign: "center",
+                        padding: "0.8rem 0",
+                      }}
+                    >
+                      Received. Thank you.
+                    </motion.p>
+                  )}
+
+                  <AnimatePresence>
+                    {feedbackOpen && !feedbackSent && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        style={{ overflow: "hidden" }}
+                      >
+                        {/* Category selector */}
+                        <div style={{
+                          display: "flex",
+                          gap: "0.4rem",
+                          flexWrap: "wrap",
+                          marginBottom: "0.75rem",
+                        }}>
+                          {[
+                            { key: "praise", label: "Praise" },
+                            { key: "idea", label: "Idea" },
+                            { key: "bug", label: "Bug" },
+                            { key: "question", label: "Question" },
+                            { key: "other", label: "Other" },
+                          ].map((cat) => (
+                            <button
+                              key={cat.key}
+                              onClick={() => setFeedbackCategory(cat.key)}
+                              style={{
+                                background: feedbackCategory === cat.key
+                                  ? "rgba(201,168,76,0.15)"
+                                  : "transparent",
+                                border: `1px solid ${feedbackCategory === cat.key ? "rgba(201,168,76,0.4)" : "rgba(201,168,76,0.1)"}`,
+                                color: feedbackCategory === cat.key
+                                  ? "#C9A84C"
+                                  : "rgba(245,230,200,0.3)",
+                                fontFamily: '"JetBrains Mono", monospace',
+                                fontSize: "0.75rem",
+                                letterSpacing: "0.1em",
+                                textTransform: "uppercase",
+                                padding: "0.4rem 0.7rem",
+                                cursor: "pointer",
+                                transition: "all 0.2s",
+                              }}
+                            >
+                              {cat.label}
+                            </button>
+                          ))}
+                        </div>
+
+                        {/* Message textarea */}
+                        <textarea
+                          value={feedbackMessage}
+                          onChange={(e) => setFeedbackMessage(e.target.value)}
+                          placeholder="What's on your mind?"
+                          maxLength={2000}
+                          rows={4}
+                          style={{
+                            width: "100%",
+                            background: "rgba(255,255,255,0.02)",
+                            border: "1px solid rgba(201,168,76,0.15)",
+                            color: "#F5E6C8",
+                            fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                            fontSize: "1rem",
+                            lineHeight: 1.6,
+                            padding: "0.75rem",
+                            resize: "vertical",
+                            outline: "none",
+                            marginBottom: "0.75rem",
+                          }}
+                          onFocus={(e) => {
+                            (e.target as HTMLTextAreaElement).style.borderColor = "rgba(201,168,76,0.35)";
+                          }}
+                          onBlur={(e) => {
+                            (e.target as HTMLTextAreaElement).style.borderColor = "rgba(201,168,76,0.15)";
+                          }}
+                        />
+
+                        {/* Submit + Cancel */}
+                        <div style={{ display: "flex", gap: "0.5rem" }}>
+                          <button
+                            onClick={handleFeedbackSubmit}
+                            disabled={feedbackSending || !feedbackMessage.trim()}
+                            style={{
+                              flex: 1,
+                              background: feedbackMessage.trim() ? "rgba(201,168,76,0.12)" : "transparent",
+                              border: "1px solid rgba(201,168,76,0.3)",
+                              color: feedbackMessage.trim() ? "#C9A84C" : "rgba(201,168,76,0.2)",
+                              fontFamily: '"JetBrains Mono", monospace',
+                              fontSize: "0.75rem",
+                              letterSpacing: "0.15em",
+                              textTransform: "uppercase",
+                              padding: "0.7rem",
+                              cursor: feedbackMessage.trim() ? "pointer" : "default",
+                              transition: "all 0.2s",
+                            }}
+                          >
+                            {feedbackSending ? "Sending…" : "Send"}
+                          </button>
+                          <button
+                            onClick={() => { setFeedbackOpen(false); setFeedbackMessage(""); }}
+                            style={{
+                              background: "transparent",
+                              border: "1px solid rgba(201,168,76,0.1)",
+                              color: "rgba(245,230,200,0.25)",
+                              fontFamily: '"JetBrains Mono", monospace',
+                              fontSize: "0.75rem",
+                              letterSpacing: "0.1em",
+                              textTransform: "uppercase",
+                              padding: "0.7rem 1rem",
+                              cursor: "pointer",
+                              transition: "all 0.2s",
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
                 {/* Brass rule before sign out */}
                 <div
                   style={{
@@ -704,7 +910,7 @@ function AccountPage() {
                     border: "none",
                     cursor: signingOut ? "default" : "pointer",
                     fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.45rem",
+                    fontSize: "0.75rem",
                     letterSpacing: "0.2em",
                     color: signingOut
                       ? "rgba(245,230,200,0.15)"
@@ -749,7 +955,7 @@ function AccountPage() {
           <p
             style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.42rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.2em",
               color: "rgba(201,168,76,0.2)",
               textTransform: "uppercase",
@@ -782,7 +988,7 @@ function BrassButton({
         display: "block",
         width: fullWidth ? "100%" : "auto",
         fontFamily: '"JetBrains Mono", monospace',
-        fontSize: "0.55rem",
+        fontSize: "0.85rem",
         letterSpacing: "0.25em",
         textTransform: "uppercase",
         color: "#C9A84C",
@@ -862,7 +1068,7 @@ function GhostButton({
         display: "block",
         width: fullWidth ? "100%" : "auto",
         fontFamily: '"JetBrains Mono", monospace',
-        fontSize: "0.5rem",
+        fontSize: "0.8rem",
         letterSpacing: "0.2em",
         textTransform: "uppercase",
         color: "rgba(245,230,200,0.3)",
