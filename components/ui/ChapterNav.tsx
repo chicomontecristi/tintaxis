@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Chapter } from "@/lib/types";
 import TintaxisLogo from "./TintaxisLogo";
+import ThemeToggle from "./ThemeToggle";
 
 // ─── CHAPTER NAVIGATION ───────────────────────────────────────────────────────
 // Minimal top bar. Hides on scroll down, reveals on scroll up.
@@ -67,10 +68,10 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
             height: "52px",
             background: atTop
               ? "transparent"
-              : "rgba(13,11,8,0.92)",
+              : "var(--nav-bg)",
             borderBottom: atTop
               ? "1px solid transparent"
-              : "1px solid rgba(201,168,76,0.12)",
+              : "1px solid var(--border-subtle)",
             backdropFilter: atTop ? "none" : "blur(8px)",
             transition: "background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease",
             paddingLeft: "var(--nav-left-pad, 60px)", // 60px on desktop (clears left toolbar), 0 on mobile (toolbar is at bottom)
@@ -109,7 +110,7 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
                     fontFamily: '"EB Garamond", Garamond, Georgia, serif',
                     fontSize: "0.875rem",
                     letterSpacing: "0.1em",
-                    color: "rgba(245,230,200,0.65)",
+                    color: "rgba(var(--text-primary-rgb),0.65)",
                   }}
                 >
                   Tintaxis
@@ -139,7 +140,7 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
                   fontFamily: '"EB Garamond", Garamond, Georgia, serif',
                   fontSize: "0.8rem",
                   fontStyle: "italic",
-                  color: "rgba(245,230,200,0.4)",
+                  color: "rgba(var(--text-primary-rgb),0.4)",
                   letterSpacing: "0.02em",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
@@ -152,8 +153,9 @@ export default function ChapterNav({ chapter }: ChapterNavProps) {
               </span>
             </div>
 
-            {/* ── Right: Reader identity + Ink indicator ─────── */}
-            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            {/* ── Right: Theme toggle + Reader identity ──────── */}
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              <ThemeToggle />
               {readerReady && (
                 readerName ? (
                   // Signed in — show name linking to account

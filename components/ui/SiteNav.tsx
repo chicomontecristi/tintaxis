@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import ThemeToggle from "./ThemeToggle";
 
 // ─── SITE NAV ───────────────────────────────────────────────────────────────
 // Minimal persistent navigation. Hidden on homepage (/) to keep it clean.
@@ -64,9 +65,10 @@ export default function SiteNav() {
         justifyContent: "space-between",
         alignItems: "center",
         padding: "0.65rem clamp(1rem, 4vw, 2rem)",
-        borderBottom: "1px solid rgba(201,168,76,0.07)",
-        background: "rgba(13,11,8,0.9)",
+        borderBottom: "1px solid var(--border-subtle)",
+        background: "var(--nav-bg)",
         backdropFilter: "blur(8px)",
+        transition: "background 0.4s ease, border-color 0.4s ease",
       }}
     >
       <Link
@@ -75,7 +77,7 @@ export default function SiteNav() {
           fontFamily: MONO,
           fontSize: "0.85rem",
           letterSpacing: "0.25em",
-          color: "rgba(201,168,76,0.6)",
+          color: "var(--brass-dim)",
           textDecoration: "none",
           textTransform: "uppercase",
         }}
@@ -106,6 +108,7 @@ export default function SiteNav() {
             </Link>
           );
         })}
+        <ThemeToggle />
         {session.role && (
           <button
             onClick={handleLogout}

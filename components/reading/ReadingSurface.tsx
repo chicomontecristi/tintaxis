@@ -378,7 +378,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
   return (
     <div
       className="min-h-screen"
-      style={{ backgroundColor: "#0D0B08" }}
+      style={{ backgroundColor: "var(--bg-page)", transition: "background-color 0.4s ease" }}
     >
       {/* ── Chapter navigation — top bar ────────────────────── */}
       <ChapterNav chapter={chapter} />
@@ -656,7 +656,7 @@ function ChapterHeader({ chapter }: { chapter: Chapter }) {
           fontFamily: '"EB Garamond", Garamond, Georgia, serif',
           fontSize: "clamp(2rem, 4vw, 2.5rem)",
           fontWeight: 400,
-          color: "#F5E6C8",
+          color: "var(--text-primary)",
           lineHeight: 1.2,
           letterSpacing: "-0.01em",
           marginBottom: chapter.subtitle ? "0.75rem" : "0",
@@ -671,7 +671,7 @@ function ChapterHeader({ chapter }: { chapter: Chapter }) {
             fontFamily: '"EB Garamond", Garamond, Georgia, serif',
             fontSize: "1.05rem",
             fontStyle: "italic",
-            color: "rgba(245,230,200,0.45)",
+            color: "rgba(var(--text-primary-rgb),0.45)",
             lineHeight: 1.5,
           }}
         >
@@ -827,7 +827,7 @@ function CompletionEvent({
                   fontFamily: '"EB Garamond", Garamond, Georgia, serif',
                   fontSize: "clamp(1.4rem, 4vw, 1.75rem)",
                   fontStyle: "italic",
-                  color: "rgba(245,230,200,0.85)",
+                  color: "rgba(var(--text-primary-rgb),0.85)",
                   lineHeight: 1.4,
                   marginBottom: "0.5rem",
                   letterSpacing: "-0.01em",
@@ -840,7 +840,7 @@ function CompletionEvent({
                   fontFamily: '"EB Garamond", Garamond, Georgia, serif',
                   fontSize: "1.05rem",
                   fontStyle: "italic",
-                  color: "rgba(245,230,200,0.3)",
+                  color: "rgba(var(--text-primary-rgb),0.3)",
                   lineHeight: 1.6,
                   marginBottom: "2.5rem",
                 }}
@@ -1086,7 +1086,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                   fontFamily: '"EB Garamond", Garamond, Georgia, serif',
                   fontSize: "0.95rem",
                   fontStyle: "italic",
-                  color: "rgba(245,230,200,0.65)",
+                  color: "rgba(var(--text-primary-rgb),0.65)",
                   lineHeight: 1.3,
                 }}
               >
@@ -1165,7 +1165,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                   fontFamily: '"EB Garamond", Garamond, Georgia, serif',
                   fontSize: "0.95rem",
                   fontStyle: "italic",
-                  color: "rgba(245,230,200,0.3)",
+                  color: "rgba(var(--text-primary-rgb),0.3)",
                   lineHeight: 1.3,
                 }}
               >
@@ -1220,7 +1220,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                     fontFamily: '"EB Garamond", Garamond, Georgia, serif',
                     fontSize: "1.05rem",
                     fontStyle: "italic",
-                    color: "rgba(245,230,200,0.7)",
+                    color: "rgba(var(--text-primary-rgb),0.7)",
                     lineHeight: 1.3,
                   }}
                 >

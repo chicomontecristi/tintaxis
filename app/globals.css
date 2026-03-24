@@ -41,6 +41,50 @@
   /* E-ink glow — warm front-lit diffusion                            */
   --eink-glow:  0 0 80px rgba(245, 230, 200, 0.03),
                 0 0 160px rgba(201, 168, 76, 0.02);
+
+  /* ─── THEME-AWARE COLORS (night = default) ────────────────────── */
+  --bg-page:       #0D0B08;
+  --bg-surface:    #1C1408;
+  --bg-surface-rgb: 28, 20, 8;
+  --text-primary:  #F5E6C8;
+  --text-primary-rgb: 245, 230, 200;
+  --text-secondary: rgba(245, 230, 200, 0.5);
+  --text-dim:      rgba(245, 230, 200, 0.3);
+  --brass-primary: #C9A84C;
+  --brass-dim:     rgba(201, 168, 76, 0.4);
+  --border-subtle: rgba(201, 168, 76, 0.07);
+  --nav-bg:        rgba(13, 11, 8, 0.9);
+  --selection-bg:  rgba(201, 168, 76, 0.25);
+}
+
+/* ─── DAY THEME (Sepia / Kindle Paperwhite) ─────────────────────── */
+[data-theme="day"] {
+  --vault:         #FBF5E6;
+  --archive:       #F0E4CC;
+  --parchment:     #2C1A00;
+  --bg-page:       #FBF5E6;
+  --bg-surface:    #F5EDDA;
+  --bg-surface-rgb: 245, 237, 218;
+  --text-primary:  #2C1A00;
+  --text-primary-rgb: 44, 26, 0;
+  --text-secondary: rgba(44, 26, 0, 0.6);
+  --text-dim:      rgba(44, 26, 0, 0.35);
+  --brass-primary: #8B6914;
+  --brass-dim:     rgba(139, 105, 20, 0.5);
+  --border-subtle: rgba(139, 105, 20, 0.12);
+  --nav-bg:        rgba(251, 245, 230, 0.92);
+  --selection-bg:  rgba(139, 105, 20, 0.2);
+  --scrollbar-track: #F5EDDA;
+  --scrollbar-thumb: #E0D4B8;
+  --scrollbar-hover: #C9BD9F;
+  --eink-glow:     0 0 60px rgba(44, 26, 0, 0.03),
+                   0 0 120px rgba(139, 105, 20, 0.02);
+  --ink-ember:     #A0301F;
+  --ink-copper:    #8B5A2B;
+  --ink-ghost:     #6B7070;
+  --ink-archive:   #8B6914;
+  --ink-signal:    #0A8F80;
+  --ink-memory:    #4A2D70;
 }
 
 /* ─── RESET & BASE ────────────────────────────────────────────────── */
@@ -57,15 +101,15 @@ html {
 }
 
 body {
-  background-color: var(--vault);
-  color: var(--parchment);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
   font-family: "EB Garamond", Garamond, Georgia, serif;
   font-size: var(--t-body);
   line-height: 1.7;
   overflow-x: hidden;
   min-height: 100vh;
-  /* Subtle front-lit e-ink diffusion */
   text-rendering: optimizeLegibility;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 /* ─── SCROLLBAR ───────────────────────────────────────────────────── */
@@ -86,8 +130,8 @@ body {
 
 /* ─── SELECTION ───────────────────────────────────────────────────── */
 ::selection {
-  background-color: rgba(201, 168, 76, 0.25);
-  color: var(--parchment);
+  background-color: var(--selection-bg);
+  color: var(--text-primary);
 }
 
 /* ─── TEXT CURSOR INSIDE READING SURFACE ─────────────────────────── */
@@ -149,12 +193,19 @@ body {
 
 /* ─── PARCHMENT READING SURFACE (e-ink inspired) ────────────────── */
 .parchment-surface {
-  background-color: #1C1408;
+  background-color: var(--bg-surface);
   background-image:
-    radial-gradient(ellipse at 20% 50%, rgba(44, 26, 0, 0.3) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(44, 26, 0, 0.2) 0%, transparent 50%);
-  /* Front-lit LED glow — warm light diffusing across the reading surface */
+    radial-gradient(ellipse at 20% 50%, rgba(var(--bg-surface-rgb), 0.3) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(var(--bg-surface-rgb), 0.2) 0%, transparent 50%);
   box-shadow: var(--eink-glow);
+  transition: background-color 0.4s ease;
+}
+
+/* Day mode: softer, warmer gradients */
+[data-theme="day"] .parchment-surface {
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(225, 215, 190, 0.3) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(225, 215, 190, 0.2) 0%, transparent 50%);
 }
 
 /* ─── CHAPTER NUMBER LABEL ────────────────────────────────────────── */
@@ -163,7 +214,7 @@ body {
   font-size: var(--t-micro);
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: var(--brass);
+  color: var(--brass-primary);
   opacity: 0.7;
 }
 
@@ -333,6 +384,30 @@ body {
     /* Narrower margin column on tablet */
     max-width: 180px;
   }
+}
+
+/* ─── DAY MODE OVERRIDES ─────────────────────────────────────────── */
+[data-theme="day"] .vault-noise::before {
+  opacity: 0.08;
+}
+[data-theme="day"] .author-panel {
+  background: linear-gradient(135deg, #F0E4CC 0%, #FBF5E6 100%);
+  border-color: rgba(139, 105, 20, 0.25);
+  box-shadow: inset 0 1px 0 rgba(139, 105, 20, 0.08), 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+[data-theme="day"] .anchored-note {
+  border-left-color: var(--brass-primary);
+  background: rgba(139, 105, 20, 0.06);
+}
+[data-theme="day"] .brass-line {
+  background: linear-gradient(90deg, transparent 0%, var(--brass-primary) 30%, #A07D1C 50%, var(--brass-primary) 70%, transparent 100%);
+}
+[data-theme="day"] .ink-toolbar-fixed {
+  background: rgba(251, 245, 230, 0.97) !important;
+  border-top-color: rgba(139, 105, 20, 0.15) !important;
+}
+[data-theme="day"] .question-chamber-backdrop {
+  background: rgba(251, 245, 230, 0.92);
 }
 
 /* ─── VAULT BACKGROUND NOISE ─────────────────────────────────────── */

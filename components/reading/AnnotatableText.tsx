@@ -206,7 +206,7 @@ export default function AnnotatableText({
     fontSize: "clamp(1.15rem, 2.5vw, 1.35rem)",
     lineHeight: 1.9,
     letterSpacing: "0.01em",
-    color: "#F5E6C8",
+    color: "var(--text-primary)",
     textIndent: isFirstParagraph || isEpigraph ? "0" : "2em",
     marginBottom: "1.5em",
     position: "relative",
@@ -217,7 +217,7 @@ export default function AnnotatableText({
   if (isEpigraph) {
     Object.assign(paragraphStyle, {
       fontStyle: "italic",
-      color: "rgba(245,230,200,0.65)",
+      color: "rgba(var(--text-primary-rgb),0.65)",
       fontSize: "1.05rem",
       lineHeight: 1.7,
       textAlign: "center" as const,
@@ -608,7 +608,7 @@ function NoteInputPanel({
           border: `1px solid rgba(201,168,76,0.2)`,
           borderRadius: "1px",
           padding: "0.5rem",
-          color: "#F5E6C8",
+          color: "var(--text-primary)",
           fontFamily: '"EB Garamond", Garamond, Georgia, serif',
           fontSize: "1rem",
           lineHeight: 1.6,
