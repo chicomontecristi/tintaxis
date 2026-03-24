@@ -592,6 +592,127 @@ export default function LivingPage() {
                   </Link>
                 </motion.div>
               </div>
+
+              {/* ── Reader Transparency — Where Your Money Goes ──── */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.6, duration: 0.6 }}
+                style={{
+                  marginTop: "4rem",
+                  padding: "2.5rem 2rem",
+                  border: "1px solid rgba(201,168,76,0.15)",
+                  background: "rgba(255,255,255,0.01)",
+                  maxWidth: "620px",
+                  margin: "4rem auto 0",
+                  position: "relative",
+                }}
+              >
+                {/* Corner accents */}
+                {["top-0 left-0", "top-0 right-0", "bottom-0 left-0", "bottom-0 right-0"].map((pos, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      position: "absolute",
+                      width: "10px",
+                      height: "10px",
+                      borderColor: "rgba(201,168,76,0.2)",
+                      ...(pos.includes("top") ? { top: 0 } : { bottom: 0 }),
+                      ...(pos.includes("left") ? { left: 0, borderLeft: "1px solid rgba(201,168,76,0.2)", ...(pos.includes("top") ? { borderTop: "1px solid rgba(201,168,76,0.2)" } : { borderBottom: "1px solid rgba(201,168,76,0.2)" }) } : { right: 0, borderRight: "1px solid rgba(201,168,76,0.2)", ...(pos.includes("top") ? { borderTop: "1px solid rgba(201,168,76,0.2)" } : { borderBottom: "1px solid rgba(201,168,76,0.2)" }) }),
+                    }}
+                  />
+                ))}
+
+                <p
+                  style={{
+                    fontFamily: MONO,
+                    fontSize: "0.5rem",
+                    letterSpacing: "0.35em",
+                    color: "rgba(201,168,76,0.5)",
+                    textTransform: "uppercase",
+                    textAlign: "center",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  WHERE YOUR MONEY GOES
+                </p>
+                <h3
+                  style={{
+                    fontFamily: SERIF,
+                    fontSize: "clamp(1.3rem, 3vw, 1.8rem)",
+                    fontWeight: 400,
+                    color: "#F5E6C8",
+                    textAlign: "center",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  You pay the writer. Not us.
+                </h3>
+                <p
+                  style={{
+                    fontFamily: SERIF,
+                    fontSize: "0.95rem",
+                    fontStyle: "italic",
+                    color: "rgba(245,230,200,0.35)",
+                    textAlign: "center",
+                    marginBottom: "2rem",
+                    maxWidth: "380px",
+                    margin: "0 auto 2rem",
+                  }}
+                >
+                  When you subscribe to a writer on Tintaxis, this is exactly where every dollar goes.
+                </p>
+
+                {/* Tier breakdown grid */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", marginBottom: "1.5rem" }}>
+                  {[
+                    { tier: "Codex", price: "$1.99", writer: "$1.69", platform: "$0.30" },
+                    { tier: "Scribe", price: "$3.99", writer: "$3.39", platform: "$0.60" },
+                    { tier: "Archive", price: "$7.99", writer: "$6.79", platform: "$1.20" },
+                    { tier: "Chronicler", price: "$9.99", writer: "$8.49", platform: "$1.50" },
+                  ].map((t) => (
+                    <div
+                      key={t.tier}
+                      style={{
+                        padding: "0.85rem",
+                        border: "1px solid rgba(201,168,76,0.08)",
+                        background: "rgba(201,168,76,0.02)",
+                      }}
+                    >
+                      <p style={{ fontFamily: MONO, fontSize: "0.45rem", letterSpacing: "0.2em", color: "rgba(201,168,76,0.5)", textTransform: "uppercase", marginBottom: "0.4rem" }}>
+                        {t.tier} · {t.price}/mo
+                      </p>
+                      <p style={{ fontFamily: SERIF, fontSize: "0.9rem", color: "rgba(0,229,204,0.8)", marginBottom: "0.15rem" }}>
+                        {t.writer} → the writer
+                      </p>
+                      <p style={{ fontFamily: SERIF, fontSize: "0.8rem", color: "rgba(245,230,200,0.25)" }}>
+                        {t.platform} → Tintaxis
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{
+                  height: "1px",
+                  background: "linear-gradient(90deg, transparent, rgba(201,168,76,0.15), transparent)",
+                  margin: "1.25rem 0",
+                }} />
+
+                <p
+                  style={{
+                    fontFamily: SERIF,
+                    fontSize: "0.95rem",
+                    color: "rgba(245,230,200,0.45)",
+                    textAlign: "center",
+                    lineHeight: 1.7,
+                  }}
+                >
+                  <span style={{ color: "rgba(0,229,204,0.7)", fontWeight: 500 }}>85%</span> of your subscription goes directly to the writer you chose.
+                  Tintaxis keeps <span style={{ color: "rgba(245,230,200,0.55)" }}>15%</span> to maintain the platform.
+                  No ads. No data harvesting. No middlemen. Your subscription is a direct line to the person who wrote the words.
+                </p>
+              </motion.div>
             </div>
           </motion.div>
         )}
