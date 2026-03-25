@@ -166,7 +166,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
 
             {/* Social links */}
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-              {writer.instagram && (
+              {writer.instagram && !writer.instagramPrivate && (
                 <a
                   href={`https://instagram.com/${writer.instagram}`}
                   target="_blank"
@@ -183,6 +183,24 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
                   }}
                 >
                   @{writer.instagram}
+                </a>
+              )}
+              {writer.instagram && writer.instagramPrivate && writer.email && (
+                <a
+                  href={`mailto:${writer.email}?subject=Instagram%20Request%20—%20Tintaxis%20Reader&body=Hi%2C%20I%20found%20you%20on%20Tintaxis%20and%20would%20love%20to%20follow%20your%20Instagram.%20Could%20you%20share%20your%20handle%3F`}
+                  style={{
+                    fontFamily: '"JetBrains Mono", monospace',
+                    fontSize: "0.75rem",
+                    letterSpacing: "0.15em",
+                    color: "rgba(201,168,76,0.45)",
+                    textDecoration: "none",
+                    textTransform: "uppercase",
+                    border: "1px solid rgba(201,168,76,0.15)",
+                    padding: "0.35rem 0.75rem",
+                    cursor: "pointer",
+                  }}
+                >
+                  Request Instagram
                 </a>
               )}
               {writer.website && (

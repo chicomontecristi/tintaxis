@@ -23,6 +23,7 @@ export interface FeaturedWriter {
   fullBio: string;        // full paragraph for profile page
   works: FeaturedWork[];
   instagram?: string;     // handle without @
+  instagramPrivate?: boolean; // if true, show "Request Instagram" mailto instead of direct link
   website?: string;
   email?: string;
 }
@@ -51,6 +52,7 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
       },
     ],
     instagram: "rosalva.bp",
+    instagramPrivate: true,
     website: undefined,
     email: "rosalva@tintaxis.com",
   },
