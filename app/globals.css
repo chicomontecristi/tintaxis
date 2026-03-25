@@ -703,57 +703,58 @@ button, a, [role="button"] {
 /* Uses --narrator-accent set inline from the selected voice's accent color    */
 .narrator-active {
   position: relative;
-  transition: background 0.4s ease;
-  background: rgba(201, 168, 76, 0.04);
+  transition: background 0.4s ease, border-color 0.4s ease;
+  background: rgba(201, 168, 76, 0.06);
+  border-left: 3px solid var(--narrator-accent, var(--brass));
   border-radius: 2px;
+  padding-left: 12px;
+  margin-left: -15px;
+  animation: narrator-bg-in 0.4s ease-out;
 }
 
-/* Persistent left accent bar — colored per voice */
-.narrator-active::before {
-  content: "";
-  position: absolute;
-  left: -12px;
-  top: 4px;
-  bottom: 4px;
-  width: 2.5px;
-  border-radius: 2px;
-  background: var(--narrator-accent, var(--brass));
-  opacity: 0.6;
-  animation: narrator-bar-in 0.4s ease-out;
+/* Text glow — letters subtly brighten while being read */
+.narrator-active p,
+.narrator-active span {
+  color: var(--text-primary) !important;
+  text-shadow: 0 0 20px rgba(201, 168, 76, 0.15);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
-/* Subtle pulsing glow while actively reading */
+/* Pulsing border glow via box-shadow (inside the box, not clipped) */
 .narrator-active::after {
   content: "";
   position: absolute;
-  left: -12px;
-  top: 4px;
-  bottom: 4px;
-  width: 2.5px;
-  border-radius: 2px;
+  left: -3px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
   background: var(--narrator-accent, var(--brass));
+  border-radius: 2px;
   animation: narrator-glow 2s ease-in-out infinite;
+  pointer-events: none;
 }
 
-@keyframes narrator-bar-in {
-  0%   { opacity: 0; transform: scaleY(0.3); }
-  100% { opacity: 0.6; transform: scaleY(1); }
+@keyframes narrator-bg-in {
+  0%   { background: transparent; border-color: transparent; }
+  100% { background: rgba(201, 168, 76, 0.06); }
 }
 
 @keyframes narrator-glow {
-  0%, 100% { opacity: 0.15; filter: blur(3px); }
-  50%      { opacity: 0.35; filter: blur(5px); }
+  0%, 100% { opacity: 0; filter: blur(4px); }
+  50%      { opacity: 0.5; filter: blur(6px); }
 }
 
-/* Day mode — slightly stronger background so it's visible on cream */
+/* Day mode — warmer tint, stronger text, visible on cream */
 [data-theme="day"] .narrator-active {
-  background: rgba(90, 69, 16, 0.06);
+  background: rgba(90, 69, 16, 0.07);
+  border-left-color: var(--narrator-accent, #8B6914);
 }
-[data-theme="day"] .narrator-active::before {
-  opacity: 0.7;
+[data-theme="day"] .narrator-active p,
+[data-theme="day"] .narrator-active span {
+  text-shadow: 0 0 16px rgba(90, 69, 16, 0.12);
 }
 [data-theme="day"] .narrator-active::after {
-  opacity: 0.2;
+  opacity: 0.3;
 }
 
 /* ─── MOBILE — MINIMUM TOUCH TARGET SIZE ─────────────────────────── */

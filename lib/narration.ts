@@ -118,10 +118,51 @@ function pickSystemVoice(
   return pool[offset] ?? null;
 }
 
+// ── Split text into chunks safe for Chrome's ~15-second limit ────
+// Splits at sentence boundaries, targeting chunks under ~200 chars.
+function chunkText(text: string, maxLen = 180): string[] {
+  if (text.length <= maxLen) return [text];
+
+  const chunks: string[] = [];
+  let remaining = text;
+
+  while (remaining.length > 0) {
+    if (remaining.length <= maxLen) {
+      chunks.push(remaining);
+      break;
+    }
+
+    // Find the last sentence-ending punctuation within maxLen
+    let splitAt = -1;
+    for (let i = Math.min(maxLen, remaining.length) - 1; i >= 40; i--) {
+      if (/[.!?;:—]/.test(remaining[i])) {
+        splitAt = i + 1;
+        break;
+      }
+    }
+
+    // Fallback: split at last space within maxLen
+    if (splitAt === -1) {
+      splitAt = remaining.lastIndexOf(" ", maxLen);
+    }
+
+    // Last resort: hard cut
+    if (splitAt <= 0) {
+      splitAt = maxLen;
+    }
+
+    chunks.push(remaining.slice(0, splitAt).trim());
+    remaining = remaining.slice(splitAt).trim();
+  }
+
+  return chunks.filter((c) => c.length > 0);
+}
+
 // ── Web Speech API narrator ──────────────────────────────
 // Free, built-in, zero-config. Used when OpenAI TTS is not available.
 // Now picks distinct system voices and applies dramatic rate/pitch/volume
 // differences so each narrator sounds genuinely different.
+// Chunks long text to dodge Chrome's ~15-second speech cutoff.
 export function createWebSpeechNarrator(
   voice: NarratorVoice,
   language: "en" | "es" | "zh" | "es-zh"
@@ -138,6 +179,25 @@ export function createWebSpeechNarrator(
 
   // Cache the resolved system voice so we don't re-scan every paragraph
   let resolvedVoice: SpeechSynthesisVoice | null | undefined = undefined;
+  let stopped = false;
+
+  function resolveVoice() {
+    if (resolvedVoice === undefined) {
+      resolvedVoice = pickSystemVoice(profile, lang);
+    }
+    return resolvedVoice;
+  }
+
+  function makeUtterance(text: string): SpeechSynthesisUtterance {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.rate = profile.rate;
+    utterance.pitch = profile.pitch;
+    utterance.volume = profile.volume;
+    const v = resolveVoice();
+    if (v) utterance.voice = v;
+    return utterance;
+  }
 
   return {
     speak(
@@ -146,29 +206,70 @@ export function createWebSpeechNarrator(
       onError: () => void
     ): SpeechSynthesisUtterance {
       window.speechSynthesis?.cancel();
+      stopped = false;
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang;
-      utterance.rate = profile.rate;
-      utterance.pitch = profile.pitch;
-      utterance.volume = profile.volume;
+      const chunks = chunkText(text);
+      let currentChunk = 0;
 
-      // Resolve and assign a distinct system voice
-      if (resolvedVoice === undefined) {
-        resolvedVoice = pickSystemVoice(profile, lang);
+      // Chrome also pauses speechSynthesis after ~15s of background.
+      // This keep-alive timer nudges it every 10s.
+      let keepAlive: ReturnType<typeof setInterval> | null = null;
+
+      function clearKeepAlive() {
+        if (keepAlive) {
+          clearInterval(keepAlive);
+          keepAlive = null;
+        }
       }
-      if (resolvedVoice) {
-        utterance.voice = resolvedVoice;
+
+      function speakChunk(idx: number): SpeechSynthesisUtterance {
+        const utterance = makeUtterance(chunks[idx]);
+
+        utterance.onend = () => {
+          if (stopped) return;
+          const next = idx + 1;
+          if (next < chunks.length) {
+            currentChunk = next;
+            speakChunk(next);
+          } else {
+            clearKeepAlive();
+            onEnd();
+          }
+        };
+
+        // On error: try next chunk instead of killing everything.
+        // Chrome fires onerror("interrupted") on long utterances.
+        utterance.onerror = (e) => {
+          if (stopped) return;
+          const next = idx + 1;
+          if (next < chunks.length) {
+            // Recoverable — skip this chunk and try the next
+            currentChunk = next;
+            speakChunk(next);
+          } else {
+            // Last chunk errored — treat as done, not as fatal
+            clearKeepAlive();
+            onEnd();
+          }
+        };
+
+        window.speechSynthesis?.speak(utterance);
+        return utterance;
       }
 
-      utterance.onend = onEnd;
-      utterance.onerror = onError;
+      // Start keep-alive: Chrome pauses synth in background tabs
+      keepAlive = setInterval(() => {
+        if (window.speechSynthesis?.speaking) {
+          window.speechSynthesis.pause();
+          window.speechSynthesis.resume();
+        }
+      }, 10000);
 
-      window.speechSynthesis?.speak(utterance);
-      return utterance;
+      return speakChunk(0);
     },
 
     stop() {
+      stopped = true;
       window.speechSynthesis?.cancel();
     },
   };

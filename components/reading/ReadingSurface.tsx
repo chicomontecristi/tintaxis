@@ -136,20 +136,20 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
       if (!webSpeechRef.current) {
         webSpeechRef.current = createWebSpeechNarrator(voice, bookLang as "en" | "es" | "zh" | "es-zh");
       }
-      webSpeechRef.current.speak(
-        para.text,
-        () => {
-          const nextIdx = paraIndex + 1;
-          if (nextIdx < chapter.paragraphs.length) {
-            setNarratorParagraph(nextIdx);
-            narrateParagraph(nextIdx, voice);
-          } else {
-            setNarratorState("idle");
-          }
-        },
-        () => {
+      const advanceToNext = () => {
+        const nextIdx = paraIndex + 1;
+        if (nextIdx < chapter.paragraphs.length) {
+          setNarratorParagraph(nextIdx);
+          narrateParagraph(nextIdx, voice);
+        } else {
           setNarratorState("idle");
         }
+      };
+
+      webSpeechRef.current.speak(
+        para.text,
+        advanceToNext,
+        advanceToNext  // On error: advance instead of killing narration
       );
     }
   }, [chapter.paragraphs, book?.language]);
