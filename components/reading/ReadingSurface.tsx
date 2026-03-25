@@ -74,7 +74,26 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
   const book = chapter.bookSlug ? BOOKS[chapter.bookSlug] : null;
 
   const pageOneEnd = getPageOneEnd(chapter.paragraphs, chapter.pageOneEnd);
-  const hasAuthorAudio = !!chapter.authorAudioUrl;
+
+  // ── Fetch author voiceover from Supabase Storage ────────────────────
+  const [voiceoverUrl, setVoiceoverUrl] = useState<string | null>(chapter.authorAudioUrl ?? null);
+
+  useEffect(() => {
+    if (!book?.slug) return;
+    fetch(`/api/author/audio?book=${encodeURIComponent(book.slug)}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.voiceovers) {
+          const match = data.voiceovers.find(
+            (v: { chapterSlug: string; url: string }) => v.chapterSlug === chapter.slug
+          );
+          if (match?.url) setVoiceoverUrl(match.url);
+        }
+      })
+      .catch(() => {/* voiceover fetch fails silently — feature degrades gracefully */});
+  }, [book?.slug, chapter.slug]);
+
+  const hasAuthorAudio = !!voiceoverUrl;
 
   // ── Narrator: read a paragraph ─────────────────────────────────────
   const narrateParagraph = useCallback(async (paraIndex: number, voice: NarratorVoice) => {
@@ -468,7 +487,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
           {/* ── Author Voiceover — page 1 audio ─────────────── */}
           {hasAuthorAudio && narratorState === "idle" && (
             <AuthorVoiceover
-              audioUrl={chapter.authorAudioUrl!}
+              audioUrl={voiceoverUrl!}
               authorName={book?.author ?? "The Author"}
               chapterTitle={chapter.title}
               accentColor={book?.accentColor}
