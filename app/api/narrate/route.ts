@@ -46,6 +46,18 @@ export async function POST(req: NextRequest) {
       ? voice
       : "alloy";
 
+    // Per-voice speed profiles — makes each narrator sound distinct
+    const voiceSpeedMap: Record<string, number> = {
+      alloy: 0.92,    // Warm: slightly under natural
+      onyx: 0.82,     // Deep: slow, deliberate, fireside pace
+      nova: 1.0,      // Clear: natural, crisp
+      shimmer: 0.78,  // Soft: very unhurried, whispery
+      echo: 0.88,     // (reserved for future)
+      fable: 0.95,    // (reserved for future)
+    };
+    const baseSpeed = voiceSpeedMap[selectedVoice] ?? 0.9;
+    const speed = language === "zh" ? baseSpeed * 0.94 : baseSpeed;
+
     const ttsResponse = await fetch("https://api.openai.com/v1/audio/speech", {
       method: "POST",
       headers: {
@@ -53,11 +65,11 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "tts-1",
+        model: "tts-1-hd",
         input: text,
         voice: selectedVoice,
         response_format: "mp3",
-        speed: language === "zh" ? 0.85 : 0.9, // Slightly slower for reading
+        speed,
       }),
     });
 

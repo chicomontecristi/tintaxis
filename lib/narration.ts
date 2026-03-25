@@ -29,8 +29,99 @@ export function getPageOneEnd(paragraphs: ChapterParagraph[], override?: number)
   return Math.min(8, paragraphs.length);
 }
 
+// ── Voice profile definitions ────────────────────────────
+// Each voice has dramatically different characteristics so readers
+// can hear a real difference, even with the Web Speech API fallback.
+
+interface VoiceProfile {
+  pitch: number;
+  rate: number;
+  volume: number;
+  /** Keywords to match against SpeechSynthesisVoice.name for preferred system voice */
+  preferFemale: boolean;
+  /** Prefer a specific named voice if available (browser-dependent) */
+  preferredNames: string[];
+}
+
+const VOICE_PROFILES: Record<string, VoiceProfile> = {
+  warm: {
+    pitch: 1.0,
+    rate: 0.82,
+    volume: 0.95,
+    preferFemale: true,
+    preferredNames: ["Samantha", "Karen", "Tessa", "Victoria", "Google US English"],
+  },
+  deep: {
+    pitch: 0.55,
+    rate: 0.75,
+    volume: 1.0,
+    preferFemale: false,
+    preferredNames: ["Daniel", "Alex", "Thomas", "Google UK English Male", "Microsoft David"],
+  },
+  clear: {
+    pitch: 1.2,
+    rate: 0.95,
+    volume: 1.0,
+    preferFemale: true,
+    preferredNames: ["Zira", "Google UK English Female", "Fiona", "Moira", "Microsoft Zira"],
+  },
+  soft: {
+    pitch: 1.35,
+    rate: 0.72,
+    volume: 0.8,
+    preferFemale: true,
+    preferredNames: ["Rishi", "Veena", "Tessa", "Shelley", "Google US English"],
+  },
+};
+
+// ── Find a matching system voice ─────────────────────────
+// Tries preferred names first, then gender heuristic, then falls back.
+function pickSystemVoice(
+  profile: VoiceProfile,
+  lang: string
+): SpeechSynthesisVoice | null {
+  const voices = window.speechSynthesis?.getVoices() ?? [];
+  if (voices.length === 0) return null;
+
+  // Filter to voices matching the target language
+  const langVoices = voices.filter((v) =>
+    v.lang.toLowerCase().startsWith(lang.toLowerCase().slice(0, 2))
+  );
+  const pool = langVoices.length > 0 ? langVoices : voices;
+
+  // 1. Try preferred names
+  for (const name of profile.preferredNames) {
+    const match = pool.find((v) =>
+      v.name.toLowerCase().includes(name.toLowerCase())
+    );
+    if (match) return match;
+  }
+
+  // 2. Gender heuristic — female voices often have names like "female", "woman",
+  //    or common female names; male voices have "male", "man", "David", "Daniel", etc.
+  const femaleHints = /female|woman|samantha|karen|victoria|zira|fiona|moira|tessa|veena|shelley|alice|anna/i;
+  const maleHints = /male|man|daniel|david|alex|thomas|rishi|jorge|google.*male/i;
+
+  const genderMatch = pool.find((v) => {
+    if (profile.preferFemale) return femaleHints.test(v.name);
+    return maleHints.test(v.name);
+  });
+  if (genderMatch) return genderMatch;
+
+  // 3. If we want a different voice per profile, offset into the pool
+  const profileIndex = ["warm", "deep", "clear", "soft"].indexOf(
+    Object.keys(VOICE_PROFILES).find(
+      (k) => VOICE_PROFILES[k] === profile
+    ) ?? "warm"
+  );
+  const offset = Math.min(profileIndex, pool.length - 1);
+  return pool[offset] ?? null;
+}
+
 // ── Web Speech API narrator ──────────────────────────────
 // Free, built-in, zero-config. Used when OpenAI TTS is not available.
+// Now picks distinct system voices and applies dramatic rate/pitch/volume
+// differences so each narrator sounds genuinely different.
 export function createWebSpeechNarrator(
   voice: NarratorVoice,
   language: "en" | "es" | "zh" | "es-zh"
@@ -42,12 +133,11 @@ export function createWebSpeechNarrator(
     "es-zh": "es-ES",
   };
 
-  const pitchMap: Record<string, number> = {
-    warm: 1.0,
-    deep: 0.8,
-    clear: 1.05,
-    soft: 1.1,
-  };
+  const profile = VOICE_PROFILES[voice.id] ?? VOICE_PROFILES.warm;
+  const lang = langMap[language] ?? "en-US";
+
+  // Cache the resolved system voice so we don't re-scan every paragraph
+  let resolvedVoice: SpeechSynthesisVoice | null | undefined = undefined;
 
   return {
     speak(
@@ -58,9 +148,19 @@ export function createWebSpeechNarrator(
       window.speechSynthesis?.cancel();
 
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = langMap[language] ?? "en-US";
-      utterance.rate = 0.85;
-      utterance.pitch = pitchMap[voice.id] ?? 1.0;
+      utterance.lang = lang;
+      utterance.rate = profile.rate;
+      utterance.pitch = profile.pitch;
+      utterance.volume = profile.volume;
+
+      // Resolve and assign a distinct system voice
+      if (resolvedVoice === undefined) {
+        resolvedVoice = pickSystemVoice(profile, lang);
+      }
+      if (resolvedVoice) {
+        utterance.voice = resolvedVoice;
+      }
+
       utterance.onend = onEnd;
       utterance.onerror = onError;
 

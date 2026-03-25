@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { NarratorVoice } from "@/lib/types";
+import { createWebSpeechNarrator } from "@/lib/narration";
 
 // ─── NARRATOR SELECTOR ──────────────────────────────────────────────────────
 // After the author's page-1 voiceover ends, this panel slides into view.
@@ -65,10 +66,11 @@ export default function NarratorSelector({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const synthRef = useRef<SpeechSynthesisUtterance | null>(null);
 
-  // ── Preview a voice using Web Speech API ────────────────
+  // ── Preview a voice using the same narrator engine ──────
+  // Uses createWebSpeechNarrator so previews sound identical
+  // to what the reader actually hears during narration.
   const previewVoice = useCallback(
     (voice: NarratorVoice) => {
-      // Stop any current preview
       window.speechSynthesis?.cancel();
 
       if (previewingId === voice.id) {
@@ -83,20 +85,14 @@ export default function NarratorSelector({
           ? "在那个安静的房间里，沉默说出了一切。"
           : "And in the dim light of the room, the silence said everything.";
 
-      const utterance = new SpeechSynthesisUtterance(voice.sampleText || sampleText);
-      utterance.rate = 0.9;
-      utterance.pitch = voice.id === "deep" ? 0.8 : voice.id === "soft" ? 1.1 : 1.0;
-      utterance.lang =
-        bookLanguage === "es" ? "es-ES" :
-        bookLanguage === "zh" ? "zh-CN" :
-        "en-US";
-
-      utterance.onend = () => setPreviewingId(null);
-      utterance.onerror = () => setPreviewingId(null);
-
-      synthRef.current = utterance;
+      const narrator = createWebSpeechNarrator(voice, bookLanguage);
       setPreviewingId(voice.id);
-      window.speechSynthesis?.speak(utterance);
+      const utterance = narrator.speak(
+        voice.sampleText || sampleText,
+        () => setPreviewingId(null),
+        () => setPreviewingId(null)
+      );
+      synthRef.current = utterance;
     },
     [previewingId, bookLanguage]
   );
