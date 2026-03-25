@@ -74,11 +74,11 @@ export default function AuthorWhisper({ whisper }: AuthorWhisperProps) {
       style={{
         marginBottom: "1.25rem",
         borderLeft: isAnchor
-          ? "3px solid rgba(201,168,76,0.7)"
-          : "2px solid rgba(201,168,76,0.35)",
+          ? "3px solid var(--brass-primary)"
+          : "2px solid var(--brass-dim)",
         paddingLeft: "0.75rem",
         background: isAnchor
-          ? "rgba(201,168,76,0.04)"
+          ? "rgba(var(--text-primary-rgb),0.04)"
           : "transparent",
         borderRadius: "0 2px 2px 0",
       }}
@@ -98,8 +98,8 @@ export default function AuthorWhisper({ whisper }: AuthorWhisperProps) {
             width: "18px",
             height: "18px",
             borderRadius: "50%",
-            border: "1px solid rgba(201,168,76,0.5)",
-            background: "rgba(44,26,0,0.8)",
+            border: "1px solid var(--brass-dim)",
+            background: "var(--bg-page)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -110,15 +110,15 @@ export default function AuthorWhisper({ whisper }: AuthorWhisperProps) {
           } : {}}
           transition={{ duration: 1.2, ease: "easeOut" }}
         >
-          <span style={{ fontSize: "0.5rem", color: "rgba(201,168,76,0.7)" }}>C</span>
+          <span style={{ fontSize: "0.65rem", color: "var(--brass-primary)" }}>C</span>
         </motion.div>
 
         <span
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.15em",
-            color: "rgba(201,168,76,0.6)",
+            color: "var(--brass-dim)",
             textTransform: "uppercase",
           }}
         >
@@ -132,7 +132,7 @@ export default function AuthorWhisper({ whisper }: AuthorWhisperProps) {
           fontFamily: '"EB Garamond", Garamond, Georgia, serif',
           fontSize: "0.72rem",
           fontStyle: "italic",
-          color: "rgba(245,230,200,0.3)",
+          color: "var(--text-dim)",
           lineHeight: 1.5,
           marginBottom: "0.4rem",
           overflow: "hidden",
@@ -163,7 +163,7 @@ export default function AuthorWhisper({ whisper }: AuthorWhisperProps) {
               fontFamily: '"Cormorant Garamond", "EB Garamond", Georgia, serif',
               fontSize: "0.875rem",
               fontStyle: "italic",
-              color: "rgba(245,230,200,0.85)",
+              color: "var(--text-primary)",
               lineHeight: 1.7,
               letterSpacing: "0.01em",
               overflow: expanded ? "visible" : "hidden",
@@ -184,9 +184,9 @@ export default function AuthorWhisper({ whisper }: AuthorWhisperProps) {
           <span
             style={{
               fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.5rem",
+              fontSize: "0.75rem",
               letterSpacing: "0.12em",
-              color: "rgba(201,168,76,0.4)",
+              color: "var(--brass-dim)",
               textTransform: "uppercase",
               display: "block",
               marginTop: "0.2rem",
@@ -201,8 +201,8 @@ export default function AuthorWhisper({ whisper }: AuthorWhisperProps) {
       <p
         style={{
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.48rem",
-          color: "rgba(245,230,200,0.18)",
+          fontSize: "0.75rem",
+          color: "var(--text-dim)",
           letterSpacing: "0.1em",
           marginTop: "0.35rem",
         }}

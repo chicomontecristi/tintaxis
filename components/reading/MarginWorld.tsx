@@ -70,9 +70,9 @@ export default function MarginWorld({
         <p
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.5rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.2em",
-            color: "rgba(201,168,76,0.4)",
+            color: "var(--brass-dim)",
             textTransform: "uppercase",
             marginBottom: "0.75rem",
           }}
@@ -100,7 +100,7 @@ export default function MarginWorld({
                 fontFamily: '"EB Garamond", Garamond, Georgia, serif',
                 fontSize: "0.8rem",
                 fontStyle: "italic",
-                color: "rgba(245,230,200,0.2)",
+                color: "var(--text-dim)",
                 lineHeight: 1.6,
               }}
             >
@@ -134,9 +134,9 @@ export default function MarginWorld({
           style={{
             marginTop: "2rem",
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.55rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.18em",
-            color: "rgba(201,168,76,0.3)",
+            color: "var(--text-dim)",
             textTransform: "uppercase",
           }}
           initial={{ opacity: 0 }}
@@ -188,20 +188,20 @@ function LayerSelector({
           }}
           style={{
             fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.55rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.15em",
             textTransform: "uppercase",
             color: activeLayer === id
-              ? "#C9A84C"
+              ? "var(--brass-primary)"
               : available
-                ? "rgba(245,230,200,0.35)"
-                : "rgba(245,230,200,0.15)",
+                ? "var(--text-secondary)"
+                : "var(--text-dim)",
             background: "transparent",
             border: activeLayer === id
-              ? "1px solid rgba(201,168,76,0.4)"
+              ? "1px solid var(--brass-dim)"
               : available
                 ? "1px solid transparent"
-                : "1px solid rgba(245,230,200,0.04)",
+                : "1px solid var(--border-subtle)",
             padding: "0.2rem 0.45rem",
             cursor: "pointer",
             borderRadius: "1px",
@@ -210,10 +210,7 @@ function LayerSelector({
           }}
           whileHover={
             !available
-              ? {
-                  borderColor: "rgba(201,168,76,0.2)",
-                  color: "rgba(245,230,200,0.3)",
-                }
+              ? {}
               : undefined
           }
           whileTap={{ scale: 0.96 }}
@@ -223,9 +220,9 @@ function LayerSelector({
             <span
               style={{
                 marginLeft: "0.2em",
-                opacity: 0.4,
-                fontSize: "0.5rem",
-                color: "rgba(201,168,76,0.5)",
+                opacity: 0.6,
+                fontSize: "0.65rem",
+                color: "var(--brass-dim)",
               }}
             >
               ⚿
@@ -285,7 +282,7 @@ function MarginNote({
       <div
         style={{
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.5rem",
+          fontSize: "0.75rem",
           letterSpacing: "0.18em",
           color: config.color,
           textTransform: "uppercase",
@@ -313,7 +310,7 @@ function MarginNote({
             fontFamily: '"EB Garamond", Garamond, Georgia, serif',
             fontSize: "0.8rem",
             fontStyle: "italic",
-            color: "rgba(245,230,200,0.5)",
+            color: "var(--text-secondary)",
             lineHeight: 1.5,
             overflow: "hidden",
             display: "-webkit-box",
@@ -345,11 +342,11 @@ function MarginNote({
                     rows={4}
                     style={{
                       width: "100%",
-                      background: "rgba(13,11,8,0.8)",
-                      border: "1px solid rgba(201,168,76,0.2)",
+                      background: "var(--bg-page)",
+                      border: "1px solid var(--border-subtle)",
                       borderRadius: "1px",
                       padding: "0.4rem",
-                      color: "#F5E6C8",
+                      color: "var(--text-primary)",
                       fontFamily: '"EB Garamond", Garamond, Georgia, serif',
                       fontSize: "0.85rem",
                       lineHeight: 1.6,
@@ -364,7 +361,7 @@ function MarginNote({
                   />
                   <div style={{ display: "flex", gap: "0.4rem" }}>
                     <NoteActionBtn label="SAVE" color={config.color} onClick={saveEdit} />
-                    <NoteActionBtn label="CANCEL" color="rgba(245,230,200,0.3)" onClick={() => setIsEditing(false)} />
+                    <NoteActionBtn label="CANCEL" color="var(--text-dim)" onClick={() => setIsEditing(false)} />
                   </div>
                 </div>
               ) : (
@@ -374,10 +371,10 @@ function MarginNote({
                       style={{
                         fontFamily: '"EB Garamond", Garamond, Georgia, serif',
                         fontSize: "0.85rem",
-                        color: "rgba(245,230,200,0.75)",
+                        color: "var(--text-primary)",
                         lineHeight: 1.65,
                         marginBottom: "0.4rem",
-                        borderTop: "1px solid rgba(201,168,76,0.1)",
+                        borderTop: "1px solid var(--border-subtle)",
                         paddingTop: "0.4rem",
                       }}
                     >
@@ -387,7 +384,7 @@ function MarginNote({
                   <div style={{ display: "flex", gap: "0.4rem", marginTop: "0.25rem" }}>
                     <NoteActionBtn
                       label={annotation.note ? "EDIT" : "+ NOTE"}
-                      color="rgba(245,230,200,0.3)"
+                      color="var(--text-dim)"
                       onClick={() => setIsEditing(true)}
                     />
                     <NoteActionBtn
@@ -407,8 +404,8 @@ function MarginNote({
       <p
         style={{
           fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.5rem",
-          color: "rgba(245,230,200,0.2)",
+          fontSize: "0.75rem",
+          color: "var(--text-dim)",
           letterSpacing: "0.1em",
           marginTop: "0.3rem",
         }}
@@ -440,12 +437,12 @@ function NoteActionBtn({
       onClick={onClick}
       style={{
         fontFamily: '"JetBrains Mono", monospace',
-        fontSize: "0.5rem",
+        fontSize: "0.75rem",
         letterSpacing: "0.15em",
         textTransform: "uppercase",
         color,
         background: "transparent",
-        border: `1px solid ${color}40`,
+        border: `1px solid var(--border-subtle)`,
         padding: "0.15rem 0.35rem",
         cursor: "pointer",
         borderRadius: "1px",
