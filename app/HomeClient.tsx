@@ -337,6 +337,7 @@ export default function HomeClient() {
               { tier: "Codex", price: "$1.99/mo", writer: "$1.69" },
               { tier: "Scribe", price: "$3.99/mo", writer: "$3.39" },
               { tier: "Archive", price: "$7.99/mo", writer: "$6.79" },
+              { tier: "Chronicler", price: "$9.99/mo", writer: "$8.49" },
             ].map((t) => (
               <div
                 key={t.tier}
