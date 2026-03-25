@@ -7,7 +7,7 @@ import { WelcomeBackToast } from "@/components/ui/ReturnCapture";
 import { BOOKS } from "@/lib/content/books";
 
 // ─── HOMEPAGE ─────────────────────────────────────────────────────────────────
-// Conversion-focused: hero → features → catalog → writer pitch → footer.
+// Conversion-focused: hero → writer pitch (85%) → features → catalog → footer.
 // Every section gives visitors a reason to stay or click.
 
 const MONO  = '"JetBrains Mono", monospace';
@@ -170,9 +170,9 @@ export default function HomeClient() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.15 }}
           >
-            Step inside a book. Annotate it. Question it.
+            Where writers publish, readers arrive,
             <br />
-            Hear the author whisper back.
+            and <span style={{ color: "#C9A84C", fontWeight: 600 }}>85% of the money</span> stays with the author.
           </motion.p>
 
           <motion.div
@@ -256,194 +256,7 @@ export default function HomeClient() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 2 — WHAT MAKES THIS DIFFERENT
-          ══════════════════════════════════════════════════════════ */}
-      <section style={{ padding: "5rem 2rem", maxWidth: "1100px", margin: "0 auto" }}>
-        <SectionHeader
-          tag="NOT ANOTHER READING APP"
-          title="A reading experience that doesn't exist anywhere else."
-        />
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-            gap: "1.5rem",
-            marginTop: "3rem",
-          }}
-        >
-          {FEATURES.map((f, i) => (
-            <motion.div
-              key={f.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              style={{
-                padding: "1.5rem",
-                border: "1px solid rgba(201,168,76,0.1)",
-                borderRadius: "4px",
-                background: "rgba(201,168,76,0.02)",
-              }}
-            >
-              <div style={{ fontSize: "1.5rem", marginBottom: "0.75rem" }}>{f.icon}</div>
-              <h3
-                style={{
-                  fontFamily: MONO,
-                  fontSize: "0.75rem",
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  color: "#C9A84C",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                {f.title}
-              </h3>
-              <p
-                style={{
-                  fontFamily: SERIF,
-                  fontSize: "1rem",
-                  color: "rgba(245,230,200,0.55)",
-                  lineHeight: 1.6,
-                }}
-              >
-                {f.desc}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════
-          SECTION 3 — NOW READING (Book catalog)
-          ══════════════════════════════════════════════════════════ */}
-      <section style={{ padding: "4rem 2rem 5rem", maxWidth: "1100px", margin: "0 auto" }}>
-        <SectionHeader
-          tag="NOW ON TINTAXIS"
-          title="Real books. Real writers. Start reading in seconds."
-        />
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-            gap: "1.25rem",
-            marginTop: "3rem",
-          }}
-        >
-          {allBooks.map((book, i) => (
-            <motion.div
-              key={book.slug}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.5, delay: i * 0.06 }}
-            >
-              <Link href={`/book/${book.slug}`} style={{ textDecoration: "none" }}>
-                <div
-                  style={{
-                    padding: "1.25rem",
-                    border: `1px solid ${book.accentColor}20`,
-                    borderRadius: "4px",
-                    background: `${book.accentColor}06`,
-                    cursor: "pointer",
-                    transition: "all 0.3s ease",
-                    minHeight: "180px",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                  }}
-                  className="book-card-hover"
-                >
-                  {/* Language badge */}
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <span
-                      style={{
-                        fontFamily: MONO,
-                        fontSize: "0.55rem",
-                        letterSpacing: "0.2em",
-                        color: book.accentColor,
-                        textTransform: "uppercase",
-                        opacity: 0.7,
-                      }}
-                    >
-                      {book.coverLabel}
-                    </span>
-                    <span
-                      style={{
-                        fontFamily: MONO,
-                        fontSize: "0.5rem",
-                        color: "rgba(245,230,200,0.3)",
-                      }}
-                    >
-                      {book.totalChapters} {book.chapterLabel?.toLowerCase()}s
-                    </span>
-                  </div>
-
-                  {/* Title + author */}
-                  <div style={{ marginTop: "0.75rem" }}>
-                    <h3
-                      style={{
-                        fontFamily: SERIF,
-                        fontSize: "1.2rem",
-                        fontStyle: "italic",
-                        color: "#F5E6C8",
-                        marginBottom: "0.25rem",
-                        lineHeight: 1.3,
-                      }}
-                    >
-                      {book.title}
-                    </h3>
-                    <p
-                      style={{
-                        fontFamily: MONO,
-                        fontSize: "0.55rem",
-                        letterSpacing: "0.1em",
-                        color: "rgba(245,230,200,0.35)",
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      {book.author}
-                    </p>
-                  </div>
-
-                  {/* Tagline */}
-                  <p
-                    style={{
-                      fontFamily: SERIF,
-                      fontSize: "0.9rem",
-                      fontStyle: "italic",
-                      color: "rgba(245,230,200,0.4)",
-                      lineHeight: 1.5,
-                      marginTop: "0.75rem",
-                    }}
-                  >
-                    &ldquo;{book.tagline}&rdquo;
-                  </p>
-
-                  {/* Read button */}
-                  <div
-                    style={{
-                      marginTop: "1rem",
-                      fontFamily: MONO,
-                      fontSize: "0.55rem",
-                      letterSpacing: "0.2em",
-                      textTransform: "uppercase",
-                      color: book.accentColor,
-                      opacity: 0.6,
-                    }}
-                  >
-                    Read now →
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════
-          SECTION 4 — FOR WRITERS (the money pitch)
+          SECTION 2 — FOR WRITERS (the money pitch — FIRST thing they see)
           ══════════════════════════════════════════════════════════ */}
       <section
         style={{
@@ -603,6 +416,193 @@ export default function HomeClient() {
               </motion.button>
             </Link>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          SECTION 3 — WHAT MAKES THIS DIFFERENT
+          ══════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "5rem 2rem", maxWidth: "1100px", margin: "0 auto" }}>
+        <SectionHeader
+          tag="NOT ANOTHER READING APP"
+          title="A reading experience that doesn't exist anywhere else."
+        />
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            gap: "1.5rem",
+            marginTop: "3rem",
+          }}
+        >
+          {FEATURES.map((f, i) => (
+            <motion.div
+              key={f.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: i * 0.08 }}
+              style={{
+                padding: "1.5rem",
+                border: "1px solid rgba(201,168,76,0.1)",
+                borderRadius: "4px",
+                background: "rgba(201,168,76,0.02)",
+              }}
+            >
+              <div style={{ fontSize: "1.5rem", marginBottom: "0.75rem" }}>{f.icon}</div>
+              <h3
+                style={{
+                  fontFamily: MONO,
+                  fontSize: "0.75rem",
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
+                  color: "#C9A84C",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                {f.title}
+              </h3>
+              <p
+                style={{
+                  fontFamily: SERIF,
+                  fontSize: "1rem",
+                  color: "rgba(245,230,200,0.55)",
+                  lineHeight: 1.6,
+                }}
+              >
+                {f.desc}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          SECTION 4 — NOW READING (Book catalog)
+          ══════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "4rem 2rem 5rem", maxWidth: "1100px", margin: "0 auto" }}>
+        <SectionHeader
+          tag="NOW ON TINTAXIS"
+          title="Real books. Real writers. Start reading in seconds."
+        />
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+            gap: "1.25rem",
+            marginTop: "3rem",
+          }}
+        >
+          {allBooks.map((book, i) => (
+            <motion.div
+              key={book.slug}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.5, delay: i * 0.06 }}
+            >
+              <Link href={`/book/${book.slug}`} style={{ textDecoration: "none" }}>
+                <div
+                  style={{
+                    padding: "1.25rem",
+                    border: `1px solid ${book.accentColor}20`,
+                    borderRadius: "4px",
+                    background: `${book.accentColor}06`,
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    minHeight: "180px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                  }}
+                  className="book-card-hover"
+                >
+                  {/* Language badge */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <span
+                      style={{
+                        fontFamily: MONO,
+                        fontSize: "0.55rem",
+                        letterSpacing: "0.2em",
+                        color: book.accentColor,
+                        textTransform: "uppercase",
+                        opacity: 0.7,
+                      }}
+                    >
+                      {book.coverLabel}
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: MONO,
+                        fontSize: "0.5rem",
+                        color: "rgba(245,230,200,0.3)",
+                      }}
+                    >
+                      {book.totalChapters} {book.chapterLabel?.toLowerCase()}s
+                    </span>
+                  </div>
+
+                  {/* Title + author */}
+                  <div style={{ marginTop: "0.75rem" }}>
+                    <h3
+                      style={{
+                        fontFamily: SERIF,
+                        fontSize: "1.2rem",
+                        fontStyle: "italic",
+                        color: "#F5E6C8",
+                        marginBottom: "0.25rem",
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {book.title}
+                    </h3>
+                    <p
+                      style={{
+                        fontFamily: MONO,
+                        fontSize: "0.55rem",
+                        letterSpacing: "0.1em",
+                        color: "rgba(245,230,200,0.35)",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {book.author}
+                    </p>
+                  </div>
+
+                  {/* Tagline */}
+                  <p
+                    style={{
+                      fontFamily: SERIF,
+                      fontSize: "0.9rem",
+                      fontStyle: "italic",
+                      color: "rgba(245,230,200,0.4)",
+                      lineHeight: 1.5,
+                      marginTop: "0.75rem",
+                    }}
+                  >
+                    &ldquo;{book.tagline}&rdquo;
+                  </p>
+
+                  {/* Read button */}
+                  <div
+                    style={{
+                      marginTop: "1rem",
+                      fontFamily: MONO,
+                      fontSize: "0.55rem",
+                      letterSpacing: "0.2em",
+                      textTransform: "uppercase",
+                      color: book.accentColor,
+                      opacity: 0.6,
+                    }}
+                  >
+                    Read now →
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
         </div>
       </section>
 
