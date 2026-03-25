@@ -677,14 +677,14 @@ button, a, [role="button"] {
 }
 
 /* ─── NARRATOR HIGHLIGHT ──────────────────────────────────────────── */
-/* Brief glow on the paragraph currently being read by the AI narrator */
+/* Brief entry glow when narrator scrolls to a new paragraph */
 .narrator-highlight {
   position: relative;
 }
 .narrator-highlight::before {
   content: "";
   position: absolute;
-  left: -8px;
+  left: -12px;
   top: 0;
   bottom: 0;
   width: 2px;
@@ -697,6 +697,63 @@ button, a, [role="button"] {
   20%  { opacity: 0.5; }
   80%  { opacity: 0.3; }
   100% { opacity: 0; }
+}
+
+/* ─── NARRATOR ACTIVE — persistent indicator while paragraph is being read ── */
+/* Uses --narrator-accent set inline from the selected voice's accent color    */
+.narrator-active {
+  position: relative;
+  transition: background 0.4s ease;
+  background: rgba(201, 168, 76, 0.04);
+  border-radius: 2px;
+}
+
+/* Persistent left accent bar — colored per voice */
+.narrator-active::before {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 4px;
+  bottom: 4px;
+  width: 2.5px;
+  border-radius: 2px;
+  background: var(--narrator-accent, var(--brass));
+  opacity: 0.6;
+  animation: narrator-bar-in 0.4s ease-out;
+}
+
+/* Subtle pulsing glow while actively reading */
+.narrator-active::after {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 4px;
+  bottom: 4px;
+  width: 2.5px;
+  border-radius: 2px;
+  background: var(--narrator-accent, var(--brass));
+  animation: narrator-glow 2s ease-in-out infinite;
+}
+
+@keyframes narrator-bar-in {
+  0%   { opacity: 0; transform: scaleY(0.3); }
+  100% { opacity: 0.6; transform: scaleY(1); }
+}
+
+@keyframes narrator-glow {
+  0%, 100% { opacity: 0.15; filter: blur(3px); }
+  50%      { opacity: 0.35; filter: blur(5px); }
+}
+
+/* Day mode — slightly stronger background so it's visible on cream */
+[data-theme="day"] .narrator-active {
+  background: rgba(90, 69, 16, 0.06);
+}
+[data-theme="day"] .narrator-active::before {
+  opacity: 0.7;
+}
+[data-theme="day"] .narrator-active::after {
+  opacity: 0.2;
 }
 
 /* ─── MOBILE — MINIMUM TOUCH TARGET SIZE ─────────────────────────── */

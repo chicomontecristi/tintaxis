@@ -525,7 +525,15 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
             const isNarrating = narratorState === "narrating" && narratorParagraph === para.index;
 
             return (
-              <div key={`para-${para.index}`} data-paragraph={para.index}>
+              <div
+                key={`para-${para.index}`}
+                data-paragraph={para.index}
+                className={isNarrating ? "narrator-active" : undefined}
+                style={isNarrating && selectedNarrator ? {
+                  // Voice-colored left bar via CSS custom property
+                  ["--narrator-accent" as string]: selectedNarrator.accent,
+                } as React.CSSProperties : undefined}
+              >
                 <AnnotatableText
                   text={para.text}
                   paragraphIndex={para.index}
