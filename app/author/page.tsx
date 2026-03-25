@@ -531,7 +531,20 @@ export default function AuthorDashboard() {
   };
 
   // ── Voiceover upload handler ────────────────────────────────────────────
+  const MAX_UPLOAD_MB = 10;
+  const MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024;
+
   const handleVoiceoverUpload = async (chapterSlug: string, file: File): Promise<boolean> => {
+    // ── Client-side size gate ──────────────────────────────────
+    if (file.size > MAX_UPLOAD_BYTES) {
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+      alert(
+        `File too large (${sizeMB} MB). Maximum is ${MAX_UPLOAD_MB} MB.\n\n` +
+        `.wav files are uncompressed and can be huge — convert to .mp3 first for a ~10× size reduction with no audible quality loss.`
+      );
+      return false;
+    }
+
     setUploadingChapter(chapterSlug);
     try {
       const fd = new FormData();
@@ -545,7 +558,14 @@ export default function AuthorDashboard() {
       });
       const data = await res.json();
       if (!res.ok || !data.url) {
-        alert(`Upload failed: ${data.error || "Unknown error"}`);
+        const msg = data.error || "Unknown error";
+        alert(
+          msg.includes("Invalid audio type")
+            ? `${msg}\n\nAccepted formats: .mp3, .m4a, .mp4, .wav, .webm`
+            : msg.includes("too large") || msg.includes("Too large")
+            ? `${msg}\n\nTip: Convert .wav to .mp3 for a ~10× size reduction.`
+            : `Upload failed: ${msg}`
+        );
         return false;
       }
       // Append cache-buster so the browser doesn't serve stale audio
@@ -1508,19 +1528,19 @@ export default function AuthorDashboard() {
                           />
                         </label>
 
-                        {/* Replace indicator */}
-                        {hasAudio && (
-                          <span
-                            style={{
-                              fontFamily: '"JetBrains Mono", monospace',
-                              fontSize: "0.4rem",
-                              color: "rgba(245,230,200,0.15)",
-                              letterSpacing: "0.1em",
-                            }}
-                          >
-                            Recording or uploading will replace the current file
-                          </span>
-                        )}
+                        {/* File limit hint */}
+                        <span
+                          style={{
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: "0.65rem",
+                            color: "rgba(245,230,200,0.25)",
+                            letterSpacing: "0.1em",
+                          }}
+                        >
+                          {hasAudio
+                            ? "Recording or uploading will replace the current file"
+                            : "mp3 · m4a · wav · webm — max 10 MB"}
+                        </span>
                       </div>
                     </div>
                   );
