@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import PublishClient from "./PublishClient";
 
-const BASE_URL = "https://tintaxis.vercel.app";
+const BASE_URL = "https://tintaxis.com";
 
 // ─── PUBLISH PAGE — SERVER WRAPPER ───────────────────────────────────────────
 

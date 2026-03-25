@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import HomeClient from "./HomeClient";
 
-const BASE_URL = "https://tintaxis.vercel.app";
+const BASE_URL = "https://tintaxis.com";
 
 // ─── HOME PAGE — SERVER WRAPPER ──────────────────────────────────────────────
 // Exports metadata + JSON-LD for SEO. Delegates render to HomeClient.
