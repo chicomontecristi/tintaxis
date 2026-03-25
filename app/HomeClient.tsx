@@ -480,6 +480,53 @@ export default function HomeClient() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
+          COMMUNITY IMAGE — humor break
+          ══════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "3rem 2rem 1rem", maxWidth: "800px", margin: "0 auto", textAlign: "center" }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+        >
+          <img
+            src="/community-penguins.png"
+            alt="Shakespeare surrounded by penguins reading books — Codex and Scribe subscribers in the Tintaxis library"
+            style={{
+              width: "100%",
+              maxWidth: "700px",
+              borderRadius: "6px",
+              border: "1px solid rgba(201,168,76,0.12)",
+              marginBottom: "1.25rem",
+            }}
+          />
+          <p
+            style={{
+              fontFamily: SERIF,
+              fontSize: "1.1rem",
+              fontStyle: "italic",
+              color: "rgba(245,230,200,0.5)",
+              lineHeight: 1.6,
+            }}
+          >
+            Your readers are waiting.
+          </p>
+          <p
+            style={{
+              fontFamily: MONO,
+              fontSize: "0.45rem",
+              letterSpacing: "0.15em",
+              color: "rgba(201,168,76,0.2)",
+              textTransform: "uppercase",
+              marginTop: "0.75rem",
+            }}
+          >
+            Image generated with Google Gemini
+          </p>
+        </motion.div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
           SECTION 4 — NOW READING (Book catalog)
           ══════════════════════════════════════════════════════════ */}
       <section style={{ padding: "4rem 2rem 5rem", maxWidth: "1100px", margin: "0 auto" }}>
