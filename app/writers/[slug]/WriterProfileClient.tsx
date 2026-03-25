@@ -187,7 +187,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
               )}
               {writer.instagram && writer.instagramPrivate && writer.email && (
                 <a
-                  href={`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(writer.email)}&su=${encodeURIComponent("Instagram Request — Tintaxis Reader")}&body=${encodeURIComponent("Hi, I found you on Tintaxis and would love to follow your Instagram. Could you share your handle?")}`}
+                  href={`https://mail.google.com/mail/?view=cm&to=${writer.email}&su=Instagram+Request+-+Tintaxis+Reader&body=Hi,+I+found+you+on+Tintaxis+and+would+love+to+follow+your+Instagram.+Could+you+share+your+handle?`}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
@@ -226,7 +226,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
               )}
               {writer.email && (
                 <a
-                  href={`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(writer.email)}`}
+                  href={`https://mail.google.com/mail/?view=cm&to=${writer.email}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
