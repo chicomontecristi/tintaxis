@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // ─── AUTHOR APPLICATION ROUTE ─────────────────────────────────────────────────
 // Receives author application form (multipart FormData with optional chapter file),
-// emails it to chicomontecristi@gmail.com via Resend with the chapter attached.
+// emails it to chico@tintaxis.com via Resend with the chapter attached.
 
 export async function POST(req: NextRequest) {
   try {
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     }
 
     const apiKey    = process.env.RESEND_API_KEY;
-    const toEmail   = process.env.SIGNAL_TO_EMAIL ?? "chicomontecristi@gmail.com";
+    const toEmail   = process.env.SIGNAL_TO_EMAIL ?? "chico@tintaxis.com";
     const fromEmail = process.env.SIGNAL_FROM_EMAIL ?? "onboarding@resend.dev";
 
     if (apiKey) {

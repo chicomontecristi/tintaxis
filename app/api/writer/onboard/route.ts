@@ -5,7 +5,7 @@ import crypto from "crypto";
 // POST /api/writer/onboard
 //
 // Validates the invitation token, collects the writer's profile submission,
-// and emails José (chicomontecristi@gmail.com) the full details for activation.
+// and emails José (chico@tintaxis.com) the full details for activation.
 // José then manually adds the writer to lib/featured-writers.ts and deploys.
 //
 // Token generation: generate a token with GET /api/writer/onboard?action=token
@@ -13,7 +13,7 @@ import crypto from "crypto";
 
 const INVITE_SECRET = process.env.WRITER_INVITE_SECRET ?? "tintaxis-invite";
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const PLATFORM_EMAIL = "chicomontecristi@gmail.com";
+const PLATFORM_EMAIL = "chico@tintaxis.com";
 
 // ── Validate token ────────────────────────────────────────────────────────────
 // Token = HMAC-SHA256(writerSlug + ":" + expiresAt, INVITE_SECRET)

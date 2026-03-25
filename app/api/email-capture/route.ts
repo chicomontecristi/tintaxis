@@ -6,8 +6,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY ?? "";
-const JOSE_EMAIL     = "chicomontecristi@gmail.com";
-const BASE_URL       = "https://tintaxis.vercel.app";
+const JOSE_EMAIL     = "chico@tintaxis.com";
+const BASE_URL       = "https://tintaxis.com";
 
 // ─── Welcome email template ──────────────────────────────────────────────────
 function welcomeEmailHtml(): string {

@@ -52,7 +52,7 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
     ],
     instagram: "rosalva.bp",
     website: undefined,
-    email: "rfaleman12@gmail.com",
+    email: "rosalva@tintaxis.com",
   },
   {
     slug: "jose-la-luz",
