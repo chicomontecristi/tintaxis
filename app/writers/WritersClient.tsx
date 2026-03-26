@@ -184,10 +184,24 @@ function WriterCard({ writer, index }: { writer: FeaturedWriter; index: number }
             fontStyle: "italic",
             color: "#F5E6C8",
             lineHeight: 1.2,
-            marginBottom: "0.25rem",
+            marginBottom: writer.honorific ? "0.15rem" : "0.25rem",
           }}>
             {displayName}
           </p>
+
+          {/* Honorific */}
+          {writer.honorific && (
+            <p style={{
+              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+              fontSize: "0.8rem",
+              fontStyle: "italic",
+              letterSpacing: "0.06em",
+              color: "rgba(201,168,76,0.4)",
+              marginBottom: "0.25rem",
+            }}>
+              {writer.honorific}
+            </p>
+          )}
 
           {/* Origin */}
           <p style={{

@@ -22,6 +22,7 @@ export interface FeaturedWriter {
   shortBio: string;       // 1–2 sentences for the grid card
   fullBio: string;        // full paragraph for profile page
   works: FeaturedWork[];
+  honorific?: string;     // e.g. "Scriptor Honoris Causa" — shown under name
   instagram?: string;     // handle without @
   instagramPrivate?: boolean; // if true, show "Request Instagram" mailto instead of direct link
   website?: string;
@@ -59,6 +60,7 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
   {
     slug: "jose-la-luz",
     name: "José La Luz",
+    honorific: "Scriptor Honoris Causa",
     photo: "/writers/jose-la-luz.jpg",
     origin: "Dominican Republic",
     genre: "Political Essay · Dominican Letters",

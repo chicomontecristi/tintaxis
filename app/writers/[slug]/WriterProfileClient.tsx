@@ -153,6 +153,19 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
               </p>
             )}
 
+            {writer.honorific && (
+              <p style={{
+                fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                fontSize: "0.85rem",
+                fontStyle: "italic",
+                letterSpacing: "0.08em",
+                color: "rgba(201,168,76,0.45)",
+                marginBottom: "0.5rem",
+              }}>
+                {writer.honorific}
+              </p>
+            )}
+
             <p style={{
               fontFamily: '"JetBrains Mono", monospace',
               fontSize: "0.75rem",
