@@ -137,6 +137,34 @@ export function updateScrollProgress(
   saveReaderState({ ...state, scrollProgress: Math.min(1, Math.max(0, progress)) });
 }
 
+export function updateParagraphProgress(
+  chapterSlug: string,
+  lastParagraphIndex: number,
+  totalParagraphs: number
+): void {
+  const state = getReaderState(chapterSlug);
+  if (!state) return;
+  // Only advance forward — never regress
+  if (state.lastParagraphIndex !== undefined && lastParagraphIndex < state.lastParagraphIndex) return;
+  saveReaderState({ ...state, lastParagraphIndex, totalParagraphs });
+}
+
+export function getChapterProgress(chapterSlug: string): {
+  scrollProgress: number;
+  lastParagraph: number;
+  totalParagraphs: number;
+  isComplete: boolean;
+} | null {
+  const state = getReaderState(chapterSlug);
+  if (!state) return null;
+  return {
+    scrollProgress: state.scrollProgress,
+    lastParagraph: state.lastParagraphIndex ?? 0,
+    totalParagraphs: state.totalParagraphs ?? 0,
+    isComplete: state.hasCompletedFirstRead,
+  };
+}
+
 export function markChapterComplete(chapterSlug: string): void {
   const state = getReaderState(chapterSlug);
   if (!state) return;

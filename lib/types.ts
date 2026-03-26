@@ -203,6 +203,8 @@ export interface ReaderState {
   hasCompletedFirstRead: boolean;
   completedAt?: string;
   scrollProgress: number; // 0–1
+  lastParagraphIndex?: number;    // Paragraph-level progress (IntersectionObserver)
+  totalParagraphs?: number;       // Total paragraphs in chapter (for % calc)
   activeInkType: InkType;
   annotations: Annotation[];
   questionAsked: boolean; // Question Chamber — one per chapter, first read only
