@@ -283,18 +283,28 @@ export default function SubscriptionModal({
             </div>
 
             {/* Footer note */}
-            <p
-              style={{
-                textAlign: "center",
-                fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.75rem",
-                letterSpacing: "0.15em",
-                color: "rgba(201,168,76,0.25)",
-                textTransform: "uppercase",
-              }}
-            >
-              Cancel anytime · Billed monthly · Secure checkout via Stripe
-            </p>
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.5rem",
+            }}>
+              <svg width="24" height="10" viewBox="0 0 60 25" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Stripe">
+                <path d="M60 12.5C60 5.596 54.404 0 47.5 0h-35C5.596 0 0 5.596 0 12.5S5.596 25 12.5 25h35C54.404 25 60 19.404 60 12.5z" fill="rgba(201,168,76,0.15)"/>
+                <path d="M26.1 10.3c0-.9.7-1.3 1.9-1.3 1.7 0 3.8.5 5.5 1.4V5.7c-1.8-.7-3.7-1-5.5-1-4.5 0-7.5 2.3-7.5 6.2 0 6.1 8.4 5.1 8.4 7.7 0 1.1-.9 1.4-2.2 1.4-1.9 0-4.3-.8-6.2-1.8v4.8c2.1.9 4.2 1.3 6.2 1.3 4.6 0 7.7-2.3 7.7-6.2-.1-6.5-8.3-5.4-8.3-7.8zM13.3 2.5l-5.5 1.2V8H5.5v4h2.3v6.7c0 4.5 2.3 6 5.7 6 1.7 0 3-.3 3-.3v-4s-.7.1-1.4.1c-2 0-2.8-.8-2.8-2.7V12h2.8V8h-2.8V2.5h1zM44.2 4.7c-1.9 0-3.1.9-3.8 1.5l-.3-1.2h-4.8V24.3l5.5-1.2v-4.7c.7.5 1.7 1.2 3.3 1.2 3.4 0 6.5-2.7 6.5-8.7.1-5.5-3.1-8.5-6.4-6.2zm-1.1 13.1c-1.1 0-1.8-.4-2.2-.9v-7.2c.5-.5 1.2-1 2.3-1 1.7 0 2.9 1.9 2.9 4.5-.1 2.8-1.2 4.6-3 4.6z" fill="rgba(201,168,76,0.4)"/>
+              </svg>
+              <p
+                style={{
+                  fontFamily: '"JetBrains Mono", monospace',
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.15em",
+                  color: "rgba(201,168,76,0.25)",
+                  textTransform: "uppercase",
+                }}
+              >
+                Cancel anytime · Billed monthly · Secured by Stripe
+              </p>
+            </div>
           </motion.div>
         </motion.div>
       )}
