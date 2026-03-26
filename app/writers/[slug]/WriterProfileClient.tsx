@@ -315,46 +315,71 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.6 }}
         >
-          <div>
-            <p style={{
-              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-              fontSize: "1.1rem",
-              fontStyle: "italic",
-              color: "rgba(245,230,200,0.75)",
-              marginBottom: "0.25rem",
-            }}>
-              Read {displayName}'s work on Tintaxis
-            </p>
-            <p style={{
-              fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.75rem",
-              letterSpacing: "0.15em",
-              color: "rgba(201,168,76,0.35)",
-              textTransform: "uppercase",
-            }}>
-              Full access from $3 / month · Cancel anytime
-            </p>
-          </div>
-          <motion.button
-            onClick={() => setSubModalOpen(true)}
-            style={{
-              fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.8rem",
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-              color: "#0D0B08",
-              background: "#C9A84C",
-              border: "none",
-              padding: "0.75rem 2rem",
-              cursor: "pointer",
-              flexShrink: 0,
-            }}
-            whileHover={{ background: "#E8C97A" }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.15 }}
-          >
-            Subscribe to Read
-          </motion.button>
+          {writer.honorific && writer.works.every(w => w.comingSoon) ? (
+            <div>
+              <p style={{
+                fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                fontSize: "1.1rem",
+                fontStyle: "italic",
+                color: "rgba(245,230,200,0.75)",
+                marginBottom: "0.25rem",
+              }}>
+                {displayName} is an honorary writer of Tintaxis
+              </p>
+              <p style={{
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: "0.75rem",
+                letterSpacing: "0.15em",
+                color: "rgba(201,168,76,0.35)",
+                textTransform: "uppercase",
+              }}>
+                Standing invitation to publish at any time
+              </p>
+            </div>
+          ) : (
+            <>
+              <div>
+                <p style={{
+                  fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                  fontSize: "1.1rem",
+                  fontStyle: "italic",
+                  color: "rgba(245,230,200,0.75)",
+                  marginBottom: "0.25rem",
+                }}>
+                  Read {displayName}&apos;s work on Tintaxis
+                </p>
+                <p style={{
+                  fontFamily: '"JetBrains Mono", monospace',
+                  fontSize: "0.75rem",
+                  letterSpacing: "0.15em",
+                  color: "rgba(201,168,76,0.35)",
+                  textTransform: "uppercase",
+                }}>
+                  Full access from $3 / month · Cancel anytime
+                </p>
+              </div>
+              <motion.button
+                onClick={() => setSubModalOpen(true)}
+                style={{
+                  fontFamily: '"JetBrains Mono", monospace',
+                  fontSize: "0.8rem",
+                  letterSpacing: "0.2em",
+                  textTransform: "uppercase",
+                  color: "#0D0B08",
+                  background: "#C9A84C",
+                  border: "none",
+                  padding: "0.75rem 2rem",
+                  cursor: "pointer",
+                  flexShrink: 0,
+                }}
+                whileHover={{ background: "#E8C97A" }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.15 }}
+              >
+                Subscribe to Read
+              </motion.button>
+            </>
+          )}
         </motion.div>
 
         {/* ── Works ────────────────────────────────────────────── */}

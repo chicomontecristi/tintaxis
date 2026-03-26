@@ -19,7 +19,10 @@ export async function generateMetadata({
   const writer = getWriterBySlug(params.slug);
   if (!writer) return {};
   const name = writer.artistName ?? writer.name;
-  const description = `${writer.shortBio} Read ${name}'s work on Tintaxis.`;
+  const isHonorary = writer.honorific && writer.works.every(w => w.comingSoon);
+  const description = isHonorary
+    ? `${writer.shortBio} ${name} is an honorary writer of Tintaxis.`
+    : `${writer.shortBio} Read ${name}'s work on Tintaxis.`;
 
   return {
     title: `${name} — Tintaxis`,

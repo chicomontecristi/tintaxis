@@ -73,7 +73,7 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
         title: "Escritos de un Hombre Político",
         subtitle: "Ensayos · Español",
         description:
-          "A collection of political essays drawn from thirty years of public life in the Dominican Republic. On power, community, and the cost of conviction.",
+          "A collection of political essays drawn from thirty years of public life in the Dominican Republic. On power, community, and the cost of conviction. Awaiting the author's word.",
         language: "ES",
         comingSoon: true,
       },
