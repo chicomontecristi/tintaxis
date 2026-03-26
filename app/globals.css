@@ -57,6 +57,29 @@
   --selection-bg:  rgba(201, 168, 76, 0.25);
 }
 
+/* ─── OLED BLACK THEME (True black for AMOLED screens) ────────────── */
+[data-theme="oled"] {
+  --vault:         #000000;
+  --archive:       #0A0A0A;
+  --parchment:     #E0D0B0;
+  --bg-page:       #000000;
+  --bg-surface:    #0A0800;
+  --bg-surface-rgb: 10, 8, 0;
+  --text-primary:  #E0D0B0;
+  --text-primary-rgb: 224, 208, 176;
+  --text-secondary: rgba(224, 208, 176, 0.45);
+  --text-dim:      rgba(224, 208, 176, 0.25);
+  --brass-primary: #C9A84C;
+  --brass-dim:     rgba(201, 168, 76, 0.35);
+  --border-subtle: rgba(201, 168, 76, 0.05);
+  --nav-bg:        rgba(0, 0, 0, 0.95);
+  --selection-bg:  rgba(201, 168, 76, 0.2);
+  --scrollbar-track: #000000;
+  --scrollbar-thumb: #1A1400;
+  --scrollbar-hover: #2C1A00;
+  --eink-glow:     none;
+}
+
 /* ─── DAY THEME (Sepia / Kindle Paperwhite) ─────────────────────── */
 [data-theme="day"] {
   --vault:         #FBF5E6;

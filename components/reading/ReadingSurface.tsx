@@ -656,6 +656,13 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
   );
 }
 
+// ─── READ TIME ────────────────────────────────────────────────────────────────
+
+function estimateReadTime(wordCount: number): string {
+  const minutes = Math.ceil(wordCount / 250);
+  return minutes === 1 ? "1 min read" : `${minutes} min read`;
+}
+
 // ─── CHAPTER HEADER ──────────────────────────────────────────────────────────
 
 function ChapterHeader({ chapter }: { chapter: Chapter }) {
@@ -705,6 +712,23 @@ function ChapterHeader({ chapter }: { chapter: Chapter }) {
           }}
         >
           {chapter.subtitle}
+        </p>
+      )}
+
+      {/* Read-time estimate */}
+      {chapter.wordCount > 0 && (
+        <p
+          style={{
+            fontFamily: '"JetBrains Mono", monospace',
+            fontSize: "0.65rem",
+            letterSpacing: "0.2em",
+            color: "var(--brass-dim)",
+            textTransform: "uppercase",
+            marginTop: "1rem",
+            opacity: 0.5,
+          }}
+        >
+          {estimateReadTime(chapter.wordCount)}
         </p>
       )}
     </motion.header>

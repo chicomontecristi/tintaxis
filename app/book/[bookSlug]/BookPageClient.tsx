@@ -423,7 +423,7 @@ function ChapterRow({
           textAlign: "right",
         }}
       >
-        {chapter.isLocked ? "Coming soon" : `${chapter.wordCount.toLocaleString()} wds`}
+        {chapter.isLocked ? "Coming soon" : `${Math.ceil(chapter.wordCount / 250)} min read`}
       </span>
     </motion.div>
   );
