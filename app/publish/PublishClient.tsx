@@ -1607,10 +1607,7 @@ export default function PublishClient() {
                       paddingTop: "1rem",
                       borderTop: "1px solid rgba(201,168,76,0.08)",
                     }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,76,0.4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-label="Secure">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                      </svg>
+                      <img src="/stripe-badge.png" alt="Stripe" width={18} height={18} style={{ borderRadius: "3px" }} />
                       <span style={{
                         fontFamily: '"JetBrains Mono", monospace',
                         fontSize: "0.6rem",
