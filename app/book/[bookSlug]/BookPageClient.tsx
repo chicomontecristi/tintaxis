@@ -6,6 +6,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
 import { TrustLine } from "@/components/ui/TrustSignals";
+import { getChapterProgress } from "@/lib/ink";
+import { cacheBookForOffline } from "@/components/ui/ServiceWorkerRegistration";
 import type { Book, Chapter } from "@/lib/types";
 
 // ─── BOOK LANDING PAGE (client) ───────────────────────────────────────────────
@@ -28,6 +30,11 @@ export default function BookPageClient() {
         if (data) {
           setBook(data.book);
           setChapters(data.chapters);
+          // Pre-cache all chapters for offline reading
+          const slugs = (data.chapters as Chapter[])
+            .filter((ch) => !ch.isLocked)
+            .map((ch) => ch.slug);
+          cacheBookForOffline(bookSlug, slugs);
         }
         setReady(true);
       })
@@ -350,6 +357,23 @@ function ChapterRow({
 }) {
   const href = `/book/${bookSlug}/chapter/${chapter.slug}`;
 
+  // Read progress from localStorage
+  const [progress, setProgress] = useState<{
+    scrollProgress: number;
+    isComplete: boolean;
+    lastParagraph: number;
+    totalParagraphs: number;
+  } | null>(null);
+
+  useEffect(() => {
+    const p = getChapterProgress(chapter.slug);
+    if (p) setProgress(p);
+  }, [chapter.slug]);
+
+  const isComplete = progress?.isComplete ?? false;
+  const isStarted = progress !== null && progress.scrollProgress > 0.02 && !isComplete;
+  const progressPct = progress ? Math.round(progress.scrollProgress * 100) : 0;
+
   const content = (
     <motion.div
       initial={{ opacity: 0, x: -12 }}
@@ -362,8 +386,30 @@ function ChapterRow({
         borderBottom: "1px solid rgba(201,168,76,0.07)",
         cursor: chapter.isLocked ? "default" : "pointer",
         gap: "1rem",
+        position: "relative",
       }}
     >
+      {/* Progress indicator dot */}
+      {!chapter.isLocked && (
+        <span style={{
+          width: "6px",
+          height: "6px",
+          borderRadius: "50%",
+          flexShrink: 0,
+          background: isComplete
+            ? "rgba(0,200,120,0.7)"
+            : isStarted
+              ? `${accentColor}`
+              : "rgba(201,168,76,0.12)",
+          boxShadow: isComplete
+            ? "0 0 6px rgba(0,200,120,0.3)"
+            : isStarted
+              ? `0 0 6px ${accentColor}40`
+              : "none",
+          transition: "all 0.3s ease",
+        }} />
+      )}
+
       {/* Number */}
       <span
         style={{
@@ -409,21 +455,31 @@ function ChapterRow({
         )}
       </div>
 
-      {/* Lock / word count */}
+      {/* Status / read time */}
       <span
         style={{
           fontFamily: '"JetBrains Mono", monospace',
           fontSize: "0.45rem",
           letterSpacing: "0.15em",
-          color: chapter.isLocked
-            ? "rgba(201,168,76,0.25)"
-            : "rgba(245,230,200,0.2)",
+          color: isComplete
+            ? "rgba(0,200,120,0.6)"
+            : chapter.isLocked
+              ? "rgba(201,168,76,0.25)"
+              : isStarted
+                ? `${accentColor}90`
+                : "rgba(245,230,200,0.2)",
           textTransform: "uppercase",
-          minWidth: "60px",
+          minWidth: "70px",
           textAlign: "right",
         }}
       >
-        {chapter.isLocked ? "Coming soon" : `${Math.ceil(chapter.wordCount / 250)} min read`}
+        {chapter.isLocked
+          ? "Coming soon"
+          : isComplete
+            ? "✓ Complete"
+            : isStarted
+              ? `${progressPct}% read`
+              : `${Math.ceil(chapter.wordCount / 250)} min read`}
       </span>
     </motion.div>
   );

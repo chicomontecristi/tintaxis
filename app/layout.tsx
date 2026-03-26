@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import SiteNav from "@/components/ui/SiteNav";
+import ServiceWorkerRegistration from "@/components/ui/ServiceWorkerRegistration";
 import "./globals.css";
 
 const BASE_URL = "https://tintaxis.vercel.app";
@@ -105,6 +106,12 @@ export default function RootLayout({
         {/* Favicon — brass sigil */}
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="icon" href="/favicon.svg" sizes="any" />
+        {/* PWA */}
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Tintaxis" />
         {/* JSON-LD: WebSite + Author entity */}
         <script
           type="application/ld+json"
@@ -114,6 +121,7 @@ export default function RootLayout({
       <body className="vault-noise antialiased">
         <SiteNav />
         {children}
+        <ServiceWorkerRegistration />
         <Analytics />
       </body>
     </html>
