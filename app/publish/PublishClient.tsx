@@ -684,9 +684,18 @@ export default function PublishClient() {
   };
 
   const handleExpedited = async () => {
-    if (!form.name || !form.email || !form.bookTitle || !form.chapterFile) {
-      setErrorMsg("Name, email, book title, and chapter file are required.");
+    const missing: string[] = [];
+    if (!form.name) missing.push("name");
+    if (!form.email) missing.push("email");
+    if (!form.bookTitle) missing.push("book title");
+    if (!form.chapterFile) missing.push("chapter file");
+    if (missing.length > 0) {
+      const msg = `Please fill in: ${missing.join(", ")}.`;
+      setErrorMsg(msg);
       setSubmitStatus("error");
+      // Scroll to the first empty required field so they see what's missing
+      const firstField = document.querySelector("input, textarea");
+      firstField?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
     setExpeditedLoading(true);
@@ -1596,6 +1605,17 @@ export default function PublishClient() {
                     }}>
                       Skip the queue. Response within 48–72 hours.
                     </p>
+                    {submitStatus === "error" && errorMsg && (
+                      <p style={{
+                        fontFamily: '"JetBrains Mono", monospace',
+                        fontSize: "0.75rem",
+                        color: "rgba(192,57,43,0.85)",
+                        textAlign: "center",
+                        marginTop: "0.5rem",
+                      }}>
+                        {errorMsg}
+                      </p>
+                    )}
 
                     {/* Stripe trust badge */}
                     <div style={{
