@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import PublishClient from "./PublishClient";
 
 const BASE_URL = "https://tintaxis.com";
@@ -38,5 +39,9 @@ export const metadata: Metadata = {
 };
 
 export default function PublishPage() {
-  return <PublishClient />;
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", backgroundColor: "#0D0B08" }} />}>
+      <PublishClient />
+    </Suspense>
+  );
 }

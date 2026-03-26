@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
     const synopsis     = fd.get("synopsis") as string | null;
     const whyTintaxis  = fd.get("whyTintaxis") as string | null;
     const chapterFile  = fd.get("chapterFile") as File | null;
+    const expedited    = fd.get("expedited") === "true";
 
     if (!name || !email || !bookTitle) {
       return NextResponse.json({ error: "Name, email, and book title are required." }, { status: 400 });
@@ -48,9 +49,10 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify({
           from: fromEmail,
           to: toEmail,
-          subject: `Tintaxis Author Application — ${bookTitle} by ${name}`,
+          subject: `${expedited ? "⚡ EXPEDITED — " : ""}Tintaxis Author Application — ${bookTitle} by ${name}`,
           html: `
             <div style="font-family: monospace; background: #0D0B08; color: #F5E6C8; padding: 2rem; max-width: 600px;">
+              ${expedited ? '<div style="background: rgba(0,229,204,0.15); border: 1px solid rgba(0,229,204,0.4); padding: 0.75rem 1rem; margin-bottom: 1rem; text-align: center;"><strong style="color: #00E5CC; letter-spacing: 0.2em; font-size: 0.8rem; text-transform: uppercase;">⚡ EXPEDITED REVIEW — PAID $0.25</strong></div>' : ''}
               <h2 style="color: #C9A84C; letter-spacing: 0.2em; font-size: 0.9rem; text-transform: uppercase;">
                 NEW AUTHOR APPLICATION
               </h2>

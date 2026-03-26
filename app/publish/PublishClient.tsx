@@ -2,6 +2,7 @@
 
 import { useState, FormEvent, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSearchParams } from "next/navigation";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
@@ -637,6 +638,9 @@ export default function PublishClient() {
   });
   const [submitStatus, setSubmitStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [expeditedLoading, setExpeditedLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const expeditedStatus = searchParams.get("expedited"); // "success" | "cancelled"
 
   const scrollToForm = () => {
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -679,6 +683,56 @@ export default function PublishClient() {
     }
   };
 
+  const handleExpedited = async () => {
+    if (!form.name || !form.email || !form.bookTitle || !form.chapterFile) {
+      setErrorMsg("Name, email, book title, and chapter file are required.");
+      setSubmitStatus("error");
+      return;
+    }
+    setExpeditedLoading(true);
+    setErrorMsg("");
+    try {
+      const fd = new FormData();
+      fd.append("name", form.name);
+      fd.append("email", form.email);
+      fd.append("bookTitle", form.bookTitle);
+      fd.append("genre", form.genre);
+      if (form.wordCount) fd.append("wordCount", form.wordCount);
+      fd.append("synopsis", form.synopsis);
+      fd.append("whyTintaxis", form.whyTintaxis);
+      if (form.chapterFile) fd.append("chapterFile", form.chapterFile);
+
+      const res = await fetch("/api/apply/expedited", {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        // Also send the standard application email so you have the chapter on file
+        const stdFd = new FormData();
+        stdFd.append("name", form.name);
+        stdFd.append("email", form.email);
+        stdFd.append("bookTitle", form.bookTitle);
+        stdFd.append("genre", form.genre);
+        if (form.wordCount) stdFd.append("wordCount", form.wordCount);
+        stdFd.append("synopsis", form.synopsis);
+        stdFd.append("whyTintaxis", form.whyTintaxis);
+        if (form.chapterFile) stdFd.append("chapterFile", form.chapterFile);
+        stdFd.append("expedited", "true");
+        await fetch("/api/apply", { method: "POST", body: stdFd });
+
+        // Redirect to Stripe
+        window.location.href = data.url;
+      } else {
+        setErrorMsg(data.error ?? "Failed to start expedited checkout.");
+        setExpeditedLoading(false);
+      }
+    } catch {
+      setErrorMsg("Connection failed. Try again.");
+      setExpeditedLoading(false);
+    }
+  };
+
   const inputStyle: React.CSSProperties = {
     width: "100%",
     background: "rgba(255,255,255,0.03)",
@@ -704,6 +758,45 @@ export default function PublishClient() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#0D0B08", color: "#F5E6C8" }}>
+      {/* Expedited payment banner */}
+      {expeditedStatus === "success" && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+          background: "rgba(0,180,100,0.9)",
+          padding: "0.75rem 1.5rem",
+          textAlign: "center",
+          backdropFilter: "blur(4px)",
+        }}>
+          <p style={{
+            fontFamily: '"JetBrains Mono", monospace',
+            fontSize: "0.8rem",
+            letterSpacing: "0.15em",
+            color: "white",
+            textTransform: "uppercase",
+          }}>
+            Payment received. Your application has been expedited.
+          </p>
+        </div>
+      )}
+      {expeditedStatus === "cancelled" && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+          background: "rgba(200,80,40,0.85)",
+          padding: "0.75rem 1.5rem",
+          textAlign: "center",
+          backdropFilter: "blur(4px)",
+        }}>
+          <p style={{
+            fontFamily: '"JetBrains Mono", monospace',
+            fontSize: "0.8rem",
+            letterSpacing: "0.15em",
+            color: "white",
+            textTransform: "uppercase",
+          }}>
+            Payment cancelled. Your standard application was still submitted.
+          </p>
+        </div>
+      )}
       {/* Background glow */}
       <div
         style={{
@@ -1434,6 +1527,75 @@ export default function PublishClient() {
                     >
                       {submitStatus === "loading" ? "TRANSMITTING..." : "SUBMIT APPLICATION"}
                     </motion.button>
+                    <p style={{
+                      fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                      fontSize: "0.85rem",
+                      fontStyle: "italic",
+                      color: "rgba(245,230,200,0.25)",
+                      textAlign: "center",
+                      lineHeight: 1.5,
+                      marginTop: "0.4rem",
+                    }}>
+                      Standard review — 2–3 weeks
+                    </p>
+
+                    {/* Divider */}
+                    <div style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "1rem",
+                      margin: "1.25rem 0",
+                    }}>
+                      <div style={{ flex: 1, height: "1px", background: "rgba(201,168,76,0.12)" }} />
+                      <span style={{
+                        fontFamily: '"JetBrains Mono", monospace',
+                        fontSize: "0.7rem",
+                        letterSpacing: "0.2em",
+                        color: "rgba(201,168,76,0.3)",
+                        textTransform: "uppercase",
+                      }}>
+                        OR
+                      </span>
+                      <div style={{ flex: 1, height: "1px", background: "rgba(201,168,76,0.12)" }} />
+                    </div>
+
+                    {/* Expedited */}
+                    <motion.button
+                      type="button"
+                      onClick={handleExpedited}
+                      disabled={expeditedLoading || submitStatus === "loading"}
+                      whileHover={
+                        !expeditedLoading
+                          ? { borderColor: "rgba(0,229,204,0.6)", boxShadow: "0 0 20px rgba(0,229,204,0.08)" }
+                          : {}
+                      }
+                      whileTap={!expeditedLoading ? { scale: 0.98 } : {}}
+                      style={{
+                        width: "100%",
+                        fontFamily: '"JetBrains Mono", monospace',
+                        fontSize: "0.85rem",
+                        letterSpacing: "0.2em",
+                        textTransform: "uppercase",
+                        color: expeditedLoading ? "rgba(0,229,204,0.4)" : "rgba(0,229,204,0.85)",
+                        background: "transparent",
+                        border: "1px solid rgba(0,229,204,0.25)",
+                        padding: "0.85rem",
+                        cursor: expeditedLoading ? "not-allowed" : "pointer",
+                        marginBottom: "0.5rem",
+                      }}
+                    >
+                      {expeditedLoading ? "REDIRECTING TO PAYMENT..." : "EXPEDITED REVIEW · $0.25"}
+                    </motion.button>
+                    <p style={{
+                      fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                      fontSize: "0.85rem",
+                      fontStyle: "italic",
+                      color: "rgba(245,230,200,0.3)",
+                      textAlign: "center",
+                      lineHeight: 1.5,
+                    }}>
+                      Skip the queue. Response within 48–72 hours.
+                    </p>
                   </motion.form>
                 )}
               </AnimatePresence>
