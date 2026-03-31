@@ -12,6 +12,7 @@ import {
   initReaderState,
   setActiveInkType,
   updateScrollProgress,
+  updateParagraphProgress,
   markChapterComplete,
   hasAskedQuestion,
 } from "@/lib/ink";
@@ -25,6 +26,7 @@ import SignalInkModal from "./SignalInkModal";
 import ProgressIndicator from "./ProgressIndicator";
 import ChapterNav from "@/components/ui/ChapterNav";
 import SubscriptionModal from "@/components/ui/SubscriptionModal";
+import EmailGateModal from "@/components/ui/EmailGateModal";
 import type { SubscriptionTierName } from "@/components/ui/SubscriptionModal";
 import ContinueReadingToast from "@/components/ui/ContinueReadingToast";
 import InkTutorial from "@/components/ui/InkTutorial";
@@ -36,7 +38,7 @@ import { DepthEmailCapture } from "@/components/ui/SessionDepth";
 import { BOOKS } from "@/lib/content/books";
 
 // Tier access order — must match SubscriptionModal's TIER_ORDER
-const TIER_ORDER: SubscriptionTierName[] = ["codex", "scribe", "archive", "chronicler"];
+const TIER_ORDER: SubscriptionTierName[] = ["free", "codex", "scribe", "archive", "chronicler"];
 
 // ─── READING SURFACE ─────────────────────────────────────────────────────────
 // The complete reading environment. This is the heart of Tintaxis.
@@ -59,6 +61,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
   const [isComplete, setIsComplete] = useState(false);
   const [showCompletionEvent, setShowCompletionEvent] = useState(false);
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
+  const [emailGateOpen, setEmailGateOpen] = useState(false);
   const [gateTier, setGateTier] = useState<SubscriptionTierName | undefined>(undefined);
   const [gateFeatureName, setGateFeatureName] = useState<string | undefined>(undefined);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -241,12 +244,21 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
       .then((data) => {
         if (data.subscribed && data.tier) {
           setReaderTier(data.tier as SubscriptionTierName);
+        } else if (data.email) {
+          // Reader has a session but no active subscription — treat as free tier
+          setReaderTier("free");
+        } else if (chapter.number > 1) {
+          // No session at all + chapter 2+ → show email gate
+          setEmailGateOpen(true);
         }
         if (data.id)    setReaderId(data.id);
         if (data.email) setReaderEmail(data.email);
       })
-      .catch(() => {/* session check fails silently — treat as unsubscribed */});
-  }, [book?.writerSlug]);
+      .catch(() => {
+        // Session check fails — if chapter 2+, show email gate
+        if (chapter.number > 1) setEmailGateOpen(true);
+      });
+  }, [book?.writerSlug, chapter.number]);
 
   // Returns true if the reader's tier meets or exceeds the required tier
   const hasAccess = useCallback((required: SubscriptionTierName): boolean => {
@@ -308,6 +320,34 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [chapter.slug, isComplete]);
+
+  // ── Track paragraph-level progress via IntersectionObserver ──
+  useEffect(() => {
+    if (!contentRef.current) return;
+
+    const totalParas = chapter.paragraphs.filter(p => !p.isSectionBreak).length;
+    let highestVisible = 0;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const idx = Number((entry.target as HTMLElement).dataset.paragraph);
+          if (!isNaN(idx) && idx > highestVisible) {
+            highestVisible = idx;
+            updateParagraphProgress(chapter.slug, idx, totalParas);
+          }
+        });
+      },
+      { rootMargin: "0px 0px -30% 0px", threshold: 0.1 }
+    );
+
+    // Observe all paragraph elements
+    const paragraphs = contentRef.current.querySelectorAll("[data-paragraph]");
+    paragraphs.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [chapter.slug, chapter.paragraphs]);
 
   // ── Handle ink type change ─────────────────────────────────
   const handleInkChange = useCallback(
@@ -389,10 +429,16 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
 
   // ── Handle subscription gate trigger ──────────────────────
   const handleGateTriggered = useCallback((tier: SubscriptionTierName, featureName: string) => {
+    // If the reader has no session at all, show the email gate first
+    if (!readerTier && !readerEmail) {
+      setEmailGateOpen(true);
+      return;
+    }
+    // Reader is signed in but lacks the required tier — show subscription modal
     setGateTier(tier);
     setGateFeatureName(featureName);
     setSubscriptionModalOpen(true);
-  }, []);
+  }, [readerTier, readerEmail]);
 
   return (
     <div
@@ -612,6 +658,14 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
           />
         )}
       </AnimatePresence>
+
+      {/* ── Email Gate Modal (free tier — chapter 2+) ─────────── */}
+      <EmailGateModal
+        isOpen={emailGateOpen}
+        chapterTitle={chapter.title}
+        onClose={() => setEmailGateOpen(false)}
+        onSuccess={() => window.location.reload()}
+      />
 
       {/* ── Subscription Gate Modal ──────────────────────────── */}
       <SubscriptionModal

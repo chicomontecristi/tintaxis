@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
 // "scribe" is the Stripe plan ID; displayed as "Scribe" in the UI
-export type SubscriptionTierName = "codex" | "scribe" | "archive" | "chronicler";
+export type SubscriptionTierName = "free" | "codex" | "scribe" | "archive" | "chronicler";
 
 interface SubscriptionModalProps {
   isOpen: boolean;
@@ -94,7 +94,7 @@ const TIERS: Tier[] = [
   },
 ];
 
-const TIER_ORDER: SubscriptionTierName[] = ["codex", "scribe", "archive", "chronicler"];
+const TIER_ORDER: SubscriptionTierName[] = ["free", "codex", "scribe", "archive", "chronicler"];
 
 function tierIndex(id?: SubscriptionTierName) {
   if (!id) return -1;

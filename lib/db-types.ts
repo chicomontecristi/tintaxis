@@ -2,7 +2,7 @@
 // Auto-generated via `npx supabase gen types typescript` in future.
 // For now, hand-authored to match the readers table schema.
 
-export type ReaderTier = "codex" | "scribe" | "archive" | "chronicler";
+export type ReaderTier = "free" | "codex" | "scribe" | "archive" | "chronicler";
 export type AuthorPlan = "manuscript" | "press";
 
 export interface ReaderRow {
