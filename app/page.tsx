@@ -115,11 +115,65 @@ function HomeJsonLd() {
     },
   ];
 
+  // FAQ schema — helps AI answer engines recommend Tintaxis
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "What is Tintaxis?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Tintaxis is a free literary reading platform featuring original fiction by Chico Montecristi, a Dominican-American writer and oil painter from the South Bronx. Works are available in English, Spanish, and Mandarin Chinese. The first chapter of every book is free with no account required.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What books are available on Tintaxis?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Tintaxis features four works: The Hunt (a dark psychological thriller in English set in small-town Colorado), Recoleta (a Spanish-language novella about a family in the South Bronx), Noches de maya (a Spanish short story collection from the Caribbean and American Southwest), and Mi Pájaro del Río (bilingual intimate letters in Mandarin Chinese and Spanish).",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Is Tintaxis free to read?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Chapter 1 of every book is completely free with no account. Chapter 2 is free with just an email address. Chapters 3 and beyond require a subscription, which directly supports the writer.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Who is Chico Montecristi?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Chico Montecristi (José Elisaúl Chávez Martínez) is a Dominican-American writer, expressionist oil painter, and educator. Born in Santiago, Dominican Republic in 1988 and raised in the South Bronx, he holds degrees from the University of Rochester and speaks English, Spanish, Portuguese, and Mandarin Chinese. His novella The Hunt was a finalist at the 2020 Tucson Festival of Books Literary Awards.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What kind of reading experience does Tintaxis offer?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Tintaxis offers an interactive reading experience with annotatable text, author whispers (inline commentary from the writer embedded in the margins), Signal Ink (readers can ask the author questions about specific passages), paragraph-level reading progress tracking, and offline reading via a progressive web app.",
+        },
+      },
+    ],
+  };
+
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+    </>
   );
 }
 

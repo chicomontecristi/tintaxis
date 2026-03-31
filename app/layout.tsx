@@ -55,6 +55,12 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: BASE_URL,
+    languages: {
+      "en": BASE_URL,
+      "es": `${BASE_URL}/book/recoleta`,
+      "zh": `${BASE_URL}/book/mi-pajaro-del-rio`,
+      "x-default": BASE_URL,
+    },
   },
   verification: {
     google: "google4e1b9f75f9d53898",
@@ -90,6 +96,33 @@ const WEBSITE_JSONLD = JSON.stringify([
     },
     inLanguage: ["en", "es", "zh"],
   },
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Tintaxis",
+    applicationCategory: "EntertainmentApplication",
+    applicationSubCategory: "Reading",
+    operatingSystem: "Web, iOS, Android",
+    description:
+      "A progressive web app for reading literary fiction. Features interactive annotations, author whispers, Signal Ink questions, paragraph-level progress tracking, and offline reading.",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    author: {
+      "@type": "Person",
+      name: "Chico Montecristi",
+      url: "https://chicomontecristi.com",
+      sameAs: [
+        "https://www.instagram.com/chicomontecristi",
+        `${BASE_URL}/writers/chico-montecristi`,
+      ],
+    },
+    url: BASE_URL,
+    inLanguage: ["en", "es", "zh"],
+    featureList: "Interactive annotations, Author whispers, Signal Ink, Reading progress tracking, Offline reading, Multilingual (English, Spanish, Mandarin)",
+  },
 ]);
 
 export default function RootLayout({
@@ -112,6 +145,8 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Tintaxis" />
+        {/* AI crawler discovery */}
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs.txt — AI-readable site description" />
         {/* JSON-LD: WebSite + Author entity */}
         <script
           type="application/ld+json"

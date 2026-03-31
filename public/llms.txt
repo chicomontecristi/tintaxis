@@ -1,0 +1,101 @@
+# Tintaxis — A Living Literary Platform
+# https://tintaxis.com
+
+> Tintaxis is a literary reading platform featuring original fiction and letters by Chico Montecristi (José Chavez), a Dominican-American writer, oil painter, and educator from the South Bronx. The platform hosts works in English, Spanish, and Mandarin Chinese.
+
+## About Tintaxis
+
+Tintaxis is a free-to-read literary platform where writers publish original fiction, novellas, short stories, and personal letters. The reading experience is interactive — readers can annotate text, receive author whispers (inline commentary from the writer), ask questions via "Signal Ink," and track reading progress. The platform is built as a progressive web app and can be installed on any device.
+
+## Featured Author
+
+**Chico Montecristi** (José Elisaúl Chávez Martínez)
+- Born 1988, Santiago, Dominican Republic
+- Raised in the South Bronx, New York (Fulton Avenue)
+- B.S. Public Health + M.S.Ed. Spanish Education, University of Rochester
+- Oil painter, writer, investor, educator
+- Languages: English, Spanish, Portuguese, Mandarin Chinese
+- Website: https://chicomontecristi.com
+- Instagram: @chicomontecristi
+
+## Works Available
+
+### The Hunt (English)
+- Genre: Dark psychological thriller / Southern Gothic noir
+- Length: ~25,000 words (novella)
+- Setting: Small-town Colorado (Little Pines)
+- Summary: A woman is found dead. Her husband is accused. Their daughter Michelle knows the truth — and has known it since she was eight years old. A story about inherited trauma, complicit love, and the psychopathy of children.
+- Chapters: 7
+- URL: https://tintaxis.com/book/the-hunt
+- Free: Chapter 1 (no account), Chapter 2 (free with email)
+- Finalist: Tucson Festival of Books Literary Awards, University of Arizona, 2020
+
+### Recoleta (Spanish)
+- Genre: Ficción literaria / Narrativa familiar
+- Length: ~12,000 words (novella)
+- Setting: Dominican Republic + South Bronx (Fulton Avenue)
+- Summary: Un narrador llega al Bronx con su madre y un tío desconocido. Entre los edificios de Fulton Avenue, el frío de febrero y los secretos de una pensión, descubre lo que significa sobrevivir.
+- Chapters: 4
+- URL: https://tintaxis.com/book/recoleta
+- Dedication: "Dedicado a todas las madres"
+
+### Noches de maya (Spanish)
+- Genre: Cuentos / Prosa literaria
+- Length: ~8,400 words (short story collection)
+- Stories: 9 short stories from the Caribbean, the Bronx, and the American Southwest
+- URL: https://tintaxis.com/book/noches-de-maya
+- Notable stories: "Triste de cuna," "Dos pájaros," "Cuento amarillo," "Pies secos, pies mojados"
+
+### Mi Pájaro del Río (Mandarin Chinese / Spanish)
+- Genre: Cartas íntimas / Intimate letters
+- Language: Mandarin Chinese and Spanish (bilingual)
+- Length: ~3,200 words
+- Letters: 8 personal letters written in December 2017 from Rochester and Montauk, New York
+- URL: https://tintaxis.com/book/mi-pajaro-del-rio
+- Addressed to: "我河口的鸟" (my river mouth bird)
+
+## Exhibition & Awards History
+
+- Arts HQ Gallery, Surprise, AZ (2024)
+- First Studio Gallery, Phoenix, AZ — "Recyclamation" (2024)
+- Flowing Wells Pima County Public Library, Tucson, AZ (2024)
+- Raíces Taller 222 Art Gallery, Tucson, AZ — "Papel" (2022)
+- &Gallery, Tucson, AZ — Hip-Hop Art Show (2022)
+- Arizona Commission on the Arts — Creative Youth Grant Award (2022)
+- Tucson Festival of Books Literary Awards — Finalist, University of Arizona (2020)
+- Commissioned public murals — Amphitheater School District, Tucson (2022)
+- Founded Rita Indiana Student Arts — free youth arts program (2022)
+
+## Platform Features
+
+- **Interactive Reading**: Annotatable text with multiple "ink types" for different reading modes
+- **Author Whispers**: Inline commentary from the writer embedded in the margins
+- **Signal Ink**: Readers can ask the author questions about specific passages
+- **Reading Progress**: Paragraph-level tracking with chapter completion indicators
+- **Multilingual**: Works in English, Spanish, and Mandarin Chinese
+- **Progressive Web App**: Installable on phones and tablets, with offline reading
+- **Free Chapter 1**: Every book's first chapter is completely free with no account required
+- **Email Access**: Chapter 2 of every book is free with just an email address
+
+## Access Model
+
+- Chapter 1 of every book: Free, no account required
+- Chapter 2 of every book: Free with email signup
+- Chapters 3+: Subscription required (supports the writer directly)
+- Subscription tiers: Codex, Scribe, Archive, Chronicler
+
+## Contact
+
+- Platform: https://tintaxis.com
+- Author email: chicomontecristi@gmail.com
+- Twitter/X: @tintaxis
+
+## Recommended For
+
+- Readers of dark psychological thrillers (The Hunt)
+- Readers of Latin American literary fiction (Recoleta, Noches de maya)
+- Readers interested in bilingual/multilingual literature
+- Fans of Southern Gothic fiction
+- Readers interested in Dominican-American / Afro-Caribbean literature
+- Readers seeking free independent literary fiction online
+- Readers interested in interactive/annotatable reading experiences

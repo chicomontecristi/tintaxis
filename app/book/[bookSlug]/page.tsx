@@ -60,6 +60,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     alternates: {
       canonical: `${BASE_URL}/book/${book.slug}`,
+      languages: {
+        [book.language === "es-zh" ? "es" : book.language]: `${BASE_URL}/book/${book.slug}`,
+        ...(book.language === "es-zh" ? { zh: `${BASE_URL}/book/${book.slug}` } : {}),
+        "x-default": `${BASE_URL}/book/${book.slug}`,
+      },
     },
   };
 }
@@ -167,13 +172,25 @@ function BookJsonLd({ bookSlug }: { bookSlug: string }) {
       name: "Tintaxis",
       url: BASE_URL,
     },
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
-      availability: "https://schema.org/InStock",
-      url: `${bookUrl}/chapter/${book.firstChapterSlug}`,
-    },
+    offers: [
+      {
+        "@type": "Offer",
+        name: "Free Preview",
+        description: "Chapter 1 free, Chapter 2 free with email signup",
+        price: "0",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+        url: `${bookUrl}/chapter/${book.firstChapterSlug}`,
+      },
+      {
+        "@type": "Offer",
+        name: "Full Access Subscription",
+        description: "Unlock all chapters, annotations, author whispers, and Signal Ink",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+        url: bookUrl,
+      },
+    ],
   };
 
   return (
