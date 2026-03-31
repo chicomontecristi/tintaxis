@@ -244,9 +244,20 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
       .then((data) => {
         if (data.subscribed && data.tier) {
           setReaderTier(data.tier as SubscriptionTierName);
+          // Free-tier reader on chapter 3+ → needs paid subscription
+          if (data.tier === "free" && chapter.number > 2) {
+            setGateTier("codex");
+            setGateFeatureName("Full Access");
+            setSubscriptionModalOpen(true);
+          }
         } else if (data.email) {
-          // Reader has a session but no active subscription — treat as free tier
+          // Reader has a session but no active subscription — treat as free
           setReaderTier("free");
+          if (chapter.number > 2) {
+            setGateTier("codex");
+            setGateFeatureName("Full Access");
+            setSubscriptionModalOpen(true);
+          }
         } else if (chapter.number > 1) {
           // No session at all + chapter 2+ → show email gate
           setEmailGateOpen(true);
