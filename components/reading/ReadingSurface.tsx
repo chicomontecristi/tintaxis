@@ -451,6 +451,11 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
     setSubscriptionModalOpen(true);
   }, [readerTier, readerEmail]);
 
+  // ── Content access: determine if chapter text should render ──
+  // Ch1: always visible. Ch2: visible (email gate overlays but text shows).
+  // Ch3+: text hidden until reader has a paid tier (codex+).
+  const contentVisible = chapter.number <= 2 || hasAccess("codex");
+
   return (
     <div
       className="min-h-screen"
@@ -567,7 +572,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
           </AnimatePresence>
 
           {/* ── Paragraphs ──────────────────────────────────── */}
-          {chapter.paragraphs.map((para, i) => {
+          {contentVisible ? chapter.paragraphs.map((para, i) => {
             if (para.isSectionBreak) {
               return (
                 <SectionBreak key={`break-${i}`} />
@@ -607,7 +612,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
                 />
               </div>
             );
-          })}
+          }) : null}
 
           {/* ── Chapter rain — generated from chapter vocabulary ─── */}
           <ChapterRain chapterSlug={chapter.slug} height={320} />

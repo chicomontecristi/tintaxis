@@ -188,7 +188,7 @@ export default function EmailGateModal({
                       marginBottom: "0.5rem",
                     }}
                   >
-                    Continue Reading
+                    Read the Next Chapter
                   </h2>
                   {chapterTitle && (
                     <p
@@ -211,7 +211,7 @@ export default function EmailGateModal({
                       lineHeight: 1.6,
                     }}
                   >
-                    Enter your email to unlock every chapter — free, forever. No credit card.
+                    Enter your email to unlock this chapter for free.
                   </p>
                 </div>
 
@@ -287,7 +287,7 @@ export default function EmailGateModal({
                     } : {}}
                     whileTap={!loading ? { scale: 0.97 } : {}}
                   >
-                    {loading ? "OPENING..." : "UNLOCK ALL CHAPTERS"}
+                    {loading ? "OPENING..." : "UNLOCK THIS CHAPTER"}
                   </motion.button>
                 </form>
 
@@ -303,7 +303,7 @@ export default function EmailGateModal({
                     textTransform: "uppercase",
                   }}
                 >
-                  No spam · Unsubscribe anytime
+                  No spam · No credit card · Chapters 3+ require a subscription
                 </p>
               </>
             )}

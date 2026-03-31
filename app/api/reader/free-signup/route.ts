@@ -45,8 +45,8 @@ function freeWelcomeHtml(): string {
 
         <tr><td align="center" style="padding:0 24px 28px;">
           <p style="font-family:Georgia,serif;font-size:16px;color:rgba(245,230,200,0.6);line-height:1.75;margin:0;">
-            Welcome to Tintaxis. You now have free access to every chapter.
-            Read at your own pace — the archive is open.
+            Welcome to Tintaxis. You've unlocked the next chapter.
+            Want the full archive? Subscribe to keep reading.
           </p>
         </td></tr>
 
@@ -71,10 +71,10 @@ function freeWelcomeHtml(): string {
 
         <tr><td align="center" style="padding:0 24px 28px;">
           <p style="font-family:Georgia,serif;font-size:14px;color:rgba(245,230,200,0.35);line-height:1.7;margin:0;">
-            Want annotations, author whispers, and Signal Ink?
+            Want every chapter, annotations, and author whispers?
           </p>
           <a href="${BASE_URL}" style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.15em;color:rgba(201,168,76,0.5);text-decoration:none;text-transform:uppercase;">
-            Explore subscription tiers
+            Subscribe for full access
           </a>
         </td></tr>
 
