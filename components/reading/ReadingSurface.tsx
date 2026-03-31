@@ -258,16 +258,26 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
             setGateFeatureName("Full Access");
             setSubscriptionModalOpen(true);
           }
-        } else if (chapter.number > 1) {
-          // No session at all + chapter 2+ → show email gate
+        } else if (chapter.number === 2) {
+          // No session + chapter 2 → email gate (free with email)
           setEmailGateOpen(true);
+        } else if (chapter.number > 2) {
+          // No session + chapter 3+ → subscription required
+          setGateTier("codex");
+          setGateFeatureName("Full Access");
+          setSubscriptionModalOpen(true);
         }
         if (data.id)    setReaderId(data.id);
         if (data.email) setReaderEmail(data.email);
       })
       .catch(() => {
-        // Session check fails — if chapter 2+, show email gate
-        if (chapter.number > 1) setEmailGateOpen(true);
+        // Session check fails — ch2 email gate, ch3+ subscription
+        if (chapter.number === 2) setEmailGateOpen(true);
+        else if (chapter.number > 2) {
+          setGateTier("codex");
+          setGateFeatureName("Full Access");
+          setSubscriptionModalOpen(true);
+        }
       });
   }, [book?.writerSlug, chapter.number]);
 
