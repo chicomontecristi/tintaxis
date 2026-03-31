@@ -248,8 +248,8 @@ export function WelcomeBackToast() {
             />
           </div>
 
-          <div style={{ padding: "12px 16px", display: "flex", alignItems: "center", gap: "12px" }}>
-            <div style={{ flex: 1 }}>
+          <div style={{ padding: "12px 16px", display: "flex", alignItems: "center", gap: "12px", overflow: "hidden" }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
               <p
                 style={{
                   fontFamily: MONO,
@@ -272,6 +272,9 @@ export function WelcomeBackToast() {
                   textDecoration: "none",
                   lineHeight: 1.2,
                   display: "block",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
                 }}
               >
                 Continue: {record.chapterTitle}

@@ -1,9 +1,11 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
-import { WelcomeBackToast } from "@/components/ui/ReturnCapture";
+import { WelcomeBackToast, getLastRead } from "@/components/ui/ReturnCapture";
+import { getChapterProgress } from "@/lib/ink";
 import { BOOKS } from "@/lib/content/books";
 
 // ─── HOMEPAGE ─────────────────────────────────────────────────────────────────
@@ -50,6 +52,29 @@ const FEATURES = [
 // ─── MAIN COMPONENT ──────────────────────────────────────────────────
 export default function HomeClient() {
   const allBooks = Object.values(BOOKS);
+
+  // ── Continue Reading state ──────────────────────────────────
+  const [lastRead, setLastRead] = useState<{
+    bookSlug: string;
+    bookTitle: string;
+    chapterSlug: string;
+    chapterTitle: string;
+    chapterNumber: number;
+    totalChapters: number;
+    url: string;
+    progressPct: number;
+  } | null>(null);
+
+  useEffect(() => {
+    const record = getLastRead();
+    if (!record) return;
+    const chProgress = getChapterProgress(record.chapterSlug);
+    const scrollPct = chProgress ? Math.round(chProgress.scrollProgress * 100) : 0;
+    setLastRead({
+      ...record,
+      progressPct: scrollPct,
+    });
+  }, []);
 
   return (
     <div style={{ backgroundColor: "#0D0B08", color: "#F5E6C8" }}>
@@ -553,6 +578,97 @@ export default function HomeClient() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
+          SECTION 3.5 — CONTINUE READING (personalized)
+          ══════════════════════════════════════════════════════════ */}
+      {lastRead && lastRead.progressPct > 0 && lastRead.progressPct < 95 && (
+        <section style={{ padding: "2rem 2rem 0", maxWidth: "1100px", margin: "0 auto" }}>
+          <Link href={lastRead.url} style={{ textDecoration: "none" }}>
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              style={{
+                border: "1px solid rgba(201,168,76,0.2)",
+                background: "rgba(201,168,76,0.03)",
+                padding: "1.25rem 1.5rem",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                position: "relative",
+                overflow: "hidden",
+              }}
+              whileHover={{ borderColor: "rgba(201,168,76,0.4)", background: "rgba(201,168,76,0.06)" }}
+            >
+              {/* Progress bar at top */}
+              <div style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "2px",
+                background: "rgba(201,168,76,0.08)",
+              }}>
+                <motion.div
+                  initial={{ width: 0 }}
+                  whileInView={{ width: `${lastRead.progressPct}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+                  style={{
+                    height: "100%",
+                    background: "rgba(201,168,76,0.5)",
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap", overflow: "hidden" }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{
+                    fontFamily: MONO,
+                    fontSize: "0.5rem",
+                    letterSpacing: "0.25em",
+                    color: "rgba(201,168,76,0.4)",
+                    textTransform: "uppercase",
+                    marginBottom: "0.35rem",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}>
+                    Continue reading · {lastRead.progressPct}% · Ch. {lastRead.chapterNumber}/{lastRead.totalChapters}
+                  </p>
+                  <p style={{
+                    fontFamily: SERIF,
+                    fontSize: "1.1rem",
+                    fontStyle: "italic",
+                    color: "rgba(245,230,200,0.8)",
+                    lineHeight: 1.3,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}>
+                    {lastRead.chapterTitle}
+                    <span style={{ color: "rgba(245,230,200,0.35)", fontSize: "0.95rem" }}>
+                      {" "}— {lastRead.bookTitle}
+                    </span>
+                  </p>
+                </div>
+                <span style={{
+                  fontFamily: MONO,
+                  fontSize: "0.55rem",
+                  letterSpacing: "0.2em",
+                  color: "#C9A84C",
+                  textTransform: "uppercase",
+                  opacity: 0.7,
+                  flexShrink: 0,
+                }}>
+                  Resume →
+                </span>
+              </div>
+            </motion.div>
+          </Link>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════
           SECTION 4 — NOW READING (Book catalog)
           ══════════════════════════════════════════════════════════ */}
       <section style={{ padding: "4rem 2rem 5rem", maxWidth: "1100px", margin: "0 auto" }}>
@@ -564,7 +680,7 @@ export default function HomeClient() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))",
             gap: "1.25rem",
             marginTop: "3rem",
           }}
