@@ -330,7 +330,7 @@ export default function HomeClient() {
                 <AnimatedCounter value={stat.value} />
                 <p style={{
                   fontFamily: MONO,
-                  fontSize: "0.55rem",
+                  fontSize: "0.75rem",
                   letterSpacing: "0.15em",
                   textTransform: "uppercase",
                   color: "rgba(0,200,170,0.6)",
@@ -341,8 +341,8 @@ export default function HomeClient() {
                 </p>
                 <p style={{
                   fontFamily: SERIF,
-                  fontSize: "0.9rem",
-                  color: "rgba(245,230,200,0.45)",
+                  fontSize: "1.05rem",
+                  color: "rgba(245,230,200,0.5)",
                   lineHeight: 1.5,
                 }}>
                   {stat.label}
@@ -367,7 +367,7 @@ export default function HomeClient() {
           >
             <p style={{
               fontFamily: MONO,
-              fontSize: "0.65rem",
+              fontSize: "0.8rem",
               letterSpacing: "0.25em",
               textTransform: "uppercase",
               color: "#C9A84C",
@@ -387,10 +387,10 @@ export default function HomeClient() {
               <div key={row.label} style={{ marginBottom: i < 3 ? "1.25rem" : 0 }}>
                 <p style={{
                   fontFamily: MONO,
-                  fontSize: "0.55rem",
+                  fontSize: "0.75rem",
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
-                  color: "rgba(245,230,200,0.5)",
+                  color: "rgba(245,230,200,0.55)",
                   marginBottom: "0.5rem",
                 }}>
                   {row.label}
@@ -398,8 +398,8 @@ export default function HomeClient() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
                   {/* Print bar */}
                   <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                    <span style={{ fontFamily: MONO, fontSize: "0.45rem", color: "rgba(245,230,200,0.3)", width: "40px", flexShrink: 0 }}>PRINT</span>
-                    <div style={{ flex: 1, height: "18px", background: "rgba(255,255,255,0.03)", borderRadius: "2px", overflow: "hidden", position: "relative" }}>
+                    <span style={{ fontFamily: MONO, fontSize: "0.7rem", color: "rgba(245,230,200,0.4)", width: "55px", flexShrink: 0 }}>PRINT</span>
+                    <div style={{ flex: 1, height: "22px", background: "rgba(255,255,255,0.03)", borderRadius: "2px", overflow: "hidden", position: "relative" }}>
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: `${row.print}%` }}
@@ -412,12 +412,12 @@ export default function HomeClient() {
                         }}
                       />
                     </div>
-                    <span style={{ fontFamily: MONO, fontSize: "0.4rem", color: "rgba(180,80,60,0.6)", minWidth: "120px", textAlign: "right" }}>{row.printLabel}</span>
+                    <span style={{ fontFamily: MONO, fontSize: "0.65rem", color: "rgba(180,80,60,0.7)", minWidth: "160px", textAlign: "right" }}>{row.printLabel}</span>
                   </div>
                   {/* Digital bar */}
                   <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                    <span style={{ fontFamily: MONO, fontSize: "0.45rem", color: "rgba(0,200,170,0.5)", width: "40px", flexShrink: 0 }}>DIGITAL</span>
-                    <div style={{ flex: 1, height: "18px", background: "rgba(255,255,255,0.03)", borderRadius: "2px", overflow: "hidden", position: "relative" }}>
+                    <span style={{ fontFamily: MONO, fontSize: "0.7rem", color: "rgba(0,200,170,0.6)", width: "55px", flexShrink: 0 }}>DIGITAL</span>
+                    <div style={{ flex: 1, height: "22px", background: "rgba(255,255,255,0.03)", borderRadius: "2px", overflow: "hidden", position: "relative" }}>
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: `${Math.max(row.digital, 1)}%` }}
@@ -431,7 +431,7 @@ export default function HomeClient() {
                         }}
                       />
                     </div>
-                    <span style={{ fontFamily: MONO, fontSize: "0.4rem", color: "rgba(0,200,170,0.5)", minWidth: "120px", textAlign: "right" }}>{row.digitalLabel}</span>
+                    <span style={{ fontFamily: MONO, fontSize: "0.65rem", color: "rgba(0,200,170,0.6)", minWidth: "160px", textAlign: "right" }}>{row.digitalLabel}</span>
                   </div>
                 </div>
               </div>
@@ -454,7 +454,7 @@ export default function HomeClient() {
           >
             <p style={{
               fontFamily: MONO,
-              fontSize: "0.65rem",
+              fontSize: "0.8rem",
               letterSpacing: "0.25em",
               textTransform: "uppercase",
               color: "#C9A84C",
@@ -465,7 +465,7 @@ export default function HomeClient() {
             </p>
             <p style={{
               fontFamily: SERIF,
-              fontSize: "0.95rem",
+              fontSize: "1.1rem",
               color: "rgba(245,230,200,0.45)",
               textAlign: "center",
               marginBottom: "1.5rem",
@@ -499,7 +499,7 @@ export default function HomeClient() {
             }}>
               <p style={{
                 fontFamily: MONO,
-                fontSize: "0.6rem",
+                fontSize: "0.8rem",
                 letterSpacing: "0.2em",
                 textTransform: "uppercase",
                 color: "rgba(180,80,60,0.7)",
@@ -509,7 +509,7 @@ export default function HomeClient() {
               </p>
               <p style={{
                 fontFamily: SERIF,
-                fontSize: "1rem",
+                fontSize: "1.1rem",
                 color: "rgba(245,230,200,0.55)",
                 lineHeight: 1.7,
               }}>
@@ -524,7 +524,7 @@ export default function HomeClient() {
             }}>
               <p style={{
                 fontFamily: MONO,
-                fontSize: "0.6rem",
+                fontSize: "0.8rem",
                 letterSpacing: "0.2em",
                 textTransform: "uppercase",
                 color: "rgba(0,200,170,0.7)",
@@ -534,7 +534,7 @@ export default function HomeClient() {
               </p>
               <p style={{
                 fontFamily: SERIF,
-                fontSize: "1rem",
+                fontSize: "1.1rem",
                 color: "rgba(245,230,200,0.55)",
                 lineHeight: 1.7,
               }}>
@@ -604,9 +604,9 @@ export default function HomeClient() {
             </Link>
             <p style={{
               fontFamily: MONO,
-              fontSize: "0.45rem",
+              fontSize: "0.6rem",
               letterSpacing: "0.15em",
-              color: "rgba(201,168,76,0.2)",
+              color: "rgba(201,168,76,0.25)",
               textTransform: "uppercase",
               marginTop: "1rem",
             }}>
@@ -1391,7 +1391,7 @@ function CostComparisonChart() {
             x={PAD.left - 8}
             y={toY(y) + 3}
             textAnchor="end"
-            style={{ fontFamily: MONO, fontSize: "8px", fill: "rgba(245,230,200,0.25)" }}
+            style={{ fontFamily: MONO, fontSize: "10px", fill: "rgba(245,230,200,0.3)" }}
           >
             {y}
           </text>
@@ -1404,7 +1404,7 @@ function CostComparisonChart() {
             x={toX(x)}
             y={H - PAD.bottom + 18}
             textAnchor="middle"
-            style={{ fontFamily: MONO, fontSize: "8px", fill: "rgba(245,230,200,0.25)" }}
+            style={{ fontFamily: MONO, fontSize: "10px", fill: "rgba(245,230,200,0.3)" }}
           >
             {x}
           </text>
@@ -1415,7 +1415,7 @@ function CostComparisonChart() {
           x={W / 2}
           y={H - 4}
           textAnchor="middle"
-          style={{ fontFamily: MONO, fontSize: "7px", fill: "rgba(245,230,200,0.2)", letterSpacing: "0.1em" }}
+          style={{ fontFamily: MONO, fontSize: "9px", fill: "rgba(245,230,200,0.3)", letterSpacing: "0.1em" }}
         >
           BOOKS READ
         </text>
@@ -1424,7 +1424,7 @@ function CostComparisonChart() {
           y={PAD.top + chartH / 2}
           textAnchor="middle"
           transform={`rotate(-90, 12, ${PAD.top + chartH / 2})`}
-          style={{ fontFamily: MONO, fontSize: "7px", fill: "rgba(245,230,200,0.2)", letterSpacing: "0.1em" }}
+          style={{ fontFamily: MONO, fontSize: "9px", fill: "rgba(245,230,200,0.3)", letterSpacing: "0.1em" }}
         >
           CO₂ (kg)
         </text>
@@ -1457,11 +1457,11 @@ function CostComparisonChart() {
 
         {/* Legend */}
         <rect x={PAD.left + 10} y={PAD.top + 8} width="12" height="2" rx="1" fill="rgba(180,80,60,0.7)" />
-        <text x={PAD.left + 28} y={PAD.top + 12} style={{ fontFamily: MONO, fontSize: "7px", fill: "rgba(180,80,60,0.6)" }}>
+        <text x={PAD.left + 28} y={PAD.top + 12} style={{ fontFamily: MONO, fontSize: "9px", fill: "rgba(180,80,60,0.7)" }}>
           Print (linear)
         </text>
         <rect x={PAD.left + 10} y={PAD.top + 22} width="12" height="2" rx="1" fill="rgba(0,200,170,0.7)" />
-        <text x={PAD.left + 28} y={PAD.top + 26} style={{ fontFamily: MONO, fontSize: "7px", fill: "rgba(0,200,170,0.6)" }}>
+        <text x={PAD.left + 28} y={PAD.top + 26} style={{ fontFamily: MONO, fontSize: "9px", fill: "rgba(0,200,170,0.7)" }}>
           Digital (flat)
         </text>
       </svg>
