@@ -4,7 +4,7 @@ import SiteNav from "@/components/ui/SiteNav";
 import ServiceWorkerRegistration from "@/components/ui/ServiceWorkerRegistration";
 import "./globals.css";
 
-const BASE_URL = "https://tintaxis.vercel.app";
+const BASE_URL = "https://tintaxis.com";
 
 export const metadata: Metadata = {
   title: {
@@ -35,12 +35,22 @@ export const metadata: Metadata = {
     url: BASE_URL,
     siteName: "Tintaxis",
     locale: "en_US",
+    images: [
+      {
+        url: `${BASE_URL}/opengraph-image`,
+        width: 1200,
+        height: 630,
+        alt: "Tintaxis — A Living Literary Platform",
+        type: "image/png",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Tintaxis — A Living Literary Platform",
     description:
       "Three writers. Six works. Three languages. Read free on Tintaxis.",
+    images: [`${BASE_URL}/opengraph-image`],
   },
   robots: {
     index: true,

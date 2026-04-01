@@ -35,12 +35,21 @@ export const metadata: Metadata = {
     type: "website",
     url: BASE_URL,
     siteName: "Tintaxis",
+    images: [
+      {
+        url: `${BASE_URL}/opengraph-image`,
+        width: 1200,
+        height: 630,
+        alt: "Tintaxis — A Living Literary Platform",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Tintaxis — A Living Literary Platform",
     description:
       "Three writers. Six works. Three languages. Read free. Where writers publish and readers arrive.",
+    images: [`${BASE_URL}/opengraph-image`],
   },
   alternates: {
     canonical: BASE_URL,
