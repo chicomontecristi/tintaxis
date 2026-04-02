@@ -192,7 +192,7 @@ function WriterEarningsBreakdown() {
           lineHeight: 1.7,
         }}
       >
-        Tintaxis never charges writers. Readers fund the ecosystem. When they subscribe to your work, 85% goes directly to you. We keep 15% to run the platform.
+        Tintaxis never charges writers. Readers fund the ecosystem. After payment processing (Stripe), 85% of net revenue goes directly to you. We keep 15%. No hidden math.
       </motion.p>
 
       {/* Visual split */}
@@ -211,7 +211,18 @@ function WriterEarningsBreakdown() {
       >
         <CornerAccents />
 
-        {/* 85/15 bar */}
+        {/* Revenue split bar — writer / platform / stripe */}
+        <p style={{
+          fontFamily: '"JetBrains Mono", monospace',
+          fontSize: "0.6rem",
+          letterSpacing: "0.15em",
+          color: "rgba(245,230,200,0.25)",
+          textAlign: "right",
+          marginBottom: "0.35rem",
+          textTransform: "uppercase",
+        }}>
+          After Stripe processing (2.9% + 30¢)
+        </p>
         <div style={{
           position: "relative",
           height: "36px",
@@ -219,13 +230,10 @@ function WriterEarningsBreakdown() {
           border: "1px solid rgba(201,168,76,0.08)",
           marginBottom: "1.5rem",
           overflow: "hidden",
+          display: "flex",
         }}>
           <div style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: "85%",
+            width: "70%",
             background: "linear-gradient(90deg, rgba(0,229,204,0.15), rgba(0,229,204,0.25))",
             borderRight: "1px solid rgba(0,229,204,0.4)",
             display: "flex",
@@ -238,15 +246,11 @@ function WriterEarningsBreakdown() {
               letterSpacing: "0.1em",
               color: "rgba(0,229,204,0.9)",
             }}>
-              85% — YOU
+              85% OF NET — YOU
             </span>
           </div>
           <div style={{
-            position: "absolute",
-            right: 0,
-            top: 0,
-            bottom: 0,
-            width: "15%",
+            width: "12%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -258,6 +262,22 @@ function WriterEarningsBreakdown() {
               color: "rgba(245,230,200,0.3)",
             }}>
               15%
+            </span>
+          </div>
+          <div style={{
+            width: "18%",
+            background: "rgba(255,255,255,0.03)",
+            borderLeft: "1px solid rgba(245,230,200,0.06)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
+            <span style={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontSize: "0.6rem",
+              color: "rgba(245,230,200,0.15)",
+            }}>
+              Stripe
             </span>
           </div>
         </div>
@@ -281,7 +301,7 @@ function WriterEarningsBreakdown() {
             },
             {
               label: "DIRECT PAYOUTS",
-              desc: "85% transferred to your account via Stripe. No invoicing, no delays.",
+              desc: "85% of net revenue transferred to your account via Stripe. No invoicing, no delays.",
               accent: "rgba(245,230,200,0.5)",
             },
           ].map((col) => (
@@ -589,7 +609,7 @@ export default function PublishClient() {
               }}
             >
               Readers fund the platform by subscribing to writers they want to support.
-              You keep 85% of every dollar. We keep the lights on with 15%.
+              After Stripe processing, you keep 85% of net revenue. We keep the lights on with 15%.
               No ads. No data harvesting. No algorithm deciding who gets seen.
             </p>
           </motion.div>

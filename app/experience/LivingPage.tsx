@@ -647,10 +647,10 @@ export default function LivingPage() {
                 {/* Per-tier cards with visual bars */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginBottom: "1.5rem" }}>
                   {[
-                    { tier: "Codex", price: 1.99, writerCut: 1.69, platformCut: 0.30, what: "Full chapter access, annotations, and four ink types." },
-                    { tier: "Scribe", price: 3.99, writerCut: 3.39, platformCut: 0.60, what: "Ask the author questions directly. See their margin whispers." },
-                    { tier: "Archive", price: 7.99, writerCut: 6.79, platformCut: 1.20, what: "Join the community margin. See how every reader annotates." },
-                    { tier: "Chronicler", price: 9.99, writerCut: 8.49, platformCut: 1.50, what: "Signed copy, your name in the dedication, private reading session." },
+                    { tier: "Codex", price: 1.99, writerCut: 1.39, platformCut: 0.24, stripeFee: 0.36, what: "Full chapter access, annotations, and four ink types." },
+                    { tier: "Scribe", price: 3.99, writerCut: 3.03, platformCut: 0.54, stripeFee: 0.42, what: "Ask the author questions directly. See their margin whispers." },
+                    { tier: "Archive", price: 7.99, writerCut: 6.34, platformCut: 1.12, stripeFee: 0.53, what: "Join the community margin. See how every reader annotates." },
+                    { tier: "Chronicler", price: 9.99, writerCut: 7.99, platformCut: 1.41, stripeFee: 0.59, what: "Signed copy, your name in the dedication, private reading session." },
                   ].map((t, i) => (
                     <motion.div
                       key={t.tier}
@@ -674,42 +674,47 @@ export default function LivingPage() {
                         </p>
                       </div>
 
-                      {/* Visual bar */}
+                      {/* Visual bar — three slices: writer / platform / stripe */}
                       <div style={{
                         position: "relative",
                         height: "24px",
                         background: "rgba(201,168,76,0.04)",
                         border: "1px solid rgba(201,168,76,0.06)",
                         overflow: "hidden",
+                        display: "flex",
                       }}>
                         <div style={{
-                          position: "absolute",
-                          left: 0,
-                          top: 0,
-                          bottom: 0,
-                          width: "85%",
+                          width: `${(t.writerCut / t.price * 100).toFixed(1)}%`,
                           background: "linear-gradient(90deg, rgba(0,229,204,0.12), rgba(0,229,204,0.22))",
                           borderRight: "1px solid rgba(0,229,204,0.35)",
                           display: "flex",
                           alignItems: "center",
                           paddingLeft: "0.5rem",
                         }}>
-                          <span style={{ fontFamily: MONO, fontSize: "0.75rem", color: "rgba(0,229,204,0.85)", letterSpacing: "0.05em" }}>
-                            ${t.writerCut.toFixed(2)} → the writer
+                          <span style={{ fontFamily: MONO, fontSize: "0.75rem", color: "rgba(0,229,204,0.85)", letterSpacing: "0.05em", whiteSpace: "nowrap" }}>
+                            ${t.writerCut.toFixed(2)} → writer
                           </span>
                         </div>
                         <div style={{
-                          position: "absolute",
-                          right: 0,
-                          top: 0,
-                          bottom: 0,
-                          width: "15%",
+                          width: `${(t.platformCut / t.price * 100).toFixed(1)}%`,
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                         }}>
-                          <span style={{ fontFamily: MONO, fontSize: "0.75rem", color: "rgba(245,230,200,0.2)" }}>
+                          <span style={{ fontFamily: MONO, fontSize: "0.65rem", color: "rgba(245,230,200,0.2)", whiteSpace: "nowrap" }}>
                             ${t.platformCut.toFixed(2)}
+                          </span>
+                        </div>
+                        <div style={{
+                          width: `${(t.stripeFee / t.price * 100).toFixed(1)}%`,
+                          background: "rgba(255,255,255,0.03)",
+                          borderLeft: "1px solid rgba(245,230,200,0.06)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}>
+                          <span style={{ fontFamily: MONO, fontSize: "0.6rem", color: "rgba(245,230,200,0.12)", whiteSpace: "nowrap" }}>
+                            Stripe
                           </span>
                         </div>
                       </div>

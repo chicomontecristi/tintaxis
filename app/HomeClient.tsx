@@ -675,9 +675,9 @@ export default function HomeClient() {
               margin: "0 auto 2.5rem",
             }}
           >
-            No platform fees. No monthly charges. Readers fund the ecosystem — and{" "}
-            <span style={{ color: "rgba(0,200,170,0.85)", fontWeight: 600 }}>85% goes directly to you</span>.
-            Tintaxis keeps 15% to run the platform. That&apos;s it.
+            No platform fees. No monthly charges. Readers fund the ecosystem — after payment processing,{" "}
+            <span style={{ color: "rgba(0,200,170,0.85)", fontWeight: 600 }}>85% of net revenue goes directly to you</span>.
+            Tintaxis keeps 15%. Stripe handles the rest.
           </motion.p>
 
           <motion.div
