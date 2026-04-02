@@ -152,7 +152,7 @@ export default async function Image() {
               display: "flex",
             }}
           >
-            THREE WRITERS · SIX WORKS · THREE LANGUAGES
+            WRITERS PUBLISH · READERS ARRIVE · 85% TO THE AUTHOR
           </div>
 
           {/* Tagline */}

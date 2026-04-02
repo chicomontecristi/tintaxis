@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Tintaxis — A Living Literary Platform",
     description:
-      "Three writers. Six works. Three languages. Read free. Where writers publish and readers arrive.",
+      "Where writers publish, readers arrive, and 85% of the money stays with the author.",
     type: "website",
     url: BASE_URL,
     siteName: "Tintaxis",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Tintaxis — A Living Literary Platform",
     description:
-      "Three writers. Six works. Three languages. Read free. Where writers publish and readers arrive.",
+      "Where writers publish, readers arrive, and 85% of the money stays with the author.",
     images: [`${BASE_URL}/opengraph-image`],
   },
   alternates: {

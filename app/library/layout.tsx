@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { BOOKS } from "@/lib/content/books";
 
-const BASE_URL = "https://tintaxis.vercel.app";
+const BASE_URL = "https://tintaxis.com";
 
 export const metadata: Metadata = {
   title: "The Library",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "The Library — Tintaxis",
     description:
-      "Three writers. Six works. Three languages. The Tintaxis catalog — more arriving soon.",
+      "A curated literary archive. Read free in English, Spanish, and Mandarin.",
     type: "website",
     url: `${BASE_URL}/library`,
   },
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "The Library — Tintaxis",
     description:
-      "Three writers. Six works. Three languages. The Tintaxis catalog — more arriving soon.",
+      "A curated literary archive. Read free in English, Spanish, and Mandarin.",
   },
   alternates: {
     canonical: `${BASE_URL}/library`,
