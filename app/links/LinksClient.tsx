@@ -160,7 +160,7 @@ export default function LinksClient() {
             margin: 0,
           }}
         >
-          Four books. Three languages. Read free.
+          Four books. Three languages. First chapter free.
         </p>
       </div>
 

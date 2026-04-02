@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     template: "%s — Tintaxis",
   },
   description:
-    "Tintaxis is a living literary platform. Read free books by Chico Montecristi, José La Luz, and Rosalva Flores-Alemán — in English, Spanish, and Mandarin.",
+    "Tintaxis is a literary platform where writers publish and readers arrive. Featuring Chico Montecristi, José La Luz, and Rosalva Flores-Alemán — in English, Spanish, and Mandarin. First chapter free.",
   keywords: [
     "Tintaxis",
     "literary platform",
@@ -98,7 +98,7 @@ const WEBSITE_JSONLD = JSON.stringify([
     alternateName: "Tintaxis Literary Platform",
     url: BASE_URL,
     description:
-      "A living literary platform featuring writers from the Americas. Read free in English, Spanish, and Mandarin.",
+      "A literary platform featuring writers from the Americas. First chapter free. In English, Spanish, and Mandarin.",
     publisher: {
       "@type": "Organization",
       name: "Tintaxis",

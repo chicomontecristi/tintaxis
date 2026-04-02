@@ -64,7 +64,7 @@ function HomeJsonLd() {
       name: "Tintaxis",
       url: BASE_URL,
       description:
-        "A living literary platform featuring writers from the Americas. Read free in English, Spanish, and Mandarin.",
+        "A literary platform featuring writers from the Americas. First chapter free. In English, Spanish, and Mandarin.",
       publisher: {
         "@type": "Organization",
         name: "Tintaxis",
