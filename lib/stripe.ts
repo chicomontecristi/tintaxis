@@ -14,23 +14,22 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 });
 
 // ─── PLAN → PRICE MAP ────────────────────────────────────────────────────────
-// Each plan maps to a recurring Stripe Price ID you create in the dashboard.
+// Reader subscription tiers only. Writers publish for free (by selection).
 // Set these as environment variables in Vercel:
-//   STRIPE_PRICE_MANUSCRIPT, STRIPE_PRICE_PRESS,
 //   STRIPE_PRICE_CODEX, STRIPE_PRICE_SCRIBE,
 //   STRIPE_PRICE_ARCHIVE, STRIPE_PRICE_CHRONICLER
 
 export type PlanId =
-  | "manuscript"
-  | "press"
+  | "manuscript"   // legacy — kept for DB compatibility, no longer sold
+  | "press"        // legacy — kept for DB compatibility, no longer sold
   | "codex"
   | "scribe"
   | "archive"
   | "chronicler";
 
 export const PLAN_PRICE_IDS: Record<PlanId, string> = {
-  manuscript:  process.env.STRIPE_PRICE_MANUSCRIPT  ?? "",
-  press:       process.env.STRIPE_PRICE_PRESS       ?? "",
+  manuscript:  "",  // DEPRECATED — writers no longer pay
+  press:       "",  // DEPRECATED — writers no longer pay
   codex:       process.env.STRIPE_PRICE_CODEX       ?? "",
   scribe:      process.env.STRIPE_PRICE_SCRIBE      ?? "",
   archive:     process.env.STRIPE_PRICE_ARCHIVE     ?? "",

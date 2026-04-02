@@ -617,7 +617,7 @@ export default function HomeClient() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 2 — FOR WRITERS (the money pitch — FIRST thing they see)
+          SECTION 2 — FOR WRITERS (selection model)
           ══════════════════════════════════════════════════════════ */}
       <section
         style={{
@@ -657,9 +657,8 @@ export default function HomeClient() {
               marginBottom: "0.75rem",
             }}
           >
-            You keep{" "}
-            <span style={{ color: "#C9A84C", fontWeight: 600 }}>85%</span>{" "}
-            of every dollar.
+            We don&apos;t charge writers.{" "}
+            <span style={{ color: "#C9A84C", fontWeight: 600 }}>We select them.</span>
           </motion.h2>
 
           <motion.p
@@ -673,84 +672,19 @@ export default function HomeClient() {
               color: "rgba(245,230,200,0.55)",
               lineHeight: 1.7,
               maxWidth: "600px",
-              margin: "0 auto 1rem",
+              margin: "0 auto 2.5rem",
             }}
           >
-            Tintaxis keeps 15% to run the platform. No ads. No data harvesting. No middlemen.
-            Your readers&apos; money goes directly to you — the person who wrote the words.
+            No platform fees. No monthly charges. Readers fund the ecosystem — and{" "}
+            <span style={{ color: "rgba(0,200,170,0.85)", fontWeight: 600 }}>85% goes directly to you</span>.
+            Tintaxis keeps 15% to run the platform. That&apos;s it.
           </motion.p>
-
-          {/* Revenue breakdown */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-              gap: "1rem",
-              maxWidth: "700px",
-              margin: "2.5rem auto",
-            }}
-          >
-            {[
-              { tier: "Codex", price: "$1.99/mo", writer: "$1.69" },
-              { tier: "Scribe", price: "$3.99/mo", writer: "$3.39" },
-              { tier: "Archive", price: "$7.99/mo", writer: "$6.79" },
-              { tier: "Chronicler", price: "$9.99/mo", writer: "$8.49" },
-            ].map((t) => (
-              <div
-                key={t.tier}
-                style={{
-                  padding: "1rem",
-                  border: "1px solid rgba(0,200,170,0.15)",
-                  borderRadius: "4px",
-                  background: "rgba(0,200,170,0.03)",
-                  textAlign: "center",
-                }}
-              >
-                <p
-                  style={{
-                    fontFamily: MONO,
-                    fontSize: "0.6rem",
-                    letterSpacing: "0.15em",
-                    textTransform: "uppercase",
-                    color: "rgba(245,230,200,0.4)",
-                    marginBottom: "0.5rem",
-                  }}
-                >
-                  {t.tier} · {t.price}
-                </p>
-                <p
-                  style={{
-                    fontFamily: SERIF,
-                    fontSize: "1.4rem",
-                    fontWeight: 600,
-                    color: "rgba(0,200,170,0.85)",
-                  }}
-                >
-                  {t.writer}
-                </p>
-                <p
-                  style={{
-                    fontFamily: MONO,
-                    fontSize: "0.5rem",
-                    color: "rgba(245,230,200,0.25)",
-                    marginTop: "0.25rem",
-                  }}
-                >
-                  → the writer
-                </p>
-              </div>
-            ))}
-          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.3, duration: 0.5 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
           >
             <Link href="/publish" passHref>
               <motion.button
@@ -774,35 +708,9 @@ export default function HomeClient() {
                 }}
                 whileTap={{ scale: 0.98 }}
               >
-                PUBLISH YOUR WORK
+                SUBMIT YOUR WORK
               </motion.button>
             </Link>
-          </motion.div>
-
-          {/* Stripe trust badge */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.45, duration: 0.5 }}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "0.5rem",
-              marginTop: "1.25rem",
-            }}
-          >
-            <img src="/stripe-badge.png" alt="Stripe" width={18} height={18} style={{ borderRadius: "3px" }} />
-            <span style={{
-              fontFamily: MONO,
-              fontSize: "0.6rem",
-              letterSpacing: "0.15em",
-              color: "rgba(201,168,76,0.3)",
-              textTransform: "uppercase",
-            }}>
-              Secure payments via <span style={{ color: "rgba(201,168,76,0.5)", fontWeight: 600 }}>Stripe</span>
-            </span>
           </motion.div>
         </div>
       </section>

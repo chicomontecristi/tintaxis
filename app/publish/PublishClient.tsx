@@ -1,9 +1,7 @@
 "use client";
 
-import { useState, FormEvent, useRef, useEffect } from "react";
+import { useState, FormEvent, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSearchParams } from "next/navigation";
-import TintaxisLogo from "@/components/ui/TintaxisLogo";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 interface FormState {
@@ -54,44 +52,6 @@ const FEATURES = [
     glyph: "◉",
     headline: "Real Readers.",
     body: "No follower counts. No likes. Tintaxis tracks reading depth — how far readers go, which chapters hold them, where they leave. Data that means something.",
-  },
-];
-
-const PLANS = [
-  {
-    id: "manuscript",
-    label: "MANUSCRIPT",
-    price: "$7",
-    period: "/month",
-    tagline: "One work. Full engagement.",
-    items: [
-      "1 published work",
-      "Unlimited chapters",
-      "Signal question queue",
-      "Author Whispers",
-      "Chapter Rain",
-      "Reading depth analytics",
-    ],
-    cta: "Apply for Manuscript",
-    accent: "rgba(201,168,76,0.6)",
-  },
-  {
-    id: "press",
-    label: "PRESS",
-    price: "$15",
-    period: "/month",
-    tagline: "Your complete catalog.",
-    items: [
-      "Up to 5 published works",
-      "Priority application review",
-      "All Manuscript features",
-      "Multi-work analytics dashboard",
-      "Early access to new features",
-      "Dedicated author page",
-    ],
-    cta: "Apply for Press",
-    accent: "rgba(201,168,76,1)",
-    featured: true,
   },
 ];
 
@@ -180,175 +140,8 @@ function FeatureCard({ feature, index }: { feature: typeof FEATURES[0]; index: n
   );
 }
 
-function PricingCard({ plan, onSelect }: { plan: typeof PLANS[0]; onSelect: () => void }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      style={{
-        border: plan.featured
-          ? "1px solid rgba(201,168,76,0.4)"
-          : "1px solid rgba(201,168,76,0.15)",
-        padding: "2rem",
-        position: "relative",
-        background: plan.featured ? "rgba(201,168,76,0.03)" : "transparent",
-        flex: 1,
-        minWidth: 0,
-      }}
-    >
-      <CornerAccents color={plan.featured ? "rgba(201,168,76,0.5)" : "rgba(201,168,76,0.2)"} />
-
-      {plan.featured && (
-        <div
-          style={{
-            position: "absolute",
-            top: "-1px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            background: "#0D0B08",
-            padding: "0 0.75rem",
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.75rem",
-            letterSpacing: "0.3em",
-            color: "rgba(201,168,76,0.8)",
-            textTransform: "uppercase",
-          }}
-        >
-          RECOMMENDED
-        </div>
-      )}
-
-      <p
-        style={{
-          fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.75rem",
-          letterSpacing: "0.3em",
-          color: plan.accent,
-          textTransform: "uppercase",
-          marginBottom: "1.25rem",
-        }}
-      >
-        {plan.label}
-      </p>
-
-      <div style={{ display: "flex", alignItems: "baseline", gap: "0.25rem", marginBottom: "0.5rem" }}>
-        <span
-          style={{
-            fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-            fontSize: "2.5rem",
-            color: "#F5E6C8",
-          }}
-        >
-          {plan.price}
-        </span>
-        <span
-          style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.9rem",
-            color: "rgba(245,230,200,0.35)",
-            letterSpacing: "0.1em",
-          }}
-        >
-          {plan.period}
-        </span>
-      </div>
-
-      <p
-        style={{
-          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-          fontSize: "0.9rem",
-          fontStyle: "italic",
-          color: "rgba(245,230,200,0.4)",
-          marginBottom: "1.5rem",
-        }}
-      >
-        {plan.tagline}
-      </p>
-
-      <div style={{ marginBottom: "2rem" }}>
-        {plan.items.map((item, i) => (
-          <div
-            key={i}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.6rem",
-              marginBottom: "0.6rem",
-            }}
-          >
-            <span style={{ color: "rgba(201,168,76,0.5)", fontSize: "0.9rem" }}>◆</span>
-            <span
-              style={{
-                fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.9rem",
-                letterSpacing: "0.05em",
-                color: "rgba(245,230,200,0.5)",
-              }}
-            >
-              {item}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      <motion.button
-        onClick={onSelect}
-        whileHover={{ borderColor: "rgba(201,168,76,0.8)", boxShadow: "0 0 20px rgba(201,168,76,0.1)" }}
-        whileTap={{ scale: 0.98 }}
-        style={{
-          width: "100%",
-          fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.9rem",
-          letterSpacing: "0.25em",
-          textTransform: "uppercase",
-          color: "#C9A84C",
-          background: "transparent",
-          border: `1px solid ${plan.featured ? "rgba(201,168,76,0.5)" : "rgba(201,168,76,0.25)"}`,
-          padding: "0.85rem",
-          cursor: "pointer",
-        }}
-      >
-        {plan.cta}
-      </motion.button>
-    </motion.div>
-  );
-}
-
-// ─── WRITER EARNINGS BREAKDOWN ─────────────────────────────────────────────────
-// Per-tier scenarios so writers see exactly what they earn.
-
-const EARNINGS_TIERS = [
-  {
-    tier: "Codex",
-    price: 1.99,
-    accent: "rgba(201,168,76,0.6)",
-    description: "Your reader gets full chapter access, personal annotations, and four ink types.",
-  },
-  {
-    tier: "Scribe",
-    price: 3.99,
-    accent: "rgba(0,229,204,0.6)",
-    description: "Your reader can ask you questions directly through Signal Ink and see your Author Whispers.",
-  },
-  {
-    tier: "Archive",
-    price: 7.99,
-    accent: "rgba(201,168,76,0.9)",
-    description: "Your reader joins the community margin — seeing how every other reader annotated your work.",
-  },
-  {
-    tier: "Chronicler",
-    price: 9.99,
-    accent: "rgba(245,230,200,0.75)",
-    description: "Your most dedicated reader. They get a signed copy, their name in the dedication, and a private session with you.",
-  },
-];
-
+// ─── WRITER EARNINGS — NO FEES, PURE SPLIT ──────────────────────────────────
 function WriterEarningsBreakdown() {
-  const platformFee = 7; // Manuscript plan
-
   return (
     <>
       <motion.p
@@ -365,7 +158,7 @@ function WriterEarningsBreakdown() {
           marginBottom: "0.75rem",
         }}
       >
-        YOUR EARNINGS
+        HOW IT WORKS
       </motion.p>
       <motion.h2
         initial={{ opacity: 0 }}
@@ -381,7 +174,7 @@ function WriterEarningsBreakdown() {
           marginBottom: "0.75rem",
         }}
       >
-        You keep 85%. We keep the lights on.
+        You keep 85%. No fees. No catch.
       </motion.h2>
       <motion.p
         initial={{ opacity: 0 }}
@@ -390,235 +183,132 @@ function WriterEarningsBreakdown() {
         transition={{ delay: 0.15 }}
         style={{
           fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-          fontSize: "1rem",
+          fontSize: "1.1rem",
           fontStyle: "italic",
-          color: "rgba(245,230,200,0.35)",
+          color: "rgba(245,230,200,0.45)",
           textAlign: "center",
-          maxWidth: "480px",
+          maxWidth: "540px",
           margin: "0 auto 3rem",
+          lineHeight: 1.7,
         }}
       >
-        Every reader subscribes to you — not the platform. Tintaxis takes a flat 15% and a $7/month platform fee. No hidden cuts. Here is exactly what 10 readers at each tier puts in your pocket.
+        Tintaxis never charges writers. Readers fund the ecosystem. When they subscribe to your work, 85% goes directly to you. We keep 15% to run the platform.
       </motion.p>
 
-      {/* Per-tier cards */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "2rem" }}>
-        {EARNINGS_TIERS.map((t, i) => {
-          const readers = 10;
-          const totalRevenue = +(t.price * readers).toFixed(2);
-          const tintaxisCut = +(totalRevenue * 0.15).toFixed(2);
-          const writerEarns = +(totalRevenue * 0.85).toFixed(2);
-          const barWidth = Math.round((writerEarns / (9.99 * 10 * 0.85)) * 100);
-
-          return (
-            <motion.div
-              key={t.tier}
-              initial={{ opacity: 0, x: -16 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.08 }}
-              style={{
-                border: "1px solid rgba(201,168,76,0.12)",
-                padding: "1.5rem 1.75rem",
-                position: "relative",
-                background: "rgba(255,255,255,0.01)",
-              }}
-            >
-              <CornerAccents />
-
-              {/* Tier header row */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.6rem", flexWrap: "wrap", gap: "0.5rem" }}>
-                <div>
-                  <p style={{
-                    fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.75rem",
-                    letterSpacing: "0.25em",
-                    color: t.accent,
-                    textTransform: "uppercase",
-                    marginBottom: "0.2rem",
-                  }}>
-                    {readers} Readers · {t.tier} Tier
-                  </p>
-                  <p style={{
-                    fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                    fontSize: "1.05rem",
-                    fontStyle: "italic",
-                    color: "rgba(245,230,200,0.35)",
-                    maxWidth: "320px",
-                  }}>
-                    {t.description}
-                  </p>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <p style={{
-                    fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.75rem",
-                    letterSpacing: "0.15em",
-                    color: "rgba(245,230,200,0.3)",
-                    textTransform: "uppercase",
-                    marginBottom: "0.15rem",
-                  }}>
-                    ${t.price.toFixed(2)}/mo × {readers}
-                  </p>
-                  <p style={{
-                    fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                    fontSize: "1.1rem",
-                    color: "rgba(245,230,200,0.55)",
-                  }}>
-                    ${totalRevenue.toFixed(2)}/mo total
-                  </p>
-                </div>
-              </div>
-
-              {/* Visual earnings bar */}
-              <div style={{
-                position: "relative",
-                height: "28px",
-                background: "rgba(201,168,76,0.06)",
-                border: "1px solid rgba(201,168,76,0.08)",
-                marginBottom: "0.75rem",
-                overflow: "hidden",
-              }}>
-                {/* Writer share (85%) */}
-                <div style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: "85%",
-                  background: `linear-gradient(90deg, rgba(0,229,204,0.15), rgba(0,229,204,0.25))`,
-                  borderRight: "1px solid rgba(0,229,204,0.4)",
-                  display: "flex",
-                  alignItems: "center",
-                  paddingLeft: "0.6rem",
-                }}>
-                  <span style={{
-                    fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.75rem",
-                    letterSpacing: "0.1em",
-                    color: "rgba(0,229,204,0.9)",
-                  }}>
-                    YOU: ${writerEarns.toFixed(2)}
-                  </span>
-                </div>
-                {/* Tintaxis share (15%) */}
-                <div style={{
-                  position: "absolute",
-                  right: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: "15%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}>
-                  <span style={{
-                    fontFamily: '"JetBrains Mono", monospace',
-                    fontSize: "0.75rem",
-                    letterSpacing: "0.05em",
-                    color: "rgba(245,230,200,0.25)",
-                  }}>
-                    ${tintaxisCut.toFixed(2)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Bottom summary */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <p style={{
-                  fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.75rem",
-                  color: "rgba(245,230,200,0.25)",
-                  letterSpacing: "0.1em",
-                }}>
-                  TINTAXIS KEEPS ${tintaxisCut.toFixed(2)} (15%)
-                </p>
-                <p style={{
-                  fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                  fontSize: "1.3rem",
-                  color: "rgba(0,229,204,0.85)",
-                }}>
-                  You earn <strong>${writerEarns.toFixed(2)}</strong>/mo
-                </p>
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
-
-      {/* Combined scenario */}
+      {/* Visual split */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.3 }}
+        transition={{ duration: 0.6 }}
         style={{
-          border: "1px solid rgba(0,229,204,0.25)",
-          padding: "1.75rem",
+          border: "1px solid rgba(201,168,76,0.15)",
+          padding: "2rem",
           position: "relative",
-          background: "rgba(0,229,204,0.02)",
-          marginBottom: "1.5rem",
+          background: "rgba(255,255,255,0.01)",
+          marginBottom: "2rem",
         }}
       >
-        <CornerAccents color="rgba(0,229,204,0.3)" />
-        <p style={{
-          fontFamily: '"JetBrains Mono", monospace',
-          fontSize: "0.75rem",
-          letterSpacing: "0.25em",
-          color: "rgba(0,229,204,0.6)",
-          textTransform: "uppercase",
-          marginBottom: "0.75rem",
-          textAlign: "center",
+        <CornerAccents />
+
+        {/* 85/15 bar */}
+        <div style={{
+          position: "relative",
+          height: "36px",
+          background: "rgba(201,168,76,0.06)",
+          border: "1px solid rgba(201,168,76,0.08)",
+          marginBottom: "1.5rem",
+          overflow: "hidden",
         }}>
-          ALL TIERS COMBINED · 40 READERS TOTAL
-        </p>
-        <p style={{
-          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-          fontSize: "0.9rem",
-          color: "rgba(245,230,200,0.4)",
-          textAlign: "center",
-          marginBottom: "1rem",
-          fontStyle: "italic",
-        }}>
-          10 Codex + 10 Scribe + 10 Archive + 10 Chronicler readers, on a Manuscript plan ($7/mo):
-        </p>
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "baseline", gap: "1.5rem", flexWrap: "wrap" }}>
-          <div style={{ textAlign: "center" }}>
-            <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.75rem", color: "rgba(245,230,200,0.3)", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "0.2rem" }}>
-              Reader revenue
-            </p>
-            <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "1.1rem", color: "rgba(245,230,200,0.55)" }}>$239.60</p>
+          <div style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: "85%",
+            background: "linear-gradient(90deg, rgba(0,229,204,0.15), rgba(0,229,204,0.25))",
+            borderRight: "1px solid rgba(0,229,204,0.4)",
+            display: "flex",
+            alignItems: "center",
+            paddingLeft: "1rem",
+          }}>
+            <span style={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontSize: "0.8rem",
+              letterSpacing: "0.1em",
+              color: "rgba(0,229,204,0.9)",
+            }}>
+              85% — YOU
+            </span>
           </div>
-          <div style={{ textAlign: "center" }}>
-            <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.75rem", color: "rgba(245,230,200,0.3)", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "0.2rem" }}>
-              Tintaxis cut + fee
-            </p>
-            <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "1.1rem", color: "rgba(214,83,60,0.6)" }}>−$42.94</p>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <p style={{ fontFamily: '"JetBrains Mono", monospace', fontSize: "0.75rem", color: "rgba(0,229,204,0.6)", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "0.2rem" }}>
-              YOU TAKE HOME
-            </p>
-            <p style={{ fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "2rem", fontWeight: 400, color: "rgba(0,229,204,0.9)" }}>$196.66</p>
+          <div style={{
+            position: "absolute",
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: "15%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
+            <span style={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontSize: "0.7rem",
+              letterSpacing: "0.05em",
+              color: "rgba(245,230,200,0.3)",
+            }}>
+              15%
+            </span>
           </div>
         </div>
-      </motion.div>
 
-      <motion.p
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.4 }}
-        style={{
-          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-          fontSize: "1.05rem",
-          fontStyle: "italic",
-          color: "rgba(245,230,200,0.3)",
-          textAlign: "center",
-        }}
-      >
-        Your readers pay you directly. No middlemen. No algorithms. Build your audience and your income grows with it.
-      </motion.p>
+        {/* Three-column explanation */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+          gap: "1.5rem",
+        }}>
+          {[
+            {
+              label: "NO PLATFORM FEES",
+              desc: "We don't charge writers. Not monthly, not annually, not ever.",
+              accent: "rgba(0,229,204,0.6)",
+            },
+            {
+              label: "READER-FUNDED",
+              desc: "Readers subscribe to your work. Their money goes to you — not an algorithm.",
+              accent: "rgba(201,168,76,0.6)",
+            },
+            {
+              label: "DIRECT PAYOUTS",
+              desc: "85% transferred to your account via Stripe. No invoicing, no delays.",
+              accent: "rgba(245,230,200,0.5)",
+            },
+          ].map((col) => (
+            <div key={col.label} style={{ textAlign: "center" }}>
+              <p style={{
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: "0.65rem",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                color: col.accent,
+                marginBottom: "0.5rem",
+              }}>
+                {col.label}
+              </p>
+              <p style={{
+                fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                fontSize: "1rem",
+                fontStyle: "italic",
+                color: "rgba(245,230,200,0.4)",
+                lineHeight: 1.6,
+              }}>
+                {col.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </motion.div>
     </>
   );
 }
@@ -638,9 +328,6 @@ export default function PublishClient() {
   });
   const [submitStatus, setSubmitStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const [expeditedLoading, setExpeditedLoading] = useState(false);
-  const searchParams = useSearchParams();
-  const expeditedStatus = searchParams.get("expedited"); // "success" | "cancelled"
 
   const scrollToForm = () => {
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -683,65 +370,6 @@ export default function PublishClient() {
     }
   };
 
-  const handleExpedited = async () => {
-    const missing: string[] = [];
-    if (!form.name) missing.push("name");
-    if (!form.email) missing.push("email");
-    if (!form.bookTitle) missing.push("book title");
-    if (!form.chapterFile) missing.push("chapter file");
-    if (missing.length > 0) {
-      const msg = `Please fill in: ${missing.join(", ")}.`;
-      setErrorMsg(msg);
-      setSubmitStatus("error");
-      // Scroll to the first empty required field so they see what's missing
-      const firstField = document.querySelector("input, textarea");
-      firstField?.scrollIntoView({ behavior: "smooth", block: "center" });
-      return;
-    }
-    setExpeditedLoading(true);
-    setErrorMsg("");
-    try {
-      const fd = new FormData();
-      fd.append("name", form.name);
-      fd.append("email", form.email);
-      fd.append("bookTitle", form.bookTitle);
-      fd.append("genre", form.genre);
-      if (form.wordCount) fd.append("wordCount", form.wordCount);
-      fd.append("synopsis", form.synopsis);
-      fd.append("whyTintaxis", form.whyTintaxis);
-      if (form.chapterFile) fd.append("chapterFile", form.chapterFile);
-
-      const res = await fetch("/api/apply/expedited", {
-        method: "POST",
-        body: fd,
-      });
-      const data = await res.json();
-      if (res.ok && data.url) {
-        // Also send the standard application email so you have the chapter on file
-        const stdFd = new FormData();
-        stdFd.append("name", form.name);
-        stdFd.append("email", form.email);
-        stdFd.append("bookTitle", form.bookTitle);
-        stdFd.append("genre", form.genre);
-        if (form.wordCount) stdFd.append("wordCount", form.wordCount);
-        stdFd.append("synopsis", form.synopsis);
-        stdFd.append("whyTintaxis", form.whyTintaxis);
-        if (form.chapterFile) stdFd.append("chapterFile", form.chapterFile);
-        stdFd.append("expedited", "true");
-        await fetch("/api/apply", { method: "POST", body: stdFd });
-
-        // Redirect to Stripe
-        window.location.href = data.url;
-      } else {
-        setErrorMsg(data.error ?? "Failed to start expedited checkout.");
-        setExpeditedLoading(false);
-      }
-    } catch {
-      setErrorMsg("Connection failed. Try again.");
-      setExpeditedLoading(false);
-    }
-  };
-
   const inputStyle: React.CSSProperties = {
     width: "100%",
     background: "rgba(255,255,255,0.03)",
@@ -767,45 +395,6 @@ export default function PublishClient() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#0D0B08", color: "#F5E6C8" }}>
-      {/* Expedited payment banner */}
-      {expeditedStatus === "success" && (
-        <div style={{
-          position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-          background: "rgba(0,180,100,0.9)",
-          padding: "0.75rem 1.5rem",
-          textAlign: "center",
-          backdropFilter: "blur(4px)",
-        }}>
-          <p style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.8rem",
-            letterSpacing: "0.15em",
-            color: "white",
-            textTransform: "uppercase",
-          }}>
-            Payment received. Your application has been expedited.
-          </p>
-        </div>
-      )}
-      {expeditedStatus === "cancelled" && (
-        <div style={{
-          position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-          background: "rgba(200,80,40,0.85)",
-          padding: "0.75rem 1.5rem",
-          textAlign: "center",
-          backdropFilter: "blur(4px)",
-        }}>
-          <p style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.8rem",
-            letterSpacing: "0.15em",
-            color: "white",
-            textTransform: "uppercase",
-          }}>
-            Payment cancelled. Your standard application was still submitted.
-          </p>
-        </div>
-      )}
       {/* Background glow */}
       <div
         style={{
@@ -847,23 +436,23 @@ export default function PublishClient() {
                 marginBottom: "2rem",
               }}
             >
-              TINTAXIS · AUTHOR PLATFORM
+              TINTAXIS · BY SELECTION ONLY
             </p>
 
             <h1
               style={{
                 fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                fontSize: "clamp(2.8rem, 7vw, 5.5rem)",
+                fontSize: "clamp(2.4rem, 6vw, 4.5rem)",
                 fontWeight: 400,
-                lineHeight: 1.1,
+                lineHeight: 1.15,
                 letterSpacing: "-0.01em",
                 color: "#F5E6C8",
-                marginBottom: "1rem",
+                marginBottom: "1.5rem",
               }}
             >
-              Your book.
+              We don&apos;t charge writers.
               <br />
-              <em style={{ color: "rgba(201,168,76,0.85)" }}>Alive.</em>
+              <em style={{ color: "rgba(201,168,76,0.85)" }}>We select them.</em>
             </h1>
 
             <p
@@ -877,8 +466,8 @@ export default function PublishClient() {
                 margin: "0 auto 3rem",
               }}
             >
-              Tintaxis is where authors publish prose that breathes — annotated, questioned,
-              visualized, and read the way it was meant to be read.
+              Tintaxis is a curated literary platform. Acceptance is the only gate.
+              If your work belongs here, everything else is free.
             </p>
 
             <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
@@ -898,7 +487,7 @@ export default function PublishClient() {
                   cursor: "pointer",
                 }}
               >
-                Apply as Author
+                Submit Your Work
               </motion.button>
               <a href="/" style={{ textDecoration: "none" }}>
                 <motion.button
@@ -941,7 +530,7 @@ export default function PublishClient() {
 
         <BrassRule opacity={0.15} />
 
-        {/* ── WHAT IS TINTAXIS ─────────────────────────────────────────────── */}
+        {/* ── THE MODEL ───────────────────────────────────────────────────── */}
         <section style={{ maxWidth: "800px", margin: "0 auto", padding: "4rem 2rem" }}>
           <motion.div
             initial={{ opacity: 0 }}
@@ -960,7 +549,7 @@ export default function PublishClient() {
                 marginBottom: "1.5rem",
               }}
             >
-              THE PLATFORM
+              THE MODEL
             </p>
             <h2
               style={{
@@ -972,38 +561,129 @@ export default function PublishClient() {
                 lineHeight: 1.3,
               }}
             >
-              Literature has never been interactive.
+              A publishing house.
               <br />
-              <em style={{ color: "rgba(201,168,76,0.7)" }}>Until now.</em>
+              <em style={{ color: "rgba(201,168,76,0.7)" }}>Not a marketplace.</em>
             </h2>
             <p
               style={{
                 fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                fontSize: "1.1rem",
+                fontSize: "1.15rem",
                 lineHeight: 1.85,
                 color: "rgba(245,230,200,0.5)",
                 fontStyle: "italic",
                 marginBottom: "1.5rem",
               }}
             >
-              Tintaxis is not a blog platform. It is not a self-publishing tool. It is a reading
-              environment — built for prose that deserves more than a scroll. Your chapters live
-              here in a typographically precise, atmospherically scored reading surface, with
-              tools that let readers go deeper and authors respond in kind.
+              Tintaxis is not a self-publishing tool. There are no tiers, no monthly fees, and no
+              pay-to-exist model. Writers apply. We read. If the work belongs here, we open the door.
+              That&apos;s it.
             </p>
             <p
               style={{
                 fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                fontSize: "1.1rem",
+                fontSize: "1.15rem",
                 lineHeight: 1.85,
                 color: "rgba(245,230,200,0.5)",
                 fontStyle: "italic",
               }}
             >
-              We accept fiction, creative nonfiction, and hybrid works by application only.
-              Every accepted author joins a curated archive — not a feed.
+              Readers fund the platform by subscribing to writers they want to support.
+              You keep 85% of every dollar. We keep the lights on with 15%.
+              No ads. No data harvesting. No algorithm deciding who gets seen.
             </p>
           </motion.div>
+        </section>
+
+        <BrassRule opacity={0.12} />
+
+        {/* ── HOW SELECTION WORKS ─────────────────────────────────────────── */}
+        <section style={{ maxWidth: "800px", margin: "0 auto", padding: "4rem 2rem" }}>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            style={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontSize: "0.75rem",
+              letterSpacing: "0.35em",
+              color: "rgba(201,168,76,0.4)",
+              textTransform: "uppercase",
+              textAlign: "center",
+              marginBottom: "2.5rem",
+            }}
+          >
+            THE PROCESS
+          </motion.p>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gap: "1.5rem",
+          }}>
+            {[
+              {
+                step: "01",
+                title: "You apply.",
+                body: "Submit your first chapter, a synopsis, and a few words about why your work belongs here. That's the entire ask.",
+              },
+              {
+                step: "02",
+                title: "We read.",
+                body: "Every submission is read by a person — not sorted by an algorithm. We respond within 5 business days.",
+              },
+              {
+                step: "03",
+                title: "You're in.",
+                body: "Accepted writers publish for free. Your work enters the archive. Readers find you. Revenue follows.",
+              },
+            ].map((s, i) => (
+              <motion.div
+                key={s.step}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.12 }}
+                style={{
+                  border: "1px solid rgba(201,168,76,0.12)",
+                  padding: "1.75rem",
+                  position: "relative",
+                  background: "rgba(255,255,255,0.01)",
+                  textAlign: "center",
+                }}
+              >
+                <CornerAccents />
+                <p style={{
+                  fontFamily: '"JetBrains Mono", monospace',
+                  fontSize: "2rem",
+                  color: "rgba(201,168,76,0.2)",
+                  marginBottom: "1rem",
+                  lineHeight: 1,
+                }}>
+                  {s.step}
+                </p>
+                <p style={{
+                  fontFamily: '"JetBrains Mono", monospace',
+                  fontSize: "0.8rem",
+                  letterSpacing: "0.2em",
+                  color: "rgba(201,168,76,0.7)",
+                  textTransform: "uppercase",
+                  marginBottom: "0.75rem",
+                }}>
+                  {s.title}
+                </p>
+                <p style={{
+                  fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                  fontSize: "1.05rem",
+                  fontStyle: "italic",
+                  color: "rgba(245,230,200,0.45)",
+                  lineHeight: 1.7,
+                }}>
+                  {s.body}
+                </p>
+              </motion.div>
+            ))}
+          </div>
         </section>
 
         <BrassRule opacity={0.12} />
@@ -1024,7 +704,7 @@ export default function PublishClient() {
               marginBottom: "3rem",
             }}
           >
-            THE SIX INSTRUMENTS
+            WHAT YOUR WORK GETS
           </motion.p>
           <div
             style={{
@@ -1115,8 +795,8 @@ export default function PublishClient() {
                   margin: "0 auto 1.75rem",
                 }}
               >
-                "Dark psychological thriller. Southern Gothic noir. A girl who killed her mother,
-                a father who covered for her, and a small town that never knew."
+                &ldquo;Dark psychological thriller. Southern Gothic noir. A girl who killed her mother,
+                a father who covered for her, and a small town that never knew.&rdquo;
               </p>
               <a href="/" style={{ textDecoration: "none" }}>
                 <motion.span
@@ -1135,49 +815,6 @@ export default function PublishClient() {
               </a>
             </div>
           </motion.div>
-        </section>
-
-        <BrassRule opacity={0.12} />
-
-        {/* ── PRICING ──────────────────────────────────────────────────────── */}
-        <section style={{ maxWidth: "900px", margin: "0 auto", padding: "4rem 2rem" }}>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            style={{
-              fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.75rem",
-              letterSpacing: "0.35em",
-              color: "rgba(201,168,76,0.4)",
-              textTransform: "uppercase",
-              textAlign: "center",
-              marginBottom: "0.75rem",
-            }}
-          >
-            AUTHOR PLANS
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            style={{
-              fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-              fontSize: "1rem",
-              fontStyle: "italic",
-              color: "rgba(245,230,200,0.35)",
-              textAlign: "center",
-              marginBottom: "3rem",
-            }}
-          >
-            All plans are billed monthly. Cancel anytime. Acceptance required.
-          </motion.p>
-          <div className="pricing-plans-row" style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap", justifyContent: "center", alignItems: "flex-start" }}>
-            {PLANS.map((plan) => (
-              <PricingCard key={plan.id} plan={plan} onSelect={scrollToForm} />
-            ))}
-          </div>
         </section>
 
         <BrassRule opacity={0.12} />
@@ -1216,14 +853,14 @@ export default function PublishClient() {
             <p
               style={{
                 fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                fontSize: "1rem",
+                fontSize: "1.05rem",
                 fontStyle: "italic",
                 color: "rgba(245,230,200,0.35)",
                 textAlign: "center",
                 marginBottom: "2.5rem",
               }}
             >
-              Applications are reviewed personally. We respond within 5 business days.
+              Every application is read personally. We respond within 5 business days.
             </p>
 
             <div
@@ -1271,7 +908,7 @@ export default function PublishClient() {
                         color: "rgba(245,230,200,0.4)",
                       }}
                     >
-                      We'll be in touch within 5 business days. Thank you for writing.
+                      We&apos;ll be in touch within 5 business days. Thank you for writing.
                     </p>
                   </motion.div>
                 ) : (
@@ -1538,106 +1175,15 @@ export default function PublishClient() {
                     </motion.button>
                     <p style={{
                       fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                      fontSize: "0.85rem",
+                      fontSize: "0.95rem",
                       fontStyle: "italic",
                       color: "rgba(245,230,200,0.25)",
                       textAlign: "center",
                       lineHeight: 1.5,
-                      marginTop: "0.4rem",
+                      marginTop: "0.75rem",
                     }}>
-                      Standard review — 2–3 weeks
+                      No fees. No payment. Just your work.
                     </p>
-
-                    {/* Divider */}
-                    <div style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "1rem",
-                      margin: "1.25rem 0",
-                    }}>
-                      <div style={{ flex: 1, height: "1px", background: "rgba(201,168,76,0.12)" }} />
-                      <span style={{
-                        fontFamily: '"JetBrains Mono", monospace',
-                        fontSize: "0.7rem",
-                        letterSpacing: "0.2em",
-                        color: "rgba(201,168,76,0.3)",
-                        textTransform: "uppercase",
-                      }}>
-                        OR
-                      </span>
-                      <div style={{ flex: 1, height: "1px", background: "rgba(201,168,76,0.12)" }} />
-                    </div>
-
-                    {/* Expedited */}
-                    <motion.button
-                      type="button"
-                      onClick={handleExpedited}
-                      disabled={expeditedLoading || submitStatus === "loading"}
-                      whileHover={
-                        !expeditedLoading
-                          ? { borderColor: "rgba(0,229,204,0.6)", boxShadow: "0 0 20px rgba(0,229,204,0.08)" }
-                          : {}
-                      }
-                      whileTap={!expeditedLoading ? { scale: 0.98 } : {}}
-                      style={{
-                        width: "100%",
-                        fontFamily: '"JetBrains Mono", monospace',
-                        fontSize: "0.85rem",
-                        letterSpacing: "0.2em",
-                        textTransform: "uppercase",
-                        color: expeditedLoading ? "rgba(0,229,204,0.4)" : "rgba(0,229,204,0.85)",
-                        background: "transparent",
-                        border: "1px solid rgba(0,229,204,0.25)",
-                        padding: "0.85rem",
-                        cursor: expeditedLoading ? "not-allowed" : "pointer",
-                        marginBottom: "0.5rem",
-                      }}
-                    >
-                      {expeditedLoading ? "REDIRECTING TO PAYMENT..." : "EXPEDITED REVIEW · $0.25"}
-                    </motion.button>
-                    <p style={{
-                      fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                      fontSize: "0.85rem",
-                      fontStyle: "italic",
-                      color: "rgba(245,230,200,0.3)",
-                      textAlign: "center",
-                      lineHeight: 1.5,
-                    }}>
-                      Skip the queue. Response within 48–72 hours.
-                    </p>
-                    {submitStatus === "error" && errorMsg && (
-                      <p style={{
-                        fontFamily: '"JetBrains Mono", monospace',
-                        fontSize: "0.75rem",
-                        color: "rgba(192,57,43,0.85)",
-                        textAlign: "center",
-                        marginTop: "0.5rem",
-                      }}>
-                        {errorMsg}
-                      </p>
-                    )}
-
-                    {/* Stripe trust badge */}
-                    <div style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "0.5rem",
-                      marginTop: "1.5rem",
-                      paddingTop: "1rem",
-                      borderTop: "1px solid rgba(201,168,76,0.08)",
-                    }}>
-                      <img src="/stripe-badge.png" alt="Stripe" width={18} height={18} style={{ borderRadius: "3px" }} />
-                      <span style={{
-                        fontFamily: '"JetBrains Mono", monospace',
-                        fontSize: "0.6rem",
-                        letterSpacing: "0.15em",
-                        color: "rgba(201,168,76,0.3)",
-                        textTransform: "uppercase",
-                      }}>
-                        Secure checkout · Powered by <span style={{ color: "rgba(201,168,76,0.5)", fontWeight: 600 }}>Stripe</span>
-                      </span>
-                    </div>
                   </motion.form>
                 )}
               </AnimatePresence>
@@ -1662,7 +1208,7 @@ export default function PublishClient() {
               textTransform: "uppercase",
             }}
           >
-            TINTAXIS · CURATED LITERARY PLATFORM · tintaxis.vercel.app
+            TINTAXIS · CURATED LITERARY PLATFORM · tintaxis.com
           </p>
         </footer>
       </div>
