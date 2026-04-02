@@ -263,7 +263,7 @@ export function WelcomeBackToast() {
                 Welcome back · {progressPct}% through
               </p>
               <a
-                href={record.url}
+                href={`${record.url}?resume=1`}
                 style={{
                   fontFamily: SERIF,
                   fontSize: "0.9rem",

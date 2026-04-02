@@ -4,8 +4,10 @@
 // Appears 1.5s after mount if the reader has prior scroll progress (5%–95%).
 // Offers to scroll them back to where they left off.
 // Auto-dismisses after 9 seconds. Manual dismiss also available.
+// If ?resume=1 is in the URL (from homepage Resume link), auto-scrolls immediately.
 
 import { useEffect, useState, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { getReaderState } from "@/lib/ink";
 
@@ -20,6 +22,18 @@ export default function ContinueReadingToast({
 }: ContinueReadingToastProps) {
   const [visible, setVisible] = useState(false);
   const [progress, setProgress] = useState(0);
+  const searchParams = useSearchParams();
+  const autoResume = searchParams?.get("resume") === "1";
+
+  // Scroll to saved position — used by both auto-resume and manual button
+  const scrollToSavedPosition = useCallback(() => {
+    const state = getReaderState(chapterSlug);
+    if (!state || state.scrollProgress < 0.05) return;
+
+    const { scrollHeight, clientHeight } = document.documentElement;
+    const targetY = state.scrollProgress * (scrollHeight - clientHeight);
+    window.scrollTo({ top: targetY, behavior: "smooth" });
+  }, [chapterSlug]);
 
   useEffect(() => {
     const state = getReaderState(chapterSlug);
@@ -31,25 +45,28 @@ export default function ContinueReadingToast({
 
     setProgress(Math.round(p * 100));
 
+    // Auto-resume: scroll immediately after a short delay for page render
+    if (autoResume) {
+      const autoTimer = setTimeout(() => {
+        scrollToSavedPosition();
+      }, 800);
+      return () => clearTimeout(autoTimer);
+    }
+
+    // Manual resume: show toast after 1.5s, auto-dismiss after 9s
     const showTimer = setTimeout(() => setVisible(true), 1500);
-    const hideTimer = setTimeout(() => setVisible(false), 10500); // auto-dismiss after 9s
+    const hideTimer = setTimeout(() => setVisible(false), 10500);
 
     return () => {
       clearTimeout(showTimer);
       clearTimeout(hideTimer);
     };
-  }, [chapterSlug]);
+  }, [chapterSlug, autoResume, scrollToSavedPosition]);
 
   const handleResume = useCallback(() => {
-    const state = getReaderState(chapterSlug);
-    if (!state) return;
-
-    const { scrollHeight, clientHeight } = document.documentElement;
-    const targetY = state.scrollProgress * (scrollHeight - clientHeight);
-
-    window.scrollTo({ top: targetY, behavior: "smooth" });
+    scrollToSavedPosition();
     setVisible(false);
-  }, [chapterSlug]);
+  }, [scrollToSavedPosition]);
 
   return (
     <AnimatePresence>

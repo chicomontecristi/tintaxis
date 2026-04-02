@@ -826,7 +826,7 @@ export default function HomeClient() {
           ══════════════════════════════════════════════════════════ */}
       {lastRead && lastRead.progressPct > 0 && lastRead.progressPct < 95 && (
         <section style={{ padding: "2rem 2rem 0", maxWidth: "1100px", margin: "0 auto" }}>
-          <Link href={lastRead.url} style={{ textDecoration: "none" }}>
+          <Link href={`${lastRead.url}?resume=1`} style={{ textDecoration: "none" }}>
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
