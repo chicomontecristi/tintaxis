@@ -7,7 +7,6 @@
 // If ?resume=1 is in the URL (from homepage Resume link), auto-scrolls immediately.
 
 import { useEffect, useState, useCallback } from "react";
-import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { getReaderState } from "@/lib/ink";
 
@@ -22,8 +21,9 @@ export default function ContinueReadingToast({
 }: ContinueReadingToastProps) {
   const [visible, setVisible] = useState(false);
   const [progress, setProgress] = useState(0);
-  const searchParams = useSearchParams();
-  const autoResume = searchParams?.get("resume") === "1";
+  const autoResume =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("resume") === "1";
 
   // Scroll to saved position — used by both auto-resume and manual button
   const scrollToSavedPosition = useCallback(() => {

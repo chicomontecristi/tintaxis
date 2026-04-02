@@ -358,26 +358,43 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
                   Full access from $3 / month · Cancel anytime
                 </p>
               </div>
-              <motion.button
-                onClick={() => setSubModalOpen(true)}
-                style={{
-                  fontFamily: '"JetBrains Mono", monospace',
-                  fontSize: "0.8rem",
-                  letterSpacing: "0.2em",
-                  textTransform: "uppercase",
-                  color: "#0D0B08",
-                  background: "#C9A84C",
-                  border: "none",
-                  padding: "0.75rem 2rem",
-                  cursor: "pointer",
-                  flexShrink: 0,
-                }}
-                whileHover={{ background: "#E8C97A" }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.15 }}
-              >
-                Subscribe to Read
-              </motion.button>
+              <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", flexShrink: 0, flexWrap: "wrap" }}>
+                <motion.button
+                  onClick={() => setSubModalOpen(true)}
+                  style={{
+                    fontFamily: '"JetBrains Mono", monospace',
+                    fontSize: "0.8rem",
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    color: "#0D0B08",
+                    background: "#C9A84C",
+                    border: "none",
+                    padding: "0.75rem 2rem",
+                    cursor: "pointer",
+                  }}
+                  whileHover={{ background: "#E8C97A" }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  Subscribe to Read
+                </motion.button>
+                <Link
+                  href={`/gift/${writer.slug}`}
+                  style={{
+                    fontFamily: '"JetBrains Mono", monospace',
+                    fontSize: "0.75rem",
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase",
+                    color: "rgba(0,229,204,0.65)",
+                    textDecoration: "none",
+                    border: "1px solid rgba(0,229,204,0.2)",
+                    padding: "0.65rem 1.25rem",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  Gift a Month
+                </Link>
+              </div>
             </>
           )}
         </motion.div>
