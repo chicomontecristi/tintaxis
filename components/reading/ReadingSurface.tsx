@@ -698,7 +698,13 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
         isOpen={subscriptionModalOpen}
         triggeredBy={gateTier}
         featureName={gateFeatureName}
-        onClose={() => setSubscriptionModalOpen(false)}
+        onClose={() => {
+          setSubscriptionModalOpen(false);
+          // Redirect away from gated chapter — don't leave user on hidden content
+          if (chapter.number > 2 && book?.slug) {
+            window.location.href = `/book/${book.slug}`;
+          }
+        }}
         returnUrl={pathname ?? "/"}
         writerSlug={book?.writerSlug ?? "chico-montecristi"}
         writerName={book?.author}
