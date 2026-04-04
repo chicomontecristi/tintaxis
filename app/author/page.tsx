@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef, FormEvent } from "react";
+import { useState, useEffect, useRef, useMemo, FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
+import { BOOKS, getBookChaptersOrdered } from "@/lib/content/books";
 
 // ─── TYPES ─────────────────────────────────────────────────────────────────────
 interface SignalQuestion {
@@ -394,9 +395,28 @@ interface LiveStats {
 
 export default function AuthorDashboard() {
   const [activeTab, setActiveTab] = useState<DashTab>("signals");
+  const [selectedBookSlug, setSelectedBookSlug] = useState("the-hunt");
   const [signals, setSignals] = useState<SignalQuestion[]>([]);
   const [whispers, setWhispers] = useState<WhisperEntry[]>([]);
-  const [whisperForm, setWhisperForm] = useState({ chapterSlug: "one", anchorText: "", whisper: "" });
+
+  // ── Derive book info + chapters from registry ──────────────────────────
+  const allBooks = useMemo(() => Object.values(BOOKS), []);
+  const activeBook = BOOKS[selectedBookSlug] ?? BOOKS["the-hunt"];
+  const bookChapters: ChapterStat[] = useMemo(() => {
+    const ordered = getBookChaptersOrdered(selectedBookSlug);
+    return ordered.map((ch, i) => ({
+      slug: ch.slug,
+      number: ch.number,
+      title: ch.title,
+      isLocked: ch.isLocked ?? (i > 0),
+      wordCount: ch.wordCount ?? 0,
+      reads: 0,
+      avgDepth: 0,
+      signals: 0,
+    }));
+  }, [selectedBookSlug]);
+
+  const [whisperForm, setWhisperForm] = useState({ chapterSlug: activeBook.firstChapterSlug, anchorText: "", whisper: "" });
   const [whisperStatus, setWhisperStatus] = useState<"idle" | "saved">("idle");
 
   // ── Voiceover state ──────────────────────────────────────────────────────
@@ -452,7 +472,7 @@ export default function AuthorDashboard() {
       .finally(() => setStatsLoading(false));
 
     // Fetch existing voiceovers
-    fetch("/api/author/audio?book=the-hunt")
+    fetch(`/api/author/audio?book=${selectedBookSlug}`)
       .then((r) => r.json())
       .then((data) => {
         if (data.voiceovers) {
@@ -481,7 +501,7 @@ export default function AuthorDashboard() {
         }
       })
       .catch(() => {});
-  }, []);
+  }, [selectedBookSlug]);
 
   const openSignals = signals.filter((s) => !s.answered);
   const answeredSignals = signals.filter((s) => s.answered);
@@ -510,7 +530,7 @@ export default function AuthorDashboard() {
     if (!confirm(`Delete the voiceover for this chapter?`)) return;
     setDeletingChapter(chapterSlug);
     try {
-      const res = await fetch(`/api/author/audio?book=the-hunt&chapter=${chapterSlug}`, {
+      const res = await fetch(`/api/author/audio?book=${selectedBookSlug}&chapter=${chapterSlug}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -549,7 +569,7 @@ export default function AuthorDashboard() {
     try {
       const fd = new FormData();
       fd.append("file", file);
-      fd.append("bookSlug", "the-hunt");
+      fd.append("bookSlug", selectedBookSlug);
       fd.append("chapterSlug", chapterSlug);
 
       const res = await fetch("/api/author/audio", {
@@ -699,7 +719,7 @@ export default function AuthorDashboard() {
     } catch (err) {
       console.error("[dashboard] whisper persist failed:", err);
       // Optimistic local fallback
-      const chapter = MOCK_CHAPTERS.find((c) => c.slug === whisperForm.chapterSlug);
+      const chapter = bookChapters.find((c) => c.slug === whisperForm.chapterSlug);
       setWhispers((prev) => [{
         id: `w${Date.now()}`,
         chapterSlug:  whisperForm.chapterSlug,
@@ -772,8 +792,61 @@ export default function AuthorDashboard() {
 
       <div style={{ position: "relative", zIndex: 1, maxWidth: "960px", margin: "0 auto", padding: "2.5rem 2rem" }}>
 
+        {/* ── BOOK SELECTOR ────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          style={{
+            display: "flex",
+            gap: "0",
+            marginBottom: "1.5rem",
+            borderBottom: "1px solid rgba(201,168,76,0.1)",
+            overflowX: "auto",
+          }}
+        >
+          {allBooks.map((book) => (
+            <button
+              key={book.slug}
+              onClick={() => {
+                setSelectedBookSlug(book.slug);
+                setVoiceovers({});
+                setWhisperForm({ chapterSlug: book.firstChapterSlug, anchorText: "", whisper: "" });
+              }}
+              style={{
+                fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                fontSize: "0.9rem",
+                color: selectedBookSlug === book.slug ? "rgba(245,230,200,0.85)" : "rgba(245,230,200,0.3)",
+                background: "transparent",
+                border: "none",
+                borderBottom: selectedBookSlug === book.slug ? "1px solid #C9A84C" : "1px solid transparent",
+                padding: "0.6rem 1.25rem",
+                cursor: "pointer",
+                marginBottom: "-1px",
+                whiteSpace: "nowrap",
+                transition: "color 0.2s",
+              }}
+            >
+              {book.title}
+              <span
+                style={{
+                  fontFamily: '"JetBrains Mono", monospace',
+                  fontSize: "0.42rem",
+                  letterSpacing: "0.1em",
+                  marginLeft: "0.5rem",
+                  color: selectedBookSlug === book.slug ? "rgba(201,168,76,0.5)" : "rgba(201,168,76,0.2)",
+                  textTransform: "uppercase",
+                }}
+              >
+                {book.coverLabel}
+              </span>
+            </button>
+          ))}
+        </motion.div>
+
         {/* Work title */}
         <motion.div
+          key={selectedBookSlug}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -800,7 +873,7 @@ export default function AuthorDashboard() {
               marginBottom: "0.1rem",
             }}
           >
-            The Hunt
+            {activeBook.title}
           </h1>
           <p
             style={{
@@ -810,7 +883,7 @@ export default function AuthorDashboard() {
               color: "rgba(245,230,200,0.3)",
             }}
           >
-            Novella · 25,003 words · 7 chapters · 1 unlocked
+            {activeBook.subtitle} · {activeBook.wordCount?.toLocaleString()} words · {activeBook.totalChapters} {activeBook.chapterLabel?.toLowerCase() ?? "chapter"}s · {activeBook.language?.toUpperCase()}
           </p>
         </motion.div>
 
@@ -1003,7 +1076,7 @@ export default function AuthorDashboard() {
                       onChange={(e) => setWhisperForm((p) => ({ ...p, chapterSlug: e.target.value }))}
                       style={{ ...inputStyle, appearance: "none" }}
                     >
-                      {MOCK_CHAPTERS.map((ch) => (
+                      {bookChapters.map((ch) => (
                         <option key={ch.slug} value={ch.slug}>
                           {ch.number}. {ch.title}
                         </option>
@@ -1167,7 +1240,7 @@ export default function AuthorDashboard() {
                   overflow: "hidden",
                 }}
               >
-                {MOCK_CHAPTERS.map((ch, i) => (
+                {bookChapters.map((ch, i) => (
                   <div
                     key={ch.slug}
                     style={{
@@ -1176,7 +1249,7 @@ export default function AuthorDashboard() {
                       alignItems: "center",
                       gap: "1.5rem",
                       padding: "1rem 1.5rem",
-                      borderBottom: i < MOCK_CHAPTERS.length - 1 ? "1px solid rgba(201,168,76,0.08)" : "none",
+                      borderBottom: i < bookChapters.length - 1 ? "1px solid rgba(201,168,76,0.08)" : "none",
                       background: ch.isLocked ? "transparent" : "rgba(201,168,76,0.02)",
                     }}
                   >
@@ -1292,7 +1365,7 @@ export default function AuthorDashboard() {
               </p>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
-                {MOCK_CHAPTERS.map((ch) => {
+                {bookChapters.map((ch) => {
                   const hasAudio = !!voiceovers[ch.slug];
                   const isUploading = uploadingChapter === ch.slug;
                   const isRecording = recordingChapter === ch.slug;
