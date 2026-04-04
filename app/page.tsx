@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     absolute: "Tintaxis — A Living Literary Platform",
   },
   description:
-    "Tintaxis is a literary platform where writers publish and readers arrive. Featuring Chico Montecristi, José La Luz, and Rosalva Flores-Alemán — free to read, in English, Spanish, and Mandarin.",
+    "Tintaxis is a literary platform where writers publish and readers arrive. Featuring Chico Montecristi, José La Luz, and Rosalva Flores-Alemán — free to read, in English, Spanish, Mandarin, Portuguese, Tamil, and Italian.",
   keywords: [
     "Tintaxis",
     "literary platform",
@@ -64,13 +64,13 @@ function HomeJsonLd() {
       name: "Tintaxis",
       url: BASE_URL,
       description:
-        "A literary platform featuring writers from the Americas. First chapter free. In English, Spanish, and Mandarin.",
+        "A literary platform featuring writers from the Americas. First chapter free. In English, Spanish, Mandarin, Portuguese, Tamil, and Italian.",
       publisher: {
         "@type": "Organization",
         name: "Tintaxis",
         url: BASE_URL,
       },
-      inLanguage: ["en", "es", "zh"],
+      inLanguage: ["en", "es", "zh", "pt", "ta", "it"],
     },
     {
       "@context": "https://schema.org",
@@ -134,7 +134,7 @@ function HomeJsonLd() {
         name: "What is Tintaxis?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Tintaxis is a free literary reading platform featuring original fiction by Chico Montecristi, a Dominican-American writer and oil painter from the South Bronx. Works are available in English, Spanish, and Mandarin Chinese. The first chapter of every book is free with no account required.",
+          text: "Tintaxis is a free literary reading platform featuring original fiction by Chico Montecristi, a Dominican-American writer and oil painter from the South Bronx. Works are available in English, Spanish, Mandarin Chinese, Portuguese, Tamil, and Italian. The first chapter of every book is free with no account required.",
         },
       },
       {

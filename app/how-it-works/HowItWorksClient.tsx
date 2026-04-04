@@ -387,7 +387,7 @@ export default function HowItWorksClient() {
               1. Languages
             </h3>
             <p style={{ fontSize: "1rem", lineHeight: "1.6" }}>
-              Tintaxis publishes in English, Spanish, and Mandarin Chinese.
+              Tintaxis publishes in English, Spanish, Mandarin Chinese, Portuguese, Tamil, and Italian.
             </p>
           </article>
 

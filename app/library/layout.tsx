@@ -6,7 +6,7 @@ const BASE_URL = "https://tintaxis.com";
 export const metadata: Metadata = {
   title: "The Library",
   description:
-    "The Tintaxis library — The Hunt, Recoleta, Noches de maya, Mi Pájaro del Río, and more on the way. First chapter free. In English, Spanish, and Mandarin.",
+    "The Tintaxis library — The Hunt, Recoleta, Noches de maya, Mi Pájaro del Río, and more on the way. First chapter free. In English, Spanish, Mandarin, Portuguese, Tamil, and Italian.",
   keywords: [
     "Tintaxis library",
     "The Hunt novella",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "The Library — Tintaxis",
     description:
-      "A curated literary archive. First chapter free. In English, Spanish, and Mandarin.",
+      "A curated literary archive. First chapter free. In English, Spanish, Mandarin, Portuguese, Tamil, and Italian.",
     type: "website",
     url: `${BASE_URL}/library`,
   },
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "The Library — Tintaxis",
     description:
-      "A curated literary archive. First chapter free. In English, Spanish, and Mandarin.",
+      "A curated literary archive. First chapter free. In English, Spanish, Mandarin, Portuguese, Tamil, and Italian.",
   },
   alternates: {
     canonical: `${BASE_URL}/library`,

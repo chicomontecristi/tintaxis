@@ -1,7 +1,7 @@
 # Tintaxis — A Living Literary Platform
 # https://tintaxis.com
 
-> Tintaxis is a literary reading platform featuring original fiction and letters by Chico Montecristi (José Chavez), a Dominican-American writer, oil painter, and educator from the South Bronx. The platform hosts works in English, Spanish, and Mandarin Chinese.
+> Tintaxis is a literary reading platform featuring original fiction and letters by Chico Montecristi (José Chavez), a Dominican-American writer, oil painter, and educator from the South Bronx. The platform hosts works in English, Spanish, Mandarin Chinese, Portuguese, Tamil, and Italian.
 
 ## About Tintaxis
 
@@ -72,7 +72,7 @@ Tintaxis is a free-to-read literary platform where writers publish original fict
 - **Author Whispers**: Inline commentary from the writer embedded in the margins
 - **Signal Ink**: Readers can ask the author questions about specific passages
 - **Reading Progress**: Paragraph-level tracking with chapter completion indicators
-- **Multilingual**: Works in English, Spanish, and Mandarin Chinese
+- **Multilingual**: Works in English, Spanish, Mandarin Chinese, Portuguese, Tamil, and Italian
 - **Progressive Web App**: Installable on phones and tablets, with offline reading
 - **Free Chapter 1**: Every book's first chapter is completely free with no account required
 - **Email Access**: Chapter 2 of every book is free with just an email address

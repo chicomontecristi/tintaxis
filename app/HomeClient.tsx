@@ -45,7 +45,7 @@ const FEATURES = [
   {
     icon: "🌍",
     title: "Multilingual",
-    desc: "English, Spanish, and Mandarin Chinese — on the same platform, with the same tools.",
+    desc: "English, Spanish, Mandarin Chinese, Portuguese, Tamil, and Italian — on the same platform, with the same tools.",
   },
 ];
 

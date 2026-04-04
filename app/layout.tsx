@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     template: "%s — Tintaxis",
   },
   description:
-    "Tintaxis is a literary platform where writers publish and readers arrive. Featuring Chico Montecristi, José La Luz, and Rosalva Flores-Alemán — in English, Spanish, and Mandarin. First chapter free.",
+    "Tintaxis is a literary platform where writers publish and readers arrive. Featuring Chico Montecristi, José La Luz, and Rosalva Flores-Alemán — in English, Spanish, Mandarin, Portuguese, Tamil, and Italian. First chapter free.",
   keywords: [
     "Tintaxis",
     "literary platform",
@@ -98,13 +98,13 @@ const WEBSITE_JSONLD = JSON.stringify([
     alternateName: "Tintaxis Literary Platform",
     url: BASE_URL,
     description:
-      "A literary platform featuring writers from the Americas. First chapter free. In English, Spanish, and Mandarin.",
+      "A literary platform featuring writers from the Americas. First chapter free. In English, Spanish, Mandarin, Portuguese, Tamil, and Italian.",
     publisher: {
       "@type": "Organization",
       name: "Tintaxis",
       url: BASE_URL,
     },
-    inLanguage: ["en", "es", "zh"],
+    inLanguage: ["en", "es", "zh", "pt", "ta", "it"],
   },
   {
     "@context": "https://schema.org",
@@ -130,8 +130,8 @@ const WEBSITE_JSONLD = JSON.stringify([
       ],
     },
     url: BASE_URL,
-    inLanguage: ["en", "es", "zh"],
-    featureList: "Interactive annotations, Author whispers, Signal Ink, Reading progress tracking, Offline reading, Multilingual (English, Spanish, Mandarin)",
+    inLanguage: ["en", "es", "zh", "pt", "ta", "it"],
+    featureList: "Interactive annotations, Author whispers, Signal Ink, Reading progress tracking, Offline reading, Multilingual (English, Spanish, Mandarin, Portuguese, Tamil, Italian)",
   },
 ]);
 
