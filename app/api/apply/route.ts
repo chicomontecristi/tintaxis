@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     }
 
     const apiKey    = process.env.RESEND_API_KEY;
-    const toEmail   = process.env.SIGNAL_TO_EMAIL ?? "chico@tintaxis.com";
+    const toEmail   = process.env.SIGNAL_TO_EMAIL ?? "chicomontecristi@gmail.com";
     const fromEmail = process.env.SIGNAL_FROM_EMAIL ?? "onboarding@resend.dev";
 
     if (!apiKey) {
