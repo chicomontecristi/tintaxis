@@ -17,6 +17,8 @@ const PUBLIC_LINKS = [
   { href: "/writers", label: "Writers" },
   { href: "/experience", label: "Experience" },
   { href: "/publish", label: "Publish" },
+  { href: "/impact", label: "Impact" },
+  { href: "/how-it-works", label: "How It Works" },
 ];
 
 export default function SiteNav() {

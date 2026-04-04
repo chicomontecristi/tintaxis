@@ -174,7 +174,7 @@ function WriterEarningsBreakdown() {
           marginBottom: "0.75rem",
         }}
       >
-        You keep 85%. No fees. No catch.
+        You keep 85% of net revenue. The work to earn it is yours.
       </motion.h2>
       <motion.p
         initial={{ opacity: 0 }}
@@ -192,7 +192,7 @@ function WriterEarningsBreakdown() {
           lineHeight: 1.7,
         }}
       >
-        Tintaxis never charges writers. Readers fund the ecosystem. After payment processing (Stripe), 85% of net revenue goes directly to you. We keep 15%. No hidden math.
+        Tintaxis is a digital publisher in its Genesis — not a self-publishing platform. Every submission is read by a person. After Stripe processing, 85% of net revenue goes directly to you. Tintaxis keeps 15% to run the platform and push your work across every digital channel we can reach. You are not gifting us 15%. You are earning access to infrastructure, promotion, and a permanent home for your writing.
       </motion.p>
 
       {/* Visual split */}
@@ -301,7 +301,7 @@ function WriterEarningsBreakdown() {
             },
             {
               label: "DIRECT PAYOUTS",
-              desc: "85% of net revenue transferred to your account via Stripe. No invoicing, no delays.",
+              desc: "85% of net revenue transferred to your account. Your earnings scale with your readers, your marketing, your momentum.",
               accent: "rgba(245,230,200,0.5)",
             },
           ].map((col) => (
@@ -486,8 +486,7 @@ export default function PublishClient() {
                 margin: "0 auto 3rem",
               }}
             >
-              Tintaxis is a curated literary platform. Acceptance is the only gate.
-              If your work belongs here, everything else is free.
+              Tintaxis is a digital publisher in its Genesis. We select writers — this is not self-publishing. If your work belongs here, everything else is handled.
             </p>
 
             <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
@@ -595,8 +594,7 @@ export default function PublishClient() {
                 marginBottom: "1.5rem",
               }}
             >
-              Tintaxis is not a self-publishing tool. There are no tiers, no monthly fees, and no
-              pay-to-exist model. Writers apply. We read. If the work belongs here, we open the door.
+              Tintaxis is not a self-publishing tool. There are no tiers, no monthly fees, and no pay-to-exist model. This is a publishing house, not a marketplace. We read your work. We decide. Writers apply. We read. If the work belongs here, we open the door.
               That&apos;s it.
             </p>
             <p
@@ -611,6 +609,7 @@ export default function PublishClient() {
               Readers fund the platform by subscribing to writers they want to support.
               After Stripe processing, you keep 85% of net revenue. We keep the lights on with 15%.
               No ads. No data harvesting. No algorithm deciding who gets seen.
+              Your reach determines your revenue. Tintaxis promotes your work through social media and digital reading channels — but the real engine is you. Your readers, your marketing, your network. The more you push, the more you earn.
             </p>
           </motion.div>
         </section>

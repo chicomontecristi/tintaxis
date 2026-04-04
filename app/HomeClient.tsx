@@ -281,343 +281,7 @@ export default function HomeClient() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 3B — THE ENVIRONMENTAL CASE FOR DIGITAL READING
-          ══════════════════════════════════════════════════════════ */}
-      <section
-        style={{
-          padding: "6rem 2rem",
-          borderTop: "1px solid rgba(201,168,76,0.08)",
-          borderBottom: "1px solid rgba(201,168,76,0.08)",
-          background: "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,40,20,0.08) 50%, rgba(0,0,0,0) 100%)",
-        }}
-      >
-        <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
-          <SectionHeader
-            tag="THE COST OF PAPER"
-            title="Every printed book has a price the reader never sees."
-          />
-
-          {/* ── Key statistics row ── */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-              gap: "1.5rem",
-              marginTop: "3.5rem",
-              marginBottom: "3rem",
-            }}
-          >
-            {[
-              { value: "417M", unit: "metric tons", label: "of paper consumed globally each year" },
-              { value: "33%", unit: "of all trees", label: "harvested go to paper production" },
-              { value: "7.5L", unit: "of water", label: "to produce a single sheet of paper" },
-              { value: "26M", unit: "tons of books", label: "end in landfills or are pulped annually" },
-            ].map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                style={{
-                  textAlign: "center",
-                  padding: "1.5rem 1rem",
-                  border: "1px solid rgba(0,200,170,0.12)",
-                  borderRadius: "4px",
-                  background: "rgba(0,200,170,0.03)",
-                }}
-              >
-                <AnimatedCounter value={stat.value} />
-                <p style={{
-                  fontFamily: MONO,
-                  fontSize: "0.75rem",
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  color: "rgba(0,200,170,0.6)",
-                  marginTop: "0.15rem",
-                  marginBottom: "0.5rem",
-                }}>
-                  {stat.unit}
-                </p>
-                <p style={{
-                  fontFamily: SERIF,
-                  fontSize: "1.05rem",
-                  color: "rgba(245,230,200,0.5)",
-                  lineHeight: 1.5,
-                }}>
-                  {stat.label}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* ── The lifecycle: Print vs Digital ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            style={{
-              padding: "2rem",
-              border: "1px solid rgba(201,168,76,0.12)",
-              borderRadius: "4px",
-              background: "rgba(201,168,76,0.02)",
-              marginBottom: "3rem",
-            }}
-          >
-            <p style={{
-              fontFamily: MONO,
-              fontSize: "0.8rem",
-              letterSpacing: "0.25em",
-              textTransform: "uppercase",
-              color: "#C9A84C",
-              marginBottom: "1.25rem",
-              textAlign: "center",
-            }}>
-              LIFECYCLE COST PER BOOK
-            </p>
-
-            {/* Horizontal bar comparisons */}
-            {[
-              { label: "Trees consumed", print: 100, digital: 0, printLabel: "1 tree per 62 books", digitalLabel: "0 trees" },
-              { label: "Water used", print: 100, digital: 3, printLabel: "8 liters per book", digitalLabel: "0.24 liters (server cooling)" },
-              { label: "CO₂ emitted", print: 100, digital: 12, printLabel: "~7.5 kg per book", digitalLabel: "~0.9 kg (amortized)" },
-              { label: "Waste generated", print: 100, digital: 0, printLabel: "30% unsold, pulped", digitalLabel: "Zero physical waste" },
-            ].map((row, i) => (
-              <div key={row.label} style={{ marginBottom: i < 3 ? "1.25rem" : 0 }}>
-                <p style={{
-                  fontFamily: MONO,
-                  fontSize: "0.75rem",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  color: "rgba(245,230,200,0.55)",
-                  marginBottom: "0.5rem",
-                }}>
-                  {row.label}
-                </p>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                  {/* Print bar */}
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                    <span style={{ fontFamily: MONO, fontSize: "0.7rem", color: "rgba(245,230,200,0.4)", width: "55px", flexShrink: 0 }}>PRINT</span>
-                    <div style={{ flex: 1, height: "22px", background: "rgba(255,255,255,0.03)", borderRadius: "2px", overflow: "hidden", position: "relative" }}>
-                      <motion.div
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${row.print}%` }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1, delay: 0.3 + i * 0.15, ease: "easeOut" }}
-                        style={{
-                          height: "100%",
-                          background: "linear-gradient(90deg, rgba(180,80,60,0.6), rgba(180,80,60,0.35))",
-                          borderRadius: "2px",
-                        }}
-                      />
-                    </div>
-                    <span style={{ fontFamily: MONO, fontSize: "0.65rem", color: "rgba(180,80,60,0.7)", minWidth: "160px", textAlign: "right" }}>{row.printLabel}</span>
-                  </div>
-                  {/* Digital bar */}
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                    <span style={{ fontFamily: MONO, fontSize: "0.7rem", color: "rgba(0,200,170,0.6)", width: "55px", flexShrink: 0 }}>DIGITAL</span>
-                    <div style={{ flex: 1, height: "22px", background: "rgba(255,255,255,0.03)", borderRadius: "2px", overflow: "hidden", position: "relative" }}>
-                      <motion.div
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${Math.max(row.digital, 1)}%` }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1, delay: 0.4 + i * 0.15, ease: "easeOut" }}
-                        style={{
-                          height: "100%",
-                          background: "linear-gradient(90deg, rgba(0,200,170,0.6), rgba(0,200,170,0.35))",
-                          borderRadius: "2px",
-                          minWidth: row.digital > 0 ? "4px" : "0px",
-                        }}
-                      />
-                    </div>
-                    <span style={{ fontFamily: MONO, fontSize: "0.65rem", color: "rgba(0,200,170,0.6)", minWidth: "160px", textAlign: "right" }}>{row.digitalLabel}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </motion.div>
-
-          {/* ── The compounding advantage chart ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            style={{
-              padding: "2rem",
-              border: "1px solid rgba(201,168,76,0.12)",
-              borderRadius: "4px",
-              background: "rgba(201,168,76,0.02)",
-              marginBottom: "3rem",
-            }}
-          >
-            <p style={{
-              fontFamily: MONO,
-              fontSize: "0.8rem",
-              letterSpacing: "0.25em",
-              textTransform: "uppercase",
-              color: "#C9A84C",
-              marginBottom: "0.5rem",
-              textAlign: "center",
-            }}>
-              THE COMPOUNDING ADVANTAGE
-            </p>
-            <p style={{
-              fontFamily: SERIF,
-              fontSize: "1.1rem",
-              color: "rgba(245,230,200,0.45)",
-              textAlign: "center",
-              marginBottom: "1.5rem",
-              lineHeight: 1.6,
-            }}>
-              Print cost grows with every copy. Digital cost stays flat after the first.
-            </p>
-
-            {/* SVG chart: Print (linear) vs Digital (flat) */}
-            <CostComparisonChart />
-          </motion.div>
-
-          {/* ── The recycling myth ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: "1.5rem",
-              marginBottom: "3rem",
-            }}
-          >
-            <div style={{
-              padding: "1.5rem",
-              border: "1px solid rgba(180,80,60,0.15)",
-              borderRadius: "4px",
-              background: "rgba(180,80,60,0.03)",
-            }}>
-              <p style={{
-                fontFamily: MONO,
-                fontSize: "0.8rem",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: "rgba(180,80,60,0.7)",
-                marginBottom: "0.75rem",
-              }}>
-                THE RECYCLING MYTH
-              </p>
-              <p style={{
-                fontFamily: SERIF,
-                fontSize: "1.1rem",
-                color: "rgba(245,230,200,0.55)",
-                lineHeight: 1.7,
-              }}>
-                Paper degrades after 5 to 7 recycling cycles. Each round shortens the fibers, producing weaker material. Coated papers, glued bindings, and ink-laden covers often cannot be recycled at all. Less than half of all paper is actually recovered — the rest is burned or buried.
-              </p>
-            </div>
-            <div style={{
-              padding: "1.5rem",
-              border: "1px solid rgba(0,200,170,0.15)",
-              borderRadius: "4px",
-              background: "rgba(0,200,170,0.03)",
-            }}>
-              <p style={{
-                fontFamily: MONO,
-                fontSize: "0.8rem",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: "rgba(0,200,170,0.7)",
-                marginBottom: "0.75rem",
-              }}>
-                THE DIGITAL ALTERNATIVE
-              </p>
-              <p style={{
-                fontFamily: SERIF,
-                fontSize: "1.1rem",
-                color: "rgba(245,230,200,0.55)",
-                lineHeight: 1.7,
-              }}>
-                A digital book is distributed once and read infinitely. No shipping fleets, no warehouse waste, no remaindered copies pulped at the end of a sales cycle. The environmental cost of the 10th reader is identical to the 10 millionth.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* ── Closing argument ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            style={{ textAlign: "center", maxWidth: "700px", margin: "0 auto" }}
-          >
-            <div style={{
-              width: "60px",
-              height: "1px",
-              background: "rgba(201,168,76,0.3)",
-              margin: "0 auto 2rem",
-            }} />
-            <p style={{
-              fontFamily: SERIF,
-              fontSize: "clamp(1.2rem, 3vw, 1.6rem)",
-              fontStyle: "italic",
-              color: "rgba(245,230,200,0.75)",
-              lineHeight: 1.6,
-              marginBottom: "1rem",
-            }}>
-              A printed book is a tree&apos;s past.<br />
-              A digital book is humanity&apos;s future.
-            </p>
-            <p style={{
-              fontFamily: SERIF,
-              fontSize: "1.05rem",
-              color: "rgba(245,230,200,0.45)",
-              lineHeight: 1.7,
-              marginBottom: "2rem",
-            }}>
-              You are not replacing books — you are freeing stories from material limits. Tintaxis is a platform built for the era when words no longer require weight.
-            </p>
-            <Link href="/library" passHref>
-              <motion.button
-                className="relative"
-                style={{
-                  fontFamily: MONO,
-                  fontSize: "0.8rem",
-                  letterSpacing: "0.25em",
-                  textTransform: "uppercase",
-                  color: "rgba(0,200,170,0.85)",
-                  background: "transparent",
-                  border: "1px solid rgba(0,200,170,0.4)",
-                  padding: "0.9rem 2.5rem",
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
-                }}
-                whileHover={{
-                  borderColor: "rgba(0,200,170,0.8)",
-                  boxShadow: "0 0 24px rgba(0,200,170,0.15)",
-                  color: "rgba(0,230,190,1)",
-                }}
-                whileTap={{ scale: 0.98 }}
-              >
-                READ WITHOUT WASTE
-              </motion.button>
-            </Link>
-            <p style={{
-              fontFamily: MONO,
-              fontSize: "0.6rem",
-              letterSpacing: "0.15em",
-              color: "rgba(201,168,76,0.25)",
-              textTransform: "uppercase",
-              marginTop: "1rem",
-            }}>
-              Data sourced from EPA, TAPPI, and Environmental Paper Network
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════
-          SECTION 2 — FOR WRITERS (selection model)
+          SECTION 2 — FOR WRITERS (THE 85% FLIP)
           ══════════════════════════════════════════════════════════ */}
       <section
         style={{
@@ -626,7 +290,7 @@ export default function HomeClient() {
           borderBottom: "1px solid rgba(201,168,76,0.08)",
         }}
       >
-        <div style={{ maxWidth: "800px", margin: "0 auto", textAlign: "center" }}>
+        <div style={{ maxWidth: "900px", margin: "0 auto" }}>
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -638,6 +302,7 @@ export default function HomeClient() {
               textTransform: "uppercase",
               color: "#C9A84C",
               marginBottom: "1.5rem",
+              textAlign: "center",
             }}
           >
             FOR WRITERS
@@ -654,37 +319,156 @@ export default function HomeClient() {
               fontWeight: 400,
               color: "#F5E6C8",
               lineHeight: 1.2,
-              marginBottom: "0.75rem",
+              marginBottom: "2rem",
+              textAlign: "center",
             }}
           >
-            We don&apos;t charge writers.{" "}
-            <span style={{ color: "#C9A84C", fontWeight: 600 }}>We select them.</span>
+            We flipped the switch.{" "}
+            <span style={{ color: "rgba(0,200,170,0.85)", fontWeight: 600 }}>85% to writers.</span>
           </motion.h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
+          {/* THE FLIP: Visual comparison */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1, duration: 0.6 }}
             style={{
-              fontFamily: SERIF,
-              fontSize: "1.15rem",
-              color: "rgba(245,230,200,0.55)",
-              lineHeight: 1.7,
-              maxWidth: "600px",
-              margin: "0 auto 2.5rem",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "2rem",
+              marginBottom: "3rem",
+              maxWidth: "700px",
+              margin: "0 auto 3rem",
             }}
           >
-            No platform fees. No monthly charges. Readers fund the ecosystem — after payment processing,{" "}
-            <span style={{ color: "rgba(0,200,170,0.85)", fontWeight: 600 }}>85% of net revenue goes directly to you</span>.
-            Tintaxis keeps 15%. Stripe handles the rest.
-          </motion.p>
+            {/* Traditional Publishing */}
+            <div
+              style={{
+                padding: "1.5rem",
+                border: "1px solid rgba(180,80,60,0.3)",
+                borderRadius: "4px",
+                background: "rgba(180,80,60,0.04)",
+                textAlign: "center",
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: MONO,
+                  fontSize: "0.65rem",
+                  letterSpacing: "0.2em",
+                  textTransform: "uppercase",
+                  color: "rgba(180,80,60,0.8)",
+                  marginBottom: "1rem",
+                  fontWeight: 600,
+                }}
+              >
+                Traditional Publishing
+              </p>
+              <div
+                style={{
+                  fontFamily: SERIF,
+                  fontSize: "1.3rem",
+                  lineHeight: 1.8,
+                  color: "#F5E6C8",
+                }}
+              >
+                <div style={{ marginBottom: "0.5rem" }}>
+                  <span style={{ color: "rgba(180,80,60,0.85)", fontWeight: 600 }}>75–90%</span>
+                  <span style={{ color: "rgba(245,230,200,0.4)" }}> Publisher</span>
+                </div>
+                <div>
+                  <span style={{ color: "rgba(245,230,200,0.3)", fontWeight: 600 }}>10–25%</span>
+                  <span style={{ color: "rgba(245,230,200,0.4)" }}> Author</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Tintaxis */}
+            <div
+              style={{
+                padding: "1.5rem",
+                border: "1px solid rgba(0,200,170,0.3)",
+                borderRadius: "4px",
+                background: "rgba(0,200,170,0.04)",
+                textAlign: "center",
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: MONO,
+                  fontSize: "0.65rem",
+                  letterSpacing: "0.2em",
+                  textTransform: "uppercase",
+                  color: "rgba(0,200,170,0.85)",
+                  marginBottom: "1rem",
+                  fontWeight: 600,
+                }}
+              >
+                TINTAXIS
+              </p>
+              <div
+                style={{
+                  fontFamily: SERIF,
+                  fontSize: "1.3rem",
+                  lineHeight: 1.8,
+                  color: "#F5E6C8",
+                }}
+              >
+                <div style={{ marginBottom: "0.5rem" }}>
+                  <span style={{ color: "rgba(0,200,170,0.85)", fontWeight: 600 }}>85%</span>
+                  <span style={{ color: "rgba(245,230,200,0.4)" }}> Author</span>
+                </div>
+                <div>
+                  <span style={{ color: "rgba(245,230,200,0.3)", fontWeight: 600 }}>15%</span>
+                  <span style={{ color: "rgba(245,230,200,0.4)" }}> Platform</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* The catch + reframing */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.15, duration: 0.6 }}
+            style={{
+              maxWidth: "650px",
+              margin: "0 auto 2rem",
+              textAlign: "center",
+            }}
+          >
+            <p
+              style={{
+                fontFamily: SERIF,
+                fontSize: "1.1rem",
+                color: "rgba(245,230,200,0.65)",
+                lineHeight: 1.8,
+                marginBottom: "1.25rem",
+              }}
+            >
+              Tintaxis is a digital publisher in its Genesis. We are not a self-publishing platform. Writers submit. We read. We select.
+            </p>
+            <p
+              style={{
+                fontFamily: SERIF,
+                fontSize: "1rem",
+                color: "rgba(245,230,200,0.55)",
+                lineHeight: 1.8,
+                fontStyle: "italic",
+              }}
+            >
+              You&apos;re not gifting us 15%. You&apos;re earning access to a platform that amplifies your reach. Your readers, your marketing, your momentum — that&apos;s what drives your revenue. Tintaxis pushes your work through social media and every digital reading channel we can reach. But the engine is you.
+            </p>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+            transition={{ delay: 0.25, duration: 0.5 }}
+            style={{ textAlign: "center" }}
           >
             <Link href="/publish" passHref>
               <motion.button
@@ -716,62 +500,73 @@ export default function HomeClient() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 3 — WHAT MAKES THIS DIFFERENT
+          SECTION 3 — WHY TINTAXIS OVER SOCIAL MEDIA?
           ══════════════════════════════════════════════════════════ */}
-      <section style={{ padding: "5rem 2rem", maxWidth: "1100px", margin: "0 auto" }}>
-        <SectionHeader
-          tag="NOT ANOTHER READING APP"
-          title="A reading experience that doesn't exist anywhere else."
-        />
-
-        <div
+      <section style={{ padding: "4rem 2rem", maxWidth: "900px", margin: "0 auto", textAlign: "center" }}>
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-            gap: "1.5rem",
-            marginTop: "3rem",
+            fontFamily: SERIF,
+            fontSize: "1.15rem",
+            color: "rgba(245,230,200,0.65)",
+            lineHeight: 1.8,
+            marginBottom: "1.5rem",
           }}
         >
-          {FEATURES.map((f, i) => (
-            <motion.div
-              key={f.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              style={{
-                padding: "1.5rem",
-                border: "1px solid rgba(201,168,76,0.1)",
-                borderRadius: "4px",
-                background: "rgba(201,168,76,0.02)",
-              }}
-            >
-              <div style={{ fontSize: "1.5rem", marginBottom: "0.75rem" }}>{f.icon}</div>
-              <h3
-                style={{
-                  fontFamily: MONO,
-                  fontSize: "0.75rem",
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  color: "#C9A84C",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                {f.title}
-              </h3>
-              <p
-                style={{
-                  fontFamily: SERIF,
-                  fontSize: "1rem",
-                  color: "rgba(245,230,200,0.55)",
-                  lineHeight: 1.6,
-                }}
-              >
-                {f.desc}
-              </p>
-            </motion.div>
-          ))}
-        </div>
+          On X, your thread disappears in 24 hours. On Instagram, your caption has a character limit. On Tintaxis, your book has a permanent home, a reading experience built for long-form, and readers who pay to read — not scroll past.
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1 }}
+          style={{
+            fontFamily: SERIF,
+            fontSize: "1.15rem",
+            color: "rgba(0,200,170,0.85)",
+            lineHeight: 1.8,
+            fontWeight: 600,
+          }}
+        >
+          This isn&apos;t another social media profile. This is a publishing house that sends 85% of revenue back to you.
+        </motion.p>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          SECTION 3.5 — FEATURES (simplified single line)
+          ══════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "2rem 2rem 4rem", maxWidth: "900px", margin: "0 auto", textAlign: "center" }}>
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          style={{
+            fontFamily: MONO,
+            fontSize: "0.75rem",
+            letterSpacing: "0.2em",
+            textTransform: "uppercase",
+            color: "rgba(201,168,76,0.4)",
+            marginBottom: "1rem",
+          }}
+        >
+          TOOLS BUILT FOR READERS
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1 }}
+          style={{
+            fontFamily: SERIF,
+            fontSize: "1.1rem",
+            color: "rgba(245,230,200,0.55)",
+            lineHeight: 1.7,
+          }}
+        >
+          Author voiceovers. AI narration. Margin annotations. Day &amp; night modes. Multilingual.
+        </motion.p>
       </section>
 
       {/* ══════════════════════════════════════════════════════════
@@ -1195,184 +990,3 @@ function CornerOrnament({
   );
 }
 
-// ─── ANIMATED COUNTER (scroll-triggered number reveal) ─────────────────────
-function AnimatedCounter({ value }: { value: string }) {
-  const [displayed, setDisplayed] = useState(value);
-  const [hasAnimated, setHasAnimated] = useState(false);
-
-  // Extract numeric part and suffix (e.g., "417M" → 417, "M")
-  const numMatch = value.match(/^([\d.]+)(.*)$/);
-  const targetNum = numMatch ? parseFloat(numMatch[1]) : 0;
-  const suffix = numMatch ? numMatch[2] : value;
-
-  useEffect(() => {
-    if (hasAnimated) return;
-    // Will be triggered by intersection observer below
-  }, [hasAnimated]);
-
-  return (
-    <motion.p
-      style={{
-        fontFamily: MONO,
-        fontSize: "clamp(1.8rem, 4vw, 2.4rem)",
-        fontWeight: 700,
-        color: "rgba(0,200,170,0.9)",
-        lineHeight: 1,
-      }}
-      initial={{ opacity: 0, scale: 0.8 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      onViewportEnter={() => {
-        if (hasAnimated) return;
-        setHasAnimated(true);
-        const duration = 1200;
-        const startTime = Date.now();
-        const tick = () => {
-          const elapsed = Date.now() - startTime;
-          const progress = Math.min(elapsed / duration, 1);
-          const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
-          const current = targetNum * eased;
-          if (targetNum >= 100) {
-            setDisplayed(Math.round(current) + suffix);
-          } else if (targetNum >= 10) {
-            setDisplayed(current.toFixed(1) + suffix);
-          } else {
-            setDisplayed(current.toFixed(1) + suffix);
-          }
-          if (progress < 1) requestAnimationFrame(tick);
-          else setDisplayed(value);
-        };
-        requestAnimationFrame(tick);
-      }}
-    >
-      {displayed}
-    </motion.p>
-  );
-}
-
-// ─── COST COMPARISON CHART (SVG: linear print vs flat digital) ────────────
-function CostComparisonChart() {
-  const W = 600;
-  const H = 260;
-  const PAD = { top: 20, right: 20, bottom: 40, left: 50 };
-  const chartW = W - PAD.left - PAD.right;
-  const chartH = H - PAD.top - PAD.bottom;
-
-  // Data: books read (x) → environmental cost index (y)
-  // Print: linear growth. Digital: flat after initial device cost.
-  const points = [0, 5, 10, 20, 30, 50, 75, 100];
-  const printCost = points.map((x) => x * 7.5); // 7.5 kg CO₂ per book
-  const digitalCost = points.map((x) => 30 + x * 0.1); // device amortized + marginal
-  const maxY = 750;
-
-  const toX = (val: number) => PAD.left + (val / 100) * chartW;
-  const toY = (val: number) => PAD.top + chartH - (val / maxY) * chartH;
-
-  const printPath = points.map((x, i) => `${i === 0 ? "M" : "L"}${toX(x)},${toY(printCost[i])}`).join(" ");
-  const digitalPath = points.map((x, i) => `${i === 0 ? "M" : "L"}${toX(x)},${toY(digitalCost[i])}`).join(" ");
-
-  return (
-    <div style={{ width: "100%", maxWidth: `${W}px`, margin: "0 auto" }}>
-      <svg
-        viewBox={`0 0 ${W} ${H}`}
-        style={{ width: "100%", height: "auto" }}
-        preserveAspectRatio="xMidYMid meet"
-      >
-        {/* Grid lines */}
-        {[0, 150, 300, 450, 600, 750].map((y) => (
-          <line
-            key={y}
-            x1={PAD.left}
-            y1={toY(y)}
-            x2={W - PAD.right}
-            y2={toY(y)}
-            stroke="rgba(245,230,200,0.06)"
-            strokeWidth="1"
-          />
-        ))}
-
-        {/* Y-axis labels */}
-        {[0, 150, 300, 450, 600, 750].map((y) => (
-          <text
-            key={`label-${y}`}
-            x={PAD.left - 8}
-            y={toY(y) + 3}
-            textAnchor="end"
-            style={{ fontFamily: MONO, fontSize: "10px", fill: "rgba(245,230,200,0.3)" }}
-          >
-            {y}
-          </text>
-        ))}
-
-        {/* X-axis labels */}
-        {[0, 25, 50, 75, 100].map((x) => (
-          <text
-            key={`x-${x}`}
-            x={toX(x)}
-            y={H - PAD.bottom + 18}
-            textAnchor="middle"
-            style={{ fontFamily: MONO, fontSize: "10px", fill: "rgba(245,230,200,0.3)" }}
-          >
-            {x}
-          </text>
-        ))}
-
-        {/* Axis labels */}
-        <text
-          x={W / 2}
-          y={H - 4}
-          textAnchor="middle"
-          style={{ fontFamily: MONO, fontSize: "9px", fill: "rgba(245,230,200,0.3)", letterSpacing: "0.1em" }}
-        >
-          BOOKS READ
-        </text>
-        <text
-          x={12}
-          y={PAD.top + chartH / 2}
-          textAnchor="middle"
-          transform={`rotate(-90, 12, ${PAD.top + chartH / 2})`}
-          style={{ fontFamily: MONO, fontSize: "9px", fill: "rgba(245,230,200,0.3)", letterSpacing: "0.1em" }}
-        >
-          CO₂ (kg)
-        </text>
-
-        {/* Print line (red/warm) */}
-        <motion.path
-          d={printPath}
-          fill="none"
-          stroke="rgba(180,80,60,0.7)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          initial={{ pathLength: 0 }}
-          whileInView={{ pathLength: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.5, delay: 0.3, ease: "easeOut" }}
-        />
-
-        {/* Digital line (green/teal) */}
-        <motion.path
-          d={digitalPath}
-          fill="none"
-          stroke="rgba(0,200,170,0.7)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          initial={{ pathLength: 0 }}
-          whileInView={{ pathLength: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
-        />
-
-        {/* Legend */}
-        <rect x={PAD.left + 10} y={PAD.top + 8} width="12" height="2" rx="1" fill="rgba(180,80,60,0.7)" />
-        <text x={PAD.left + 28} y={PAD.top + 12} style={{ fontFamily: MONO, fontSize: "9px", fill: "rgba(180,80,60,0.7)" }}>
-          Print (linear)
-        </text>
-        <rect x={PAD.left + 10} y={PAD.top + 22} width="12" height="2" rx="1" fill="rgba(0,200,170,0.7)" />
-        <text x={PAD.left + 28} y={PAD.top + 26} style={{ fontFamily: MONO, fontSize: "9px", fill: "rgba(0,200,170,0.7)" }}>
-          Digital (flat)
-        </text>
-      </svg>
-    </div>
-  );
-}

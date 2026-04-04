@@ -21,6 +21,7 @@ export default function BookPageClient() {
   const [book, setBook] = useState<Book | null>(null);
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [ready, setReady] = useState(false);
+  const [dcLoading, setDcLoading] = useState(false);
 
   useEffect(() => {
     // Load book data from API to avoid SSR issues with dynamic client component
@@ -240,7 +241,7 @@ export default function BookPageClient() {
               marginBottom: "0.75rem",
             }}
           >
-            First chapter free · No account required
+            No account required to preview
           </p>
 
           {/* Start reading CTA */}
@@ -255,7 +256,7 @@ export default function BookPageClient() {
               borderRadius: "4px",
               padding: "12px 24px",
               textDecoration: "none",
-              marginBottom: "3.5rem",
+              marginBottom: "1.5rem",
               transition: "all 0.2s ease",
             }}
             onMouseEnter={(e) => {
@@ -278,6 +279,99 @@ export default function BookPageClient() {
             </span>
             <span style={{ color: accentMid, fontSize: "1rem" }}>→</span>
           </Link>
+
+          {/* Digital Copy CTA */}
+          <button
+            onClick={async () => {
+              setDcLoading(true);
+              try {
+                const res = await fetch("/api/stripe/digital-copy", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    bookSlug: book.slug,
+                    returnUrl: `/book/${book.slug}`,
+                  }),
+                });
+                const data = await res.json();
+                if (data.url) {
+                  window.location.href = data.url;
+                } else {
+                  console.error("Failed to create checkout session", data.error);
+                  setDcLoading(false);
+                }
+              } catch (err) {
+                console.error("Error:", err);
+                setDcLoading(false);
+              }
+            }}
+            disabled={dcLoading}
+            style={{
+              display: "inline-flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              gap: "6px",
+              background: "transparent",
+              border: `1px solid #C9A84C`,
+              borderRadius: "4px",
+              padding: "10px 16px",
+              textDecoration: "none",
+              marginBottom: "3.5rem",
+              transition: "all 0.2s ease",
+              cursor: dcLoading ? "not-allowed" : "pointer",
+              opacity: dcLoading ? 0.6 : 1,
+            }}
+            onMouseEnter={(e) => {
+              if (!dcLoading) {
+                (e.currentTarget as HTMLButtonElement).style.borderColor = "#C9A84C";
+                (e.currentTarget as HTMLButtonElement).style.background = "rgba(201,168,76,0.08)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!dcLoading) {
+                (e.currentTarget as HTMLButtonElement).style.borderColor = "#C9A84C";
+                (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+              }
+            }}
+          >
+            <span
+              style={{
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: "0.65rem",
+                letterSpacing: "0.2em",
+                color: "#C9A84C",
+                textTransform: "uppercase",
+                fontWeight: 600,
+              }}
+            >
+              {dcLoading ? "Loading..." : "Digital Copy — $1.50"}
+            </span>
+            <span
+              style={{
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: "0.45rem",
+                letterSpacing: "0.1em",
+                color: "rgba(0,229,204,0.6)",
+                textTransform: "uppercase",
+              }}
+            >
+              One-time PDF. Yours to keep.
+            </span>
+          </button>
+
+          {/* Legal notice */}
+          <p
+            style={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontSize: "0.4rem",
+              letterSpacing: "0.05em",
+              color: "rgba(201,168,76,0.35)",
+              marginBottom: "3rem",
+              lineHeight: 1.6,
+            }}
+          >
+            Copyrighted PDF download. Redistribution or reproduction is subject to legal action.
+          </p>
         </motion.div>
 
         {/* Divider */}

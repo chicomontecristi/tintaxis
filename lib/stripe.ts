@@ -20,20 +20,22 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 //   STRIPE_PRICE_ARCHIVE, STRIPE_PRICE_CHRONICLER
 
 export type PlanId =
-  | "manuscript"   // legacy — kept for DB compatibility, no longer sold
-  | "press"        // legacy — kept for DB compatibility, no longer sold
+  | "manuscript"    // legacy — kept for DB compatibility, no longer sold
+  | "press"         // legacy — kept for DB compatibility, no longer sold
   | "codex"
   | "scribe"
   | "archive"
-  | "chronicler";
+  | "chronicler"
+  | "digital_copy"; // one-time PDF download ($1.50)
 
 export const PLAN_PRICE_IDS: Record<PlanId, string> = {
-  manuscript:  "",  // DEPRECATED — writers no longer pay
-  press:       "",  // DEPRECATED — writers no longer pay
-  codex:       process.env.STRIPE_PRICE_CODEX       ?? "",
-  scribe:      process.env.STRIPE_PRICE_SCRIBE      ?? "",
-  archive:     process.env.STRIPE_PRICE_ARCHIVE     ?? "",
-  chronicler:  process.env.STRIPE_PRICE_CHRONICLER  ?? "",
+  manuscript:   "",  // DEPRECATED — writers no longer pay
+  press:        "",  // DEPRECATED — writers no longer pay
+  codex:        process.env.STRIPE_PRICE_CODEX       ?? "",
+  scribe:       process.env.STRIPE_PRICE_SCRIBE      ?? "",
+  archive:      process.env.STRIPE_PRICE_ARCHIVE     ?? "",
+  chronicler:   process.env.STRIPE_PRICE_CHRONICLER  ?? "",
+  digital_copy: process.env.STRIPE_PRICE_DIGITAL_COPY ?? "",
 };
 
 // Role inferred from plan

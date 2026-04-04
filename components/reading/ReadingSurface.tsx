@@ -30,6 +30,7 @@ import EmailGateModal from "@/components/ui/EmailGateModal";
 import type { SubscriptionTierName } from "@/components/ui/SubscriptionModal";
 import ContinueReadingToast from "@/components/ui/ContinueReadingToast";
 import InkTutorial from "@/components/ui/InkTutorial";
+import ResumeButton from "@/components/ui/ResumeButton";
 import Link from "next/link";
 import ChapterRain from "./ChapterRain";
 import { QuoteSelector, MilestoneCard, SendToFriend } from "./ViralLoops";
@@ -476,6 +477,9 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
 
       {/* ── Reading progress — right rail ────────────────────── */}
       <ProgressIndicator />
+
+      {/* ── Resume button — top right ────────────────────────── */}
+      <ResumeButton chapterSlug={chapter.slug} />
 
       {/* ── Ink Toolbar — left rail ──────────────────────────── */}
       <InkToolbar
