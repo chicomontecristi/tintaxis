@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
 // "scribe" is the Stripe plan ID; displayed as "Scribe" in the UI
-export type SubscriptionTierName = "free" | "codex" | "scribe" | "archive" | "chronicler";
+export type SubscriptionTierName = "free" | "digital_copy" | "codex" | "scribe" | "archive" | "chronicler";
 
 interface SubscriptionModalProps {
   isOpen: boolean;
@@ -18,6 +18,7 @@ interface SubscriptionModalProps {
   returnUrl?: string;   // where to send the reader after successful payment
   writerSlug: string;   // REQUIRED — subscription is always tied to one writer
   writerName?: string;  // display name for header (e.g. "Chico Montecristi")
+  bookSlug?: string;    // needed for digital copy one-time purchase
 }
 
 interface Tier {
@@ -32,6 +33,21 @@ interface Tier {
 }
 
 const TIERS: Tier[] = [
+  {
+    id: "digital_copy",
+    name: "Digital Copy",
+    price: "$1.50",
+    period: "one-time",
+    tagline: "The full manuscript. Yours to keep.",
+    features: [
+      "Complete PDF download",
+      "Read offline, anywhere",
+      "No subscription required",
+      "Support the author directly",
+    ],
+    inkColors: ["rgba(201,168,76,0.8)"],
+    accentColor: "rgba(201,168,76,0.6)",
+  },
   {
     id: "codex",
     name: "Codex",
@@ -94,7 +110,7 @@ const TIERS: Tier[] = [
   },
 ];
 
-const TIER_ORDER: SubscriptionTierName[] = ["free", "codex", "scribe", "archive", "chronicler"];
+const TIER_ORDER: SubscriptionTierName[] = ["free", "digital_copy", "codex", "scribe", "archive", "chronicler"];
 
 function tierIndex(id?: SubscriptionTierName) {
   if (!id) return -1;
@@ -109,6 +125,7 @@ export default function SubscriptionModal({
   returnUrl,
   writerSlug,
   writerName,
+  bookSlug,
 }: SubscriptionModalProps) {
   const [loadingTier, setLoadingTier] = useState<SubscriptionTierName | null>(null);
 
@@ -124,14 +141,17 @@ export default function SubscriptionModal({
   const handleSubscribe = async (tierId: SubscriptionTierName) => {
     setLoadingTier(tierId);
     try {
-      const res = await fetch("/api/stripe/checkout", {
+      // Digital copy uses a separate one-time payment endpoint
+      const isDigitalCopy = tierId === "digital_copy";
+      const endpoint = isDigitalCopy ? "/api/stripe/digital-copy" : "/api/stripe/checkout";
+      const payload = isDigitalCopy
+        ? { bookSlug: bookSlug ?? "", returnUrl: returnUrl ?? window.location.pathname }
+        : { plan: tierId, returnUrl: returnUrl ?? window.location.pathname, writerSlug };
+
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          plan: tierId,
-          returnUrl: returnUrl ?? window.location.pathname,
-          writerSlug,
-        }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (data.url) {
@@ -299,7 +319,7 @@ export default function SubscriptionModal({
                   textTransform: "uppercase",
                 }}
               >
-                Cancel anytime · Billed monthly · Secured by <span style={{ color: "rgba(201,168,76,0.4)", fontWeight: 600 }}>Stripe</span>
+                Subscriptions cancel anytime · Secured by <span style={{ color: "rgba(201,168,76,0.4)", fontWeight: 600 }}>Stripe</span>
               </p>
             </div>
           </motion.div>
@@ -488,7 +508,7 @@ function TierCard({
         } : {}}
         whileTap={!isLoading ? { scale: 0.97 } : {}}
       >
-        {isLoading ? "OPENING..." : "SUBSCRIBE"}
+        {isLoading ? "OPENING..." : tier.id === "digital_copy" ? "BUY NOW" : "SUBSCRIBE"}
       </motion.button>
     </motion.div>
   );

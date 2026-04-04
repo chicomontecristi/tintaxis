@@ -39,7 +39,7 @@ import { DepthEmailCapture } from "@/components/ui/SessionDepth";
 import { BOOKS } from "@/lib/content/books";
 
 // Tier access order — must match SubscriptionModal's TIER_ORDER
-const TIER_ORDER: SubscriptionTierName[] = ["free", "codex", "scribe", "archive", "chronicler"];
+const TIER_ORDER: SubscriptionTierName[] = ["free", "digital_copy", "codex", "scribe", "archive", "chronicler"];
 
 // ─── READING SURFACE ─────────────────────────────────────────────────────────
 // The complete reading environment. This is the heart of Tintaxis.
@@ -712,6 +712,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
         returnUrl={pathname ?? "/"}
         writerSlug={book?.writerSlug ?? "chico-montecristi"}
         writerName={book?.author}
+        bookSlug={book?.slug}
       />
 
       {/* ── Continue Reading toast ───────────────────────────── */}
