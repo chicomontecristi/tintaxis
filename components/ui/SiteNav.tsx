@@ -67,9 +67,6 @@ export default function SiteNav() {
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
-  // Hide on homepage
-  if (pathname === "/") return null;
-
   // Build auth links
   const authLinks: { href: string; label: string }[] = [];
   if (session.role === "author") {
