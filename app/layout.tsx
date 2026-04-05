@@ -165,7 +165,9 @@ export default function RootLayout({
       </head>
       <body className="vault-noise antialiased">
         <SiteNav />
-        {children}
+        <div style={{ paddingTop: "3rem" }}>
+          {children}
+        </div>
         <ServiceWorkerRegistration />
         <Analytics />
       </body>

@@ -253,30 +253,6 @@ export default function HomeClient() {
             </Link>
           </motion.div>
 
-          {/* Scroll indicator */}
-          <motion.div
-            className="absolute bottom-24"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5, duration: 1 }}
-          >
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              style={{
-                fontFamily: MONO,
-                fontSize: "0.55rem",
-                letterSpacing: "0.2em",
-                color: "rgba(201,168,76,0.25)",
-                textTransform: "uppercase",
-                textAlign: "center",
-              }}
-            >
-              Scroll to explore
-              <br />
-              <span style={{ fontSize: "1rem" }}>↓</span>
-            </motion.div>
-          </motion.div>
         </div>
       </section>
 
