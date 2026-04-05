@@ -19,6 +19,7 @@ const PUBLIC_LINKS = [
   { href: "/publish", label: "Publish" },
   { href: "/impact", label: "Impact" },
   { href: "/how-it-works", label: "How It Works" },
+  { href: "https://art-opportunity-finder--montecristi.replit.app", label: "Art Pathways", external: true },
 ];
 
 export default function SiteNav() {
@@ -122,24 +123,23 @@ export default function SiteNav() {
           gap: "clamp(0.75rem, 2.5vw, 1.5rem)",
           alignItems: "center",
         }}>
-          {allLinks.map(({ href, label }) => {
-            const isActive = pathname === href || pathname.startsWith(href + "/");
-            return (
-              <Link
-                key={href}
-                href={href}
-                style={{
-                  fontFamily: MONO,
-                  fontSize: "0.8rem",
-                  letterSpacing: "0.2em",
-                  color: isActive
-                    ? "rgba(201,168,76,0.8)"
-                    : "rgba(201,168,76,0.4)",
-                  textDecoration: "none",
-                  textTransform: "uppercase",
-                  transition: "color 0.2s ease",
-                }}
-              >
+          {allLinks.map(({ href, label, external }) => {
+            const isActive = !external && (pathname === href || pathname.startsWith(href + "/"));
+            const linkStyle: React.CSSProperties = {
+              fontFamily: MONO,
+              fontSize: "0.8rem",
+              letterSpacing: "0.2em",
+              color: isActive ? "rgba(201,168,76,0.8)" : "rgba(201,168,76,0.4)",
+              textDecoration: "none",
+              textTransform: "uppercase",
+              transition: "color 0.2s ease",
+            };
+            return external ? (
+              <a key={href} href={href} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+                {label}
+              </a>
+            ) : (
+              <Link key={href} href={href} style={linkStyle}>
                 {label}
               </Link>
             );
@@ -235,8 +235,17 @@ export default function SiteNav() {
               paddingBottom: "4rem",
             }}
           >
-            {allLinks.map(({ href, label }, i) => {
-              const isActive = pathname === href || pathname.startsWith(href + "/");
+            {allLinks.map(({ href, label, external }, i) => {
+              const isActive = !external && (pathname === href || pathname.startsWith(href + "/"));
+              const mobileLinkStyle: React.CSSProperties = {
+                fontFamily: MONO,
+                fontSize: "1rem",
+                letterSpacing: "0.3em",
+                color: isActive ? "rgba(201,168,76,0.9)" : "rgba(201,168,76,0.5)",
+                textDecoration: "none",
+                textTransform: "uppercase",
+                transition: "color 0.2s ease",
+              };
               return (
                 <motion.div
                   key={href}
@@ -244,23 +253,16 @@ export default function SiteNav() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05, duration: 0.3 }}
                 >
-                  <Link
-                    href={href}
-                    onClick={() => setMenuOpen(false)}
-                    style={{
-                      fontFamily: MONO,
-                      fontSize: "1rem",
-                      letterSpacing: "0.3em",
-                      color: isActive
-                        ? "rgba(201,168,76,0.9)"
-                        : "rgba(201,168,76,0.5)",
-                      textDecoration: "none",
-                      textTransform: "uppercase",
-                      transition: "color 0.2s ease",
-                    }}
-                  >
-                    {label}
-                  </Link>
+                  {external ? (
+                    <a href={href} target="_blank" rel="noopener noreferrer"
+                       onClick={() => setMenuOpen(false)} style={mobileLinkStyle}>
+                      {label}
+                    </a>
+                  ) : (
+                    <Link href={href} onClick={() => setMenuOpen(false)} style={mobileLinkStyle}>
+                      {label}
+                    </Link>
+                  )}
                 </motion.div>
               );
             })}
