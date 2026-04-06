@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useI18n } from "@/lib/i18n";
 
 // ─── SESSION DEPTH TRIGGERS ──────────────────────────────────────────────────
 // Progressive CTAs that appear based on how deep the reader is into a session.
@@ -33,6 +34,7 @@ function incrementDepth(): number {
 // Only appears on 2nd page view if reader hasn't given email yet.
 
 export function DepthEmailCapture() {
+  const { t } = useI18n();
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
@@ -107,7 +109,7 @@ export function DepthEmailCapture() {
                 textAlign: "center",
               }}
             >
-              Welcome to the archive.
+              {t("email.welcome")}
             </motion.p>
           ) : (
             <>
@@ -122,7 +124,7 @@ export function DepthEmailCapture() {
                     lineHeight: 1.3,
                   }}
                 >
-                  Stay in the archive.
+                  {t("email.stayInArchive")}
                 </p>
                 <button
                   onClick={dismiss}
@@ -145,7 +147,7 @@ export function DepthEmailCapture() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
+                  placeholder={t("email.placeholder")}
                   onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                   style={{
                     flex: 1,
@@ -180,7 +182,7 @@ export function DepthEmailCapture() {
                   }}
                   whileHover={{ borderColor: `${BRASS}0.4)`, background: `${BRASS}0.1)` }}
                 >
-                  {status === "sending" ? "..." : "Notify Me"}
+                  {status === "sending" ? "..." : t("email.notifyMe")}
                 </motion.button>
               </div>
             </>
@@ -196,6 +198,7 @@ export function DepthEmailCapture() {
 // Only shows if they haven't visited /library yet this session.
 
 export function DeepReaderNudge() {
+  const { t } = useI18n();
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -252,8 +255,8 @@ export function DeepReaderNudge() {
               lineHeight: 1.3,
             }}
           >
-            Four books in the archive.{" "}
-            <span style={{ color: `${BRASS}0.55)` }}>Browse the library →</span>
+            4 {t("depth.booksInArchive")}{" "}
+            <span style={{ color: `${BRASS}0.55)` }}>{t("depth.browseLibrary")}</span>
           </a>
           <button
             onClick={() => setShow(false)}

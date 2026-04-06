@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useI18n } from "@/lib/i18n";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
 import { TrustLine } from "@/components/ui/TrustSignals";
 import { getChapterProgress } from "@/lib/ink";
@@ -17,6 +18,7 @@ import type { Book, Chapter } from "@/lib/types";
 export default function BookPageClient() {
   const params = useParams<{ bookSlug: string }>();
   const bookSlug = params?.bookSlug ?? "";
+  const { t } = useI18n();
 
   const [book, setBook] = useState<Book | null>(null);
   const [chapters, setChapters] = useState<Chapter[]>([]);
@@ -75,7 +77,7 @@ export default function BookPageClient() {
             textTransform: "uppercase",
           }}
         >
-          Loading…
+          {t("book.loading")}
         </span>
       </div>
     );
@@ -101,7 +103,7 @@ export default function BookPageClient() {
             color: "rgba(245,230,200,0.5)",
           }}
         >
-          Book not found.
+          {t("book.notFound")}
         </span>
         <Link
           href="/"
@@ -114,7 +116,7 @@ export default function BookPageClient() {
             textTransform: "uppercase",
           }}
         >
-          ← Back to Tintaxis
+          ← {t("book.backToTintaxis")}
         </Link>
       </div>
     );
@@ -254,7 +256,7 @@ export default function BookPageClient() {
               marginBottom: "0.75rem",
             }}
           >
-            No account required to preview
+            {t("book.noAccount")}
           </p>
 
           {/* Start reading CTA */}
@@ -288,7 +290,7 @@ export default function BookPageClient() {
                 color: "rgba(245,230,200,0.85)",
               }}
             >
-              Begin Reading
+              {t("book.beginReading")}
             </span>
             <span style={{ color: accentMid, fontSize: "1rem" }}>→</span>
           </Link>
@@ -357,7 +359,7 @@ export default function BookPageClient() {
                 fontWeight: 600,
               }}
             >
-              {dcLoading ? "Loading..." : "Digital Copy — $1.50"}
+              {dcLoading ? t("book.openingCheckout") : `${t("book.digitalCopy")} — $1.50`}
             </span>
             <span
               style={{
@@ -368,7 +370,7 @@ export default function BookPageClient() {
                 textTransform: "uppercase",
               }}
             >
-              One-time PDF. Yours to keep.
+              {t("book.oneTimePdf")}
             </span>
           </button>
 
@@ -383,7 +385,7 @@ export default function BookPageClient() {
               lineHeight: 1.6,
             }}
           >
-            Copyrighted PDF download. Redistribution or reproduction is subject to legal action.
+            {t("book.copyright")}
           </p>
         </motion.div>
 
@@ -411,7 +413,7 @@ export default function BookPageClient() {
               marginBottom: "1.5rem",
             }}
           >
-            Contents · {chapters.length} {book.chapterLabel}{chapters.length !== 1 ? "s" : ""}
+            {t("book.contents")} · {chapters.length} {book.chapterLabel}{chapters.length !== 1 ? "s" : ""}
           </p>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
@@ -423,6 +425,7 @@ export default function BookPageClient() {
                 chapterLabel={book.chapterLabel}
                 accentColor={accentFull}
                 delay={i * 0.06}
+                t={t}
               />
             ))}
           </div>
@@ -439,7 +442,7 @@ export default function BookPageClient() {
               textTransform: "uppercase",
             }}
           >
-            Tintaxis · {book.wordCount.toLocaleString()} words
+            Tintaxis · {book.wordCount.toLocaleString()} {t("book.words")}
           </span>
         </div>
       </main>
@@ -455,12 +458,14 @@ function ChapterRow({
   chapterLabel,
   accentColor,
   delay,
+  t,
 }: {
   chapter: Chapter;
   bookSlug: string;
   chapterLabel: string;
   accentColor: string;
   delay: number;
+  t: (key: string) => string;
 }) {
   const href = `/book/${bookSlug}/chapter/${chapter.slug}`;
 
@@ -581,12 +586,12 @@ function ChapterRow({
         }}
       >
         {chapter.isLocked
-          ? "Coming soon"
+          ? t("book.comingSoon")
           : isComplete
-            ? "✓ Complete"
+            ? `✓ ${t("book.complete")}`
             : isStarted
-              ? `${progressPct}% read`
-              : `${Math.ceil(chapter.wordCount / 250)} min read`}
+              ? `${progressPct}% ${t("book.read")}`
+              : `${Math.ceil(chapter.wordCount / 250)} ${t("book.minRead")}`}
       </span>
     </motion.div>
   );

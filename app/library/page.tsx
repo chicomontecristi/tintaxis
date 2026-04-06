@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
+import { useI18n } from "@/lib/i18n";
 import { BOOKS } from "@/lib/content/books";
 import type { Book } from "@/lib/types";
 
@@ -46,6 +47,7 @@ function genreShort(genre: string): string {
 }
 
 export default function LibraryPage() {
+  const { t } = useI18n();
   const [sort, setSort] = useState<SortMode>("alpha");
 
   const allBooks = useMemo(() => Object.values(BOOKS), []);
@@ -113,7 +115,7 @@ export default function LibraryPage() {
             margin: "0 0 0.5rem",
             lineHeight: 1.1,
           }}>
-            The Library
+            {t("lib.title")}
           </h1>
           <p style={{
             fontFamily: '"EB Garamond", Garamond, Georgia, serif',
@@ -122,7 +124,7 @@ export default function LibraryPage() {
             color: "rgba(245,230,200,0.35)",
             margin: 0,
           }}>
-            {allBooks.length} works · First chapter free · No account required
+            {allBooks.length} {t("lib.subtitle")}
           </p>
         </motion.div>
 
@@ -224,7 +226,7 @@ export default function LibraryPage() {
             maxWidth: "400px",
             lineHeight: 1.6,
           }}>
-            Curious how Tintaxis works? See how readers and authors connect inside the text.
+            {t("lib.curious")}
           </p>
           <Link href="/experience" style={{
             fontFamily: '"JetBrains Mono", monospace',
@@ -237,7 +239,7 @@ export default function LibraryPage() {
             padding: "0.6rem 1.5rem",
             transition: "all 0.2s ease",
           }}>
-            See the Experience →
+            {t("lib.seeExperience")}
           </Link>
         </div>
 
@@ -271,6 +273,7 @@ function BookCard({
   delay: number;
   compact?: boolean;
 }) {
+  const { t } = useI18n();
   const [hovered, setHovered] = useState(false);
   const rgb = hexToRgb(book.accentColor);
   const accent = book.accentColor;
@@ -332,7 +335,7 @@ function BookCard({
                     textTransform: "uppercase",
                     whiteSpace: "nowrap",
                   }}>
-                    ★ Featured
+                    ★ {t("lib.featured")}
                   </span>
                 )}
                 <span style={{
@@ -435,7 +438,7 @@ function BookCard({
               transition: "color 0.2s ease",
               marginTop: "4px",
             }}>
-              Read →
+              {t("lib.read")}
             </span>
           </div>
         </div>

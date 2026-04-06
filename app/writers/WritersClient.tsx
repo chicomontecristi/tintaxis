@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
+import { useI18n } from "@/lib/i18n";
 import { FEATURED_WRITERS, type FeaturedWriter } from "@/lib/featured-writers";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
 
@@ -10,6 +11,8 @@ import TintaxisLogo from "@/components/ui/TintaxisLogo";
 // Writers published directly by Tintaxis — curated, no application required.
 
 export default function WritersClient() {
+  const { t } = useI18n();
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#0D0B08" }}>
 
@@ -35,7 +38,7 @@ export default function WritersClient() {
             textTransform: "uppercase",
             marginBottom: "1rem",
           }}>
-            Tintaxis · Featured Artists
+            {t("writers.featured")}
           </p>
           <h1 style={{
             fontFamily: '"EB Garamond", Garamond, Georgia, serif',
@@ -46,7 +49,7 @@ export default function WritersClient() {
             lineHeight: 1.15,
             marginBottom: "1.25rem",
           }}>
-            The Writers of This Archive
+            {t("writers.title")}
           </h1>
           <p style={{
             fontFamily: '"EB Garamond", Garamond, Georgia, serif',
@@ -57,8 +60,7 @@ export default function WritersClient() {
             maxWidth: "52ch",
             margin: "0 auto 2rem",
           }}>
-            These writers were invited directly. No application. No committee.
-            Their work is published here because it deserves to be read.
+            {t("writers.subtitle")}
           </p>
           <div className="brass-line" style={{ maxWidth: "320px", margin: "0 auto" }} />
         </motion.div>
@@ -70,7 +72,7 @@ export default function WritersClient() {
           gap: "1.5rem",
         }}>
           {FEATURED_WRITERS.map((writer, i) => (
-            <WriterCard key={writer.slug} writer={writer} index={i} />
+            <WriterCard key={writer.slug} writer={writer} index={i} t={t} />
           ))}
         </div>
 
@@ -89,7 +91,7 @@ export default function WritersClient() {
             color: "rgba(201,168,76,0.25)",
             textTransform: "uppercase",
           }}>
-            New writers added by invitation
+            {t("writers.byInvitation")}
           </p>
         </motion.div>
       </div>
@@ -99,7 +101,7 @@ export default function WritersClient() {
 
 // ─── WRITER CARD ─────────────────────────────────────────────────────────────
 
-function WriterCard({ writer, index }: { writer: FeaturedWriter; index: number }) {
+function WriterCard({ writer, index, t }: { writer: FeaturedWriter; index: number; t: (key: string) => string }) {
   const displayName = writer.artistName ?? writer.name;
 
   return (
@@ -238,7 +240,7 @@ function WriterCard({ writer, index }: { writer: FeaturedWriter; index: number }
             color: "rgba(201,168,76,0.35)",
             textTransform: "uppercase",
           }}>
-            {writer.works.length} work{writer.works.length !== 1 ? "s" : ""} · View profile →
+            {writer.works.length} {writer.works.length !== 1 ? t("writers.worksPlural") : t("writers.works")} · {t("writers.viewProfile")}
           </p>
         </motion.div>
       </Link>

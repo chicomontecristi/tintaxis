@@ -2,6 +2,7 @@
 
 import { useState, FormEvent, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useI18n } from "@/lib/i18n";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 interface FormState {
@@ -20,38 +21,38 @@ const FEATURES = [
   {
     id: "ink",
     glyph: "⬡",
-    headline: "Six Inks. One Voice.",
-    body: "Choose the emotional register of your chapters — Melancholic, Urgent, Tender, Suspenseful, Reflective, or Defiant. The ink shapes how your prose is rendered for readers.",
+    headlineKey: "pub.feat.sixInks.title",
+    bodyKey: "pub.feat.sixInks.desc",
   },
   {
     id: "signal",
     glyph: "◈",
-    headline: "Signal Questions.",
-    body: "Readers leave questions embedded in the text. You respond privately or publicly. A new kind of literary dialogue — intimate, asynchronous, permanent.",
+    headlineKey: "pub.feat.signal.title",
+    bodyKey: "pub.feat.signal.desc",
   },
   {
     id: "rain",
     glyph: "▓",
-    headline: "Chapter Rain.",
-    body: "At the end of every chapter, your prose dissolves into a Matrix-style cascade built from your own vocabulary — a unique visual signature for every work.",
+    headlineKey: "pub.feat.rain.title",
+    bodyKey: "pub.feat.rain.desc",
   },
   {
     id: "whisper",
     glyph: "◇",
-    headline: "Author Whispers.",
-    body: "Leave annotations visible only to verified readers. Context, regret, the sentence you almost cut. The margin notes authors never publish — until now.",
+    headlineKey: "pub.feat.whisper.title",
+    bodyKey: "pub.feat.whisper.desc",
   },
   {
     id: "archive",
     glyph: "⊞",
-    headline: "The Archive.",
-    body: "Every work on Tintaxis lives in a unified archive. Readers discover your work alongside others. Your book earns shelf space through engagement, not algorithm.",
+    headlineKey: "pub.feat.archive.title",
+    bodyKey: "pub.feat.archive.desc",
   },
   {
     id: "readers",
     glyph: "◉",
-    headline: "Real Readers.",
-    body: "No follower counts. No likes. Tintaxis tracks reading depth — how far readers go, which chapters hold them, where they leave. Data that means something.",
+    headlineKey: "pub.feat.readers.title",
+    bodyKey: "pub.feat.readers.desc",
   },
 ];
 
@@ -89,6 +90,7 @@ function BrassRule({ opacity = 0.2 }: { opacity?: number }) {
 }
 
 function FeatureCard({ feature, index }: { feature: typeof FEATURES[0]; index: number }) {
+  const { t } = useI18n();
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -123,7 +125,7 @@ function FeatureCard({ feature, index }: { feature: typeof FEATURES[0]; index: n
           marginBottom: "0.75rem",
         }}
       >
-        {feature.headline}
+        {t(feature.headlineKey)}
       </p>
       <p
         style={{
@@ -134,7 +136,7 @@ function FeatureCard({ feature, index }: { feature: typeof FEATURES[0]; index: n
           fontStyle: "italic",
         }}
       >
-        {feature.body}
+        {t(feature.bodyKey)}
       </p>
     </motion.div>
   );
@@ -142,6 +144,7 @@ function FeatureCard({ feature, index }: { feature: typeof FEATURES[0]; index: n
 
 // ─── WRITER EARNINGS — NO FEES, PURE SPLIT ──────────────────────────────────
 function WriterEarningsBreakdown() {
+  const { t } = useI18n();
   return (
     <>
       <motion.p
@@ -174,7 +177,7 @@ function WriterEarningsBreakdown() {
           marginBottom: "0.75rem",
         }}
       >
-        You keep 85% of net revenue. The work to earn it is yours.
+        {t("pub.subtitle")}
       </motion.h2>
       <motion.p
         initial={{ opacity: 0 }}
@@ -192,7 +195,7 @@ function WriterEarningsBreakdown() {
           lineHeight: 1.7,
         }}
       >
-        Tintaxis is a digital publisher in its Genesis — not a self-publishing platform. Every submission is read by a person. After Stripe processing, 85% of net revenue goes directly to you. Tintaxis keeps 15% to run the platform and push your work across every digital channel we can reach. You are not gifting us 15%. You are earning access to infrastructure, promotion, and a permanent home for your writing.
+        {t("pub.model")}
       </motion.p>
 
       {/* Visual split */}
@@ -221,7 +224,7 @@ function WriterEarningsBreakdown() {
           marginBottom: "0.35rem",
           textTransform: "uppercase",
         }}>
-          After Stripe processing (2.9% + 30¢)
+          {t("pub.afterStripe")}
         </p>
         <div style={{
           position: "relative",
@@ -246,7 +249,7 @@ function WriterEarningsBreakdown() {
               letterSpacing: "0.1em",
               color: "rgba(0,229,204,0.9)",
             }}>
-              85% OF NET — YOU
+              {t("pub.youGet")}
             </span>
           </div>
           <div style={{
@@ -290,22 +293,22 @@ function WriterEarningsBreakdown() {
         }}>
           {[
             {
-              label: "NO PLATFORM FEES",
-              desc: "We don't charge writers. Not monthly, not annually, not ever.",
+              labelKey: "pub.noFees",
+              descKey: "pub.noFeesDesc",
               accent: "rgba(0,229,204,0.6)",
             },
             {
-              label: "READER-FUNDED",
-              desc: "Readers subscribe to your work. Their money goes to you — not an algorithm.",
+              labelKey: "pub.readerFunded",
+              descKey: "pub.readerFundedDesc",
               accent: "rgba(201,168,76,0.6)",
             },
             {
-              label: "DIRECT PAYOUTS",
-              desc: "85% of net revenue transferred to your account. Your earnings scale with your readers, your marketing, your momentum.",
+              labelKey: "pub.directPayouts",
+              descKey: "pub.directPayoutsDesc",
               accent: "rgba(245,230,200,0.5)",
             },
           ].map((col) => (
-            <div key={col.label} style={{ textAlign: "center" }}>
+            <div key={col.labelKey} style={{ textAlign: "center" }}>
               <p style={{
                 fontFamily: '"JetBrains Mono", monospace',
                 fontSize: "0.65rem",
@@ -314,7 +317,7 @@ function WriterEarningsBreakdown() {
                 color: col.accent,
                 marginBottom: "0.5rem",
               }}>
-                {col.label}
+                {t(col.labelKey)}
               </p>
               <p style={{
                 fontFamily: '"EB Garamond", Garamond, Georgia, serif',
@@ -323,7 +326,7 @@ function WriterEarningsBreakdown() {
                 color: "rgba(245,230,200,0.4)",
                 lineHeight: 1.6,
               }}>
-                {col.desc}
+                {t(col.descKey)}
               </p>
             </div>
           ))}
@@ -335,6 +338,7 @@ function WriterEarningsBreakdown() {
 
 // ─── MAIN PAGE ─────────────────────────────────────────────────────────────────
 export default function PublishClient() {
+  const { t } = useI18n();
   const formRef = useRef<HTMLDivElement>(null);
   const [form, setForm] = useState<FormState>({
     name: "",
@@ -470,9 +474,9 @@ export default function PublishClient() {
                 marginBottom: "1.5rem",
               }}
             >
-              We don&apos;t charge writers.
+              {t("pub.hero")}
               <br />
-              <em style={{ color: "rgba(201,168,76,0.85)" }}>We select them.</em>
+              <em style={{ color: "rgba(201,168,76,0.85)" }}>{t("pub.heroEmphasis")}</em>
             </h1>
 
             <p
@@ -486,7 +490,7 @@ export default function PublishClient() {
                 margin: "0 auto 3rem",
               }}
             >
-              Tintaxis is a digital publisher in its Genesis. We select writers — this is not self-publishing. If your work belongs here, everything else is handled.
+              {t("pub.heroDesc")}
             </p>
 
             <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
@@ -632,7 +636,7 @@ export default function PublishClient() {
               marginBottom: "2.5rem",
             }}
           >
-            THE PROCESS
+            {t("pub.theProcess")}
           </motion.p>
 
           <div style={{
@@ -643,18 +647,18 @@ export default function PublishClient() {
             {[
               {
                 step: "01",
-                title: "You apply.",
-                body: "Submit your first chapter, a synopsis, and a few words about why your work belongs here. That's the entire ask.",
+                titleKey: "pub.step1",
+                bodyKey: "pub.step1Desc",
               },
               {
                 step: "02",
-                title: "We read.",
-                body: "Every submission is read by a person — not sorted by an algorithm. We respond within 5 business days.",
+                titleKey: "pub.step2",
+                bodyKey: "pub.step2Desc",
               },
               {
                 step: "03",
-                title: "You're in.",
-                body: "Accepted writers publish for free. Your work enters the archive. Readers find you. Revenue follows.",
+                titleKey: "pub.step3",
+                bodyKey: "pub.step3Desc",
               },
             ].map((s, i) => (
               <motion.div
@@ -689,7 +693,7 @@ export default function PublishClient() {
                   textTransform: "uppercase",
                   marginBottom: "0.75rem",
                 }}>
-                  {s.title}
+                  {t(s.titleKey)}
                 </p>
                 <p style={{
                   fontFamily: '"EB Garamond", Garamond, Georgia, serif',
@@ -698,7 +702,7 @@ export default function PublishClient() {
                   color: "rgba(245,230,200,0.45)",
                   lineHeight: 1.7,
                 }}>
-                  {s.body}
+                  {t(s.bodyKey)}
                 </p>
               </motion.div>
             ))}
@@ -723,7 +727,7 @@ export default function PublishClient() {
               marginBottom: "3rem",
             }}
           >
-            WHAT YOUR WORK GETS
+            {t("pub.features")}
           </motion.p>
           <div
             style={{
@@ -917,7 +921,7 @@ export default function PublishClient() {
                         marginBottom: "0.75rem",
                       }}
                     >
-                      Application received.
+                      {t("pub.submitted")}
                     </p>
                     <p
                       style={{
@@ -927,7 +931,7 @@ export default function PublishClient() {
                         color: "rgba(245,230,200,0.4)",
                       }}
                     >
-                      We&apos;ll be in touch within 5 business days. Thank you for writing.
+                      {t("pub.submittedDesc")}
                     </p>
                   </motion.div>
                 ) : (
@@ -942,7 +946,7 @@ export default function PublishClient() {
                       }}
                     >
                       <div>
-                        <label style={labelStyle}>Name</label>
+                        <label style={labelStyle}>{t("pub.name")}</label>
                         <input
                           type="text"
                           value={form.name}
@@ -954,7 +958,7 @@ export default function PublishClient() {
                         />
                       </div>
                       <div>
-                        <label style={labelStyle}>Email</label>
+                        <label style={labelStyle}>{t("pub.email")}</label>
                         <input
                           type="email"
                           value={form.email}
@@ -969,7 +973,7 @@ export default function PublishClient() {
 
                     {/* Book Title */}
                     <div style={{ marginBottom: "1rem" }}>
-                      <label style={labelStyle}>Book Title</label>
+                      <label style={labelStyle}>{t("pub.bookTitle")}</label>
                       <input
                         type="text"
                         value={form.bookTitle}
@@ -991,7 +995,7 @@ export default function PublishClient() {
                       }}
                     >
                       <div>
-                        <label style={labelStyle}>Genre</label>
+                        <label style={labelStyle}>{t("pub.genre")}</label>
                         <select
                           value={form.genre}
                           onChange={set("genre")}
@@ -1015,7 +1019,7 @@ export default function PublishClient() {
                         </select>
                       </div>
                       <div>
-                        <label style={labelStyle}>Word Count</label>
+                        <label style={labelStyle}>{t("pub.wordCount")}</label>
                         <input
                           type="number"
                           value={form.wordCount}
@@ -1030,7 +1034,7 @@ export default function PublishClient() {
 
                     {/* Synopsis */}
                     <div style={{ marginBottom: "1rem" }}>
-                      <label style={labelStyle}>Synopsis</label>
+                      <label style={labelStyle}>{t("pub.synopsis")}</label>
                       <textarea
                         value={form.synopsis}
                         onChange={set("synopsis")}
@@ -1048,7 +1052,7 @@ export default function PublishClient() {
 
                     {/* Why Tintaxis */}
                     <div style={{ marginBottom: "2rem" }}>
-                      <label style={labelStyle}>Why Tintaxis?</label>
+                      <label style={labelStyle}>{t("pub.whyTintaxis")}</label>
                       <textarea
                         value={form.whyTintaxis}
                         onChange={set("whyTintaxis")}
@@ -1066,7 +1070,7 @@ export default function PublishClient() {
 
                     {/* Chapter Upload */}
                     <div style={{ marginBottom: "2rem" }}>
-                      <label style={labelStyle}>First Chapter (Required)</label>
+                      <label style={labelStyle}>{t("pub.firstChapter")}</label>
                       <p
                         style={{
                           fontFamily: '"EB Garamond", Garamond, Georgia, serif',
@@ -1190,7 +1194,7 @@ export default function PublishClient() {
                         cursor: submitStatus === "loading" ? "not-allowed" : "pointer",
                       }}
                     >
-                      {submitStatus === "loading" ? "TRANSMITTING..." : "SUBMIT APPLICATION"}
+                      {submitStatus === "loading" ? t("pub.submitting") : t("pub.submit")}
                     </motion.button>
                     <p style={{
                       fontFamily: '"EB Garamond", Garamond, Georgia, serif',

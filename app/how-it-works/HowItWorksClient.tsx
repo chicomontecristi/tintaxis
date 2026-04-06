@@ -1,6 +1,9 @@
 "use client";
 
+import { useI18n } from "@/lib/i18n";
+
 export default function HowItWorksClient() {
+  const { t } = useI18n();
   return (
     <div
       style={{
@@ -28,7 +31,7 @@ export default function HowItWorksClient() {
             letterSpacing: "0.05em",
           }}
         >
-          How It Works
+          {t("hiw.title")}
         </h1>
         <p
           style={{
@@ -37,7 +40,7 @@ export default function HowItWorksClient() {
             opacity: 0.9,
           }}
         >
-          Everything you need to know about reading and publishing on Tintaxis.
+          {t("hiw.subtitle")}
         </p>
 
         {/* FOR READERS SECTION */}
@@ -54,7 +57,7 @@ export default function HowItWorksClient() {
               letterSpacing: "0.05em",
             }}
           >
-            For Readers
+            {t("hiw.forReaders")}
           </h2>
 
           {/* Browse the Library */}
@@ -75,10 +78,10 @@ export default function HowItWorksClient() {
                 letterSpacing: "0.03em",
               }}
             >
-              1. Browse the Library
+              {t("hiw.r1.title")}
             </h3>
             <p style={{ fontSize: "1rem", lineHeight: "1.6" }}>
-              Visit the Library tab. Every book shows its language, chapter count, and author.
+              {t("hiw.r1.desc")}
             </p>
           </article>
 
@@ -100,10 +103,10 @@ export default function HowItWorksClient() {
                 letterSpacing: "0.03em",
               }}
             >
-              2. Start Reading
+              {t("hiw.r2.title")}
             </h3>
             <p style={{ fontSize: "1rem", lineHeight: "1.6" }}>
-              Click any book to open Chapter 1. No account needed for the preview.
+              {t("hiw.r2.desc")}
             </p>
           </article>
 
@@ -125,10 +128,10 @@ export default function HowItWorksClient() {
                 letterSpacing: "0.03em",
               }}
             >
-              3. Subscribe to Continue
+              {t("hiw.r3.title")}
             </h3>
             <p style={{ fontSize: "1rem", lineHeight: "1.6" }}>
-              Chapters beyond the preview require a subscription. Plans start at $1.99/month. Cancel anytime.
+              {t("hiw.r3.desc")}
             </p>
           </article>
 
@@ -150,10 +153,10 @@ export default function HowItWorksClient() {
                 letterSpacing: "0.03em",
               }}
             >
-              4. Digital Copy
+              {t("hiw.r4.title")}
             </h3>
             <p style={{ fontSize: "1rem", lineHeight: "1.6" }}>
-              Don't want a subscription? Purchase a one-time PDF of any book for $1.50. Yours to keep.
+              {t("hiw.r4.desc")}
             </p>
           </article>
 
@@ -175,10 +178,10 @@ export default function HowItWorksClient() {
                 letterSpacing: "0.03em",
               }}
             >
-              5. Reading Tools
+              {t("hiw.r5.title")}
             </h3>
             <p style={{ fontSize: "1rem", lineHeight: "1.6" }}>
-              Highlight text with six ink types. Listen to AI narration. Toggle day/night mode. Leave margin notes.
+              {t("hiw.r5.desc")}
             </p>
           </article>
 
@@ -199,10 +202,10 @@ export default function HowItWorksClient() {
                 letterSpacing: "0.03em",
               }}
             >
-              6. Resume Reading
+              {t("hiw.r6.title")}
             </h3>
             <p style={{ fontSize: "1rem", lineHeight: "1.6" }}>
-              Press R on any reading page to jump back to where you left off. Or use Ctrl+R (Cmd+R on Mac).
+              {t("hiw.r6.desc")}
             </p>
           </article>
         </section>
@@ -221,7 +224,7 @@ export default function HowItWorksClient() {
               letterSpacing: "0.05em",
             }}
           >
-            For Writers
+            {t("hiw.forWriters")}
           </h2>
 
           {/* Submit Your Manuscript */}
@@ -242,10 +245,10 @@ export default function HowItWorksClient() {
                 letterSpacing: "0.03em",
               }}
             >
-              1. Submit Your Manuscript
+              {t("hiw.w1.title")}
             </h3>
             <p style={{ fontSize: "1rem", lineHeight: "1.6" }}>
-              Go to the Publish tab. Fill out the submission form with your book title, genre, word count, and a sample chapter.
+              {t("hiw.w1.desc")}
             </p>
           </article>
 
@@ -267,10 +270,10 @@ export default function HowItWorksClient() {
                 letterSpacing: "0.03em",
               }}
             >
-              2. Human Review
+              {t("hiw.w2.title")}
             </h3>
             <p style={{ fontSize: "1rem", lineHeight: "1.6" }}>
-              Every submission is read by a person. Tintaxis is a digital publisher, not a self-publishing platform. We select writers.
+              {t("hiw.w2.desc")}
             </p>
           </article>
 
@@ -292,10 +295,10 @@ export default function HowItWorksClient() {
                 letterSpacing: "0.03em",
               }}
             >
-              3. Response Timeline
+              {t("hiw.w3.title")}
             </h3>
             <p style={{ fontSize: "1rem", lineHeight: "1.6" }}>
-              Expect a response within days, not months.
+              {t("hiw.w3.desc")}
             </p>
           </article>
 
@@ -317,10 +320,10 @@ export default function HowItWorksClient() {
                 letterSpacing: "0.03em",
               }}
             >
-              4. Revenue
+              {t("hiw.w4.title")}
             </h3>
             <p style={{ fontSize: "1rem", lineHeight: "1.6" }}>
-              After Stripe processing fees, 85% of net revenue goes to you. Tintaxis keeps 15%. Your earnings scale with your reach — your readers, your marketing, your momentum.
+              {t("hiw.w4.desc")}
             </p>
           </article>
 
@@ -341,10 +344,10 @@ export default function HowItWorksClient() {
                 letterSpacing: "0.03em",
               }}
             >
-              5. Your Role
+              {t("hiw.w5.title")}
             </h3>
             <p style={{ fontSize: "1rem", lineHeight: "1.6" }}>
-              Tintaxis publishes your work and promotes it across digital channels. But the engine is you. The more you market, the more you earn. This is your business.
+              {t("hiw.w5.desc")}
             </p>
           </article>
         </section>
@@ -363,7 +366,7 @@ export default function HowItWorksClient() {
               letterSpacing: "0.05em",
             }}
           >
-            For Everyone
+            {t("hiw.forEveryone")}
           </h2>
 
           {/* Languages */}
@@ -384,10 +387,10 @@ export default function HowItWorksClient() {
                 letterSpacing: "0.03em",
               }}
             >
-              1. Languages
+              {t("hiw.e1.title")}
             </h3>
             <p style={{ fontSize: "1rem", lineHeight: "1.6" }}>
-              Tintaxis publishes in English, Spanish, Mandarin Chinese, Portuguese, Tamil, and Italian.
+              {t("hiw.e1.desc")}
             </p>
           </article>
 
@@ -409,10 +412,10 @@ export default function HowItWorksClient() {
                 letterSpacing: "0.03em",
               }}
             >
-              2. No Ads
+              {t("hiw.e2.title")}
             </h3>
             <p style={{ fontSize: "1rem", lineHeight: "1.6" }}>
-              There are no ads on this platform. Revenue comes from readers who subscribe.
+              {t("hiw.e2.desc")}
             </p>
           </article>
 
@@ -433,10 +436,10 @@ export default function HowItWorksClient() {
                 letterSpacing: "0.03em",
               }}
             >
-              3. Day & Night
+              {t("hiw.e3.title")}
             </h3>
             <p style={{ fontSize: "1rem", lineHeight: "1.6" }}>
-              Click the moon/sun icon in the navigation to switch reading modes.
+              {t("hiw.e3.desc")}
             </p>
           </article>
         </section>

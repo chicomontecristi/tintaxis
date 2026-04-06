@@ -6,6 +6,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useI18n } from "@/lib/i18n";
 
 // "scribe" is the Stripe plan ID; displayed as "Scribe" in the UI
 export type SubscriptionTierName = "free" | "digital_copy" | "codex" | "scribe" | "archive" | "chronicler";
@@ -35,75 +36,75 @@ interface Tier {
 const TIERS: Tier[] = [
   {
     id: "digital_copy",
-    name: "Digital Copy",
+    name: "sub.tier.digitalCopy",
     price: "$1.50",
-    period: "one-time",
-    tagline: "The full manuscript. Yours to keep.",
+    period: "sub.oneTime",
+    tagline: "sub.tier.digitalCopy.tagline",
     features: [
-      "Complete PDF download",
-      "Read offline, anywhere",
-      "No subscription required",
-      "Support the author directly",
+      "sub.tier.digitalCopy.f1",
+      "sub.tier.digitalCopy.f2",
+      "sub.tier.digitalCopy.f3",
+      "sub.tier.digitalCopy.f4",
     ],
     inkColors: ["rgba(201,168,76,0.8)"],
     accentColor: "rgba(201,168,76,0.6)",
   },
   {
     id: "codex",
-    name: "Codex",
+    name: "sub.tier.codex",
     price: "$1.99",
-    period: "/month",
-    tagline: "Less than a coffee. The whole archive.",
+    period: "sub.perMonth",
+    tagline: "sub.tier.codex.tagline",
     features: [
-      "All published chapters",
-      "Ghost, Ember, Copper & Memory Ink",
-      "Personal annotation archive",
-      "Chapter completion seals",
+      "sub.tier.codex.f1",
+      "sub.tier.codex.f2",
+      "sub.tier.codex.f3",
+      "sub.tier.codex.f4",
     ],
     inkColors: ["rgba(160,168,168,0.8)", "rgba(214,83,60,0.8)", "rgba(201,140,60,0.8)", "rgba(106,60,196,0.8)"],
     accentColor: "rgba(201,168,76,0.6)",
   },
   {
     id: "scribe",
-    name: "Scribe",
+    name: "sub.tier.scribe",
     price: "$3.99",
-    period: "/month",
-    tagline: "Read what the author left behind.",
+    period: "sub.perMonth",
+    tagline: "sub.tier.scribe.tagline",
     features: [
-      "Everything in Codex",
-      "Signal Ink — ask the author directly",
-      "Author Whispers in the margins",
-      "Early access to new work",
+      "sub.tier.scribe.f1",
+      "sub.tier.scribe.f2",
+      "sub.tier.scribe.f3",
+      "sub.tier.scribe.f4",
     ],
     inkColors: ["rgba(0,229,204,0.8)"],
     accentColor: "rgba(0,229,204,0.6)",
   },
   {
     id: "archive",
-    name: "Archive",
+    name: "sub.tier.archive",
     price: "$7.99",
-    period: "/month",
-    tagline: "You are not reading alone.",
+    period: "sub.perMonth",
+    tagline: "sub.tier.archive.tagline",
     features: [
-      "Everything in Scribe",
-      "Community Margin layer",
-      "See how all readers annotate",
-      "Archive Ink — permanent public marks",
+      "sub.tier.archive.f1",
+      "sub.tier.archive.f2",
+      "sub.tier.archive.f3",
+      "sub.tier.archive.f4",
     ],
     inkColors: ["rgba(201,168,76,1)"],
     accentColor: "rgba(201,168,76,0.9)",
   },
   {
     id: "chronicler",
-    name: "Chronicler",
+    name: "sub.tier.chronicler",
     price: "$9.99",
-    period: "/month",
-    tagline: "Your name lives in the book.",
+    period: "sub.perMonth",
+    tagline: "sub.tier.chronicler.tagline",
     features: [
-      "Everything in Archive",
-      "Signed physical edition mailed to you",
-      "Your name in the dedication",
-      "Private reading session with the author",
+      "sub.tier.chronicler.f1",
+      "sub.tier.chronicler.f2",
+      "sub.tier.chronicler.f3",
+      "sub.tier.chronicler.f4",
     ],
     inkColors: ["rgba(245,230,200,0.9)"],
     accentColor: "rgba(245,230,200,0.75)",
@@ -127,6 +128,7 @@ export default function SubscriptionModal({
   writerName,
   bookSlug,
 }: SubscriptionModalProps) {
+  const { t } = useI18n();
   const [loadingTier, setLoadingTier] = useState<SubscriptionTierName | null>(null);
 
   // Reset loading state when reader returns from Stripe (back button / tab switch)
@@ -235,7 +237,7 @@ export default function SubscriptionModal({
                 padding: "0.25rem 0.5rem",
               }}
             >
-              ✕ CLOSE
+              ✕ {t("sub.close")}
             </button>
 
             {/* Header */}
@@ -251,7 +253,7 @@ export default function SubscriptionModal({
                     marginBottom: "0.6rem",
                   }}
                 >
-                  {featureName} · Requires Access
+                  {featureName} · {t("sub.requiresAccess")}
                 </p>
               )}
               <h2
@@ -264,7 +266,7 @@ export default function SubscriptionModal({
                   marginBottom: "0.5rem",
                 }}
               >
-                {writerName ? `Subscribe to ${writerName}` : "Open the Archive"}
+                {writerName ? `${t("sub.subscribeTo")} ${writerName}` : t("sub.openArchive")}
               </h2>
               <p
                 style={{
@@ -275,8 +277,8 @@ export default function SubscriptionModal({
                 }}
               >
                 {writerName
-                  ? `Support this writer directly. Choose how deeply you want to read.`
-                  : "Tintaxis is a living book. Choose how deeply you want to live inside it."}
+                  ? t("sub.supportWriter")
+                  : t("sub.livingBook")}
               </p>
             </div>
 
@@ -334,7 +336,7 @@ export default function SubscriptionModal({
                   textTransform: "uppercase",
                 }}
               >
-                Subscriptions cancel anytime · Secured by <span style={{ color: "rgba(201,168,76,0.4)", fontWeight: 600 }}>Stripe</span>
+                {t("sub.cancelAnytime")} <span style={{ color: "rgba(201,168,76,0.4)", fontWeight: 600 }}>Stripe</span>
               </p>
             </div>
           </motion.div>
@@ -361,6 +363,7 @@ function TierCard({
   isLoading: boolean;
   onSubscribe: () => void;
 }) {
+  const { t } = useI18n();
   return (
     <motion.div
       style={{
@@ -400,7 +403,7 @@ function TierCard({
               fontWeight: 600,
             }}
           >
-            Required
+            {t("sub.required")}
           </span>
         </div>
       )}
@@ -417,7 +420,7 @@ function TierCard({
           marginTop: isHighlighted ? "0.4rem" : "0",
         }}
       >
-        {tier.name}
+        {t(tier.name)}
       </p>
 
       {/* Price */}
@@ -441,7 +444,7 @@ function TierCard({
             letterSpacing: "0.1em",
           }}
         >
-          {tier.period}
+          {t(tier.period)}
         </span>
       </div>
 
@@ -456,7 +459,7 @@ function TierCard({
           lineHeight: 1.4,
         }}
       >
-        {tier.tagline}
+        {t(tier.tagline)}
       </p>
 
       {/* Feature list */}
@@ -477,7 +480,7 @@ function TierCard({
             <span style={{ position: "absolute", left: 0, color: tier.accentColor, opacity: isUnlocked ? 0.3 : 0.7 }}>
               ·
             </span>
-            {f}
+            {t(f)}
           </li>
         ))}
       </ul>
@@ -523,7 +526,7 @@ function TierCard({
         } : {}}
         whileTap={!isLoading ? { scale: 0.97 } : {}}
       >
-        {isLoading ? "OPENING..." : tier.id === "digital_copy" ? "BUY NOW" : "SUBSCRIBE"}
+        {isLoading ? t("sub.opening") : tier.id === "digital_copy" ? t("sub.buyNow") : t("sub.subscribe")}
       </motion.button>
     </motion.div>
   );

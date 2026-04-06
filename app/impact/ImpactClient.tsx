@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useI18n } from "@/lib/i18n";
 
 const MONO  = '"JetBrains Mono", monospace';
 const SERIF = '"EB Garamond", Garamond, Georgia, serif';
 
 // ─── MAIN COMPONENT ──────────────────────────────────────────────────
 export default function ImpactClient() {
+  const { t } = useI18n();
   return (
     <div style={{ backgroundColor: "#0D0B08", color: "#F5E6C8" }}>
       {/* ══════════════════════════════════════════════════════════
@@ -49,7 +51,7 @@ export default function ImpactClient() {
             lineHeight: 1.2,
             marginBottom: "1.5rem",
           }}>
-            IMPACT
+            {t("impact.title")}
           </h1>
           <p style={{
             fontFamily: SERIF,
@@ -58,7 +60,7 @@ export default function ImpactClient() {
             lineHeight: 1.6,
             fontStyle: "italic",
           }}>
-            The environmental case for digital publishing.
+            {t("impact.subtitle")}
           </p>
         </motion.div>
       </section>
@@ -76,8 +78,8 @@ export default function ImpactClient() {
       >
         <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
           <SectionHeader
-            tag="THE COST OF PAPER"
-            title="Every printed book has a price the reader never sees."
+            tag={t("impact.costOfPaper")}
+            title={t("impact.paperDesc")}
           />
 
           {/* ── Key statistics row ── */}
@@ -91,13 +93,13 @@ export default function ImpactClient() {
             }}
           >
             {[
-              { value: "417M", unit: "metric tons", label: "of paper consumed globally each year" },
-              { value: "33%", unit: "of all trees", label: "harvested go to paper production" },
-              { value: "7.5L", unit: "of water", label: "to produce a single sheet of paper" },
-              { value: "26M", unit: "tons of books", label: "end in landfills or are pulped annually" },
+              { value: "417M", unit: "metric tons", labelKey: "impact.stat1" },
+              { value: "33%", unit: "of all trees", labelKey: "impact.stat2" },
+              { value: "7.5L", unit: "of water", labelKey: "impact.stat3" },
+              { value: "26M", unit: "tons of books", labelKey: "impact.stat4" },
             ].map((stat, i) => (
               <motion.div
-                key={stat.label}
+                key={stat.labelKey}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
@@ -128,7 +130,7 @@ export default function ImpactClient() {
                   color: "rgba(245,230,200,0.5)",
                   lineHeight: 1.5,
                 }}>
-                  {stat.label}
+                  {t(stat.labelKey)}
                 </p>
               </motion.div>
             ))}
@@ -157,17 +159,17 @@ export default function ImpactClient() {
               marginBottom: "1.25rem",
               textAlign: "center",
             }}>
-              LIFECYCLE COST PER BOOK
+              {t("impact.lifecycle")}
             </p>
 
             {/* Horizontal bar comparisons */}
             {[
-              { label: "Trees consumed", print: 100, digital: 0, printLabel: "1 tree per 62 books", digitalLabel: "0 trees" },
-              { label: "Water used", print: 100, digital: 3, printLabel: "8 liters per book", digitalLabel: "0.24 liters (server cooling)" },
-              { label: "CO₂ emitted", print: 100, digital: 12, printLabel: "~7.5 kg per book", digitalLabel: "~0.9 kg (amortized)" },
-              { label: "Waste generated", print: 100, digital: 0, printLabel: "30% unsold, pulped", digitalLabel: "Zero physical waste" },
+              { labelKey: "impact.trees", print: 100, digital: 0, printLabelKey: "impact.treesPrint", digitalLabelKey: "impact.treesDigital" },
+              { labelKey: "impact.water", print: 100, digital: 3, printLabelKey: "impact.waterPrint", digitalLabelKey: "impact.waterDigital" },
+              { labelKey: "impact.co2", print: 100, digital: 12, printLabelKey: "impact.co2Print", digitalLabelKey: "impact.co2Digital" },
+              { labelKey: "impact.waste", print: 100, digital: 0, printLabelKey: "impact.wastePrint", digitalLabelKey: "impact.wasteDigital" },
             ].map((row, i) => (
-              <div key={row.label} style={{ marginBottom: i < 3 ? "1.25rem" : 0 }}>
+              <div key={row.labelKey} style={{ marginBottom: i < 3 ? "1.25rem" : 0 }}>
                 <p style={{
                   fontFamily: MONO,
                   fontSize: "0.75rem",
@@ -176,12 +178,12 @@ export default function ImpactClient() {
                   color: "rgba(245,230,200,0.55)",
                   marginBottom: "0.5rem",
                 }}>
-                  {row.label}
+                  {t(row.labelKey)}
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
                   {/* Print bar */}
                   <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                    <span style={{ fontFamily: MONO, fontSize: "0.7rem", color: "rgba(245,230,200,0.4)", width: "55px", flexShrink: 0 }}>PRINT</span>
+                    <span style={{ fontFamily: MONO, fontSize: "0.7rem", color: "rgba(245,230,200,0.4)", width: "55px", flexShrink: 0 }}>{t("impact.print")}</span>
                     <div style={{ flex: 1, height: "22px", background: "rgba(255,255,255,0.03)", borderRadius: "2px", overflow: "hidden", position: "relative" }}>
                       <motion.div
                         initial={{ width: 0 }}
@@ -195,11 +197,11 @@ export default function ImpactClient() {
                         }}
                       />
                     </div>
-                    <span style={{ fontFamily: MONO, fontSize: "0.65rem", color: "rgba(180,80,60,0.7)", minWidth: "160px", textAlign: "right" }}>{row.printLabel}</span>
+                    <span style={{ fontFamily: MONO, fontSize: "0.65rem", color: "rgba(180,80,60,0.7)", minWidth: "160px", textAlign: "right" }}>{t(row.printLabelKey)}</span>
                   </div>
                   {/* Digital bar */}
                   <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                    <span style={{ fontFamily: MONO, fontSize: "0.7rem", color: "rgba(0,200,170,0.6)", width: "55px", flexShrink: 0 }}>DIGITAL</span>
+                    <span style={{ fontFamily: MONO, fontSize: "0.7rem", color: "rgba(0,200,170,0.6)", width: "55px", flexShrink: 0 }}>{t("impact.digital")}</span>
                     <div style={{ flex: 1, height: "22px", background: "rgba(255,255,255,0.03)", borderRadius: "2px", overflow: "hidden", position: "relative" }}>
                       <motion.div
                         initial={{ width: 0 }}
@@ -214,7 +216,7 @@ export default function ImpactClient() {
                         }}
                       />
                     </div>
-                    <span style={{ fontFamily: MONO, fontSize: "0.65rem", color: "rgba(0,200,170,0.6)", minWidth: "160px", textAlign: "right" }}>{row.digitalLabel}</span>
+                    <span style={{ fontFamily: MONO, fontSize: "0.65rem", color: "rgba(0,200,170,0.6)", minWidth: "160px", textAlign: "right" }}>{t(row.digitalLabelKey)}</span>
                   </div>
                 </div>
               </div>
@@ -244,7 +246,7 @@ export default function ImpactClient() {
               marginBottom: "0.5rem",
               textAlign: "center",
             }}>
-              THE COMPOUNDING ADVANTAGE
+              {t("impact.compounding")}
             </p>
             <p style={{
               fontFamily: SERIF,
@@ -254,7 +256,7 @@ export default function ImpactClient() {
               marginBottom: "1.5rem",
               lineHeight: 1.6,
             }}>
-              Print cost grows with every copy. Digital cost stays flat after the first.
+              {t("impact.compoundingDesc")}
             </p>
 
             {/* SVG chart: Print (linear) vs Digital (flat) */}
@@ -288,7 +290,7 @@ export default function ImpactClient() {
                 color: "rgba(180,80,60,0.7)",
                 marginBottom: "0.75rem",
               }}>
-                THE RECYCLING MYTH
+                {t("impact.recyclingMyth")}
               </p>
               <p style={{
                 fontFamily: SERIF,
@@ -296,7 +298,7 @@ export default function ImpactClient() {
                 color: "rgba(245,230,200,0.55)",
                 lineHeight: 1.7,
               }}>
-                Paper degrades after 5 to 7 recycling cycles. Each round shortens the fibers, producing weaker material. Coated papers, glued bindings, and ink-laden covers often cannot be recycled at all. Less than half of all paper is actually recovered — the rest is burned or buried.
+                {t("impact.recyclingMythDesc")}
               </p>
             </div>
             <div style={{
@@ -348,8 +350,7 @@ export default function ImpactClient() {
               lineHeight: 1.6,
               marginBottom: "1rem",
             }}>
-              A printed book is a tree&apos;s past.<br />
-              A digital book is humanity&apos;s future.
+              {t("impact.closing")}
             </p>
             <p style={{
               fontFamily: SERIF,
@@ -358,7 +359,7 @@ export default function ImpactClient() {
               lineHeight: 1.7,
               marginBottom: "2rem",
             }}>
-              You are not replacing books — you are freeing stories from material limits. Tintaxis is a platform built for the era when words no longer require weight.
+              {t("impact.closingDesc")}
             </p>
             <Link href="/library" passHref>
               <motion.button
@@ -382,7 +383,7 @@ export default function ImpactClient() {
                 }}
                 whileTap={{ scale: 0.98 }}
               >
-                READ WITHOUT WASTE
+                {t("impact.cta")}
               </motion.button>
             </Link>
             <p style={{

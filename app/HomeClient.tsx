@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useI18n } from "@/lib/i18n";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
 import { WelcomeBackToast, getLastRead } from "@/components/ui/ReturnCapture";
 import { getChapterProgress } from "@/lib/ink";
@@ -19,38 +20,39 @@ const SERIF = '"EB Garamond", Garamond, Georgia, serif';
 const FEATURES = [
   {
     icon: "🎙",
-    title: "Author voiceovers",
-    desc: "Writers record their voice for page one. You hear the story in the voice it was written.",
+    titleKey: "home.feat.voiceovers",
+    descKey: "home.feat.voiceoversDesc",
   },
   {
     icon: "🤖",
-    title: "4 AI narrators",
-    desc: "Choose a narrator for the rest of the chapter — Warm, Deep, Clear, or Soft. Each sounds different.",
+    titleKey: "home.feat.narrators",
+    descKey: "home.feat.narratorsDesc",
   },
   {
     icon: "🖋",
-    title: "Margin annotations",
-    desc: "Highlight, question, connect, ghost-note. Four ink types to mark the text as you read.",
+    titleKey: "home.feat.annotations",
+    descKey: "home.feat.annotationsDesc",
   },
   {
     icon: "💬",
-    title: "Author whispers",
-    desc: "Writers leave notes in the margins — context, secrets, behind-the-scenes. You see them as you read.",
+    titleKey: "home.feat.whispers",
+    descKey: "home.feat.whispersDesc",
   },
   {
     icon: "🌗",
-    title: "Day & night modes",
-    desc: "Sepia cream for daylight, deep parchment for night. Designed for long reading sessions.",
+    titleKey: "home.feat.dayNight",
+    descKey: "home.feat.dayNightDesc",
   },
   {
     icon: "🌍",
-    title: "Multilingual",
-    desc: "English, Spanish, Mandarin Chinese, Portuguese, Tamil, and Italian — on the same platform, with the same tools.",
+    titleKey: "home.feat.multilingual",
+    descKey: "home.feat.multilingualDesc",
   },
 ];
 
 // ─── MAIN COMPONENT ──────────────────────────────────────────────────
 export default function HomeClient() {
+  const { t } = useI18n();
   const allBooks = Object.values(BOOKS);
 
   // ── Continue Reading state ──────────────────────────────────
@@ -133,7 +135,7 @@ export default function HomeClient() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            A LITERARY PLATFORM
+            {t("home.tagline")}
           </motion.p>
 
           <motion.div
@@ -195,9 +197,9 @@ export default function HomeClient() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.15 }}
           >
-            Where writers publish, readers arrive,
+            {t("home.heroLine1")}
             <br />
-            and <span style={{ color: "#C9A84C", fontWeight: 600 }}>85% of the money</span> stays with the author.
+            {t("home.heroLine2")}
           </motion.p>
 
           <motion.div
@@ -232,7 +234,7 @@ export default function HomeClient() {
                 <span className="absolute top-0 right-0 w-2 h-2 border-t border-r" style={{ borderColor: "#C9A84C" }} />
                 <span className="absolute bottom-0 left-0 w-2 h-2 border-b border-l" style={{ borderColor: "#C9A84C" }} />
                 <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r" style={{ borderColor: "#C9A84C" }} />
-                START READING
+                {t("home.startReading")}
               </motion.button>
             </Link>
 
@@ -248,7 +250,7 @@ export default function HomeClient() {
                 }}
                 whileHover={{ color: "rgba(201,168,76,0.7)" }}
               >
-                I&apos;m a writer →
+                {t("home.imAWriter")}
               </motion.span>
             </Link>
           </motion.div>
@@ -281,7 +283,7 @@ export default function HomeClient() {
               textAlign: "center",
             }}
           >
-            FOR WRITERS
+            {t("home.forWriters")}
           </motion.p>
 
           <motion.h2
@@ -299,8 +301,7 @@ export default function HomeClient() {
               textAlign: "center",
             }}
           >
-            We flipped the switch.{" "}
-            <span style={{ color: "rgba(0,200,170,0.85)", fontWeight: 600 }}>85% to writers.</span>
+            {t("home.weFlipped")}
           </motion.h2>
 
           {/* THE FLIP: Visual comparison */}
@@ -339,7 +340,7 @@ export default function HomeClient() {
                   fontWeight: 600,
                 }}
               >
-                Traditional Publishing
+                {t("home.tradPublishing")}
               </p>
               <div
                 style={{
@@ -351,11 +352,11 @@ export default function HomeClient() {
               >
                 <div style={{ marginBottom: "0.5rem" }}>
                   <span style={{ color: "rgba(180,80,60,0.85)", fontWeight: 600 }}>75–90%</span>
-                  <span style={{ color: "rgba(245,230,200,0.4)" }}> Publisher</span>
+                  <span style={{ color: "rgba(245,230,200,0.4)" }}> {t("home.publisher")}</span>
                 </div>
                 <div>
                   <span style={{ color: "rgba(245,230,200,0.3)", fontWeight: 600 }}>10–25%</span>
-                  <span style={{ color: "rgba(245,230,200,0.4)" }}> Author</span>
+                  <span style={{ color: "rgba(245,230,200,0.4)" }}> {t("home.author")}</span>
                 </div>
               </div>
             </div>
@@ -393,11 +394,11 @@ export default function HomeClient() {
               >
                 <div style={{ marginBottom: "0.5rem" }}>
                   <span style={{ color: "rgba(0,200,170,0.85)", fontWeight: 600 }}>85%</span>
-                  <span style={{ color: "rgba(245,230,200,0.4)" }}> Author</span>
+                  <span style={{ color: "rgba(245,230,200,0.4)" }}> {t("home.author")}</span>
                 </div>
                 <div>
                   <span style={{ color: "rgba(245,230,200,0.3)", fontWeight: 600 }}>15%</span>
-                  <span style={{ color: "rgba(245,230,200,0.4)" }}> Platform</span>
+                  <span style={{ color: "rgba(245,230,200,0.4)" }}> {t("home.platform")}</span>
                 </div>
               </div>
             </div>
@@ -432,7 +433,7 @@ export default function HomeClient() {
                 color: "rgba(201,168,76,0.35)",
               }}
             >
-              All payments secured by
+              {t("sub.secured")}
             </p>
             {/* Official Stripe wordmark — inline SVG for crisp rendering */}
             <svg
@@ -457,7 +458,7 @@ export default function HomeClient() {
                 maxWidth: "380px",
               }}
             >
-              Every transaction processed through Stripe — the same infrastructure trusted by Amazon, Google, and Shopify.
+              {t("sub.trustCopy")}
             </p>
           </motion.div>
 
@@ -482,7 +483,7 @@ export default function HomeClient() {
                 marginBottom: "1.25rem",
               }}
             >
-              Tintaxis is a digital publisher in its Genesis. We are not a self-publishing platform. Writers submit. We read. We select.
+              {t("home.genesis")}
             </p>
             <p
               style={{
@@ -493,7 +494,7 @@ export default function HomeClient() {
                 fontStyle: "italic",
               }}
             >
-              You&apos;re not gifting us 15%. You&apos;re earning access to a platform that amplifies your reach. Your readers, your marketing, your momentum — that&apos;s what drives your revenue. Tintaxis pushes your work through social media and every digital reading channel we can reach. But the engine is you.
+              {t("home.earn15")}
             </p>
           </motion.div>
 
@@ -585,7 +586,7 @@ export default function HomeClient() {
             marginBottom: "1rem",
           }}
         >
-          TOOLS BUILT FOR READERS
+          {t("home.toolsBuilt")}
         </motion.p>
         <motion.p
           initial={{ opacity: 0 }}
@@ -599,7 +600,7 @@ export default function HomeClient() {
             lineHeight: 1.7,
           }}
         >
-          Author voiceovers. AI narration. Margin annotations. Day &amp; night modes. Multilingual.
+          {t("home.toolsDesc")}
         </motion.p>
       </section>
 
@@ -706,7 +707,7 @@ export default function HomeClient() {
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
                   }}>
-                    Continue reading · {lastRead.progressPct}% · Ch. {lastRead.chapterNumber}/{lastRead.totalChapters}
+                    {t("home.continueReading")} · {lastRead.progressPct}% · Ch. {lastRead.chapterNumber}/{lastRead.totalChapters}
                   </p>
                   <p style={{
                     fontFamily: SERIF,

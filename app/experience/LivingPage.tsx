@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import Link from "next/link";
+import { useI18n } from "@/lib/i18n";
 
 // ─── THE LIVING PAGE ────────────────────────────────────────────────────────
 // The signature moment of Tintaxis. One page, zero friction, everything alive.
@@ -135,6 +136,7 @@ const ACTIVE_NOW = 3;
 // ─── COMPONENT ──────────────────────────────────────────────────────────────
 
 export default function LivingPage() {
+  const { t } = useI18n();
   const [entered, setEntered] = useState(false);
   const [presenceVisible, setPresenceVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -197,7 +199,7 @@ export default function LivingPage() {
                 textTransform: "uppercase",
               }}
             >
-              {ACTIVE_NOW} reading now
+              {ACTIVE_NOW} {t("exp.readingNow")}
             </span>
           </motion.div>
         )}
@@ -255,7 +257,7 @@ export default function LivingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
             >
-              This page remembers everyone who read it.
+              {t("exp.remembers")}
             </motion.h1>
 
             <motion.p
@@ -273,7 +275,7 @@ export default function LivingPage() {
               animate={{ opacity: 1 }}
               transition={{ delay: 1.0, duration: 0.8 }}
             >
-              {READER_COUNT} readers have been here. Some left traces. The author is present. You are not reading alone.
+              {READER_COUNT} {t("exp.readersHere")}
             </motion.p>
 
             <motion.button
@@ -302,7 +304,7 @@ export default function LivingPage() {
               }}
               whileTap={{ scale: 0.98 }}
             >
-              Enter the Page
+              {t("exp.enter")}
             </motion.button>
 
             <motion.p

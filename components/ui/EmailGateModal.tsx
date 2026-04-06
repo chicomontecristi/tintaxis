@@ -7,6 +7,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
+import { useI18n } from "@/lib/i18n";
 
 interface EmailGateModalProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ export default function EmailGateModal({
   onClose,
   onSuccess,
 }: EmailGateModalProps) {
+  const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -151,7 +153,7 @@ export default function EmailGateModal({
                     marginBottom: "0.5rem",
                   }}
                 >
-                  You're in.
+                  {t("email.youreIn")}
                 </p>
                 <p
                   style={{
@@ -161,7 +163,7 @@ export default function EmailGateModal({
                     color: "rgba(245,230,200,0.4)",
                   }}
                 >
-                  Loading your chapter...
+                  {t("email.loadingChapter")}
                 </p>
               </motion.div>
             ) : (
@@ -188,7 +190,7 @@ export default function EmailGateModal({
                       marginBottom: "0.5rem",
                     }}
                   >
-                    Read the Next Chapter
+                    {t("email.readNext")}
                   </h2>
                   {chapterTitle && (
                     <p
@@ -211,7 +213,7 @@ export default function EmailGateModal({
                       lineHeight: 1.6,
                     }}
                   >
-                    Enter your email to unlock this chapter for free.
+                    {t("email.enterEmail")}
                   </p>
                 </div>
 
@@ -230,7 +232,7 @@ export default function EmailGateModal({
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@email.com"
+                    placeholder={t("email.placeholder")}
                     autoComplete="email"
                     required
                     style={{
@@ -287,7 +289,7 @@ export default function EmailGateModal({
                     } : {}}
                     whileTap={!loading ? { scale: 0.97 } : {}}
                   >
-                    {loading ? "OPENING..." : "UNLOCK THIS CHAPTER"}
+                    {loading ? t("email.unlockLoading") : t("email.unlock")}
                   </motion.button>
                 </form>
 
@@ -303,7 +305,7 @@ export default function EmailGateModal({
                     textTransform: "uppercase",
                   }}
                 >
-                  No spam · No credit card · Chapters 3+ require a subscription
+                  {t("email.noSpam")}
                 </p>
               </>
             )}

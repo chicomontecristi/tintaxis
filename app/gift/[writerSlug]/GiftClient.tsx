@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useI18n } from "@/lib/i18n";
 import type { FeaturedWriter } from "@/lib/featured-writers";
 
 const MONO = '"JetBrains Mono", monospace';
@@ -17,6 +18,7 @@ const TIERS = [
 ];
 
 export default function GiftClient({ writer }: { writer: FeaturedWriter }) {
+  const { t } = useI18n();
   const displayName = writer.artistName ?? writer.name;
   const searchParams = useSearchParams();
   const status = searchParams.get("status");
@@ -97,16 +99,16 @@ export default function GiftClient({ writer }: { writer: FeaturedWriter }) {
           style={{ maxWidth: "480px", textAlign: "center" }}
         >
           <p style={{ fontFamily: MONO, fontSize: "0.75rem", letterSpacing: "0.3em", color: "rgba(0,229,204,0.6)", textTransform: "uppercase", marginBottom: "1.5rem" }}>
-            GIFT SENT
+            {t("gift.sent")}
           </p>
           <h1 style={{ fontFamily: SERIF, fontSize: "clamp(1.5rem, 4vw, 2rem)", fontWeight: 400, color: "#F5E6C8", marginBottom: "1rem" }}>
-            A month of {displayName}&apos;s work — gifted.
+            {t("gift.monthGifted", { name: displayName })}
           </h1>
           <p style={{ fontFamily: SERIF, fontSize: "1rem", fontStyle: "italic", color: "rgba(245,230,200,0.45)", marginBottom: "2rem", lineHeight: 1.6 }}>
-            {giftedTo ? `We'll send a redemption link to ${decodeURIComponent(giftedTo)}.` : "The recipient will receive a redemption link."} They get one full month to read, annotate, and experience every chapter.
+            {giftedTo ? t("gift.redeemEmail", { email: decodeURIComponent(giftedTo) }) : t("gift.redeemGeneric")} {t("gift.theyGet")}
           </p>
           <Link href={`/writers/${writer.slug}`} style={{ fontFamily: MONO, fontSize: "0.8rem", letterSpacing: "0.2em", color: "#C9A84C", textDecoration: "none", textTransform: "uppercase" }}>
-            Back to {displayName}
+            {t("gift.backTo", { name: displayName })}
           </Link>
         </motion.div>
       </div>
@@ -130,41 +132,41 @@ export default function GiftClient({ writer }: { writer: FeaturedWriter }) {
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <p style={{ fontFamily: MONO, fontSize: "0.75rem", letterSpacing: "0.35em", color: "rgba(201,168,76,0.4)", textTransform: "uppercase", marginBottom: "0.75rem" }}>
-            GIFT A MONTH
+            {t("gift.title")}
           </p>
           <h1 style={{ fontFamily: SERIF, fontSize: "clamp(1.5rem, 4vw, 2rem)", fontWeight: 400, color: "#F5E6C8", lineHeight: 1.2, marginBottom: "0.5rem" }}>
-            Give someone {displayName}&apos;s words.
+            {t("gift.give", { name: displayName })}
           </h1>
           <p style={{ fontFamily: SERIF, fontSize: "1rem", fontStyle: "italic", color: "rgba(245,230,200,0.4)", marginBottom: "2.5rem", lineHeight: 1.6 }}>
-            One month of reading, annotating, and hearing the author whisper back.
+            {t("gift.desc")}
           </p>
         </motion.div>
 
         {/* Tier selection */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15, duration: 0.5 }}>
-          <label style={labelStyle}>Choose a tier</label>
+          <label style={labelStyle}>{t("gift.chooseTier")}</label>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginBottom: "2rem" }}>
-            {TIERS.map((t) => (
+            {TIERS.map((tier) => (
               <button
-                key={t.id}
-                onClick={() => setSelectedTier(t.id)}
+                key={tier.id}
+                onClick={() => setSelectedTier(tier.id)}
                 style={{
-                  background: selectedTier === t.id ? "rgba(201,168,76,0.08)" : "rgba(255,255,255,0.02)",
-                  border: selectedTier === t.id ? "1px solid rgba(201,168,76,0.4)" : "1px solid rgba(201,168,76,0.1)",
+                  background: selectedTier === tier.id ? "rgba(201,168,76,0.08)" : "rgba(255,255,255,0.02)",
+                  border: selectedTier === tier.id ? "1px solid rgba(201,168,76,0.4)" : "1px solid rgba(201,168,76,0.1)",
                   padding: "1rem",
                   cursor: "pointer",
                   textAlign: "left",
                   transition: "all 0.2s ease",
                 }}
               >
-                <p style={{ fontFamily: MONO, fontSize: "0.7rem", letterSpacing: "0.2em", color: selectedTier === t.id ? "#C9A84C" : "rgba(201,168,76,0.4)", textTransform: "uppercase", marginBottom: "0.3rem" }}>
-                  {t.name}
+                <p style={{ fontFamily: MONO, fontSize: "0.7rem", letterSpacing: "0.2em", color: selectedTier === tier.id ? "#C9A84C" : "rgba(201,168,76,0.4)", textTransform: "uppercase", marginBottom: "0.3rem" }}>
+                  {t(`sub.tier.${tier.id}`)}
                 </p>
                 <p style={{ fontFamily: SERIF, fontSize: "1.25rem", color: "#F5E6C8", marginBottom: "0.25rem" }}>
-                  {t.price}
+                  {tier.price}
                 </p>
                 <p style={{ fontFamily: SERIF, fontSize: "0.8rem", fontStyle: "italic", color: "rgba(245,230,200,0.3)", lineHeight: 1.4 }}>
-                  {t.desc}
+                  {tier.desc}
                 </p>
               </button>
             ))}
@@ -174,7 +176,7 @@ export default function GiftClient({ writer }: { writer: FeaturedWriter }) {
         {/* Recipient info */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25, duration: 0.5 }} style={{ display: "flex", flexDirection: "column", gap: "1.25rem", marginBottom: "2rem" }}>
           <div>
-            <label style={labelStyle}>Recipient&apos;s email *</label>
+            <label style={labelStyle}>{t("gift.recipientEmail")}</label>
             <input
               type="email"
               value={recipientEmail}
@@ -185,7 +187,7 @@ export default function GiftClient({ writer }: { writer: FeaturedWriter }) {
             />
           </div>
           <div>
-            <label style={labelStyle}>Recipient&apos;s name</label>
+            <label style={labelStyle}>{t("gift.recipientName")}</label>
             <input
               type="text"
               value={recipientName}
@@ -195,7 +197,7 @@ export default function GiftClient({ writer }: { writer: FeaturedWriter }) {
             />
           </div>
           <div>
-            <label style={labelStyle}>Your name</label>
+            <label style={labelStyle}>{t("gift.yourName")}</label>
             <input
               type="text"
               value={senderName}
@@ -205,7 +207,7 @@ export default function GiftClient({ writer }: { writer: FeaturedWriter }) {
             />
           </div>
           <div>
-            <label style={labelStyle}>Personal message</label>
+            <label style={labelStyle}>{t("gift.personalMessage")}</label>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -243,18 +245,18 @@ export default function GiftClient({ writer }: { writer: FeaturedWriter }) {
             marginBottom: "0.75rem",
           }}
         >
-          {loading ? "REDIRECTING TO PAYMENT..." : `GIFT A MONTH · ${TIERS.find((t) => t.id === selectedTier)?.price}`}
+          {loading ? t("gift.redirecting") : `${t("gift.giftMonth")} · ${TIERS.find((t) => t.id === selectedTier)?.price}`}
         </motion.button>
 
         <p style={{ fontFamily: SERIF, fontSize: "0.85rem", fontStyle: "italic", color: "rgba(245,230,200,0.25)", textAlign: "center", lineHeight: 1.5 }}>
-          One-time payment. No recurring charge. Secured by Stripe.
+          {t("gift.oneTimePayment")}
         </p>
 
         {/* Stripe badge */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", marginTop: "1rem" }}>
           <img src="/stripe-badge.png" alt="Stripe" width={16} height={16} style={{ borderRadius: "3px" }} />
           <span style={{ fontFamily: MONO, fontSize: "0.6rem", letterSpacing: "0.15em", color: "rgba(201,168,76,0.3)", textTransform: "uppercase" }}>
-            Powered by <span style={{ color: "rgba(201,168,76,0.5)", fontWeight: 600 }}>Stripe</span>
+            {t("gift.poweredBy")}
           </span>
         </div>
       </div>

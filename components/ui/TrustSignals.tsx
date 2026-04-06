@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useI18n } from "@/lib/i18n";
 
 // ─── TRUST & AUTHORITY SIGNALS ───────────────────────────────────────────────
 // Social proof, awards, and credibility markers.
@@ -84,6 +85,8 @@ export function AuthorCredentials() {
 // ── Compact trust line (for book pages, above "Begin Reading") ──────────────
 
 export function TrustLine() {
+  const { t } = useI18n();
+
   return (
     <div
       style={{
@@ -95,11 +98,11 @@ export function TrustLine() {
         padding: "0.75rem 0",
       }}
     >
-      <TrustBadge text="Literary Award Finalist" />
+      <TrustBadge text={t("trust.awardFinalist")} />
       <TrustDot />
-      <TrustBadge text="Free to Read" />
+      <TrustBadge text={t("trust.freeToRead")} />
       <TrustDot />
-      <TrustBadge text="3 Languages" />
+      <TrustBadge text={t("trust.languages")} />
     </div>
   );
 }
@@ -137,6 +140,8 @@ function TrustDot() {
 // ── Social proof strip (for homepage, below hero) ───────────────────────────
 
 export function SocialProofStrip() {
+  const { t } = useI18n();
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -153,10 +158,10 @@ export function SocialProofStrip() {
         borderBottom: `1px solid ${BRASS}0.06)`,
       }}
     >
-      <ProofItem number="5" label="Gallery exhibitions" />
-      <ProofItem number="3" label="Languages" />
-      <ProofItem number="25k+" label="Words published" />
-      <ProofItem number="2020" label="Award finalist" />
+      <ProofItem number="5" label={t("trust.galleryExhibitions")} />
+      <ProofItem number="3" label={t("general.language")} />
+      <ProofItem number="25k+" label={t("trust.wordsPublished")} />
+      <ProofItem number="2020" label={t("trust.awardFinalist")} />
     </motion.div>
   );
 }
@@ -195,6 +200,8 @@ function ProofItem({ number, label }: { number: string; label: string }) {
 // ── "As featured at" (for homepage or library) ──────────────────────────────
 
 export function FeaturedAt() {
+  const { t } = useI18n();
+
   const venues = [
     "Arts HQ Gallery, Surprise AZ",
     "First Studio Gallery, Phoenix",
@@ -222,7 +229,7 @@ export function FeaturedAt() {
           margin: "0 0 0.5rem",
         }}
       >
-        Exhibited at
+        {t("trust.exhibitedAt")}
       </p>
       <p
         style={{
