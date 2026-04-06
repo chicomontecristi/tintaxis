@@ -258,7 +258,7 @@ export default function SiteNav() {
           borderBottom: "1px solid var(--border-subtle)",
           background: "var(--nav-bg)",
           backdropFilter: "blur(8px)",
-          transition: "background 0.4s ease, border-color 0.4s ease",
+          transition: "background 0.05s ease, border-color 0.05s ease",
         }}
       >
         {/* Logo */}

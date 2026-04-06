@@ -132,7 +132,7 @@ body {
   overflow-x: hidden;
   min-height: 100vh;
   text-rendering: optimizeLegibility;
-  transition: background-color 0.4s ease, color 0.4s ease;
+  transition: background-color 0.05s ease, color 0.05s ease;
 }
 
 /* ─── SCROLLBAR ───────────────────────────────────────────────────── */
@@ -221,7 +221,7 @@ body {
     radial-gradient(ellipse at 20% 50%, rgba(var(--bg-surface-rgb), 0.3) 0%, transparent 60%),
     radial-gradient(ellipse at 80% 20%, rgba(var(--bg-surface-rgb), 0.2) 0%, transparent 50%);
   box-shadow: var(--eink-glow);
-  transition: background-color 0.4s ease;
+  transition: background-color 0.05s ease;
 }
 
 /* Day mode: softer, warmer gradients */
@@ -742,7 +742,7 @@ button, a, [role="button"] {
 /* Uses --narrator-accent set inline from the selected voice's accent color    */
 .narrator-active {
   position: relative;
-  transition: background 0.4s ease, border-color 0.4s ease;
+  transition: background 0.05s ease, border-color 0.05s ease;
   background: rgba(201, 168, 76, 0.06);
   border-left: 3px solid var(--narrator-accent, var(--brass));
   border-radius: 2px;
