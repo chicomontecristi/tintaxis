@@ -1,5 +1,5 @@
 // ─── FEATURED WRITERS ────────────────────────────────────────────────────────
-// Writers published directly by Tintaxis — no application required.
+// Featured writers published on Tintaxis.
 // Add new writers here. Each writer gets a profile page at /writers/[slug].
 
 export interface FeaturedWork {
@@ -110,6 +110,15 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
         language: "ES",
         wordCount: "~11,600 palabras",
         comingSoon: true,
+      },
+      {
+        title: "Noches de maya",
+        subtitle: "Cuentos",
+        description:
+          "Nueve relatos del Caribe, el Bronx y el desierto del suroeste. Animales, amores perdidos, viejos amigos y el silencio de los edificios viejos.",
+        href: "/book/noches-de-maya",
+        language: "ES",
+        wordCount: "~8,400 palabras",
       },
       {
         title: "Mi Pájaro del Río",
