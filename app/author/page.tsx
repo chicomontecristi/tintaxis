@@ -74,26 +74,7 @@ const MOCK_SIGNALS: SignalQuestion[] = [
   },
 ];
 
-const MOCK_WHISPERS: WhisperEntry[] = [
-  {
-    id: "w1",
-    chapterSlug: "one",
-    chapterTitle: "What Robbin Told Alma",
-    anchorText: "Robbin sat with the new nurse, Alma Mae",
-    whisper: "The diner was real. I ate lunch there twice, in a town outside Rochester, in 2011. I never went back but I kept the menu in my head.",
-    createdAt: "2026-03-15T10:00:00Z",
-  },
-];
-
-const MOCK_CHAPTERS: ChapterStat[] = [
-  { slug: "one",   number: 1, title: "What Robbin Told Alma",        isLocked: false, wordCount: 3378, reads: 142, avgDepth: 87, signals: 3 },
-  { slug: "two",   number: 2, title: "Corridor B",                   isLocked: true,  wordCount: 3102, reads: 0,   avgDepth: 0,  signals: 0 },
-  { slug: "three", number: 3, title: "Regular Hours",                 isLocked: true,  wordCount: 2890, reads: 0,   avgDepth: 0,  signals: 0 },
-  { slug: "four",  number: 4, title: "The Smell of Coffee and Syrup", isLocked: true,  wordCount: 3540, reads: 0,   avgDepth: 0,  signals: 0 },
-  { slug: "five",  number: 5, title: "What Blood Requires",           isLocked: true,  wordCount: 3200, reads: 0,   avgDepth: 0,  signals: 0 },
-  { slug: "six",   number: 6, title: "The Stories People Tell",       isLocked: true,  wordCount: 3100, reads: 0,   avgDepth: 0,  signals: 0 },
-  { slug: "seven", number: 7, title: "Once Again",                    isLocked: true,  wordCount: 4793, reads: 0,   avgDepth: 0,  signals: 0 },
-];
+// (Mock data removed — Studio uses live data from API + BOOKS registry)
 
 // ─── HELPERS ───────────────────────────────────────────────────────────────────
 function formatDate(iso: string) {

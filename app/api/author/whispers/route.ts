@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromCookie } from "@/lib/auth";
 import { listAllWhispers, insertWhisper } from "@/lib/db";
-import { CHAPTERS } from "@/lib/content/chapters";
+import { getBookChapter, getAllBookSlugs } from "@/lib/content/books";
 
 export async function GET(req: NextRequest) {
   const session = getSessionFromCookie(req.headers.get("cookie"));
@@ -30,7 +30,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "chapterSlug, anchorText, and content are required" }, { status: 400 });
   }
 
-  const chapterTitle = CHAPTERS[chapterSlug]?.title ?? null;
+  // Resolve chapter title from any book in the registry
+  let chapterTitle: string | null = null;
+  for (const bookSlug of getAllBookSlugs()) {
+    const ch = getBookChapter(bookSlug, chapterSlug);
+    if (ch) { chapterTitle = ch.title; break; }
+  }
 
   const whisper = await insertWhisper({
     chapterSlug,
