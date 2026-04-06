@@ -442,7 +442,7 @@ export default function BookPageClient() {
               textTransform: "uppercase",
             }}
           >
-            Tintaxis · {book.wordCount.toLocaleString()} {t("book.words")}
+            {t("book.footerBrand")} · {book.wordCount.toLocaleString()} {t("book.words")}
           </span>
         </div>
       </main>

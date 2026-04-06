@@ -550,7 +550,7 @@ export default function HomeClient() {
             marginBottom: "1.5rem",
           }}
         >
-          On X, your thread disappears in 24 hours. On Instagram, your caption has a character limit. On Tintaxis, your book has a permanent home, a reading experience built for long-form, and readers who pay to read — not scroll past.
+          {t("home.socialMediaPitch")}
         </motion.p>
         <motion.p
           initial={{ opacity: 0 }}
@@ -565,7 +565,7 @@ export default function HomeClient() {
             fontWeight: 600,
           }}
         >
-          This isn&apos;t another social media profile. This is a publishing house that sends 85% of revenue back to you.
+          {t("home.publishingHouse")}
         </motion.p>
       </section>
 
@@ -634,7 +634,7 @@ export default function HomeClient() {
               lineHeight: 1.6,
             }}
           >
-            Your readers are waiting.
+            {t("home.readersWaiting")}
           </p>
           <p
             style={{
@@ -646,7 +646,7 @@ export default function HomeClient() {
               marginTop: "0.75rem",
             }}
           >
-            Image generated with Google Gemini
+            {t("home.imageCredit")}
           </p>
         </motion.div>
       </section>
@@ -734,7 +734,7 @@ export default function HomeClient() {
                   opacity: 0.7,
                   flexShrink: 0,
                 }}>
-                  Resume →
+                  {t("home.resume")}
                 </span>
               </div>
             </motion.div>
@@ -747,8 +747,8 @@ export default function HomeClient() {
           ══════════════════════════════════════════════════════════ */}
       <section style={{ padding: "4rem 2rem 5rem", maxWidth: "1100px", margin: "0 auto" }}>
         <SectionHeader
-          tag="NOW ON TINTAXIS"
-          title="Real books. Real writers. Start reading in seconds."
+          tag={t("home.nowOnTintaxis")}
+          title={t("home.nowOnTintaxisDesc")}
         />
 
         <div
@@ -861,7 +861,7 @@ export default function HomeClient() {
                       opacity: 0.6,
                     }}
                   >
-                    Read now →
+                    {t("home.readNow")}
                   </div>
                 </div>
               </Link>
@@ -895,7 +895,7 @@ export default function HomeClient() {
               textDecoration: "none",
             }}
           >
-            Library
+            {t("nav.library")}
           </Link>
           <Link
             href="/writers"
@@ -908,7 +908,7 @@ export default function HomeClient() {
               textDecoration: "none",
             }}
           >
-            Writers
+            {t("nav.writers")}
           </Link>
           <Link
             href="/publish"
@@ -921,7 +921,7 @@ export default function HomeClient() {
               textDecoration: "none",
             }}
           >
-            Publish
+            {t("nav.publish")}
           </Link>
         </div>
         <p
@@ -934,7 +934,7 @@ export default function HomeClient() {
             marginTop: "1.5rem",
           }}
         >
-          Tintaxis · tintaxis.com
+          {t("home.footerBrand")}
         </p>
       </footer>
 

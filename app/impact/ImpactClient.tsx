@@ -41,7 +41,7 @@ export default function ImpactClient() {
             color: "#C9A84C",
             marginBottom: "1rem",
           }}>
-            ENVIRONMENTAL IMPACT
+            {t("impact.envImpact")}
           </p>
           <h1 style={{
             fontFamily: SERIF,
@@ -315,7 +315,7 @@ export default function ImpactClient() {
                 color: "rgba(0,200,170,0.7)",
                 marginBottom: "0.75rem",
               }}>
-                THE DIGITAL ALTERNATIVE
+                {t("impact.digitalAlt")}
               </p>
               <p style={{
                 fontFamily: SERIF,
@@ -323,7 +323,7 @@ export default function ImpactClient() {
                 color: "rgba(245,230,200,0.55)",
                 lineHeight: 1.7,
               }}>
-                A digital book is distributed once and read infinitely. No shipping fleets, no warehouse waste, no remaindered copies pulped at the end of a sales cycle. The environmental cost of the 10th reader is identical to the 10 millionth.
+                {t("impact.digitalAltDesc")}
               </p>
             </div>
           </motion.div>
@@ -394,7 +394,7 @@ export default function ImpactClient() {
               textTransform: "uppercase",
               marginTop: "1rem",
             }}>
-              Data sourced from EPA, TAPPI, and Environmental Paper Network
+              {t("impact.dataSources")}
             </p>
           </motion.div>
         </div>
@@ -494,6 +494,7 @@ function AnimatedCounter({ value }: { value: string }) {
 
 // ─── COST COMPARISON CHART (SVG: linear print vs flat digital) ────────────
 function CostComparisonChart() {
+  const { t } = useI18n();
   const W = 600;
   const H = 260;
   const PAD = { top: 20, right: 20, bottom: 40, left: 50 };
@@ -512,6 +513,9 @@ function CostComparisonChart() {
 
   const printPath = points.map((x, i) => `${i === 0 ? "M" : "L"}${toX(x)},${toY(printCost[i])}`).join(" ");
   const digitalPath = points.map((x, i) => `${i === 0 ? "M" : "L"}${toX(x)},${toY(digitalCost[i])}`).join(" ");
+
+  const booksReadLabel = t("impact.chartBooks");
+  const co2CostLabel = t("impact.chartCost");
 
   return (
     <div style={{ width: "100%", maxWidth: `${W}px`, margin: "0 auto" }}>
@@ -566,7 +570,7 @@ function CostComparisonChart() {
           textAnchor="middle"
           style={{ fontFamily: MONO, fontSize: "9px", fill: "rgba(245,230,200,0.3)", letterSpacing: "0.1em" }}
         >
-          BOOKS READ
+          {booksReadLabel}
         </text>
         <text
           x={12}
@@ -575,7 +579,7 @@ function CostComparisonChart() {
           transform={`rotate(-90, 12, ${PAD.top + chartH / 2})`}
           style={{ fontFamily: MONO, fontSize: "9px", fill: "rgba(245,230,200,0.3)", letterSpacing: "0.1em" }}
         >
-          CO₂ (kg)
+          {co2CostLabel}
         </text>
 
         {/* Print line (red/warm) */}

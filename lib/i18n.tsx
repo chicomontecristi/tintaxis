@@ -326,6 +326,81 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // ── General ──────────────────────────────────────────
     "general.language": "Language",
+
+    // ── HomeClient (remaining) ──────────────────────────
+    "home.socialMediaPitch": "On X, your thread disappears in 24 hours. On Instagram, your caption has a character limit. On Tintaxis, your book has a permanent home, a reading experience built for long-form, and readers who pay to read — not scroll past.",
+    "home.publishingHouse": "This isn't another social media profile. This is a publishing house that sends 85% of revenue back to you.",
+    "home.readersWaiting": "Your readers are waiting.",
+    "home.imageCredit": "Image generated with Google Gemini",
+    "home.resume": "Resume →",
+    "home.nowOnTintaxis": "NOW ON TINTAXIS",
+    "home.nowOnTintaxisDesc": "Real books. Real writers. Start reading in seconds.",
+    "home.readNow": "Read now →",
+    "home.footerBrand": "Tintaxis · tintaxis.com",
+
+    // ── ImpactClient (remaining) ────────────────────────
+    "impact.envImpact": "ENVIRONMENTAL IMPACT",
+    "impact.digitalAlt": "THE DIGITAL ALTERNATIVE",
+    "impact.digitalAltDesc": "A digital book is distributed once and read infinitely. No shipping fleets, no warehouse waste, no remaindered copies pulped at the end of a sales cycle. The environmental cost of the 10th reader is identical to the 10 millionth.",
+    "impact.dataSources": "Data sourced from EPA, TAPPI, and Environmental Paper Network",
+    "impact.chartBooks": "BOOKS READ",
+    "impact.chartCost": "CO₂ COST (KG)",
+
+    // ── Library page (remaining) ────────────────────────
+    "lib.header": "Tintaxis · Library",
+    "lib.footerBrand": "Tintaxis · A Literary Platform",
+
+    // ── PublishClient (remaining) ───────────────────────
+    "pub.selectionOnly": "TINTAXIS · BY SELECTION ONLY",
+    "pub.submitWork": "Submit Your Work",
+    "pub.readArchive": "Read the Archive",
+    "pub.continue": "↓ CONTINUE",
+    "pub.theModel": "THE MODEL",
+    "pub.publishingHouse": "A publishing house.",
+    "pub.notMarketplace": "Not a marketplace.",
+    "pub.modelDesc1": "Tintaxis is not a self-publishing tool. There are no tiers, no monthly fees, and no pay-to-exist model. This is a publishing house, not a marketplace. We read your work. We decide. Writers apply. We read. If the work belongs here, we open the door. That's it.",
+    "pub.modelDesc2": "Readers fund the platform by subscribing to writers they want to support. After Stripe processing, you keep 85% of net revenue. We keep the lights on with 15%. No ads. No data harvesting. No algorithm deciding who gets seen. Your reach determines your revenue. Tintaxis promotes your work through social media and digital reading channels — but the real engine is you. Your readers, your marketing, your network. The more you push, the more you earn.",
+    "pub.liveOnTintaxis": "LIVE ON TINTAXIS",
+    "pub.inauguralWork": "INAUGURAL WORK",
+    "pub.novellaBy": "A novella by Chico Montecristi",
+    "pub.huntTagline": "Dark psychological thriller. Southern Gothic noir. A girl who killed her mother, a father who covered for her, and a small town that never knew.",
+    "pub.readChapterOne": "Read Chapter One →",
+    "pub.howItWorks": "HOW IT WORKS",
+    "pub.authorApp": "AUTHOR APPLICATION",
+    "pub.appDesc": "Every application is read personally. We respond within 5 business days.",
+    "pub.selectGenre": "Select…",
+    "pub.synopsisPlaceholder": "What is your book about? (100–300 words)",
+    "pub.whyPlaceholder": "Why does your work belong here?",
+    "pub.errorSubmission": "Submission failed. Try again.",
+    "pub.errorConnection": "Connection failed. Try again.",
+
+    // ── GiftClient (remaining) ──────────────────────────
+    "gift.errorRequired": "Recipient email is required.",
+    "gift.errorGeneric": "Something went wrong.",
+    "gift.errorConnection": "Connection failed. Try again.",
+    "gift.placeholderEmail": "friend@email.com",
+    "gift.placeholderName": "Their name (optional)",
+    "gift.placeholderSender": "Your name (shown in the gift)",
+    "gift.placeholderMessage": "A short note to the reader... (optional)",
+
+    // ── ReadingSurface (remaining) ──────────────────────
+    "reading.fullAccess": "Full Access",
+    "reading.signalInk": "Signal Ink",
+    "reading.inkAnnotation": "Ink Annotation",
+    "reading.unauthorized": "Unauthorized",
+    "reading.theAuthor": "The Author",
+    "reading.loadingChapter": "Loading chapter...",
+    "reading.chapter": "CHAPTER",
+    "reading.oneMinRead": "1 min read",
+    "reading.firstReadSealed": "First Read · Sealed",
+    "reading.archiveMarks": "Your marks are in the Archive.",
+    "reading.archiveReturn": "They will be here when you return.",
+    "reading.haveRead": "I have read this chapter",
+    "reading.shareX": "𝕏 Share",
+    "reading.chapterSealed": "Chapter {num} · Sealed",
+
+    // ── BookPageClient (remaining) ──────────────────────
+    "book.footerBrand": "Tintaxis",
   },
 
   es: {
@@ -637,6 +712,81 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // ── General ──────────────────────────────────────────
     "general.language": "Idioma",
+
+    // ── HomeClient (remaining) ──────────────────────────
+    "home.socialMediaPitch": "En X, tu hilo desaparece en 24 horas. En Instagram, tu pie de foto tiene un límite de caracteres. En Tintaxis, tu libro tiene un hogar permanente, una experiencia de lectura diseñada para textos largos, y lectores que pagan por leer — no por pasar de largo.",
+    "home.publishingHouse": "Esto no es otro perfil en redes sociales. Es una editorial que devuelve el 85% de los ingresos al autor.",
+    "home.readersWaiting": "Tus lectores están esperando.",
+    "home.imageCredit": "Imagen generada con Google Gemini",
+    "home.resume": "Continuar →",
+    "home.nowOnTintaxis": "AHORA EN TINTAXIS",
+    "home.nowOnTintaxisDesc": "Libros reales. Escritores reales. Empieza a leer en segundos.",
+    "home.readNow": "Leer ahora →",
+    "home.footerBrand": "Tintaxis · tintaxis.com",
+
+    // ── ImpactClient (remaining) ────────────────────────
+    "impact.envImpact": "IMPACTO AMBIENTAL",
+    "impact.digitalAlt": "LA ALTERNATIVA DIGITAL",
+    "impact.digitalAltDesc": "Un libro digital se distribuye una vez y se lee infinitamente. Sin flotas de envío, sin residuos de almacén, sin copias devueltas y destruidas al final de un ciclo de ventas. El costo ambiental del lector número 10 es idéntico al del millón.",
+    "impact.dataSources": "Datos de EPA, TAPPI y Environmental Paper Network",
+    "impact.chartBooks": "LIBROS LEÍDOS",
+    "impact.chartCost": "COSTO CO₂ (KG)",
+
+    // ── Library page (remaining) ────────────────────────
+    "lib.header": "Tintaxis · Biblioteca",
+    "lib.footerBrand": "Tintaxis · Una Plataforma Literaria",
+
+    // ── PublishClient (remaining) ───────────────────────
+    "pub.selectionOnly": "TINTAXIS · SOLO POR SELECCIÓN",
+    "pub.submitWork": "Enviar Tu Obra",
+    "pub.readArchive": "Leer el Archivo",
+    "pub.continue": "↓ CONTINUAR",
+    "pub.theModel": "EL MODELO",
+    "pub.publishingHouse": "Una editorial.",
+    "pub.notMarketplace": "No un marketplace.",
+    "pub.modelDesc1": "Tintaxis no es una herramienta de autopublicación. No hay niveles, no hay cuotas mensuales, ni modelo de pago por existir. Esto es una editorial, no un marketplace. Leemos tu obra. Decidimos. Los escritores aplican. Nosotros leemos. Si la obra pertenece aquí, abrimos la puerta. Así de simple.",
+    "pub.modelDesc2": "Los lectores financian la plataforma suscribiéndose a los escritores que quieren apoyar. Después del procesamiento de Stripe, te quedas con el 85% de los ingresos netos. Nosotros mantenemos las luces encendidas con el 15%. Sin anuncios. Sin recolección de datos. Sin algoritmo decidiendo quién es visto. Tu alcance determina tus ingresos. Tintaxis promueve tu trabajo a través de redes sociales y canales digitales de lectura — pero el verdadero motor eres tú. Tus lectores, tu marketing, tu red. Cuanto más impulses, más ganas.",
+    "pub.liveOnTintaxis": "EN VIVO EN TINTAXIS",
+    "pub.inauguralWork": "OBRA INAUGURAL",
+    "pub.novellaBy": "Una novela corta de Chico Montecristi",
+    "pub.huntTagline": "Thriller psicológico oscuro. Noir gótico sureño. Una niña que mató a su madre, un padre que la encubrió, y un pueblo que nunca lo supo.",
+    "pub.readChapterOne": "Leer el Capítulo Uno →",
+    "pub.howItWorks": "CÓMO FUNCIONA",
+    "pub.authorApp": "SOLICITUD DE AUTOR",
+    "pub.appDesc": "Cada solicitud se lee personalmente. Respondemos en 5 días hábiles.",
+    "pub.selectGenre": "Seleccionar…",
+    "pub.synopsisPlaceholder": "¿De qué trata tu libro? (100–300 palabras)",
+    "pub.whyPlaceholder": "¿Por qué tu obra pertenece aquí?",
+    "pub.errorSubmission": "Error al enviar. Intenta de nuevo.",
+    "pub.errorConnection": "Error de conexión. Intenta de nuevo.",
+
+    // ── GiftClient (remaining) ──────────────────────────
+    "gift.errorRequired": "El correo del destinatario es obligatorio.",
+    "gift.errorGeneric": "Algo salió mal.",
+    "gift.errorConnection": "Error de conexión. Intenta de nuevo.",
+    "gift.placeholderEmail": "amigo@correo.com",
+    "gift.placeholderName": "Su nombre (opcional)",
+    "gift.placeholderSender": "Tu nombre (aparece en el regalo)",
+    "gift.placeholderMessage": "Una nota breve para el lector... (opcional)",
+
+    // ── ReadingSurface (remaining) ──────────────────────
+    "reading.fullAccess": "Acceso Completo",
+    "reading.signalInk": "Tinta Señal",
+    "reading.inkAnnotation": "Anotación de Tinta",
+    "reading.unauthorized": "No autorizado",
+    "reading.theAuthor": "El Autor",
+    "reading.loadingChapter": "Cargando capítulo...",
+    "reading.chapter": "CAPÍTULO",
+    "reading.oneMinRead": "1 min de lectura",
+    "reading.firstReadSealed": "Primera Lectura · Sellada",
+    "reading.archiveMarks": "Tus marcas están en el Archivo.",
+    "reading.archiveReturn": "Estarán aquí cuando regreses.",
+    "reading.haveRead": "He leído este capítulo",
+    "reading.shareX": "𝕏 Compartir",
+    "reading.chapterSealed": "Capítulo {num} · Sellado",
+
+    // ── BookPageClient (remaining) ──────────────────────
+    "book.footerBrand": "Tintaxis",
   },
 
   zh: {
@@ -948,6 +1098,81 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // ── General ──────────────────────────────────────────
     "general.language": "语言",
+
+    // ── HomeClient (remaining) ──────────────────────────
+    "home.socialMediaPitch": "在X上，你的帖子24小时后消失。在Instagram上，你的文字有字数限制。在Tintaxis上，你的书有永久的家，一个为长篇阅读打造的体验，以及付费阅读的读者——而不是滑过的路人。",
+    "home.publishingHouse": "这不是另一个社交媒体主页。这是一家将85%收入返还给作者的出版社。",
+    "home.readersWaiting": "你的读者正在等待。",
+    "home.imageCredit": "图片由Google Gemini生成",
+    "home.resume": "继续 →",
+    "home.nowOnTintaxis": "正在TINTAXIS上",
+    "home.nowOnTintaxisDesc": "真正的书籍。真正的作家。几秒钟开始阅读。",
+    "home.readNow": "立即阅读 →",
+    "home.footerBrand": "Tintaxis · tintaxis.com",
+
+    // ── ImpactClient (remaining) ────────────────────────
+    "impact.envImpact": "环境影响",
+    "impact.digitalAlt": "数字替代方案",
+    "impact.digitalAltDesc": "一本数字书只需分发一次，却可以被无限次阅读。没有运输船队，没有仓库浪费，没有在销售周期结束时被粉碎的退货。第10位读者的环境成本与第1000万位完全相同。",
+    "impact.dataSources": "数据来源：EPA、TAPPI和环境纸网络",
+    "impact.chartBooks": "已读书籍",
+    "impact.chartCost": "CO₂成本（公斤）",
+
+    // ── Library page (remaining) ────────────────────────
+    "lib.header": "Tintaxis · 书库",
+    "lib.footerBrand": "Tintaxis · 文学平台",
+
+    // ── PublishClient (remaining) ───────────────────────
+    "pub.selectionOnly": "TINTAXIS · 仅限选拔",
+    "pub.submitWork": "提交你的作品",
+    "pub.readArchive": "阅读存档",
+    "pub.continue": "↓ 继续",
+    "pub.theModel": "模式",
+    "pub.publishingHouse": "一家出版社。",
+    "pub.notMarketplace": "不是市场。",
+    "pub.modelDesc1": "Tintaxis不是一个自助出版工具。没有等级，没有月费，也没有付费存在的模式。这是一家出版社，不是市场。我们阅读你的作品。我们决定。作家申请。我们阅读。如果作品属于这里，我们就打开大门。就这么简单。",
+    "pub.modelDesc2": "读者通过订阅他们想支持的作家来资助平台。在Stripe处理后，你保留85%的净收入。我们用15%维持运营。没有广告。没有数据收集。没有算法决定谁被看到。你的影响力决定你的收入。Tintaxis通过社交媒体和数字阅读渠道推广你的作品——但真正的引擎是你。你的读者，你的营销，你的网络。你推动得越多，你赚得越多。",
+    "pub.liveOnTintaxis": "在TINTAXIS上线",
+    "pub.inauguralWork": "首发作品",
+    "pub.novellaBy": "Chico Montecristi的中篇小说",
+    "pub.huntTagline": "黑暗心理惊悚。南方哥特黑色。一个杀了母亲的女孩，一个替她掩盖的父亲，一个永远不知道真相的小镇。",
+    "pub.readChapterOne": "阅读第一章 →",
+    "pub.howItWorks": "如何运作",
+    "pub.authorApp": "作者申请",
+    "pub.appDesc": "每份申请都会被亲自阅读。我们在5个工作日内回复。",
+    "pub.selectGenre": "选择…",
+    "pub.synopsisPlaceholder": "你的书讲什么？（100-300字）",
+    "pub.whyPlaceholder": "为什么你的作品属于这里？",
+    "pub.errorSubmission": "提交失败。请重试。",
+    "pub.errorConnection": "连接失败。请重试。",
+
+    // ── GiftClient (remaining) ──────────────────────────
+    "gift.errorRequired": "收件人邮箱为必填项。",
+    "gift.errorGeneric": "出了点问题。",
+    "gift.errorConnection": "连接失败。请重试。",
+    "gift.placeholderEmail": "朋友@邮箱.com",
+    "gift.placeholderName": "对方姓名（可选）",
+    "gift.placeholderSender": "你的姓名（显示在礼物中）",
+    "gift.placeholderMessage": "给读者的简短留言...（可选）",
+
+    // ── ReadingSurface (remaining) ──────────────────────
+    "reading.fullAccess": "完整访问",
+    "reading.signalInk": "信号墨水",
+    "reading.inkAnnotation": "墨水注释",
+    "reading.unauthorized": "未授权",
+    "reading.theAuthor": "作者",
+    "reading.loadingChapter": "正在加载章节...",
+    "reading.chapter": "第章",
+    "reading.oneMinRead": "1分钟阅读",
+    "reading.firstReadSealed": "首次阅读 · 已封存",
+    "reading.archiveMarks": "你的标记在存档中。",
+    "reading.archiveReturn": "当你回来时它们会在这里。",
+    "reading.haveRead": "我已读完这一章",
+    "reading.shareX": "𝕏 分享",
+    "reading.chapterSealed": "第{num}章 · 已封存",
+
+    // ── BookPageClient (remaining) ──────────────────────
+    "book.footerBrand": "Tintaxis",
   },
 
   pt: {
@@ -1259,6 +1484,81 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // ── General ──────────────────────────────────────────
     "general.language": "Idioma",
+
+    // ── HomeClient (remaining) ──────────────────────────
+    "home.socialMediaPitch": "No X, seu tópico desaparece em 24 horas. No Instagram, sua legenda tem limite de caracteres. No Tintaxis, seu livro tem um lar permanente, uma experiência de leitura feita para textos longos, e leitores que pagam para ler — não para rolar.",
+    "home.publishingHouse": "Isso não é mais um perfil de rede social. É uma editora que devolve 85% da receita ao autor.",
+    "home.readersWaiting": "Seus leitores estão esperando.",
+    "home.imageCredit": "Imagem gerada com Google Gemini",
+    "home.resume": "Continuar →",
+    "home.nowOnTintaxis": "AGORA NO TINTAXIS",
+    "home.nowOnTintaxisDesc": "Livros reais. Escritores reais. Comece a ler em segundos.",
+    "home.readNow": "Ler agora →",
+    "home.footerBrand": "Tintaxis · tintaxis.com",
+
+    // ── ImpactClient (remaining) ────────────────────────
+    "impact.envImpact": "IMPACTO AMBIENTAL",
+    "impact.digitalAlt": "A ALTERNATIVA DIGITAL",
+    "impact.digitalAltDesc": "Um livro digital é distribuído uma vez e lido infinitamente. Sem frotas de transporte, sem desperdício de armazém, sem cópias devolvidas e destruídas no fim de um ciclo de vendas. O custo ambiental do 10º leitor é idêntico ao do 10 milionésimo.",
+    "impact.dataSources": "Dados da EPA, TAPPI e Environmental Paper Network",
+    "impact.chartBooks": "LIVROS LIDOS",
+    "impact.chartCost": "CUSTO CO₂ (KG)",
+
+    // ── Library page (remaining) ────────────────────────
+    "lib.header": "Tintaxis · Biblioteca",
+    "lib.footerBrand": "Tintaxis · Uma Plataforma Literária",
+
+    // ── PublishClient (remaining) ───────────────────────
+    "pub.selectionOnly": "TINTAXIS · APENAS POR SELEÇÃO",
+    "pub.submitWork": "Enviar Sua Obra",
+    "pub.readArchive": "Ler o Arquivo",
+    "pub.continue": "↓ CONTINUAR",
+    "pub.theModel": "O MODELO",
+    "pub.publishingHouse": "Uma editora.",
+    "pub.notMarketplace": "Não um marketplace.",
+    "pub.modelDesc1": "Tintaxis não é uma ferramenta de autopublicação. Não há níveis, não há mensalidades, nem modelo de pague para existir. Isso é uma editora, não um marketplace. Lemos sua obra. Decidimos. Escritores se candidatam. Nós lemos. Se a obra pertence aqui, abrimos a porta. Simples assim.",
+    "pub.modelDesc2": "Leitores financiam a plataforma assinando escritores que querem apoiar. Após o processamento do Stripe, você fica com 85% da receita líquida. Nós mantemos as luzes acesas com 15%. Sem anúncios. Sem coleta de dados. Sem algoritmo decidindo quem é visto. Seu alcance determina sua receita. Tintaxis promove seu trabalho através de redes sociais e canais digitais de leitura — mas o verdadeiro motor é você. Seus leitores, seu marketing, sua rede. Quanto mais você impulsiona, mais você ganha.",
+    "pub.liveOnTintaxis": "AO VIVO NO TINTAXIS",
+    "pub.inauguralWork": "OBRA INAUGURAL",
+    "pub.novellaBy": "Uma novela de Chico Montecristi",
+    "pub.huntTagline": "Thriller psicológico sombrio. Noir gótico sulista. Uma menina que matou a mãe, um pai que a encobriu, e uma cidade que nunca soube.",
+    "pub.readChapterOne": "Ler o Capítulo Um →",
+    "pub.howItWorks": "COMO FUNCIONA",
+    "pub.authorApp": "CANDIDATURA DE AUTOR",
+    "pub.appDesc": "Cada candidatura é lida pessoalmente. Respondemos em 5 dias úteis.",
+    "pub.selectGenre": "Selecionar…",
+    "pub.synopsisPlaceholder": "Sobre o que é seu livro? (100–300 palavras)",
+    "pub.whyPlaceholder": "Por que sua obra pertence aqui?",
+    "pub.errorSubmission": "Falha no envio. Tente novamente.",
+    "pub.errorConnection": "Falha na conexão. Tente novamente.",
+
+    // ── GiftClient (remaining) ──────────────────────────
+    "gift.errorRequired": "O e-mail do destinatário é obrigatório.",
+    "gift.errorGeneric": "Algo deu errado.",
+    "gift.errorConnection": "Falha na conexão. Tente novamente.",
+    "gift.placeholderEmail": "amigo@email.com",
+    "gift.placeholderName": "Nome da pessoa (opcional)",
+    "gift.placeholderSender": "Seu nome (aparece no presente)",
+    "gift.placeholderMessage": "Uma nota breve para o leitor... (opcional)",
+
+    // ── ReadingSurface (remaining) ──────────────────────
+    "reading.fullAccess": "Acesso Completo",
+    "reading.signalInk": "Tinta Sinal",
+    "reading.inkAnnotation": "Anotação de Tinta",
+    "reading.unauthorized": "Não autorizado",
+    "reading.theAuthor": "O Autor",
+    "reading.loadingChapter": "Carregando capítulo...",
+    "reading.chapter": "CAPÍTULO",
+    "reading.oneMinRead": "1 min de leitura",
+    "reading.firstReadSealed": "Primeira Leitura · Selada",
+    "reading.archiveMarks": "Suas marcas estão no Arquivo.",
+    "reading.archiveReturn": "Elas estarão aqui quando você voltar.",
+    "reading.haveRead": "Li este capítulo",
+    "reading.shareX": "𝕏 Compartilhar",
+    "reading.chapterSealed": "Capítulo {num} · Selado",
+
+    // ── BookPageClient (remaining) ──────────────────────
+    "book.footerBrand": "Tintaxis",
   },
 
   it: {
@@ -1570,6 +1870,81 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // ── General ──────────────────────────────────────────
     "general.language": "Lingua",
+
+    // ── HomeClient (remaining) ──────────────────────────
+    "home.socialMediaPitch": "Su X, il tuo thread scompare in 24 ore. Su Instagram, la tua didascalia ha un limite di caratteri. Su Tintaxis, il tuo libro ha una casa permanente, un'esperienza di lettura pensata per testi lunghi, e lettori che pagano per leggere — non per scorrere.",
+    "home.publishingHouse": "Questo non è un altro profilo social. È una casa editrice che restituisce l'85% dei ricavi all'autore.",
+    "home.readersWaiting": "I tuoi lettori stanno aspettando.",
+    "home.imageCredit": "Immagine generata con Google Gemini",
+    "home.resume": "Riprendi →",
+    "home.nowOnTintaxis": "ORA SU TINTAXIS",
+    "home.nowOnTintaxisDesc": "Libri veri. Scrittori veri. Inizia a leggere in pochi secondi.",
+    "home.readNow": "Leggi ora →",
+    "home.footerBrand": "Tintaxis · tintaxis.com",
+
+    // ── ImpactClient (remaining) ────────────────────────
+    "impact.envImpact": "IMPATTO AMBIENTALE",
+    "impact.digitalAlt": "L'ALTERNATIVA DIGITALE",
+    "impact.digitalAltDesc": "Un libro digitale viene distribuito una volta e letto all'infinito. Nessuna flotta di spedizione, nessuno spreco di magazzino, nessuna copia distrutta a fine ciclo. Il costo ambientale del decimo lettore è identico a quello del dieci milionesimo.",
+    "impact.dataSources": "Dati da EPA, TAPPI e Environmental Paper Network",
+    "impact.chartBooks": "LIBRI LETTI",
+    "impact.chartCost": "COSTO CO₂ (KG)",
+
+    // ── Library page (remaining) ────────────────────────
+    "lib.header": "Tintaxis · Biblioteca",
+    "lib.footerBrand": "Tintaxis · Una Piattaforma Letteraria",
+
+    // ── PublishClient (remaining) ───────────────────────
+    "pub.selectionOnly": "TINTAXIS · SOLO PER SELEZIONE",
+    "pub.submitWork": "Invia la Tua Opera",
+    "pub.readArchive": "Leggi l'Archivio",
+    "pub.continue": "↓ CONTINUA",
+    "pub.theModel": "IL MODELLO",
+    "pub.publishingHouse": "Una casa editrice.",
+    "pub.notMarketplace": "Non un marketplace.",
+    "pub.modelDesc1": "Tintaxis non è uno strumento di autopubblicazione. Non ci sono livelli, nessuna quota mensile, nessun modello paga per esistere. Questa è una casa editrice, non un marketplace. Leggiamo la tua opera. Decidiamo. Gli scrittori si candidano. Noi leggiamo. Se l'opera appartiene qui, apriamo la porta. Tutto qui.",
+    "pub.modelDesc2": "I lettori finanziano la piattaforma iscrivendosi agli scrittori che vogliono sostenere. Dopo l'elaborazione di Stripe, tieni l'85% dei ricavi netti. Noi manteniamo le luci accese con il 15%. Niente pubblicità. Niente raccolta dati. Nessun algoritmo che decide chi viene visto. La tua portata determina i tuoi ricavi. Tintaxis promuove il tuo lavoro attraverso social media e canali di lettura digitali — ma il vero motore sei tu. I tuoi lettori, il tuo marketing, la tua rete. Più spingi, più guadagni.",
+    "pub.liveOnTintaxis": "LIVE SU TINTAXIS",
+    "pub.inauguralWork": "OPERA INAUGURALE",
+    "pub.novellaBy": "Un romanzo breve di Chico Montecristi",
+    "pub.huntTagline": "Thriller psicologico oscuro. Noir gotico del sud. Una ragazza che ha ucciso sua madre, un padre che l'ha coperta, e una cittadina che non ha mai saputo.",
+    "pub.readChapterOne": "Leggi il Capitolo Uno →",
+    "pub.howItWorks": "COME FUNZIONA",
+    "pub.authorApp": "CANDIDATURA AUTORE",
+    "pub.appDesc": "Ogni candidatura viene letta personalmente. Rispondiamo entro 5 giorni lavorativi.",
+    "pub.selectGenre": "Seleziona…",
+    "pub.synopsisPlaceholder": "Di cosa parla il tuo libro? (100–300 parole)",
+    "pub.whyPlaceholder": "Perché la tua opera appartiene qui?",
+    "pub.errorSubmission": "Invio fallito. Riprova.",
+    "pub.errorConnection": "Connessione fallita. Riprova.",
+
+    // ── GiftClient (remaining) ──────────────────────────
+    "gift.errorRequired": "L'email del destinatario è obbligatoria.",
+    "gift.errorGeneric": "Qualcosa è andato storto.",
+    "gift.errorConnection": "Connessione fallita. Riprova.",
+    "gift.placeholderEmail": "amico@email.com",
+    "gift.placeholderName": "Il loro nome (facoltativo)",
+    "gift.placeholderSender": "Il tuo nome (mostrato nel regalo)",
+    "gift.placeholderMessage": "Una breve nota per il lettore... (facoltativo)",
+
+    // ── ReadingSurface (remaining) ──────────────────────
+    "reading.fullAccess": "Accesso Completo",
+    "reading.signalInk": "Inchiostro Segnale",
+    "reading.inkAnnotation": "Annotazione Inchiostro",
+    "reading.unauthorized": "Non autorizzato",
+    "reading.theAuthor": "L'Autore",
+    "reading.loadingChapter": "Caricamento capitolo...",
+    "reading.chapter": "CAPITOLO",
+    "reading.oneMinRead": "1 min di lettura",
+    "reading.firstReadSealed": "Prima Lettura · Sigillata",
+    "reading.archiveMarks": "I tuoi segni sono nell'Archivio.",
+    "reading.archiveReturn": "Saranno qui quando tornerai.",
+    "reading.haveRead": "Ho letto questo capitolo",
+    "reading.shareX": "𝕏 Condividi",
+    "reading.chapterSealed": "Capitolo {num} · Sigillato",
+
+    // ── BookPageClient (remaining) ──────────────────────
+    "book.footerBrand": "Tintaxis",
   },
 };
 

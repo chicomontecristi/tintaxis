@@ -37,6 +37,7 @@ import { QuoteSelector, MilestoneCard, SendToFriend } from "./ViralLoops";
 import { useTrackReading, BookmarkPrompt } from "@/components/ui/ReturnCapture";
 import { DepthEmailCapture } from "@/components/ui/SessionDepth";
 import { BOOKS } from "@/lib/content/books";
+import { useI18n } from "@/lib/i18n";
 
 // Tier access order — must match SubscriptionModal's TIER_ORDER
 const TIER_ORDER: SubscriptionTierName[] = ["free", "digital_copy", "codex", "scribe", "archive", "chronicler"];
@@ -53,6 +54,7 @@ interface ReadingSurfaceProps {
 
 export default function ReadingSurface({ chapter, nextChapter, prevChapter }: ReadingSurfaceProps) {
   const pathname = usePathname();
+  const { t } = useI18n();
   const [annotations, setAnnotations] = useState<Annotation[]>([]);
   const [activeInkType, setActiveInkTypeState] = useState<InkType>("ghost");
   const [marginLayer, setMarginLayer] = useState<MarginLayer>("mine");
@@ -254,7 +256,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
           // Free-tier reader on chapter 3+ → needs paid subscription
           if (data.tier === "free" && chapter.number > 2) {
             setGateTier("codex");
-            setGateFeatureName("Full Access");
+            setGateFeatureName(t("reading.fullAccess"));
             setSubscriptionModalOpen(true);
           }
         } else if (data.email) {
@@ -262,7 +264,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
           setReaderTier("free");
           if (chapter.number > 2) {
             setGateTier("codex");
-            setGateFeatureName("Full Access");
+            setGateFeatureName(t("reading.fullAccess"));
             setSubscriptionModalOpen(true);
           }
         } else if (chapter.number === 2) {
@@ -271,7 +273,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
         } else if (chapter.number > 2) {
           // No session + chapter 3+ → subscription required
           setGateTier("codex");
-          setGateFeatureName("Full Access");
+          setGateFeatureName(t("reading.fullAccess"));
           setSubscriptionModalOpen(true);
         }
         if (data.id)    setReaderId(data.id);
@@ -282,7 +284,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
         if (chapter.number === 2) setEmailGateOpen(true);
         else if (chapter.number > 2) {
           setGateTier("codex");
-          setGateFeatureName("Full Access");
+          setGateFeatureName(t("reading.fullAccess"));
           setSubscriptionModalOpen(true);
         }
       });
@@ -303,7 +305,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
     const bookSlug = chapter.bookSlug ?? "the-hunt";
     fetch(`/api/chapter/${encodeURIComponent(bookSlug)}/${encodeURIComponent(chapter.slug)}`)
       .then((r) => {
-        if (!r.ok) throw new Error("Unauthorized");
+        if (!r.ok) throw new Error(t("reading.unauthorized"));
         return r.json();
       })
       .then((data) => {
@@ -410,7 +412,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
       // Signal ink requires Scribe tier
       if (ink === "signal") {
         if (!hasAccess("scribe")) {
-          handleGateTriggered("scribe", "Signal Ink");
+          handleGateTriggered("scribe", t("reading.signalInk"));
           return;
         }
         setActiveInkTypeState(ink);
@@ -424,7 +426,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
 
       // All other inks require Codex tier
       if (!hasAccess("codex")) {
-        handleGateTriggered("codex", "Ink Annotation");
+        handleGateTriggered("codex", t("reading.inkAnnotation"));
         return;
       }
 
@@ -597,7 +599,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
           {hasAuthorAudio && narratorState === "idle" && (
             <AuthorVoiceover
               audioUrl={voiceoverUrl!}
-              authorName={book?.author ?? "The Author"}
+              authorName={book?.author ?? t("reading.theAuthor")}
               chapterTitle={chapter.title}
               accentColor={book?.accentColor}
               onComplete={() => setNarratorState("selecting")}
@@ -609,7 +611,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
           <AnimatePresence>
             {narratorState === "selecting" && (
               <NarratorSelector
-                authorName={book?.author ?? "The Author"}
+                authorName={book?.author ?? t("reading.theAuthor")}
                 bookLanguage={book?.language ?? "en"}
                 accentColor={book?.accentColor}
                 onSelect={handleNarratorSelect}
@@ -628,7 +630,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
                 color: "rgba(201,168,76,0.4)",
                 textTransform: "uppercase",
               }}>
-                Loading chapter...
+                {t("reading.loadingChapter")}
               </p>
             </div>
           )}
@@ -795,14 +797,15 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
 
 // ─── READ TIME ────────────────────────────────────────────────────────────────
 
-function estimateReadTime(wordCount: number): string {
+function estimateReadTime(wordCount: number, t: ReturnType<typeof useI18n>["t"]): string {
   const minutes = Math.ceil(wordCount / 250);
-  return minutes === 1 ? "1 min read" : `${minutes} min read`;
+  return minutes === 1 ? t("reading.oneMinRead") : `${minutes} ${t("reading.minRead")}`;
 }
 
 // ─── CHAPTER HEADER ──────────────────────────────────────────────────────────
 
 function ChapterHeader({ chapter }: { chapter: Chapter }) {
+  const { t } = useI18n();
   return (
     <motion.header
       style={{ textAlign: "center", marginBottom: "3rem" }}
@@ -821,7 +824,7 @@ function ChapterHeader({ chapter }: { chapter: Chapter }) {
           marginBottom: "1.25rem",
         }}
       >
-        CHAPTER {chapter.romanNumeral}
+        {t("reading.chapter")} {chapter.romanNumeral}
       </p>
 
       <h1
@@ -865,7 +868,7 @@ function ChapterHeader({ chapter }: { chapter: Chapter }) {
             opacity: 0.5,
           }}
         >
-          {estimateReadTime(chapter.wordCount)}
+          {estimateReadTime(chapter.wordCount, t)}
         </p>
       )}
     </motion.header>
@@ -910,11 +913,12 @@ function CompletionEvent({
   chapter: Chapter;
   onDismiss: () => void;
 }) {
+  const { t } = useI18n();
   const [phase, setPhase] = useState<"seal" | "reveal">("seal");
 
   useEffect(() => {
-    const t = setTimeout(() => setPhase("reveal"), 1200);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setPhase("reveal"), 1200);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -980,7 +984,7 @@ function CompletionEvent({
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          First Read · Sealed
+          {t("reading.firstReadSealed")}
         </motion.p>
 
         {/* Brass ornament */}
@@ -1036,9 +1040,9 @@ function CompletionEvent({
                   marginBottom: "2.5rem",
                 }}
               >
-                Your marks are in the Archive.
+                {t("reading.archiveMarks")}
                 <br />
-                They will be here when you return.
+                {t("reading.archiveReturn")}
               </p>
             </motion.div>
           )}
@@ -1083,7 +1087,7 @@ function CompletionEvent({
           {["top-0 left-0 border-t border-l","top-0 right-0 border-t border-r","bottom-0 left-0 border-b border-l","bottom-0 right-0 border-b border-r"].map((cls, i) => (
             <span key={i} className={`absolute w-2 h-2 ${cls}`} style={{ borderColor: "#C9A84C" }} />
           ))}
-          I have read this chapter
+          {t("reading.haveRead")}
         </motion.button>
       </motion.div>
     </motion.div>
@@ -1100,6 +1104,7 @@ function CompletionEvent({
 // Copy link + share on X/Twitter.
 
 function ShareBar({ chapter }: { chapter: Chapter }) {
+  const { t } = useI18n();
   const [copied, setCopied] = useState(false);
   const pathname = usePathname();
 
@@ -1146,7 +1151,7 @@ function ShareBar({ chapter }: { chapter: Chapter }) {
           margin: 0,
         }}
       >
-        Share this chapter
+        {t("reading.shareChapter")}
       </p>
 
       <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
@@ -1180,7 +1185,7 @@ function ShareBar({ chapter }: { chapter: Chapter }) {
             background: "rgba(201,168,76,0.06)",
           }}
         >
-          {copied ? "✓ Copied" : "⎘ Copy Link"}
+          {copied ? t("reading.copied") : t("reading.copyLink")}
         </motion.button>
 
         {/* Twitter/X share */}
@@ -1210,7 +1215,7 @@ function ShareBar({ chapter }: { chapter: Chapter }) {
             background: "rgba(201,168,76,0.06)",
           }}
         >
-          𝕏 Share
+          {t("reading.shareX")}
         </motion.a>
       </div>
     </motion.div>
@@ -1224,6 +1229,7 @@ interface ChapterEndNavProps {
 }
 
 function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEndNavProps) {
+  const { t } = useI18n();
   if (!prevChapter && !nextChapter) return null;
 
   return (
@@ -1271,7 +1277,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                   textTransform: "uppercase",
                 }}
               >
-                ← Previous
+                {t("reading.previous")}
               </span>
               <span
                 style={{
@@ -1348,7 +1354,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                   gap: "0.3rem",
                 }}
               >
-                Next →
+                {t("reading.next")}
                 <span style={{ fontSize: "0.85rem" }}>⚿</span>
               </span>
               <span
@@ -1371,7 +1377,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                   textTransform: "uppercase",
                 }}
               >
-                Chapter {nextChapter.romanNumeral} · Sealed
+                {t("reading.chapterSealed", { num: nextChapter.romanNumeral })}
               </span>
             </motion.button>
           ) : (
@@ -1403,7 +1409,7 @@ function ChapterEndNav({ prevChapter, nextChapter, onGateTriggered }: ChapterEnd
                     textTransform: "uppercase",
                   }}
                 >
-                  Next →
+                  {t("reading.next")}
                 </span>
                 <span
                   style={{

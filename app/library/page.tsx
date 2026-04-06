@@ -105,7 +105,7 @@ export default function LibraryPage() {
             textTransform: "uppercase",
             marginBottom: "0.75rem",
           }}>
-            Tintaxis · Library
+            {t("lib.header")}
           </p>
           <h1 style={{
             fontFamily: '"EB Garamond", Garamond, Georgia, serif',
@@ -252,7 +252,7 @@ export default function LibraryPage() {
             color: "rgba(245,230,200,0.1)",
             textTransform: "uppercase",
           }}>
-            Tintaxis · A Literary Platform
+            {t("lib.footerBrand")}
           </span>
         </div>
       </main>

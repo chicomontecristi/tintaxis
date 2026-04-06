@@ -161,7 +161,7 @@ function WriterEarningsBreakdown() {
           marginBottom: "0.75rem",
         }}
       >
-        HOW IT WORKS
+        {t("pub.howItWorks")}
       </motion.p>
       <motion.h2
         initial={{ opacity: 0 }}
@@ -385,11 +385,11 @@ export default function PublishClient() {
         setForm({ name: "", email: "", bookTitle: "", genre: "", wordCount: "", synopsis: "", whyTintaxis: "", chapterFile: null });
       } else {
         const data = await res.json();
-        setErrorMsg(data.error ?? "Submission failed. Try again.");
+        setErrorMsg(data.error ?? t("pub.errorSubmission"));
         setSubmitStatus("error");
       }
     } catch {
-      setErrorMsg("Connection failed. Try again.");
+      setErrorMsg(t("pub.errorConnection"));
       setSubmitStatus("error");
     }
   };
@@ -460,7 +460,7 @@ export default function PublishClient() {
                 marginBottom: "2rem",
               }}
             >
-              TINTAXIS · BY SELECTION ONLY
+              {t("pub.selectionOnly")}
             </p>
 
             <h1
@@ -510,7 +510,7 @@ export default function PublishClient() {
                   cursor: "pointer",
                 }}
               >
-                Submit Your Work
+                {t("pub.submitWork")}
               </motion.button>
               <a href="/" style={{ textDecoration: "none" }}>
                 <motion.button
@@ -527,7 +527,7 @@ export default function PublishClient() {
                     cursor: "pointer",
                   }}
                 >
-                  Read the Archive
+                  {t("pub.readArchive")}
                 </motion.button>
               </a>
             </div>
@@ -547,7 +547,7 @@ export default function PublishClient() {
               textTransform: "uppercase",
             }}
           >
-            ↓ CONTINUE
+            {t("pub.continue")}
           </motion.div>
         </section>
 
@@ -572,7 +572,7 @@ export default function PublishClient() {
                 marginBottom: "1.5rem",
               }}
             >
-              THE MODEL
+              {t("pub.theModel")}
             </p>
             <h2
               style={{
@@ -584,9 +584,9 @@ export default function PublishClient() {
                 lineHeight: 1.3,
               }}
             >
-              A publishing house.
+              {t("pub.publishingHouse")}
               <br />
-              <em style={{ color: "rgba(201,168,76,0.7)" }}>Not a marketplace.</em>
+              <em style={{ color: "rgba(201,168,76,0.7)" }}>{t("pub.notMarketplace")}</em>
             </h2>
             <p
               style={{
@@ -598,8 +598,7 @@ export default function PublishClient() {
                 marginBottom: "1.5rem",
               }}
             >
-              Tintaxis is not a self-publishing tool. There are no tiers, no monthly fees, and no pay-to-exist model. This is a publishing house, not a marketplace. We read your work. We decide. Writers apply. We read. If the work belongs here, we open the door.
-              That&apos;s it.
+              {t("pub.modelDesc1")}
             </p>
             <p
               style={{
@@ -610,10 +609,7 @@ export default function PublishClient() {
                 fontStyle: "italic",
               }}
             >
-              Readers fund the platform by subscribing to writers they want to support.
-              After Stripe processing, you keep 85% of net revenue. We keep the lights on with 15%.
-              No ads. No data harvesting. No algorithm deciding who gets seen.
-              Your reach determines your revenue. Tintaxis promotes your work through social media and digital reading channels — but the real engine is you. Your readers, your marketing, your network. The more you push, the more you earn.
+              {t("pub.modelDesc2")}
             </p>
           </motion.div>
         </section>
@@ -762,7 +758,7 @@ export default function PublishClient() {
                 marginBottom: "1.5rem",
               }}
             >
-              LIVE ON TINTAXIS
+              {t("pub.liveOnTintaxis")}
             </p>
             <div
               style={{
@@ -783,7 +779,7 @@ export default function PublishClient() {
                   marginBottom: "1rem",
                 }}
               >
-                INAUGURAL WORK
+                {t("pub.inauguralWork")}
               </p>
               <h3
                 style={{
@@ -805,7 +801,7 @@ export default function PublishClient() {
                   marginBottom: "1.25rem",
                 }}
               >
-                A novella by Chico Montecristi
+                {t("pub.novellaBy")}
               </p>
               <p
                 style={{
@@ -818,8 +814,7 @@ export default function PublishClient() {
                   margin: "0 auto 1.75rem",
                 }}
               >
-                &ldquo;Dark psychological thriller. Southern Gothic noir. A girl who killed her mother,
-                a father who covered for her, and a small town that never knew.&rdquo;
+                &ldquo;{t("pub.huntTagline")}&rdquo;
               </p>
               <a href="/" style={{ textDecoration: "none" }}>
                 <motion.span
@@ -833,7 +828,7 @@ export default function PublishClient() {
                     cursor: "pointer",
                   }}
                 >
-                  Read Chapter One →
+                  {t("pub.readChapterOne")}
                 </motion.span>
               </a>
             </div>
@@ -871,7 +866,7 @@ export default function PublishClient() {
                 marginBottom: "0.75rem",
               }}
             >
-              AUTHOR APPLICATION
+              {t("pub.authorApp")}
             </p>
             <p
               style={{
@@ -883,7 +878,7 @@ export default function PublishClient() {
                 marginBottom: "2.5rem",
               }}
             >
-              Every application is read personally. We respond within 5 business days.
+              {t("pub.appDesc")}
             </p>
 
             <div
@@ -1006,7 +1001,7 @@ export default function PublishClient() {
                           onFocus={(e) => (e.target.style.borderColor = "rgba(201,168,76,0.4)")}
                           onBlur={(e) => (e.target.style.borderColor = "rgba(201,168,76,0.15)")}
                         >
-                          <option value="">Select…</option>
+                          <option value="">{t("pub.selectGenre")}</option>
                           <option>Literary Fiction</option>
                           <option>Thriller / Noir</option>
                           <option>Creative Nonfiction</option>
@@ -1039,7 +1034,7 @@ export default function PublishClient() {
                         value={form.synopsis}
                         onChange={set("synopsis")}
                         rows={4}
-                        placeholder="What is your book about? (100–300 words)"
+                        placeholder={t("pub.synopsisPlaceholder")}
                         style={{
                           ...inputStyle,
                           resize: "vertical" as const,
@@ -1057,7 +1052,7 @@ export default function PublishClient() {
                         value={form.whyTintaxis}
                         onChange={set("whyTintaxis")}
                         rows={3}
-                        placeholder="Why does your work belong here?"
+                        placeholder={t("pub.whyPlaceholder")}
                         style={{
                           ...inputStyle,
                           resize: "vertical" as const,

@@ -34,7 +34,7 @@ export default function GiftClient({ writer }: { writer: FeaturedWriter }) {
 
   const handleGift = async () => {
     if (!recipientEmail) {
-      setError("Recipient email is required.");
+      setError(t("gift.errorRequired"));
       return;
     }
     setLoading(true);
@@ -56,11 +56,11 @@ export default function GiftClient({ writer }: { writer: FeaturedWriter }) {
       if (res.ok && data.url) {
         window.location.href = data.url;
       } else {
-        setError(data.error ?? "Something went wrong.");
+        setError(data.error ?? t("gift.errorGeneric"));
         setLoading(false);
       }
     } catch {
-      setError("Connection failed. Try again.");
+      setError(t("gift.errorConnection"));
       setLoading(false);
     }
   };
@@ -181,7 +181,7 @@ export default function GiftClient({ writer }: { writer: FeaturedWriter }) {
               type="email"
               value={recipientEmail}
               onChange={(e) => setRecipientEmail(e.target.value)}
-              placeholder="friend@email.com"
+              placeholder={t("gift.placeholderEmail")}
               style={inputStyle}
               required
             />
@@ -192,7 +192,7 @@ export default function GiftClient({ writer }: { writer: FeaturedWriter }) {
               type="text"
               value={recipientName}
               onChange={(e) => setRecipientName(e.target.value)}
-              placeholder="Their name (optional)"
+              placeholder={t("gift.placeholderName")}
               style={inputStyle}
             />
           </div>
@@ -202,7 +202,7 @@ export default function GiftClient({ writer }: { writer: FeaturedWriter }) {
               type="text"
               value={senderName}
               onChange={(e) => setSenderName(e.target.value)}
-              placeholder="Your name (shown in the gift)"
+              placeholder={t("gift.placeholderSender")}
               style={inputStyle}
             />
           </div>
@@ -211,7 +211,7 @@ export default function GiftClient({ writer }: { writer: FeaturedWriter }) {
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="A short note to the reader... (optional)"
+              placeholder={t("gift.placeholderMessage")}
               rows={3}
               style={{ ...inputStyle, resize: "vertical" }}
             />
