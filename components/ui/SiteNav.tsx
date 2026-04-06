@@ -12,6 +12,50 @@ import ThemeToggle from "./ThemeToggle";
 
 const MONO = '"JetBrains Mono", monospace';
 
+function ShareOnX() {
+  const handleShare = () => {
+    const url = typeof window !== "undefined" ? window.location.href : "https://tintaxis.com";
+    const text = encodeURIComponent(`@tintaxis `);
+    window.open(
+      `https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(url)}`,
+      "_blank",
+      "width=550,height=420"
+    );
+  };
+  return (
+    <button
+      onClick={handleShare}
+      aria-label="Share on X"
+      title="Share on X"
+      style={{
+        fontFamily: MONO,
+        fontSize: "0.8rem",
+        letterSpacing: "0.15em",
+        color: "rgba(201,168,76,0.35)",
+        background: "none",
+        border: "1px solid rgba(201,168,76,0.12)",
+        borderRadius: "2px",
+        cursor: "pointer",
+        padding: "3px 8px",
+        transition: "all 0.2s ease",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "4px",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.color = "rgba(201,168,76,0.8)";
+        e.currentTarget.style.borderColor = "rgba(201,168,76,0.35)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.color = "rgba(201,168,76,0.35)";
+        e.currentTarget.style.borderColor = "rgba(201,168,76,0.12)";
+      }}
+    >
+      <span style={{ fontSize: "0.75rem", lineHeight: 1 }}>𝕏</span>
+    </button>
+  );
+}
+
 const PUBLIC_LINKS = [
   { href: "/library", label: "Library" },
   { href: "/writers", label: "Writers" },
@@ -141,6 +185,7 @@ export default function SiteNav() {
               </Link>
             );
           })}
+          <ShareOnX />
           <ThemeToggle />
           {session.role && (
             <button
@@ -267,8 +312,9 @@ export default function SiteNav() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: allLinks.length * 0.05, duration: 0.3 }}
-              style={{ marginTop: "1rem" }}
+              style={{ marginTop: "1rem", display: "flex", gap: "0.75rem", alignItems: "center" }}
             >
+              <ShareOnX />
               <ThemeToggle />
             </motion.div>
             {session.role && (
