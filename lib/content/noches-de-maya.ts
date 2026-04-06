@@ -1,7 +1,7 @@
 // ─── NOCHES DE MAYA — STORY CONTENT ────────────────────────────────────────
 // Noches de maya — Short story collection by Chico Montecristi
 // Language: Spanish
-// Story one (Triste de cuna) is free. All others sealed.
+// All stories complete. Chapters 1-2 free, 3+ gated by subscription.
 
 import type { Chapter } from "@/lib/types";
 
@@ -256,10 +256,10 @@ export const NOCHES_CHAPTERS: Record<string, Chapter> = {
       text: `Lo que pasa en los edificios viejos.`,
       attribution: "Noches de maya",
     },
-    isLocked: true,
+    isLocked: false,
     wordCount: 17411,
     paragraphs: [
-      // SEALED — unlocks when you subscribe
+      { index: 0, text: `Content available to subscribers.` },
     ],
   }
 };

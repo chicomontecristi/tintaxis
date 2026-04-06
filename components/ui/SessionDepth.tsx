@@ -122,7 +122,7 @@ export function DepthEmailCapture() {
                     lineHeight: 1.3,
                   }}
                 >
-                  New chapters are coming.
+                  Stay in the archive.
                 </p>
                 <button
                   onClick={dismiss}

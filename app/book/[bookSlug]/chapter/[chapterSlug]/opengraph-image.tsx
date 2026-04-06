@@ -196,7 +196,7 @@ export default function Image({ params }: Props) {
                 display: "flex",
               }}
             >
-              SEALED · COMING SOON
+              SEALED · SUBSCRIBERS ONLY
             </div>
           )}
         </div>

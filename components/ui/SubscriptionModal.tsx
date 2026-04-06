@@ -73,7 +73,7 @@ const TIERS: Tier[] = [
       "Everything in Codex",
       "Signal Ink — ask the author directly",
       "Author Whispers in the margins",
-      "Early access to new chapters",
+      "Early access to new work",
     ],
     inkColors: ["rgba(0,229,204,0.8)"],
     accentColor: "rgba(0,229,204,0.6)",
@@ -128,6 +128,21 @@ export default function SubscriptionModal({
   bookSlug,
 }: SubscriptionModalProps) {
   const [loadingTier, setLoadingTier] = useState<SubscriptionTierName | null>(null);
+
+  // Reset loading state when reader returns from Stripe (back button / tab switch)
+  useEffect(() => {
+    const resetLoading = () => {
+      if (document.visibilityState === "visible") {
+        setLoadingTier(null);
+      }
+    };
+    document.addEventListener("visibilitychange", resetLoading);
+    window.addEventListener("pageshow", () => setLoadingTier(null));
+    return () => {
+      document.removeEventListener("visibilitychange", resetLoading);
+      window.removeEventListener("pageshow", () => setLoadingTier(null));
+    };
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;

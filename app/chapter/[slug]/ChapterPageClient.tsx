@@ -275,8 +275,8 @@ function SealedChamber({ chapter }: { chapter: Chapter }) {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.3, duration: 0.8 }}
         >
-          The author is still writing inside it. When the ink dries,
-          the Archive will open this door.
+          This chapter is reserved for subscribers.
+          Unlock the full archive to continue reading.
         </motion.p>
 
         {/* ── Epigraph teaser — a taste of what's sealed ── */}

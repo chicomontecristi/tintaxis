@@ -23,6 +23,19 @@ export default function BookPageClient() {
   const [ready, setReady] = useState(false);
   const [dcLoading, setDcLoading] = useState(false);
 
+  // Reset loading state when reader returns from Stripe (back button / tab switch)
+  useEffect(() => {
+    const resetLoading = () => {
+      if (document.visibilityState === "visible") setDcLoading(false);
+    };
+    document.addEventListener("visibilitychange", resetLoading);
+    window.addEventListener("pageshow", () => setDcLoading(false));
+    return () => {
+      document.removeEventListener("visibilitychange", resetLoading);
+      window.removeEventListener("pageshow", () => setDcLoading(false));
+    };
+  }, []);
+
   useEffect(() => {
     // Load book data from API to avoid SSR issues with dynamic client component
     fetch(`/api/book/${bookSlug}`)

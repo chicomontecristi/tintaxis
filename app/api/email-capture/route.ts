@@ -90,7 +90,7 @@ function welcomeEmailHtml(): string {
         <!-- Author note -->
         <tr><td align="center" style="padding:0 24px 32px;">
           <p style="font-family:Georgia,serif;font-size:14px;font-style:italic;color:rgba(245,230,200,0.35);line-height:1.7;margin:0;">
-            New chapters are coming. When the ink dries, you'll be the first to know.
+            The archive remembers you. New work is always on the horizon.
           </p>
           <p style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.15em;color:rgba(201,168,76,0.4);margin:12px 0 0;text-transform:uppercase;">
             — Chico Montecristi
