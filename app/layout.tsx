@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import FilteredAnalytics from "@/components/ui/FilteredAnalytics";
 import SiteNav from "@/components/ui/SiteNav";
 import ServiceWorkerRegistration from "@/components/ui/ServiceWorkerRegistration";
+import I18nWrapper from "@/components/ui/I18nWrapper";
 import "./globals.css";
 
 const BASE_URL = "https://tintaxis.com";
@@ -164,12 +165,14 @@ export default function RootLayout({
         />
       </head>
       <body className="vault-noise antialiased">
-        <SiteNav />
-        <div style={{ paddingTop: "3rem" }}>
-          {children}
-        </div>
-        <ServiceWorkerRegistration />
-        <FilteredAnalytics />
+        <I18nWrapper>
+          <SiteNav />
+          <div style={{ paddingTop: "3rem" }}>
+            {children}
+          </div>
+          <ServiceWorkerRegistration />
+          <FilteredAnalytics />
+        </I18nWrapper>
       </body>
     </html>
   );

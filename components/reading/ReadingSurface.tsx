@@ -67,6 +67,12 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
   const [gateFeatureName, setGateFeatureName] = useState<string | undefined>(undefined);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  // ── Server-gated paragraph content ─────────────────────────────────
+  // Chapters 3+ arrive with empty paragraphs from the server component.
+  // Content is fetched from the secure API only after reader tier is verified.
+  const [loadedParagraphs, setLoadedParagraphs] = useState(chapter.paragraphs);
+  const [contentLoading, setContentLoading] = useState(false);
+
   // ── Narrator state ─────────────────────────────────────────────────
   const [narratorState, setNarratorState] = useState<NarratorState>("idle");
   const [selectedNarrator, setSelectedNarrator] = useState<NarratorVoice | null>(null);
@@ -77,7 +83,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
   // ── Book ref (needed by narrator + reading tracker) ─────────────────
   const book = chapter.bookSlug ? BOOKS[chapter.bookSlug] : null;
 
-  const pageOneEnd = getPageOneEnd(chapter.paragraphs, chapter.pageOneEnd);
+  const pageOneEnd = getPageOneEnd(loadedParagraphs, chapter.pageOneEnd);
 
   // ── Fetch author voiceover from Supabase Storage ────────────────────
   const [voiceoverUrl, setVoiceoverUrl] = useState<string | null>(chapter.authorAudioUrl ?? null);
@@ -101,10 +107,10 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
 
   // ── Narrator: read a paragraph ─────────────────────────────────────
   const narrateParagraph = useCallback(async (paraIndex: number, voice: NarratorVoice) => {
-    const para = chapter.paragraphs[paraIndex];
+    const para = loadedParagraphs[paraIndex];
     if (!para || para.isSectionBreak) {
       // Skip section breaks, advance to next
-      if (paraIndex < chapter.paragraphs.length - 1) {
+      if (paraIndex < loadedParagraphs.length - 1) {
         setNarratorParagraph(paraIndex + 1);
         narrateParagraph(paraIndex + 1, voice);
       } else {
@@ -127,7 +133,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
       audio.onended = () => {
         URL.revokeObjectURL(audioUrl);
         const nextIdx = paraIndex + 1;
-        if (nextIdx < chapter.paragraphs.length) {
+        if (nextIdx < loadedParagraphs.length) {
           setNarratorParagraph(nextIdx);
           narrateParagraph(nextIdx, voice);
         } else {
@@ -142,7 +148,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
       }
       const advanceToNext = () => {
         const nextIdx = paraIndex + 1;
-        if (nextIdx < chapter.paragraphs.length) {
+        if (nextIdx < loadedParagraphs.length) {
           setNarratorParagraph(nextIdx);
           narrateParagraph(nextIdx, voice);
         } else {
@@ -156,7 +162,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
         advanceToNext  // On error: advance instead of killing narration
       );
     }
-  }, [chapter.paragraphs, book?.language]);
+  }, [loadedParagraphs, book?.language]);
 
   // ── Narrator: handle voice selection ───────────────────────────────
   const handleNarratorSelect = useCallback((voice: NarratorVoice) => {
@@ -282,6 +288,33 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
       });
   }, [book?.writerSlug, chapter.number]);
 
+  // ── Secure content fetch — chapters 3+ load from API after auth ────
+  useEffect(() => {
+    // Chapters 1-2 arrive with content from the server, no fetch needed
+    if (chapter.number <= 2) {
+      setLoadedParagraphs(chapter.paragraphs);
+      return;
+    }
+    // Chapter 3+: server sent empty paragraphs. Fetch from secure API.
+    if (!readerTier) return; // wait for session check to finish
+    if (TIER_ORDER.indexOf(readerTier) < TIER_ORDER.indexOf("codex")) return; // no access
+
+    setContentLoading(true);
+    const bookSlug = chapter.bookSlug ?? "the-hunt";
+    fetch(`/api/chapter/${encodeURIComponent(bookSlug)}/${encodeURIComponent(chapter.slug)}`)
+      .then((r) => {
+        if (!r.ok) throw new Error("Unauthorized");
+        return r.json();
+      })
+      .then((data) => {
+        if (data.paragraphs) setLoadedParagraphs(data.paragraphs);
+      })
+      .catch(() => {
+        // API denied — content stays empty, subscription modal handles it
+      })
+      .finally(() => setContentLoading(false));
+  }, [chapter.slug, chapter.number, chapter.bookSlug, chapter.paragraphs, readerTier]);
+
   // Returns true if the reader's tier meets or exceeds the required tier
   const hasAccess = useCallback((required: SubscriptionTierName): boolean => {
     if (!readerTier) return false;
@@ -347,7 +380,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
   useEffect(() => {
     if (!contentRef.current) return;
 
-    const totalParas = chapter.paragraphs.filter(p => !p.isSectionBreak).length;
+    const totalParas = loadedParagraphs.filter(p => !p.isSectionBreak).length;
     let highestVisible = 0;
 
     const observer = new IntersectionObserver(
@@ -369,7 +402,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
     paragraphs.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
-  }, [chapter.slug, chapter.paragraphs]);
+  }, [chapter.slug, loadedParagraphs]);
 
   // ── Handle ink type change ─────────────────────────────────
   const handleInkChange = useCallback(
@@ -464,8 +497,8 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
 
   // ── Content access: determine if chapter text should render ──
   // Ch1: always visible. Ch2: visible (email gate overlays but text shows).
-  // Ch3+: text hidden until reader has a paid tier (codex+).
-  const contentVisible = chapter.number <= 2 || hasAccess("codex");
+  // Ch3+: text hidden until reader has a paid tier (codex+) AND content loaded from API.
+  const contentVisible = (chapter.number <= 2 || hasAccess("codex")) && loadedParagraphs.length > 0;
 
   return (
     <div
@@ -586,7 +619,20 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
           </AnimatePresence>
 
           {/* ── Paragraphs ──────────────────────────────────── */}
-          {contentVisible ? chapter.paragraphs.map((para, i) => {
+          {contentLoading && (
+            <div style={{ textAlign: "center", padding: "3rem 0" }}>
+              <p style={{
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: "0.75rem",
+                letterSpacing: "0.2em",
+                color: "rgba(201,168,76,0.4)",
+                textTransform: "uppercase",
+              }}>
+                Loading chapter...
+              </p>
+            </div>
+          )}
+          {contentVisible ? loadedParagraphs.map((para, i) => {
             if (para.isSectionBreak) {
               return (
                 <SectionBreak key={`break-${i}`} />
@@ -621,7 +667,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
                   onAnnotationCreated={handleAnnotationCreated}
                   canAnnotate={hasAccess("codex")}
                   onGateTriggered={handleGateTriggered}
-                  isFirstParagraph={i === 0 || (i > 0 && chapter.paragraphs[i - 1]?.isSectionBreak)}
+                  isFirstParagraph={i === 0 || (i > 0 && loadedParagraphs[i - 1]?.isSectionBreak)}
                   hasWhisperAnchor={paraHasWhisper}
                 />
               </div>
@@ -629,7 +675,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
           }) : null}
 
           {/* ── Chapter rain — generated from chapter vocabulary ─── */}
-          <ChapterRain chapterSlug={chapter.slug} height={320} />
+          <ChapterRain chapterSlug={chapter.slug} bookSlug={chapter.bookSlug ?? "the-hunt"} height={320} />
 
           {/* ── Share bar ─────────────────────────────────── */}
           <ShareBar chapter={chapter} />
@@ -737,7 +783,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
             voice={selectedNarrator}
             isPlaying={narratorState === "narrating"}
             currentParagraph={narratorParagraph + 1}
-            totalParagraphs={chapter.paragraphs.filter(p => !p.isSectionBreak).length}
+            totalParagraphs={loadedParagraphs.filter(p => !p.isSectionBreak).length}
             onTogglePlay={handleNarratorToggle}
             onStop={handleNarratorStop}
           />

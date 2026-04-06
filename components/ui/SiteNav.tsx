@@ -1,10 +1,11 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
+import { useI18n, LOCALE_LABELS, LOCALE_FLAGS, type Locale } from "@/lib/i18n";
 
 // ─── SITE NAV ───────────────────────────────────────────────────────────────
 // Minimal persistent navigation. Hidden on homepage (/) to keep it clean.
@@ -56,19 +57,130 @@ function ShareOnX() {
   );
 }
 
-const PUBLIC_LINKS = [
-  { href: "/library", label: "Library" },
-  { href: "/writers", label: "Writers" },
-  { href: "/experience", label: "Experience" },
-  { href: "/publish", label: "Publish" },
-  { href: "/impact", label: "Impact" },
-  { href: "/how-it-works", label: "How It Works" },
-  { href: "https://art-opportunity-finder--montecristi.replit.app", label: "Art Pathways", external: true },
-];
+function LanguageSwitcher() {
+  const { locale, setLocale } = useI18n();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  const locales: Locale[] = ["en", "es", "zh", "pt", "it"];
+
+  return (
+    <div ref={ref} style={{ position: "relative", display: "inline-flex" }}>
+      <button
+        onClick={() => setOpen(!open)}
+        aria-label="Change language"
+        title="Change language"
+        style={{
+          fontFamily: MONO,
+          fontSize: "0.7rem",
+          letterSpacing: "0.15em",
+          color: "rgba(201,168,76,0.4)",
+          background: "none",
+          border: "1px solid rgba(201,168,76,0.12)",
+          borderRadius: "2px",
+          cursor: "pointer",
+          padding: "3px 8px",
+          transition: "all 0.2s ease",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "4px",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.color = "rgba(201,168,76,0.8)";
+          e.currentTarget.style.borderColor = "rgba(201,168,76,0.35)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.color = "rgba(201,168,76,0.4)";
+          e.currentTarget.style.borderColor = "rgba(201,168,76,0.12)";
+        }}
+      >
+        <span style={{ fontSize: "0.75rem" }}>&#127760;</span>
+        <span>{LOCALE_FLAGS[locale]}</span>
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.15 }}
+            style={{
+              position: "absolute",
+              top: "calc(100% + 6px)",
+              right: 0,
+              zIndex: 100,
+              background: "#0D0B08",
+              border: "1px solid rgba(201,168,76,0.2)",
+              minWidth: "130px",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
+            }}
+          >
+            {locales.map((l) => (
+              <button
+                key={l}
+                onClick={() => { setLocale(l); setOpen(false); }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  width: "100%",
+                  padding: "8px 12px",
+                  fontFamily: MONO,
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.1em",
+                  color: l === locale ? "rgba(201,168,76,0.9)" : "rgba(201,168,76,0.45)",
+                  background: l === locale ? "rgba(201,168,76,0.06)" : "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  transition: "all 0.15s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(201,168,76,0.08)";
+                  e.currentTarget.style.color = "rgba(201,168,76,0.8)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = l === locale ? "rgba(201,168,76,0.06)" : "transparent";
+                  e.currentTarget.style.color = l === locale ? "rgba(201,168,76,0.9)" : "rgba(201,168,76,0.45)";
+                }}
+              >
+                <span style={{ fontWeight: 600, minWidth: "20px" }}>{LOCALE_FLAGS[l]}</span>
+                <span>{LOCALE_LABELS[l]}</span>
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// Nav link definitions — labels are i18n keys, resolved at render time
+const PUBLIC_LINK_DEFS = [
+  { href: "/library", i18nKey: "nav.library" },
+  { href: "/writers", i18nKey: "nav.writers" },
+  { href: "/experience", i18nKey: "nav.experience" },
+  { href: "/publish", i18nKey: "nav.publish" },
+  { href: "/impact", i18nKey: "nav.impact" },
+  { href: "/how-it-works", i18nKey: "nav.howItWorks" },
+  { href: "https://art-opportunity-finder--montecristi.replit.app", i18nKey: "nav.artPathways", external: true },
+] as const;
 
 export default function SiteNav() {
   const pathname = usePathname();
   const router = useRouter();
+  const { t } = useI18n();
   const [session, setSession] = useState<{ role: string | null; name?: string }>({ role: null });
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -111,18 +223,24 @@ export default function SiteNav() {
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
-  // Build auth links
-  const authLinks: { href: string; label: string }[] = [];
+  // Build auth links (translated)
+  const authLinks: { href: string; label: string; external?: boolean }[] = [];
   if (session.role === "author") {
-    authLinks.push({ href: "/author", label: "Studio" });
+    authLinks.push({ href: "/author", label: t("nav.studio") });
   } else if (session.role === "reader") {
-    authLinks.push({ href: "/reader/login", label: "Account" });
+    authLinks.push({ href: "/reader/login", label: t("nav.account") });
   } else {
-    authLinks.push({ href: "/reader/login", label: "Sign In" });
-    authLinks.push({ href: "/author/login", label: "Author Login" });
+    authLinks.push({ href: "/reader/login", label: t("nav.signIn") });
+    authLinks.push({ href: "/author/login", label: t("nav.authorLogin") });
   }
 
-  const allLinks = [...PUBLIC_LINKS, ...authLinks];
+  // Resolve i18n keys for public links
+  const publicLinks = PUBLIC_LINK_DEFS.map((l) => ({
+    href: l.href,
+    label: t(l.i18nKey),
+    external: "external" in l ? l.external : false,
+  }));
+  const allLinks = [...publicLinks, ...authLinks];
 
   return (
     <>
@@ -185,6 +303,7 @@ export default function SiteNav() {
               </Link>
             );
           })}
+          <LanguageSwitcher />
           <ShareOnX />
           <ThemeToggle />
           {session.role && (
@@ -205,7 +324,7 @@ export default function SiteNav() {
               onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(192,57,43,0.8)")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(192,57,43,0.45)")}
             >
-              Log Out
+              {t("nav.logOut")}
             </button>
           )}
         </div>
@@ -314,6 +433,7 @@ export default function SiteNav() {
               transition={{ delay: allLinks.length * 0.05, duration: 0.3 }}
               style={{ marginTop: "1rem", display: "flex", gap: "0.75rem", alignItems: "center" }}
             >
+              <LanguageSwitcher />
               <ShareOnX />
               <ThemeToggle />
             </motion.div>
@@ -337,7 +457,7 @@ export default function SiteNav() {
                     padding: 0,
                   }}
                 >
-                  Log Out
+                  {t("nav.logOut")}
                 </button>
               </motion.div>
             )}

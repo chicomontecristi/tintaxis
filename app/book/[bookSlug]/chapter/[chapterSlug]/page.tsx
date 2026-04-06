@@ -155,6 +155,21 @@ function ChapterJsonLd({ bookSlug, chapterSlug }: { bookSlug: string; chapterSlu
   );
 }
 
+// ─── STRIP PARAGRAPHS FROM GATED CHAPTERS ──────────────────────────────────
+// Chapters 3+ have their paragraph text removed before reaching the client.
+// The client fetches content from /api/chapter/[bookSlug]/[chapterSlug] only
+// after verifying the reader's subscription server-side.
+function redactChapter(ch: NonNullable<ReturnType<typeof getBookChapter>>): NonNullable<ReturnType<typeof getBookChapter>> {
+  if (ch.number <= 2) return ch;
+  return { ...ch, paragraphs: [] };
+}
+
+function redactOptional(ch: ReturnType<typeof getBookChapter>): ReturnType<typeof getBookChapter> {
+  if (!ch) return ch;
+  if (ch.number <= 2) return ch;
+  return { ...ch, paragraphs: [] };
+}
+
 // ─── PAGE ────────────────────────────────────────────────────────────────────
 export default function BookChapterPage({ params }: Props) {
   const book = getBook(params.bookSlug);
@@ -170,9 +185,9 @@ export default function BookChapterPage({ params }: Props) {
     <>
       <ChapterJsonLd bookSlug={params.bookSlug} chapterSlug={params.chapterSlug} />
       <ChapterPageClient
-        chapter={chapter}
-        nextChapter={next}
-        prevChapter={prev}
+        chapter={redactChapter(chapter)}
+        nextChapter={redactOptional(next)}
+        prevChapter={redactOptional(prev)}
       />
     </>
   );
