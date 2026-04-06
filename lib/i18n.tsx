@@ -90,8 +90,8 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // ── Writers ──────────────────────────────────────────
     "writers.featured": "Tintaxis · Featured Artists",
-    "writers.title": "The Writers of This Archive",
-    "writers.subtitle": "These writers were invited directly. No application. No committee. Their work is published here because it deserves to be read.",
+    "writers.title": "Featured Writers",
+    "writers.subtitle": "Their work is published here because it deserves to be read.",
     "writers.byInvitation": "New writers added by invitation",
     "writers.works": "work",
     "writers.worksPlural": "works",
@@ -477,8 +477,8 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // ── Writers ──────────────────────────────────────────
     "writers.featured": "Tintaxis · Artistas Destacados",
-    "writers.title": "Los Escritores de Este Archivo",
-    "writers.subtitle": "Estos escritores fueron invitados directamente. Sin solicitud. Sin comité. Su trabajo se publica aquí porque merece ser leído.",
+    "writers.title": "Escritores Destacados",
+    "writers.subtitle": "Su trabajo se publica aquí porque merece ser leído.",
     "writers.byInvitation": "Nuevos escritores por invitación",
     "writers.works": "obra",
     "writers.worksPlural": "obras",
@@ -863,8 +863,8 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // ── Writers ──────────────────────────────────────────
     "writers.featured": "Tintaxis · 特邀艺术家",
-    "writers.title": "档案馆的作家们",
-    "writers.subtitle": "这些作家是直接邀请的。无需申请，无需委员会。他们的作品在这里出版，因为值得被阅读。",
+    "writers.title": "推荐作家",
+    "writers.subtitle": "他们的作品在这里出版，因为值得被阅读。",
     "writers.byInvitation": "新作家通过邀请加入",
     "writers.works": "部作品",
     "writers.worksPlural": "部作品",
@@ -1249,8 +1249,8 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // ── Writers ──────────────────────────────────────────
     "writers.featured": "Tintaxis · Artistas em Destaque",
-    "writers.title": "Os Escritores Deste Arquivo",
-    "writers.subtitle": "Estes escritores foram convidados diretamente. Sem candidatura. Sem comitê. Seu trabalho é publicado aqui porque merece ser lido.",
+    "writers.title": "Escritores em Destaque",
+    "writers.subtitle": "Seu trabalho é publicado aqui porque merece ser lido.",
     "writers.byInvitation": "Novos escritores por convite",
     "writers.works": "obra",
     "writers.worksPlural": "obras",
@@ -1635,8 +1635,8 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // ── Writers ──────────────────────────────────────────
     "writers.featured": "Tintaxis · Artisti in Evidenza",
-    "writers.title": "Gli Scrittori di Questo Archivio",
-    "writers.subtitle": "Questi scrittori sono stati invitati direttamente. Nessuna candidatura. Nessun comitato. Il loro lavoro è pubblicato qui perché merita di essere letto.",
+    "writers.title": "Scrittori in Evidenza",
+    "writers.subtitle": "Il loro lavoro è pubblicato qui perché merita di essere letto.",
     "writers.byInvitation": "Nuovi scrittori su invito",
     "writers.works": "opera",
     "writers.worksPlural": "opere",
