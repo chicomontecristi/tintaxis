@@ -116,7 +116,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "reading.comingSoon": "Coming soon",
 
     // ── Subscription modal ───────────────────────────────
-    "sub.close": "✕ CLOSE",
+    "sub.close": "CLOSE",
     "sub.requiresAccess": "Requires Access",
     "sub.openArchive": "Open the Archive",
     "sub.subscribeTo": "Subscribe to",
@@ -503,7 +503,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "reading.comingSoon": "Próximamente",
 
     // ── Subscription modal ───────────────────────────────
-    "sub.close": "✕ CERRAR",
+    "sub.close": "CERRAR",
     "sub.requiresAccess": "Requiere Acceso",
     "sub.openArchive": "Abrir el Archivo",
     "sub.subscribeTo": "Suscribirse a",
@@ -889,7 +889,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "reading.comingSoon": "即将上线",
 
     // ── Subscription modal ───────────────────────────────
-    "sub.close": "✕ 关闭",
+    "sub.close": "关闭",
     "sub.requiresAccess": "需要访问权限",
     "sub.openArchive": "打开档案馆",
     "sub.subscribeTo": "订阅",
@@ -1275,7 +1275,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "reading.comingSoon": "Em breve",
 
     // ── Subscription modal ───────────────────────────────
-    "sub.close": "✕ FECHAR",
+    "sub.close": "FECHAR",
     "sub.requiresAccess": "Requer Acesso",
     "sub.openArchive": "Abrir o Arquivo",
     "sub.subscribeTo": "Assinar",
@@ -1661,7 +1661,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "reading.comingSoon": "Prossimamente",
 
     // ── Subscription modal ───────────────────────────────
-    "sub.close": "✕ CHIUDI",
+    "sub.close": "CHIUDI",
     "sub.requiresAccess": "Richiede Accesso",
     "sub.openArchive": "Apri l'Archivio",
     "sub.subscribeTo": "Abbonati a",
