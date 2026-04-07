@@ -188,32 +188,32 @@ export default function SubscriptionModal({
       {isOpen && (
         <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center"
-          style={{ padding: "1rem" }}
+          style={{ padding: "0" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0, transition: { duration: 0.3 } }}
           transition={{ duration: 0.25 }}
           onClick={onClose}
         >
-          {/* Backdrop */}
+          {/* Backdrop — fully opaque on mobile to prevent bleed-through */}
           <div
             className="absolute inset-0"
-            style={{ backgroundColor: "rgba(13,11,8,0.94)", backdropFilter: "blur(6px)" }}
+            style={{ backgroundColor: "rgba(13,11,8,0.98)", backdropFilter: "blur(6px)" }}
           />
 
-          {/* Modal panel */}
+          {/* Modal panel — full-screen on mobile, centered card on desktop */}
           <motion.div
+            className="sub-modal-panel"
             onClick={(e) => e.stopPropagation()}
             style={{
               position: "relative",
               zIndex: 1,
               width: "100%",
               maxWidth: "900px",
-              maxHeight: "90vh",
               overflowY: "auto",
-              border: "1px solid rgba(201,168,76,0.2)",
-              background: "rgba(13,11,8,0.98)",
-              padding: "clamp(1.5rem, 4vw, 2.5rem)",
+              WebkitOverflowScrolling: "touch",
+              background: "rgba(13,11,8,1)",
+              padding: "clamp(1.25rem, 4vw, 2.5rem)",
             }}
             initial={{ opacity: 0, y: 24, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -292,13 +292,17 @@ export default function SubscriptionModal({
               }}
             />
 
-            {/* Tier grid */}
+            {/* Tier grid — horizontal scroll on mobile, grid on desktop */}
             <div
+              className="tier-scroll-row"
               style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-                gap: "1rem",
+                display: "flex",
+                gap: "0.75rem",
                 marginBottom: "1.5rem",
+                overflowX: "auto",
+                WebkitOverflowScrolling: "touch",
+                paddingBottom: "0.5rem",
+                scrollSnapType: "x mandatory",
               }}
             >
               {TIERS.map((tier, i) => {
@@ -375,6 +379,9 @@ function TierCard({
         position: "relative",
         display: "flex",
         flexDirection: "column",
+        minWidth: "200px",
+        flex: "1 0 200px",
+        scrollSnapAlign: "start",
       }}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}

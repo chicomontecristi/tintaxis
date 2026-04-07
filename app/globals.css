@@ -803,3 +803,29 @@ button, a, [role="button"] {
     min-height: 44px;
   }
 }
+
+/* ─── SUBSCRIPTION MODAL — RESPONSIVE ───────────────────────────── */
+/* Mobile: full-screen takeover, no border, solid background */
+.sub-modal-panel {
+  height: 100dvh;
+  max-height: 100dvh;
+  border: none !important;
+  border-radius: 0;
+}
+/* Desktop: centered card with border, not full-height */
+@media (min-width: 640px) {
+  .sub-modal-panel {
+    height: auto;
+    max-height: 90vh;
+    border: 1px solid rgba(201,168,76,0.2) !important;
+    margin: 1rem;
+  }
+}
+/* Tier card scroll row: hide scrollbar but allow scroll on mobile */
+.tier-scroll-row {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.tier-scroll-row::-webkit-scrollbar {
+  display: none;
+}
