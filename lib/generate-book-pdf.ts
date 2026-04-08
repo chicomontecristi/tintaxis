@@ -7,6 +7,7 @@
 // Returns a Buffer containing the PDF bytes, ready to attach to an email.
 
 import { PDFDocument, rgb, PDFFont, PDFPage } from "pdf-lib";
+import fontkit from "@pdf-lib/fontkit";
 import { BOOKS, getBookChaptersOrdered } from "@/lib/content/books";
 import * as fs from "fs";
 import * as path from "path";
@@ -206,6 +207,7 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
     );
 
   const doc = await PDFDocument.create();
+  doc.registerFontkit(fontkit);
   doc.setTitle(book.title);
   doc.setAuthor(book.author);
   doc.setSubject(book.subtitle ?? "");
