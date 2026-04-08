@@ -9,10 +9,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { deliverDigitalCopy } from "@/lib/deliver-digital-copy";
 
-const ADMIN_SECRET =
-  process.env.REDELIVER_SECRET ??
-  process.env.STRIPE_WEBHOOK_SECRET ??
-  "";
+function getAdminSecret() {
+  return process.env.REDELIVER_SECRET ?? process.env.STRIPE_WEBHOOK_SECRET ?? "";
+}
 
 function unauthorized() {
   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -21,7 +20,8 @@ function unauthorized() {
 // ─── GET: List all digital copy purchases ───────────────────────────────────
 export async function GET(req: NextRequest) {
   const secret = req.nextUrl.searchParams.get("secret") ?? "";
-  if (!ADMIN_SECRET || secret !== ADMIN_SECRET) return unauthorized();
+  const adminSecret = getAdminSecret();
+  if (!adminSecret || secret !== adminSecret) return unauthorized();
 
   try {
     // Fetch all completed checkout sessions (Stripe returns newest first)
@@ -78,7 +78,8 @@ export async function POST(req: NextRequest) {
       bookSlug?: string;
     };
 
-    if (!ADMIN_SECRET || secret !== ADMIN_SECRET) return unauthorized();
+    const adminSecret = getAdminSecret();
+  if (!adminSecret || secret !== adminSecret) return unauthorized();
 
     if (action === "redeliver" && email && bookSlug) {
       // Redeliver a single purchase
