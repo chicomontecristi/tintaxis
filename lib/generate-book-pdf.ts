@@ -41,72 +41,66 @@ function loadFontBytes(filename: string): Uint8Array {
   return fs.readFileSync(fontPath);
 }
 
-// Detect if text contains CJK characters
-function hasCJK(text: string): boolean {
-  return /[\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u303F\uFF00-\uFFEF]/.test(text);
+// Detect if a single character is CJK
+const CJK_RE = /[\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u303F\uFF00-\uFFEF]/;
+function isCJKChar(ch: string): boolean { return CJK_RE.test(ch); }
+function hasCJK(text: string): boolean { return CJK_RE.test(text); }
+
+// ─── MIXED-FONT WIDTH ──────────────────────────────────────────────────────
+// Measures text width using the correct font for each character segment.
+function mixedWidth(text: string, latinFont: PDFFont, fonts: Fonts | null, fontSize: number): number {
+  if (!fonts?.cjk || !hasCJK(text)) {
+    try { return latinFont.widthOfTextAtSize(text, fontSize); }
+    catch { return text.length * fontSize * 0.5; }
+  }
+  // Split into CJK vs non-CJK runs and measure each with correct font
+  const segs = text.match(/[\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u303F\uFF00-\uFFEF]+|[^\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u303F\uFF00-\uFFEF]+/g);
+  if (!segs) return 0;
+  let w = 0;
+  for (const seg of segs) {
+    const f = hasCJK(seg) ? fonts.cjk! : latinFont;
+    try { w += f.widthOfTextAtSize(seg, fontSize); }
+    catch { w += seg.length * fontSize * 0.5; }
+  }
+  return w;
 }
 
-// ─── TEXT WRAPPING ──────────────────────────────────────────────────────────
-function wrapText(text: string, font: PDFFont, fontSize: number, maxWidth: number): string[] {
+// ─── TEXT WRAPPING (mixed-font aware) ───────────────────────────────────────
+function smartWrap(text: string, latinFont: PDFFont, fontSize: number, maxWidth: number, fonts: Fonts | null = null): string[] {
   if (!text.trim()) return [];
+
+  // For pure CJK or mixed text, wrap character-by-character
+  if (hasCJK(text)) {
+    const lines: string[] = [];
+    let current = "";
+    for (const ch of text) {
+      const test = current + ch;
+      if (mixedWidth(test, latinFont, fonts, fontSize) > maxWidth && current) {
+        lines.push(current);
+        current = ch;
+      } else {
+        current = test;
+      }
+    }
+    if (current) lines.push(current);
+    return lines;
+  }
+
+  // Pure Latin: word-based wrapping
   const words = text.split(/\s+/).filter(Boolean);
   const lines: string[] = [];
-  let currentLine = "";
-
+  let current = "";
   for (const word of words) {
-    const testLine = currentLine ? `${currentLine} ${word}` : word;
-    let testWidth: number;
-    try {
-      testWidth = font.widthOfTextAtSize(testLine, fontSize);
-    } catch {
-      // If font can't measure this text, treat it as one line
-      lines.push(testLine);
-      currentLine = "";
-      continue;
-    }
-
-    if (testWidth > maxWidth && currentLine) {
-      lines.push(currentLine);
-      currentLine = word;
+    const test = current ? `${current} ${word}` : word;
+    if (mixedWidth(test, latinFont, fonts, fontSize) > maxWidth && current) {
+      lines.push(current);
+      current = word;
     } else {
-      currentLine = testLine;
+      current = test;
     }
   }
-  if (currentLine) lines.push(currentLine);
+  if (current) lines.push(current);
   return lines;
-}
-
-// For CJK text: wrap character by character (no spaces between words)
-function wrapCJKText(text: string, font: PDFFont, fontSize: number, maxWidth: number): string[] {
-  if (!text.trim()) return [];
-  const lines: string[] = [];
-  let currentLine = "";
-
-  for (const char of text) {
-    const testLine = currentLine + char;
-    let testWidth: number;
-    try {
-      testWidth = font.widthOfTextAtSize(testLine, fontSize);
-    } catch {
-      currentLine += char;
-      continue;
-    }
-
-    if (testWidth > maxWidth && currentLine) {
-      lines.push(currentLine);
-      currentLine = char;
-    } else {
-      currentLine = testLine;
-    }
-  }
-  if (currentLine) lines.push(currentLine);
-  return lines;
-}
-
-// Smart wrap: auto-detect CJK vs Latin text
-function smartWrap(text: string, font: PDFFont, fontSize: number, maxWidth: number): string[] {
-  if (hasCJK(text)) return wrapCJKText(text, font, fontSize, maxWidth);
-  return wrapText(text, font, fontSize, maxWidth);
 }
 
 // ─── STRIP HTML ─────────────────────────────────────────────────────────────
@@ -124,6 +118,7 @@ function stripHtml(text: string): string {
 
 // ─── SAFE DRAW (with mixed-font support) ───────────────────────────────────
 // Splits text into CJK and non-CJK segments and draws each with the right font.
+// The `opts.font` is used for Latin segments, CJK font for Chinese segments.
 function safeDraw(
   page: PDFPage,
   text: string,
@@ -145,8 +140,7 @@ function safeDraw(
 
     let xPos = opts.x;
     for (const seg of segments) {
-      const isCJK = hasCJK(seg);
-      const segFont = isCJK ? fonts.cjk! : fonts.serif;
+      const segFont = hasCJK(seg) ? fonts.cjk! : opts.font;
       page.drawText(seg, { ...opts, x: xPos, font: segFont });
       xPos += segFont.widthOfTextAtSize(seg, opts.size);
     }
@@ -264,9 +258,9 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
 
   // Book title
   const titleFont = fontFor(book.title, fonts, fonts.serifItalic);
-  const titleLines = smartWrap(book.title, titleFont, TITLE_PAGE_SIZE, TEXT_WIDTH);
+  const titleLines = smartWrap(book.title, titleFont, TITLE_PAGE_SIZE, TEXT_WIDTH, fonts);
   for (const line of titleLines) {
-    const w = titleFont.widthOfTextAtSize(line, TITLE_PAGE_SIZE);
+    const w = mixedWidth(line, titleFont, fonts, TITLE_PAGE_SIZE);
     safeDraw(cursor.page, line, {
       x: MARGIN_LEFT + (TEXT_WIDTH - w) / 2, y: cursor.y,
       size: TITLE_PAGE_SIZE, font: titleFont, color: BLACK,
@@ -279,11 +273,11 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
     cursor.advance(4);
     const subFont = fontFor(book.subtitle, fonts, fonts.serifItalic);
     const subText = book.subtitle;
-    const subW = subFont.widthOfTextAtSize(subText, SUBTITLE_PAGE_SIZE);
+    const subW = mixedWidth(subText, subFont, fonts, SUBTITLE_PAGE_SIZE);
     safeDraw(cursor.page, subText, {
       x: MARGIN_LEFT + (TEXT_WIDTH - subW) / 2, y: cursor.y,
       size: SUBTITLE_PAGE_SIZE, font: subFont, color: MUTED,
-    });
+    }, fonts);
     cursor.advance(SUBTITLE_PAGE_SIZE + 16);
   }
 
@@ -293,20 +287,20 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
 
   // Author
   const authorText = book.author.toUpperCase();
-  const authorW = fonts.mono.widthOfTextAtSize(authorText, AUTHOR_SIZE);
+  const authorW = mixedWidth(authorText, fonts.mono, fonts, AUTHOR_SIZE);
   safeDraw(cursor.page, authorText, {
     x: MARGIN_LEFT + (TEXT_WIDTH - authorW) / 2, y: cursor.y,
     size: AUTHOR_SIZE, font: fonts.mono, color: DARK_BROWN,
-  });
+  }, fonts);
   cursor.advance(AUTHOR_SIZE + 30);
 
   // Tagline
   if (book.tagline) {
     const tagFont = fontFor(book.tagline, fonts, fonts.serifItalic);
     const tagText = `"${book.tagline}"`;
-    const tagLines = smartWrap(tagText, tagFont, 12, TEXT_WIDTH - 40);
+    const tagLines = smartWrap(tagText, tagFont, 12, TEXT_WIDTH - 40, fonts);
     for (const line of tagLines) {
-      const w = tagFont.widthOfTextAtSize(line, 12);
+      const w = mixedWidth(line, tagFont, fonts, 12);
       safeDraw(cursor.page, line, {
         x: MARGIN_LEFT + (TEXT_WIDTH - w) / 2, y: cursor.y,
         size: 12, font: tagFont, color: MUTED,
@@ -329,19 +323,19 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
     // Chapter label
     const labelText = `${book.chapterLabel} ${chapter.romanNumeral ?? chapter.number}`.toUpperCase();
     const labelFont = fontFor(labelText, fonts, fonts.mono);
-    const labelW = labelFont.widthOfTextAtSize(labelText, 10);
+    const labelW = mixedWidth(labelText, labelFont, fonts, 10);
     safeDraw(cursor.page, labelText, {
       x: MARGIN_LEFT + (TEXT_WIDTH - labelW) / 2, y: cursor.y,
       size: 10, font: labelFont, color: GOLD,
-    });
+    }, fonts);
     cursor.advance(24);
 
     // Chapter title
     if (chapter.title) {
       const ctFont = fontFor(chapter.title, fonts, fonts.serifItalic);
-      const ctLines = smartWrap(chapter.title, ctFont, CHAPTER_TITLE_SIZE, TEXT_WIDTH);
+      const ctLines = smartWrap(chapter.title, ctFont, CHAPTER_TITLE_SIZE, TEXT_WIDTH, fonts);
       for (const line of ctLines) {
-        const w = ctFont.widthOfTextAtSize(line, CHAPTER_TITLE_SIZE);
+        const w = mixedWidth(line, ctFont, fonts, CHAPTER_TITLE_SIZE);
         safeDraw(cursor.page, line, {
           x: MARGIN_LEFT + (TEXT_WIDTH - w) / 2, y: cursor.y,
           size: CHAPTER_TITLE_SIZE, font: ctFont, color: BLACK,
@@ -356,9 +350,9 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
       const epRaw = stripHtml(chapter.epigraph.text);
       const epFont = fontFor(epRaw, fonts, fonts.serifItalic);
       const epText = `"${epRaw}"`;
-      const epLines = smartWrap(epText, epFont, 10, TEXT_WIDTH - 60);
+      const epLines = smartWrap(epText, epFont, 10, TEXT_WIDTH - 60, fonts);
       for (const line of epLines) {
-        const w = epFont.widthOfTextAtSize(line, 10);
+        const w = mixedWidth(line, epFont, fonts, 10);
         cursor.ensureSpace(14);
         safeDraw(cursor.page, line, {
           x: MARGIN_LEFT + (TEXT_WIDTH - w) / 2, y: cursor.y,
@@ -369,7 +363,7 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
       if (chapter.epigraph.attribution) {
         const attrFont = fontFor(chapter.epigraph.attribution, fonts, fonts.serifItalic);
         const attrText = `-- ${chapter.epigraph.attribution}`;
-        const attrW = attrFont.widthOfTextAtSize(attrText, 9);
+        const attrW = mixedWidth(attrText, attrFont, fonts, 9);
         cursor.ensureSpace(14);
         safeDraw(cursor.page, attrText, {
           x: MARGIN_LEFT + (TEXT_WIDTH - attrW) / 2, y: cursor.y,
@@ -391,7 +385,7 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
       const indent = pi === 0 ? 0 : 24;
       const paraWidth = TEXT_WIDTH - indent;
 
-      const lines = smartWrap(rawText, paraFont, BODY_FONT_SIZE, paraWidth);
+      const lines = smartWrap(rawText, paraFont, BODY_FONT_SIZE, paraWidth, fonts);
 
       for (let li = 0; li < lines.length; li++) {
         cursor.ensureSpace(BODY_LEADING);
@@ -427,7 +421,7 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
   for (const item of colophon) {
     if (!item.text) { cursor.advance(12); continue; }
     const font = fontFor(item.text, fonts, item.f);
-    const w = font.widthOfTextAtSize(item.text, item.s);
+    const w = mixedWidth(item.text, font, fonts, item.s);
     safeDraw(cursor.page, item.text, {
       x: MARGIN_LEFT + (TEXT_WIDTH - w) / 2, y: cursor.y,
       size: item.s, font, color: item.c,
