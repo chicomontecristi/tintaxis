@@ -22,6 +22,7 @@ import {
   updateReaderSubscriptionByStripe,
   getReaderByCustomerId,
 } from "@/lib/db";
+import { deliverDigitalCopy } from "@/lib/deliver-digital-copy";
 import type { ReaderTier } from "@/lib/db-types";
 import type Stripe from "stripe";
 
@@ -165,6 +166,24 @@ export async function POST(req: NextRequest) {
           console.log(`[stripe/webhook] Per-writer subscription created: reader=${reader.id} writer=${writerSlug} tier=${plan}`);
         } else {
           console.warn(`[stripe/webhook] Reader not found for customer: ${customerId} — per-writer subscription skipped.`);
+        }
+      }
+
+      // ── Digital copy: email the full book to the buyer ─────────────────────
+      if (plan === "digital_copy") {
+        const bookSlug = session.metadata?.bookSlug;
+        const buyerEmail = session.customer_details?.email ?? "";
+        const buyerName  = session.customer_details?.name  ?? undefined;
+
+        if (bookSlug && buyerEmail) {
+          const result = await deliverDigitalCopy(bookSlug, buyerEmail, buyerName);
+          if (result.success) {
+            console.log(`[stripe/webhook] Digital copy delivered: "${bookSlug}" → ${buyerEmail}`);
+          } else {
+            console.error(`[stripe/webhook] Digital copy delivery FAILED: "${bookSlug}" → ${buyerEmail}: ${result.error}`);
+          }
+        } else {
+          console.error(`[stripe/webhook] Digital copy missing data: bookSlug=${bookSlug} email=${buyerEmail}`);
         }
       }
 

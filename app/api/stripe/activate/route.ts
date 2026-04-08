@@ -7,10 +7,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe, type PlanId } from "@/lib/stripe";
 import { createSessionCookie } from "@/lib/auth";
 import { upsertReader, recordPurchase, upsertReaderSubscription } from "@/lib/db";
+import { deliverDigitalCopy } from "@/lib/deliver-digital-copy";
 import type { ReaderTier, AuthorPlan } from "@/lib/auth";
 
-// One-time chapter plans (not subscriptions)
-const ONE_TIME_PLANS = new Set(["read", "keep"]);
+// One-time purchase plans (not subscriptions)
+const ONE_TIME_PLANS = new Set(["read", "keep", "digital_copy"]);
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
@@ -35,6 +36,7 @@ export async function GET(req: NextRequest) {
     const role        = checkoutSession.metadata?.role as "author" | "reader";
     const writerSlug  = checkoutSession.metadata?.writerSlug  ?? null;
     const chapterSlug = checkoutSession.metadata?.chapterSlug ?? null;
+    const bookSlug    = checkoutSession.metadata?.bookSlug    ?? null;
     const email       = checkoutSession.customer_details?.email ?? checkoutSession.metadata?.sub ?? "";
     const name        = checkoutSession.customer_details?.name  ?? "";
 
@@ -61,15 +63,25 @@ export async function GET(req: NextRequest) {
         active: true,
       });
 
-      // For one-time purchases, record the chapter purchase
-      if (isOneTime && reader && chapterSlug) {
+      // For one-time purchases, record the purchase
+      const purchaseSlug = chapterSlug ?? (plan === "digital_copy" ? bookSlug : null);
+      if (isOneTime && reader && purchaseSlug) {
         await recordPurchase({
           readerId:        reader.id,
-          chapterSlug,
+          chapterSlug:     purchaseSlug,
           plan,
           stripeSessionId: sessionId,
           amount:          checkoutSession.amount_total,
           writerSlug,
+        });
+      }
+
+      // For digital copy purchases, email the full book to the buyer
+      if (plan === "digital_copy" && bookSlug && email) {
+        // Fire and forget — don't block the redirect if email is slow
+        deliverDigitalCopy(bookSlug, email, name || undefined).then((r) => {
+          if (r.success) console.log(`[activate] Digital copy delivered: "${bookSlug}" → ${email}`);
+          else console.error(`[activate] Digital copy delivery failed: ${r.error}`);
         });
       }
 
