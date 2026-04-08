@@ -69,12 +69,8 @@ export async function deliverDigitalCopy(
     </div>
 
     <div style="margin-bottom: 2em;">
-      <p style="font-family: 'Georgia', serif; font-size: 15px; color: #2C1A00; margin: 0 0 0.75em;">Dear ${greeting},</p>
-      <p style="font-family: 'Georgia', serif; font-size: 15px; color: #5A4A3A; margin: 0 0 0.75em; line-height: 1.7;">
-        Thank you for your purchase. Your copy of <em>${book.title}</em> is attached as a PDF — ${book.totalChapters} ${book.chapterLabel.toLowerCase()}${book.totalChapters > 1 ? "s" : ""}, ${book.wordCount?.toLocaleString() ?? ""} words. This file is yours to keep, save, and print.
-      </p>
       <p style="font-family: 'Georgia', serif; font-size: 15px; color: #5A4A3A; margin: 0; line-height: 1.7;">
-        If you have any questions, reply to this email.
+        Thank you for supporting digital content. Tintaxis thanks you! Your PDF is attached.
       </p>
     </div>
 
