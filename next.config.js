@@ -12,16 +12,15 @@ const nextConfig = {
     "/api/admin/digital-purchases": ["./public/fonts/**/*"],
     "/api/webhooks/stripe": ["./public/fonts/**/*"],
   },
-  headers: async () => [
-    {
-      source: "/writers/:slug",
-      headers: [
-        { key: "Cache-Control", value: "no-store, must-revalidate" },
-        { key: "CDN-Cache-Control", value: "no-store" },
-        { key: "Vercel-CDN-Cache-Control", value: "no-store" },
-      ],
-    },
-  ],
+  async redirects() {
+    return [
+      {
+        source: "/writers/:slug",
+        destination: "/library",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
