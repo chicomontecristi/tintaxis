@@ -5,12 +5,8 @@ import WriterProfileClient from "./WriterProfileClient";
 
 const BASE_URL = "https://tintaxis.vercel.app";
 
-// ─── STATIC GENERATION (ISR: rebuild every 60s) ────────────────────────────
-export const revalidate = 60;
-
-export async function generateStaticParams() {
-  return getAllWriterSlugs().map((slug) => ({ slug }));
-}
+// ─── DYNAMIC RENDERING — never serve stale cache ────────────────────────────
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

@@ -3,6 +3,9 @@ import WritersClient from "./WritersClient";
 
 const BASE_URL = "https://tintaxis.vercel.app";
 
+// ─── DYNAMIC RENDERING — never serve stale cache ────────────────────────────
+export const dynamic = "force-dynamic";
+
 // ─── FEATURED ARTISTS PAGE — SERVER WRAPPER ─────────────────────────────────
 
 export const metadata: Metadata = {
