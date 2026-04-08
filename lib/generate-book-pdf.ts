@@ -8,6 +8,8 @@
 
 import { PDFDocument, rgb, PDFFont, PDFPage } from "pdf-lib";
 import { BOOKS, getBookChaptersOrdered } from "@/lib/content/books";
+import * as fs from "fs";
+import * as path from "path";
 
 // ─── PAGE LAYOUT ────────────────────────────────────────────────────────────
 const PAGE_WIDTH = 432;   // 6 inches
@@ -31,23 +33,11 @@ const MUTED = rgb(0.45, 0.38, 0.30);
 const GOLD = rgb(0.79, 0.66, 0.30);
 
 // ─── FONT LOADING ───────────────────────────────────────────────────────────
-// Fonts live in public/fonts/ which Vercel serves via CDN but does NOT bundle
-// into the serverless function filesystem. We fetch them over HTTP instead.
-const SITE_URL = process.env.NEXT_PUBLIC_URL
-  ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://tintaxis.com");
-
-const fontCache = new Map<string, Uint8Array>();
-
-async function loadFontBytes(filename: string): Promise<Uint8Array> {
-  if (fontCache.has(filename)) return fontCache.get(filename)!;
-
-  const url = `${SITE_URL}/fonts/${filename}`;
-  console.log(`[pdf] Fetching font: ${url}`);
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Failed to fetch font ${filename}: ${res.status}`);
-  const buf = new Uint8Array(await res.arrayBuffer());
-  fontCache.set(filename, buf);
-  return buf;
+// Fonts are in public/fonts/ and bundled into serverless via
+// next.config.js outputFileTracingIncludes.
+function loadFontBytes(filename: string): Uint8Array {
+  const fontPath = path.join(process.cwd(), "public", "fonts", filename);
+  return fs.readFileSync(fontPath);
 }
 
 // Detect if text contains CJK characters
@@ -222,10 +212,10 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
   doc.setCreator("Tintaxis - tintaxis.com");
 
   // ── Embed fonts ─────────────────────────────────────────────────────────
-  const serifBytes = await loadFontBytes("LiberationSerif-Regular.ttf");
-  const serifItalicBytes = await loadFontBytes("LiberationSerif-Italic.ttf");
-  const serifBoldBytes = await loadFontBytes("LiberationSerif-Bold.ttf");
-  const monoBytes = await loadFontBytes("LiberationMono-Regular.ttf");
+  const serifBytes = loadFontBytes("LiberationSerif-Regular.ttf");
+  const serifItalicBytes = loadFontBytes("LiberationSerif-Italic.ttf");
+  const serifBoldBytes = loadFontBytes("LiberationSerif-Bold.ttf");
+  const monoBytes = loadFontBytes("LiberationMono-Regular.ttf");
 
   const fonts: Fonts = {
     serif: await doc.embedFont(serifBytes, { subset: true }),
@@ -236,7 +226,7 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
   };
 
   if (needsCJK) {
-    const cjkBytes = await loadFontBytes("DroidSansFallbackFull.ttf");
+    const cjkBytes = loadFontBytes("DroidSansFallbackFull.ttf");
     fonts.cjk = await doc.embedFont(cjkBytes, { subset: true });
   }
 
