@@ -18,7 +18,6 @@ const TEXT_WIDTH = PAGE_WIDTH - MARGIN_LEFT - MARGIN_RIGHT;
 const BODY_FONT_SIZE = 11;
 const BODY_LEADING = 16;  // line height
 const CHAPTER_TITLE_SIZE = 18;
-const CHAPTER_SUBTITLE_SIZE = 13;
 const TITLE_PAGE_SIZE = 28;
 const SUBTITLE_PAGE_SIZE = 16;
 const AUTHOR_SIZE = 14;
@@ -29,9 +28,61 @@ const DARK_BROWN = rgb(0.22, 0.15, 0.08);
 const MUTED = rgb(0.45, 0.38, 0.30);
 const GOLD = rgb(0.79, 0.66, 0.30);
 
+// ─── WIN-ANSI SAFE TEXT ─────────────────────────────────────────────────────
+// pdf-lib standard fonts only support WinAnsi (Windows-1252) encoding.
+// Characters outside this range (Chinese, special Unicode symbols) will crash.
+// This function strips or replaces unsupported characters.
+const WIN_ANSI_SAFE = new Set<number>([
+  // Basic printable ASCII 0x20–0x7E
+  ...Array.from({ length: 95 }, (_, i) => 0x20 + i),
+  // Windows-1252 upper range (0x80–0xFF mapped to Unicode code points)
+  0x20AC, // €
+  0x201A, // ‚
+  0x0192, // ƒ
+  0x201E, // „
+  0x2026, // …
+  0x2020, // †
+  0x2021, // ‡
+  0x02C6, // ˆ
+  0x2030, // ‰
+  0x0160, // Š
+  0x2039, // ‹
+  0x0152, // Œ
+  0x017D, // Ž
+  0x2018, // '
+  0x2019, // '
+  0x201C, // "
+  0x201D, // "
+  0x2022, // •
+  0x2013, // –
+  0x2014, // —
+  0x02DC, // ˜
+  0x2122, // ™
+  0x0161, // š
+  0x203A, // ›
+  0x0153, // œ
+  0x017E, // ž
+  0x0178, // Ÿ
+  // Latin-1 Supplement (0xA0–0xFF) — all mapped 1:1 in WinAnsi
+  ...Array.from({ length: 96 }, (_, i) => 0xA0 + i),
+]);
+
+function sanitize(text: string): string {
+  let result = "";
+  for (const char of text) {
+    const code = char.codePointAt(0) ?? 0;
+    if (WIN_ANSI_SAFE.has(code)) {
+      result += char;
+    }
+    // Silently drop unsupported characters (Chinese, special symbols, etc.)
+  }
+  return result;
+}
+
 // ─── TEXT WRAPPING ──────────────────────────────────────────────────────────
 function wrapText(text: string, font: PDFFont, fontSize: number, maxWidth: number): string[] {
-  const words = text.split(/\s+/);
+  const clean = sanitize(text);
+  const words = clean.split(/\s+/).filter(Boolean);
   const lines: string[] = [];
   let currentLine = "";
 
@@ -61,6 +112,22 @@ function stripHtml(text: string): string {
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
     .replace(/&nbsp;/g, " ");
+}
+
+// ─── SAFE DRAW TEXT ─────────────────────────────────────────────────────────
+// Extra safety net — catches any encoding errors that slip through sanitize.
+function safeDraw(
+  page: PDFPage,
+  text: string,
+  opts: { x: number; y: number; size: number; font: PDFFont; color: ReturnType<typeof rgb> },
+): void {
+  try {
+    const clean = sanitize(text);
+    if (!clean.trim()) return;
+    page.drawText(clean, opts);
+  } catch {
+    // If even sanitized text fails, skip silently rather than crash the PDF
+  }
 }
 
 // ─── CURSOR (tracks Y position + page management) ───────────────────────────
@@ -94,6 +161,23 @@ class Cursor {
   }
 }
 
+// ─── DRAW SEPARATOR (pure geometry, no font needed) ─────────────────────────
+function drawSeparator(page: PDFPage, y: number): void {
+  const cx = PAGE_WIDTH / 2;
+  const dotRadius = 1.5;
+  const spacing = 16;
+
+  // Three small circles as separator
+  for (const offset of [-spacing, 0, spacing]) {
+    page.drawCircle({
+      x: cx + offset,
+      y,
+      size: dotRadius,
+      color: GOLD,
+    });
+  }
+}
+
 // ─── MAIN GENERATOR ─────────────────────────────────────────────────────────
 export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> {
   const book = BOOKS[bookSlug];
@@ -105,25 +189,23 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
   const doc = await PDFDocument.create();
 
   // Set metadata
-  doc.setTitle(book.title);
-  doc.setAuthor(book.author);
-  doc.setSubject(book.subtitle ?? "");
-  doc.setCreator("Tintaxis · tintaxis.com");
+  doc.setTitle(sanitize(book.title));
+  doc.setAuthor(sanitize(book.author));
+  doc.setSubject(sanitize(book.subtitle ?? ""));
+  doc.setCreator("Tintaxis - tintaxis.com");
 
   // Embed fonts
   const serif = await doc.embedFont(StandardFonts.TimesRoman);
-  const serifBold = await doc.embedFont(StandardFonts.TimesRomanBold);
   const serifItalic = await doc.embedFont(StandardFonts.TimesRomanItalic);
   const mono = await doc.embedFont(StandardFonts.Courier);
 
   const cursor = new Cursor(doc);
 
   // ── TITLE PAGE ──────────────────────────────────────────────────────────
-  const titleY = PAGE_HEIGHT * 0.6;
-  cursor.y = titleY;
+  cursor.y = PAGE_HEIGHT * 0.6;
 
   // Tintaxis label
-  cursor.page.drawText("TINTAXIS", {
+  safeDraw(cursor.page, "TINTAXIS", {
     x: MARGIN_LEFT,
     y: PAGE_HEIGHT - 60,
     size: 8,
@@ -135,7 +217,7 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
   const titleLines = wrapText(book.title, serifItalic, TITLE_PAGE_SIZE, TEXT_WIDTH);
   for (const line of titleLines) {
     const lineWidth = serifItalic.widthOfTextAtSize(line, TITLE_PAGE_SIZE);
-    cursor.page.drawText(line, {
+    safeDraw(cursor.page, line, {
       x: MARGIN_LEFT + (TEXT_WIDTH - lineWidth) / 2,
       y: cursor.y,
       size: TITLE_PAGE_SIZE,
@@ -148,62 +230,60 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
   // Subtitle
   if (book.subtitle) {
     cursor.advance(4);
-    const subWidth = serifItalic.widthOfTextAtSize(book.subtitle, SUBTITLE_PAGE_SIZE);
-    cursor.page.drawText(book.subtitle, {
-      x: MARGIN_LEFT + (TEXT_WIDTH - subWidth) / 2,
-      y: cursor.y,
-      size: SUBTITLE_PAGE_SIZE,
-      font: serifItalic,
-      color: MUTED,
-    });
+    const subText = sanitize(book.subtitle);
+    if (subText) {
+      const subWidth = serifItalic.widthOfTextAtSize(subText, SUBTITLE_PAGE_SIZE);
+      safeDraw(cursor.page, subText, {
+        x: MARGIN_LEFT + (TEXT_WIDTH - subWidth) / 2,
+        y: cursor.y,
+        size: SUBTITLE_PAGE_SIZE,
+        font: serifItalic,
+        color: MUTED,
+      });
+    }
     cursor.advance(SUBTITLE_PAGE_SIZE + 16);
   }
 
-  // Decorative separator
-  const sepText = "◆   ◆   ◆";
-  const sepWidth = serif.widthOfTextAtSize(sepText, 10);
-  cursor.page.drawText(sepText, {
-    x: MARGIN_LEFT + (TEXT_WIDTH - sepWidth) / 2,
-    y: cursor.y,
-    size: 10,
-    font: serif,
-    color: GOLD,
-  });
+  // Decorative separator (drawn as shapes, not text)
+  drawSeparator(cursor.page, cursor.y);
   cursor.advance(30);
 
   // Author
-  const authorText = book.author.toUpperCase();
-  const authorWidth = mono.widthOfTextAtSize(authorText, AUTHOR_SIZE);
-  cursor.page.drawText(authorText, {
-    x: MARGIN_LEFT + (TEXT_WIDTH - authorWidth) / 2,
-    y: cursor.y,
-    size: AUTHOR_SIZE,
-    font: mono,
-    color: DARK_BROWN,
-  });
+  const authorText = sanitize(book.author.toUpperCase());
+  if (authorText) {
+    const authorWidth = mono.widthOfTextAtSize(authorText, AUTHOR_SIZE);
+    safeDraw(cursor.page, authorText, {
+      x: MARGIN_LEFT + (TEXT_WIDTH - authorWidth) / 2,
+      y: cursor.y,
+      size: AUTHOR_SIZE,
+      font: mono,
+      color: DARK_BROWN,
+    });
+  }
   cursor.advance(AUTHOR_SIZE + 30);
 
   // Tagline
   if (book.tagline) {
-    const tagLines = wrapText(`"${book.tagline}"`, serifItalic, 12, TEXT_WIDTH - 40);
-    for (const line of tagLines) {
-      const lineWidth = serifItalic.widthOfTextAtSize(line, 12);
-      cursor.page.drawText(line, {
-        x: MARGIN_LEFT + (TEXT_WIDTH - lineWidth) / 2,
-        y: cursor.y,
-        size: 12,
-        font: serifItalic,
-        color: MUTED,
-      });
-      cursor.advance(18);
+    const safeTagline = sanitize(book.tagline);
+    if (safeTagline.trim()) {
+      const tagLines = wrapText(`"${safeTagline}"`, serifItalic, 12, TEXT_WIDTH - 40);
+      for (const line of tagLines) {
+        const lineWidth = serifItalic.widthOfTextAtSize(line, 12);
+        safeDraw(cursor.page, line, {
+          x: MARGIN_LEFT + (TEXT_WIDTH - lineWidth) / 2,
+          y: cursor.y,
+          size: 12,
+          font: serifItalic,
+          color: MUTED,
+        });
+        cursor.advance(18);
+      }
     }
   }
 
   // Footer on title page
-  const footerText = "tintaxis.com";
-  const footerWidth = mono.widthOfTextAtSize(footerText, 8);
-  cursor.page.drawText(footerText, {
-    x: MARGIN_LEFT + (TEXT_WIDTH - footerWidth) / 2,
+  safeDraw(cursor.page, "tintaxis.com", {
+    x: MARGIN_LEFT + (TEXT_WIDTH - mono.widthOfTextAtSize("tintaxis.com", 8)) / 2,
     y: MARGIN_BOTTOM,
     size: 8,
     font: mono,
@@ -215,24 +295,28 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
     // Start each chapter on a new page
     cursor.newPage();
 
-    // Chapter label (e.g. "Chapter I" or "Capítulo I")
-    const chapterLabel = `${book.chapterLabel} ${chapter.romanNumeral ?? chapter.number}`;
-    const labelWidth = mono.widthOfTextAtSize(chapterLabel.toUpperCase(), 10);
-    cursor.page.drawText(chapterLabel.toUpperCase(), {
-      x: MARGIN_LEFT + (TEXT_WIDTH - labelWidth) / 2,
-      y: cursor.y,
-      size: 10,
-      font: mono,
-      color: GOLD,
-    });
+    // Chapter label (e.g. "CAPITULO I")
+    const chapterLabel = sanitize(
+      `${book.chapterLabel} ${chapter.romanNumeral ?? chapter.number}`.toUpperCase()
+    );
+    if (chapterLabel) {
+      const labelWidth = mono.widthOfTextAtSize(chapterLabel, 10);
+      safeDraw(cursor.page, chapterLabel, {
+        x: MARGIN_LEFT + (TEXT_WIDTH - labelWidth) / 2,
+        y: cursor.y,
+        size: 10,
+        font: mono,
+        color: GOLD,
+      });
+    }
     cursor.advance(24);
 
-    // Chapter title (if different from label)
+    // Chapter title
     if (chapter.title) {
       const ctLines = wrapText(chapter.title, serifItalic, CHAPTER_TITLE_SIZE, TEXT_WIDTH);
       for (const line of ctLines) {
         const lineWidth = serifItalic.widthOfTextAtSize(line, CHAPTER_TITLE_SIZE);
-        cursor.page.drawText(line, {
+        safeDraw(cursor.page, line, {
           x: MARGIN_LEFT + (TEXT_WIDTH - lineWidth) / 2,
           y: cursor.y,
           size: CHAPTER_TITLE_SIZE,
@@ -246,32 +330,36 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
     // Epigraph
     if (chapter.epigraph) {
       cursor.advance(8);
-      const epText = `"${stripHtml(chapter.epigraph.text)}"`;
-      const epLines = wrapText(epText, serifItalic, 10, TEXT_WIDTH - 60);
-      for (const line of epLines) {
-        const lineWidth = serifItalic.widthOfTextAtSize(line, 10);
-        cursor.ensureSpace(14);
-        cursor.page.drawText(line, {
-          x: MARGIN_LEFT + (TEXT_WIDTH - lineWidth) / 2,
-          y: cursor.y,
-          size: 10,
-          font: serifItalic,
-          color: MUTED,
-        });
-        cursor.advance(14);
+      const epText = sanitize(`"${stripHtml(chapter.epigraph.text)}"`);
+      if (epText.trim()) {
+        const epLines = wrapText(epText, serifItalic, 10, TEXT_WIDTH - 60);
+        for (const line of epLines) {
+          const lineWidth = serifItalic.widthOfTextAtSize(line, 10);
+          cursor.ensureSpace(14);
+          safeDraw(cursor.page, line, {
+            x: MARGIN_LEFT + (TEXT_WIDTH - lineWidth) / 2,
+            y: cursor.y,
+            size: 10,
+            font: serifItalic,
+            color: MUTED,
+          });
+          cursor.advance(14);
+        }
       }
       if (chapter.epigraph.attribution) {
-        const attrText = `— ${chapter.epigraph.attribution}`;
-        const attrWidth = serifItalic.widthOfTextAtSize(attrText, 9);
-        cursor.ensureSpace(14);
-        cursor.page.drawText(attrText, {
-          x: MARGIN_LEFT + (TEXT_WIDTH - attrWidth) / 2,
-          y: cursor.y,
-          size: 9,
-          font: serifItalic,
-          color: MUTED,
-        });
-        cursor.advance(14);
+        const attrText = sanitize(`-- ${chapter.epigraph.attribution}`);
+        if (attrText.trim()) {
+          const attrWidth = serifItalic.widthOfTextAtSize(attrText, 9);
+          cursor.ensureSpace(14);
+          safeDraw(cursor.page, attrText, {
+            x: MARGIN_LEFT + (TEXT_WIDTH - attrWidth) / 2,
+            y: cursor.y,
+            size: 9,
+            font: serifItalic,
+            color: MUTED,
+          });
+          cursor.advance(14);
+        }
       }
     }
 
@@ -292,7 +380,7 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
       for (let li = 0; li < lines.length; li++) {
         cursor.ensureSpace(BODY_LEADING);
         const xOffset = li === 0 ? indent : 0;
-        cursor.page.drawText(lines[li], {
+        safeDraw(cursor.page, lines[li], {
           x: MARGIN_LEFT + xOffset,
           y: cursor.y,
           size: BODY_FONT_SIZE,
@@ -309,47 +397,37 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
 
   // ── COLOPHON PAGE ───────────────────────────────────────────────────────
   cursor.newPage();
-  const endY = PAGE_HEIGHT * 0.55;
-  cursor.y = endY;
+  cursor.y = PAGE_HEIGHT * 0.55;
 
-  const endSep = "◆   ◆   ◆";
-  const endSepW = serif.widthOfTextAtSize(endSep, 10);
-  cursor.page.drawText(endSep, {
-    x: MARGIN_LEFT + (TEXT_WIDTH - endSepW) / 2,
-    y: cursor.y,
-    size: 10,
-    font: serif,
-    color: GOLD,
-  });
+  drawSeparator(cursor.page, cursor.y);
   cursor.advance(30);
 
+  const yearStr = String(book.year ?? new Date().getFullYear());
   const colophonLines = [
-    `${book.title} by ${book.author}`,
-    `${book.wordCount?.toLocaleString() ?? ""} words · ${book.totalChapters} ${book.chapterLabel.toLowerCase()}${book.totalChapters > 1 ? "s" : ""}`,
-    "",
-    "Published on Tintaxis",
-    "tintaxis.com",
-    "",
-    `© ${book.year ?? new Date().getFullYear()} ${book.author}`,
-    "All rights reserved.",
+    { text: `${book.title} by ${book.author}`, font: serif, size: 10, color: MUTED },
+    { text: `${book.wordCount?.toLocaleString() ?? ""} words`, font: serif, size: 10, color: MUTED },
+    { text: "", font: serif, size: 10, color: MUTED },
+    { text: "Published on Tintaxis", font: serif, size: 10, color: MUTED },
+    { text: "tintaxis.com", font: mono, size: 9, color: GOLD },
+    { text: "", font: serif, size: 10, color: MUTED },
+    { text: `Copyright ${yearStr} ${book.author}`, font: serif, size: 10, color: MUTED },
+    { text: "All rights reserved.", font: serif, size: 10, color: MUTED },
   ];
 
-  for (const line of colophonLines) {
-    if (line === "") {
+  for (const item of colophonLines) {
+    if (item.text === "") {
       cursor.advance(12);
       continue;
     }
-    const isUrl = line.includes("tintaxis.com") && !line.includes("Published");
-    const font = isUrl ? mono : serif;
-    const size = isUrl ? 9 : 10;
-    const color = isUrl ? GOLD : MUTED;
-    const lineW = font.widthOfTextAtSize(line, size);
-    cursor.page.drawText(line, {
+    const clean = sanitize(item.text);
+    if (!clean.trim()) continue;
+    const lineW = item.font.widthOfTextAtSize(clean, item.size);
+    safeDraw(cursor.page, clean, {
       x: MARGIN_LEFT + (TEXT_WIDTH - lineW) / 2,
       y: cursor.y,
-      size,
-      font,
-      color,
+      size: item.size,
+      font: item.font,
+      color: item.color,
     });
     cursor.advance(15);
   }
