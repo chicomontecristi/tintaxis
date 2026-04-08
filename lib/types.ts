@@ -176,7 +176,7 @@ export interface Book {
   subtitle?: string;
   author: string;
   writerSlug: string;        // Links to featured-writers.ts for subscriptions & payouts
-  language: "en" | "es" | "zh" | "es-zh";
+  language: "en" | "es" | "zh";
   genre: string;
   description: string;
   tagline: string;

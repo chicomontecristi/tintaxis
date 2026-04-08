@@ -47,7 +47,7 @@ const DEFAULT_VOICES: NarratorVoice[] = [
 
 interface NarratorSelectorProps {
   authorName: string;
-  bookLanguage: "en" | "es" | "zh" | "es-zh";
+  bookLanguage: "en" | "es" | "zh";
   accentColor?: string;
   voices?: NarratorVoice[];
   onSelect: (voice: NarratorVoice) => void;
@@ -81,7 +81,7 @@ export default function NarratorSelector({
       const sampleText =
         bookLanguage === "es"
           ? "Y en la penumbra de la habitación, el silencio lo dijo todo."
-          : bookLanguage === "zh" || bookLanguage === "es-zh"
+          : bookLanguage === "zh"
           ? "在那个安静的房间里，沉默说出了一切。"
           : "And in the dim light of the room, the silence said everything.";
 

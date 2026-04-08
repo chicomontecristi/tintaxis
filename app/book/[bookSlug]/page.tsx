@@ -27,7 +27,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const languageLabel: Record<string, string> = {
     en: "English",
     es: "Español",
-    "es-zh": "Español / 中文",
     zh: "中文",
   };
 
@@ -61,8 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: {
       canonical: `${BASE_URL}/book/${book.slug}`,
       languages: {
-        [book.language === "es-zh" ? "es" : book.language]: `${BASE_URL}/book/${book.slug}`,
-        ...(book.language === "es-zh" ? { zh: `${BASE_URL}/book/${book.slug}` } : {}),
+        [book.language]: `${BASE_URL}/book/${book.slug}`,
         "x-default": `${BASE_URL}/book/${book.slug}`,
       },
     },
@@ -82,7 +80,6 @@ function BookJsonLd({ bookSlug }: { bookSlug: string }) {
   const langMap: Record<string, string> = {
     en: "en",
     es: "es",
-    "es-zh": "es",
     zh: "zh",
   };
 

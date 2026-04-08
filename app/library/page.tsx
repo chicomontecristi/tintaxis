@@ -18,7 +18,6 @@ type SortMode = "alpha" | "genre";
 const LANGUAGE_LABEL: Record<string, string> = {
   en: "English",
   es: "Español",
-  "es-zh": "Español / 中文",
   zh: "中文",
 };
 
@@ -26,7 +25,7 @@ const GENRE_ORDER = [
   "Dark psychological thriller / Southern Gothic",
   "Ficción literaria / Narrativa familiar",
   "Cuentos / Prosa literaria",
-  "Letters / Cartas íntimas (Chinese & Spanish)",
+  "书信",
 ];
 
 function hexToRgb(hex: string): string | null {
@@ -41,7 +40,7 @@ function genreShort(genre: string): string {
     "Dark psychological thriller / Southern Gothic": "Psychological Thriller",
     "Ficción literaria / Narrativa familiar": "Literary Fiction",
     "Cuentos / Prosa literaria": "Short Stories",
-    "Letters / Cartas íntimas (Chinese & Spanish)": "Epistolary / Letters",
+    "书信": "书信",
   };
   return map[genre] ?? genre;
 }

@@ -46,13 +46,12 @@ Tintaxis is a free-to-read literary platform where writers publish original fict
 - URL: https://tintaxis.com/book/noches-de-maya
 - Notable stories: "Triste de cuna," "Dos pájaros," "Cuento amarillo," "Pies secos, pies mojados"
 
-### Mi Pájaro del Río (Mandarin Chinese / Spanish)
-- Genre: Cartas íntimas / Intimate letters
-- Language: Mandarin Chinese and Spanish (bilingual)
-- Length: ~3,200 words
+### 我河口的鸟 (Mandarin Chinese)
+- Genre: 书信 (Letters)
+- Language: Mandarin Chinese
+- Length: ~2,815 words
 - Letters: 8 personal letters written in December 2017 from Rochester and Montauk, New York
 - URL: https://tintaxis.com/book/mi-pajaro-del-rio
-- Addressed to: "我河口的鸟" (my river mouth bird)
 
 ## Exhibition & Awards History
 

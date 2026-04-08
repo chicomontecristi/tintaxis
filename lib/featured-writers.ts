@@ -121,11 +121,11 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
         wordCount: "~8,400 palabras",
       },
       {
-        title: "Mi Pájaro del Río",
-        subtitle: "Colección · ES · 中文 · EN",
+        title: "我河口的鸟",
+        subtitle: "书信集 · 中文",
         description:
-          "Letters written in three languages to the one called the river mouth bird. Rochester and Montauk. December 2017.",
-        language: "三",
+          "2017年12月，从Rochester和Montauk寄出的八封信。写给那只河口的鸟。",
+        language: "中",
         comingSoon: true,
       },
     ],

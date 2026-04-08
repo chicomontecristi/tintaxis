@@ -34,8 +34,8 @@ const LINKS: LinkItem[] = [
     accent: "107, 63, 160",
   },
   {
-    label: "Mi Pájaro del Río",
-    sublabel: "Letters in Mandarin & Spanish",
+    label: "我河口的鸟",
+    sublabel: "书信集 · 中文",
     href: "/book/mi-pajaro-del-rio/excerpt",
     accent: "0, 229, 204",
   },

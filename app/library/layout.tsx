@@ -6,13 +6,13 @@ const BASE_URL = "https://tintaxis.com";
 export const metadata: Metadata = {
   title: "The Library",
   description:
-    "The Tintaxis library — The Hunt, Recoleta, Noches de maya, Mi Pájaro del Río, and more on the way. First chapter free. In English, Spanish, Mandarin, Portuguese, Tamil, and Italian.",
+    "The Tintaxis library — The Hunt, Recoleta, Noches de maya, 我河口的鸟, and more on the way. First chapter free. In English, Spanish, Mandarin, Portuguese, Tamil, and Italian.",
   keywords: [
     "Tintaxis library",
     "The Hunt novella",
     "Recoleta",
     "Noches de maya",
-    "Mi Pájaro del Río",
+    "我河口的鸟",
     "Dominican American literature",
     "bilingual books",
     "read free online",

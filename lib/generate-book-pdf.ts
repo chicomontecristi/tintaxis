@@ -213,7 +213,7 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
   if (!chapters.length) return null;
 
   // Check if this book needs CJK support
-  const needsCJK = book.language === "es-zh" || book.language === "zh" ||
+  const needsCJK = book.language === "zh" ||
     chapters.some(ch =>
       ch.paragraphs.some(p => hasCJK(p.text)) ||
       (ch.title && hasCJK(ch.title)) ||

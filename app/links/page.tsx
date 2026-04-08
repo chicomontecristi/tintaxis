@@ -9,7 +9,7 @@ const BASE_URL = "https://tintaxis.vercel.app";
 export const metadata: Metadata = {
   title: "Chico Montecristi — Links",
   description:
-    "Read The Hunt, Recoleta, Noches de maya, and Mi Pájaro del Río — free on Tintaxis. Links to all books, art, and social by Chico Montecristi.",
+    "Read The Hunt, Recoleta, Noches de maya, and 我河口的鸟 — free on Tintaxis. Links to all books, art, and social by Chico Montecristi.",
   openGraph: {
     title: "Chico Montecristi — Links",
     description: "Books. Art. Everything by Chico Montecristi.",

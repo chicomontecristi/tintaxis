@@ -78,7 +78,7 @@ function welcomeEmailHtml(): string {
           <p style="font-family:Georgia,serif;font-size:14px;font-style:italic;color:rgba(245,230,200,0.4);line-height:1.8;margin:0;">
             <a href="${BASE_URL}/book/recoleta" style="color:rgba(184,115,51,0.7);text-decoration:none;">Recoleta</a> · Español<br/>
             <a href="${BASE_URL}/book/noches-de-maya" style="color:rgba(107,63,160,0.7);text-decoration:none;">Noches de maya</a> · Cuentos<br/>
-            <a href="${BASE_URL}/book/mi-pajaro-del-rio" style="color:rgba(0,229,204,0.7);text-decoration:none;">Mi Pájaro del Río</a> · 中文/ES
+            <a href="${BASE_URL}/book/mi-pajaro-del-rio" style="color:rgba(0,229,204,0.7);text-decoration:none;">我河口的鸟</a> · 中文
           </p>
         </td></tr>
 

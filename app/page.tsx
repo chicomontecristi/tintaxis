@@ -105,7 +105,7 @@ function HomeJsonLd() {
             "@type": "ListItem",
             position: 4,
             url: `${BASE_URL}/book/mi-pajaro-del-rio`,
-            name: "Mi Pájaro del Río — Chico Montecristi",
+            name: "我河口的鸟 — Chico Montecristi",
           },
           {
             "@type": "ListItem",
@@ -142,7 +142,7 @@ function HomeJsonLd() {
         name: "What books are available on Tintaxis?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Tintaxis features four works: The Hunt (a dark psychological thriller in English set in small-town Colorado), Recoleta (a Spanish-language novella about a family in the South Bronx), Noches de maya (a Spanish short story collection from the Caribbean and American Southwest), and Mi Pájaro del Río (bilingual intimate letters in Mandarin Chinese and Spanish).",
+          text: "Tintaxis features four works: The Hunt (a dark psychological thriller in English set in small-town Colorado), Recoleta (a Spanish-language novella about a family in the South Bronx), Noches de maya (a Spanish short story collection from the Caribbean and American Southwest), and 我河口的鸟 (intimate letters in Mandarin Chinese).",
         },
       },
       {

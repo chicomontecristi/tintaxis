@@ -545,9 +545,9 @@ export default function LivingPage() {
                     accent="rgba(86,130,89"
                   />
                   <BookChoiceCard
-                    title="Mi Pájaro del Río"
-                    subtitle="Cartas"
-                    detail="Diciembre 2017 · ZH / ES"
+                    title="我河口的鸟"
+                    subtitle="书信集"
+                    detail="2017年12月 · 中文"
                     href="/book/mi-pajaro-del-rio"
                     accent="rgba(70,130,180"
                   />

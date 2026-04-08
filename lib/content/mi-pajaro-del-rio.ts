@@ -1,6 +1,6 @@
-// ─── MI PÁJARO DEL RÍO — CONTENT ───────────────────────────────────────────
-// Mi Pájaro del Río — Letter collection by Chico Montecristi
-// Language: Chinese/Spanish (bilingual)
+// ─── 我河口的鸟 — CONTENT ────────────────────────────────────────────────────
+// 我河口的鸟 — Letter collection by Chico Montecristi
+// Language: Chinese (Mandarin)
 // First piece is free. All others sealed.
 
 import type { Chapter } from "@/lib/types";

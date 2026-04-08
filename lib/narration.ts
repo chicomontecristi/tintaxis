@@ -165,13 +165,12 @@ function chunkText(text: string, maxLen = 180): string[] {
 // Chunks long text to dodge Chrome's ~15-second speech cutoff.
 export function createWebSpeechNarrator(
   voice: NarratorVoice,
-  language: "en" | "es" | "zh" | "es-zh"
+  language: "en" | "es" | "zh"
 ) {
   const langMap: Record<string, string> = {
     en: "en-US",
     es: "es-ES",
     zh: "zh-CN",
-    "es-zh": "es-ES",
   };
 
   const profile = VOICE_PROFILES[voice.id] ?? VOICE_PROFILES.warm;

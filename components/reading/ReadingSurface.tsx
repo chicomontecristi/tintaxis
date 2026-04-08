@@ -159,7 +159,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
     } else {
       // Web Speech API fallback
       if (!webSpeechRef.current) {
-        webSpeechRef.current = createWebSpeechNarrator(voice, bookLang as "en" | "es" | "zh" | "es-zh");
+        webSpeechRef.current = createWebSpeechNarrator(voice, bookLang as "en" | "es" | "zh");
       }
       const advanceToNext = () => {
         const nextIdx = paraIndex + 1;
