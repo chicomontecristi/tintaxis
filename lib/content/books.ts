@@ -44,7 +44,7 @@ export const BOOKS: Record<string, Book> = {
     firstChapterSlug: "capitulo-uno",
     chapterLabel: "Capítulo",
     totalChapters: 4,
-    wordCount: 12000,
+    wordCount: 12382,
     year: 2022,
   },
   "noches-de-maya": {
