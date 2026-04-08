@@ -10,7 +10,7 @@ import { stripe } from "@/lib/stripe";
 import { deliverDigitalCopy } from "@/lib/deliver-digital-copy";
 
 function getAdminSecret() {
-  return process.env.REDELIVER_SECRET ?? process.env.STRIPE_WEBHOOK_SECRET ?? "";
+  return process.env.REDELIVER_SECRET ?? process.env.JWT_SECRET ?? "";
 }
 
 function unauthorized() {

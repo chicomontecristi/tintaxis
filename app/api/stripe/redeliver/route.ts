@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     };
 
     // Auth: require secret or admin key
-    const expectedSecret = process.env.REDELIVER_SECRET ?? process.env.STRIPE_WEBHOOK_SECRET ?? "";
+    const expectedSecret = process.env.REDELIVER_SECRET ?? process.env.JWT_SECRET ?? "";
     if (!secret || secret !== expectedSecret) {
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     }
