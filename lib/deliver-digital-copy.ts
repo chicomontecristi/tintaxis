@@ -46,7 +46,7 @@ export async function deliverDigitalCopy(
 
   const pdfBase64 = pdfBuffer.toString("base64");
   const fileName = `${book.title} — ${book.author}.pdf`
-    .replace(/[^a-zA-Z0-9áéíóúñüÁÉÍÓÚÑÜ\s—.]/g, "")
+    .replace(/[^\p{L}\p{N}\s—.]/gu, "")
     .trim();
 
   console.log(`[deliver] PDF generated: ${(pdfBuffer.length / 1024).toFixed(0)} KB, ${fileName}`);
