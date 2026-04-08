@@ -295,8 +295,8 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
   }, fonts);
   cursor.advance(AUTHOR_SIZE + 30);
 
-  // Tagline
-  if (book.tagline) {
+  // Tagline (skip if identical to title — avoids redundant display)
+  if (book.tagline && book.tagline !== book.title) {
     const tagFont = fontFor(book.tagline, fonts, fonts.serifItalic);
     const tagText = `"${book.tagline}"`;
     const tagLines = smartWrap(tagText, tagFont, 12, TEXT_WIDTH - 40, fonts);

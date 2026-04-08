@@ -168,7 +168,7 @@ export default function Image({ params }: Props) {
           </div>
 
           {/* Tagline */}
-          {tagline && (
+          {tagline && tagline !== title && (
             <div
               style={{
                 fontSize: "20px",

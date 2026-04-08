@@ -213,7 +213,8 @@ export default function BookPageClient() {
             {book.author}
           </p>
 
-          {/* Tagline */}
+          {/* Tagline (skip if identical to title) */}
+          {book.tagline && book.tagline !== book.title && (
           <p
             style={{
               fontFamily: '"EB Garamond", Garamond, Georgia, serif',
@@ -228,6 +229,7 @@ export default function BookPageClient() {
           >
             "{book.tagline}"
           </p>
+          )}
 
           {/* Description */}
           <p
