@@ -119,11 +119,11 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
         wordCount: "~27,862 palabras",
       },
       {
-        title: "æˆ‘æ²³å£çš„é¸Ÿ",
-        subtitle: "ä¹¦ä¿¡é›† Â· ä¸­æ–‡",
+        title: "我河口的鸟",
+        subtitle: "书信集 · 中文",
         description:
-          "2017å¹´12æœˆï¼Œä»ŽRochesterå’ŒMontaukå¯„å‡ºçš„å…«å°ä¿¡ã€‚å†™ç»™é‚£åªæ²³å£çš„é¸Ÿã€‚",
-        language: "ä¸­",
+          "2017年12月，从Rochester和Montauk寄出的八封信。写给那只河口的鸟。",
+        language: "中",
         href: "/book/mi-pajaro-del-rio",
               },
     ],
