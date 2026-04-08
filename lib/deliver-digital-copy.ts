@@ -70,7 +70,7 @@ export async function deliverDigitalCopy(
 
     <div style="margin-bottom: 2em;">
       <p style="font-family: 'Georgia', serif; font-size: 15px; color: #5A4A3A; margin: 0; line-height: 1.7;">
-        Thank you for supporting digital content. Tintaxis thanks you! Your PDF is attached.
+        Thank you for supporting digital content. tintaxis thanks you! Your PDF is attached.
       </p>
     </div>
 

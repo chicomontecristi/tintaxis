@@ -2002,8 +2002,7 @@ vámonos por la yarda compai —le indicó. Caminaron hacia las aceras y estaba 
 lleno de bomberos y policías.
 DO NOT CROSS
 —Guys, you can’t come in —les dijo un bombero.
-10—40, 10—40, do you copy? Over…
-106` },
+10—40, 10—40, do you copy? Over…` },
     ],
   }
 };

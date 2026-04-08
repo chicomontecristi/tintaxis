@@ -229,7 +229,7 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
 
   if (needsCJK) {
     const cjkBytes = loadFontBytes("DroidSansFallbackFull.ttf");
-    fonts.cjk = await doc.embedFont(cjkBytes, { subset: true });
+    fonts.cjk = await doc.embedFont(cjkBytes, { subset: false });
   }
 
   const cursor = new Cursor(doc);
