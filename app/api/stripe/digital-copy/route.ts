@@ -4,6 +4,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { stripe, PLAN_PRICE_IDS } from "@/lib/stripe";
+import { getBook } from "@/lib/content/books";
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,6 +30,10 @@ export async function POST(req: NextRequest) {
     const origin = req.headers.get("origin") ?? process.env.NEXT_PUBLIC_URL ?? "https://tintaxis.vercel.app";
     const safeReturn = returnUrl ?? `/book/${bookSlug}`;
 
+    // Look up book title for clear Stripe dashboard labeling
+    const book = getBook(bookSlug);
+    const bookTitle = book?.title ?? bookSlug;
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment", // One-time payment, not recurring subscription
       line_items: [{ price: priceId, quantity: 1 }],
@@ -37,8 +42,19 @@ export async function POST(req: NextRequest) {
       metadata: {
         plan: "digital_copy",
         bookSlug,
+        bookTitle,
         returnUrl: safeReturn,
         role: "reader",
+      },
+
+      // Put the book title on the payment itself so it shows in Stripe dashboard
+      payment_intent_data: {
+        description: `Digital Copy — ${bookTitle}`,
+        metadata: {
+          plan: "digital_copy",
+          bookSlug,
+          bookTitle,
+        },
       },
 
       // Pre-fill email if provided
