@@ -52,8 +52,21 @@ interface ReadingSurfaceProps {
   prevChapter?: Chapter | null;
 }
 
+// ── Mobile detection — disables popups that glitch on phones ─────────────────
+function useIsMobile(breakpoint = 768) {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setMobile(window.innerWidth < breakpoint);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, [breakpoint]);
+  return mobile;
+}
+
 export default function ReadingSurface({ chapter, nextChapter, prevChapter }: ReadingSurfaceProps) {
   const pathname = usePathname();
+  const isMobile = useIsMobile();
   const { t } = useI18n();
   const [annotations, setAnnotations] = useState<Annotation[]>([]);
   const [activeInkType, setActiveInkTypeState] = useState<InkType>("ghost");
@@ -737,13 +750,15 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
         )}
       </AnimatePresence>
 
-      {/* ── Email Gate Modal (free tier — chapter 2+) ─────────── */}
-      <EmailGateModal
-        isOpen={emailGateOpen}
-        chapterTitle={chapter.title}
-        onClose={() => setEmailGateOpen(false)}
-        onSuccess={() => window.location.reload()}
-      />
+      {/* ── Email Gate Modal (free tier — chapter 2+) — disabled on mobile ── */}
+      {!isMobile && (
+        <EmailGateModal
+          isOpen={emailGateOpen}
+          chapterTitle={chapter.title}
+          onClose={() => setEmailGateOpen(false)}
+          onSuccess={() => window.location.reload()}
+        />
+      )}
 
       {/* ── Subscription Gate Modal ──────────────────────────── */}
       <SubscriptionModal
@@ -763,20 +778,18 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
         bookSlug={book?.slug}
       />
 
-      {/* ── Continue Reading toast ───────────────────────────── */}
-      <ContinueReadingToast
-        chapterSlug={chapter.slug}
-        chapterRomanNumeral={chapter.romanNumeral}
-      />
-
-      {/* ── First-visit ink tutorial ─────────────────────────── */}
-      <InkTutorial />
-
-      {/* ── Return path: bookmark prompt (first-time deep readers) ── */}
-      <BookmarkPrompt />
-
-      {/* ── Session depth: email capture on 2nd page view ────────── */}
-      <DepthEmailCapture />
+      {/* ── Popups below are DISABLED on mobile to prevent overlay glitches ── */}
+      {!isMobile && (
+        <>
+          <ContinueReadingToast
+            chapterSlug={chapter.slug}
+            chapterRomanNumeral={chapter.romanNumeral}
+          />
+          <InkTutorial />
+          <BookmarkPrompt />
+          <DepthEmailCapture />
+        </>
+      )}
 
       {/* ── Narrator control bar — floating bottom bar when AI narrator is active ── */}
       <AnimatePresence>

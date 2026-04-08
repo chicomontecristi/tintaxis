@@ -140,7 +140,8 @@ function safeDraw(
 
     let xPos = opts.x;
     for (const seg of segments) {
-      const segFont = hasCJK(seg) ? fonts.cjk! : opts.font;
+      // Latin/number segments ALWAYS use the Latin serif font, never CJK
+      const segFont = hasCJK(seg) ? fonts.cjk! : fonts.serif;
       page.drawText(seg, { ...opts, x: xPos, font: segFont });
       xPos += segFont.widthOfTextAtSize(seg, opts.size);
     }
@@ -386,6 +387,13 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
       const paraWidth = TEXT_WIDTH - indent;
 
       const lines = smartWrap(rawText, paraFont, BODY_FONT_SIZE, paraWidth, fonts);
+
+      // Keep short paragraphs together — if ≤6 lines and won't fit on this
+      // page, start a new page so they don't split across a page break.
+      const totalHeight = lines.length * BODY_LEADING + 4;
+      if (lines.length <= 6 && cursor.y - totalHeight < MARGIN_BOTTOM) {
+        cursor.newPage();
+      }
 
       for (let li = 0; li < lines.length; li++) {
         cursor.ensureSpace(BODY_LEADING);
