@@ -100,7 +100,7 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
           "A child killed her mother. The father covered it up. Twenty years later, she comes back to finish what she started. Dark psychological thriller set in small-town Colorado.",
         href: "/chapter/one",
         language: "EN",
-        wordCount: "~25,000 words",
+        wordCount: "~25,238 words",
       },
       {
         title: "Recoleta",
@@ -108,7 +108,7 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
         description:
           "Dedicado a todas las madres. Rita, her asthma, and the silence left by the dead. A story of guilt, mothers, and a family secret buried in the Dominican Republic.",
         language: "ES",
-        wordCount: "~11,600 palabras",
+        wordCount: "~12,382 palabras",
         comingSoon: true,
       },
       {
@@ -118,7 +118,7 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
           "Nueve relatos del Caribe, el Bronx y el desierto del suroeste. Animales, amores perdidos, viejos amigos y el silencio de los edificios viejos.",
         href: "/book/noches-de-maya",
         language: "ES",
-        wordCount: "~8,400 palabras",
+        wordCount: "~27,862 palabras",
       },
       {
         title: "我河口的鸟",

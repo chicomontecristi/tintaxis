@@ -240,7 +240,14 @@ function WriterCard({ writer, index, t }: { writer: FeaturedWriter; index: numbe
             color: "rgba(201,168,76,0.35)",
             textTransform: "uppercase",
           }}>
-            {writer.works.length} {writer.works.length !== 1 ? t("writers.worksPlural") : t("writers.works")} · {t("writers.viewProfile")}
+            {(() => {
+              const liveCount = writer.works.filter(w => !w.comingSoon).length;
+              const totalCount = writer.works.length;
+              if (liveCount > 0) {
+                return `${totalCount} ${totalCount !== 1 ? t("writers.worksPlural") : t("writers.works")}`;
+              }
+              return totalCount > 0 ? "COMING SOON" : "";
+            })()} · {t("writers.viewProfile")}
           </p>
         </motion.div>
       </Link>
