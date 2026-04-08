@@ -18,7 +18,7 @@ export const NOCHES_CHAPTERS: Record<string, Chapter> = {
       attribution: "Noches de maya",
     },
     isLocked: false,
-    wordCount: 1458,
+    wordCount: 1461,
     paragraphs: [
       { index: 0, text: `—Viejo, ¿estás despierto? —le preguntó en la oscuridad de la noche. No le contestaba por más que se prestó. Remeneándolo como cerezo japonés, logró abrirle los ojos, pero no decía nada. Había muerto hace varios días y ella no lo notaba, eso creo. —Viejo, me ha salido otra cana—exclamó, con ella en la mano. Alcanzó por encima de su espalda cuadrada, agarrándole su lánguido brazo y se la enseñó como muestra de que no mentía. —Mira, no te miento—continuaba. Eran las dos y media. Les acompañaba la calma del sereno, rosando las palmas contra el techo. Arañaban igual que las olas montecristeñas despidiéndose de la blanca arena. La puerta de aquella vieja letrina se oía golpear, suavemente, contra una cadena oxidada y el zumbido de un mosquito afeminado llenaba el silencio alarmante que les ahogaba, dentro del mosquitero. Sobre aquellas pálidas paredes de cuaba, bailaba la sombra de un lagarto rascando su garganta, cerca de la ventana. Por sus huecos y grietas, se colaban los cantos de sapos y chicharras que, dulcemente, dormían a la madrugada. Una sinfonía de caricias se sentía en la brisa, lubricándose con la tibia humedad dentro de los pétalos sangrientos de las cayenas. La huella de una babosa perdida, sobre las losetas cuarteadas del jardín desvanecía, a varias piedras de la orilla que por las noches secaba. Una perra tetona temblaba recostada detrás del anafe, sacudiéndose las garrapatas tras su oído. El negro gato insomnio, por su nariz pasaba cansado y guipaba de reojo, sin mucho de qué hablar, siquiera se lamía. Ambos escuchaban la puerta golpear la cadena y vigilaban cada pequeño fragmento que, más allá de las palmas, las olas traían. Dos neuróticos desvelados, incapaces de despertar. A su lado,` },
       { index: 1, text: `una jaula de cría: dos conejos ciegos, una gallina gira y un par de rasconcillos que no cesaban de arrullar. La gira dormía apoyándose de un palo atravesando la jaula descompuesta, llena de grisácea cica que no paraba de caer, pintando todo lo que le rodeaba, incluyendo la perra que, debajo de ella dormía. El jardín estaba lleno de latas de aceite crisol vestidas de jazmines, orquídeos y orejas de ratón. Allí habitaban unas mariquitas, gusanos verdes, grillos, arañitas y una cacata peluda con ojos de belluga. Se podían ver pequeñas hormigas marchando dentro del caparazón de una vieja tortuga cargando bolitas negras hacia un laberinto de pan. Los hábiles anteojos de cangrejitos merengueros, muy cerca bailaban, bajo la luna nueva. En la arena sumergían sus dedos, hacían burbujas y espumas blancas, aposadas en sus conchas. Se espantaban hasta con el eco que muy dentro sonaba. Aquí, cerca de la salada orilla, las palmas de coco campestre decoraban el paisaje con su tronco cenizo y arrugado. En la cima, su cabellera frondosa, exhibían un par de frutos a través de la luz menguante, que a la vez era brillo y a la vez era nada, talvez el reflejo de la luz sobre el espejo azul, o las luces cruzando cientos de kilómetros, de cayo a cayo. Un dulce sonido, de sus canas brotaba, como un ábaco rudimentario u la lluvia inconsciente desbordada sobre las hojas de cinc, un poco antes de anochecer. El cielo, sospechoso de traición, iluminaba con estrellas la oscuridad que le rodeaba, algunas fugaces quemaban desde su interior, emitiendo el último llanto hacia Nairobi, la cual, bajo poca luz, se desvelaba. Era de poco dormir, siempre encontraba una que otra cosa que hacer. Arreglaba el mosquitero, rellenaba la lámpara y limpiaba su cristal con periódicos del año anterior. Ataba sogas de distintos colores en forma de bandera y las convertía en hamacas para venderles a los turistas que visitaban al morro y sus cautivantes salinas.` },
@@ -40,7 +40,7 @@ export const NOCHES_CHAPTERS: Record<string, Chapter> = {
       attribution: "Noches de maya",
     },
     isLocked: false,
-    wordCount: 873,
+    wordCount: 435,
     paragraphs: [
       { index: 0, text: `Como pájaro de cuatro dedos formo un nido de canas y hojas de palo verde. Dispongo de una rama llena de espinas lejos del polvo. Al pasar el cuerpo tibio de un lagarto escurridizo pongo la primera pieza que apoya lo demás. No pienso en la distancia del charco que seca, ni de la brisa fría que de noche cae sobre mi árbol, sólo la firmeza en el mecer de mi rama complace mi deseo amargo de poner una pluma más sobre su tronco. La sierra en el horizonte de picos en curva, piedras cuarteadas por el tiempo y la lluvia de agosto, algunas muestras de la muerte fijadas en huesos entizados, en los picos sedosos de buitres y en la suave piel endurecida de un alacrán.` },
       { index: 1, text: `Entre las nubes, aún más alto que la montaña, se posa un águila que al parecer era hombre y a la vez mujer, ambos en uno, volaba sin complejos ni tormentos, sin inquietudes ni desechos. Miraba hacia mi árbol y descifra el gusano que cargaba entre mis patas. Imagino que a ella le gusta algo que vuela, algo que salta, algo que respira en la madrugada cantando.` },
@@ -63,7 +63,7 @@ export const NOCHES_CHAPTERS: Record<string, Chapter> = {
       attribution: "Noches de maya",
     },
     isLocked: false,
-    wordCount: 3059,
+    wordCount: 1321,
     paragraphs: [
       { index: 0, text: `Qué pena saber que al otro lado vez algo inalcanzable, que por más que quieras sentir el latido entre tus dedos la vida te recuerda que no es cuándo tú quieras si no cuando sea. Organizamos el tiempo como si fuera materia. Nos echamos al bolsillo los minutos, las horas, los años, convencidos de que podremos doblegar el espacio en donde habita esta ilusión.` },
       { index: 1, text: `Digamos que Pablo es un hombre común y corriente: se graduó del colegio, fue a la universidad, se encontró a alguien que le dijo aquellas dos palabras más ponderosas que "vida" y "muerte", "te quiero", decidió formar un hogar, conseguir trabajo, vivir en una casa blanca, adoptó un perro, y en los últimos diez años ha visto desfilar su juventud en el espejo cada vez que se mira.` },
@@ -100,7 +100,7 @@ export const NOCHES_CHAPTERS: Record<string, Chapter> = {
       attribution: "Noches de maya",
     },
     isLocked: false,
-    wordCount: 1135,
+    wordCount: 654,
     paragraphs: [
       { index: 0, text: `Hoy tuve que buscar una pieza olvidada en un pequeño motel a orillas de Nuevo México. El camino no daba pérdidas, todo recto y al final una derecha. Al pasar la hora los carros comenzaban a reducir velocidad, la carretera se iba haciendo un poco más oscura con la sombra de los montes. Había poca gente y el sol estaba bajando.` },
       { index: 1, text: `Por poco paso la parada, era mi primera visita. Las luces encendidas decoradas con vidrios azul marino, en forma de reptil. El portón estaba abierto y en el garaje un carro. Había gente, pensé.` },
@@ -143,7 +143,7 @@ export const NOCHES_CHAPTERS: Record<string, Chapter> = {
       attribution: "Noches de maya",
     },
     isLocked: false,
-    wordCount: 755,
+    wordCount: 517,
     paragraphs: [
       { index: 0, text: `Mi abuela era muy dulce. Por las tardes me cantaba canciones, en las mañanas desayuno y hasta el día de hoy creo que me quiso más que a su propio hijo. Confieso que por más que me dijo te quiero nunca lo creí, aun en estos momentos en donde ya no está, cada noche trato de recuperar aquellas palabras que guardé en la mano cerrada.` },
       { index: 1, text: `Recuerdo que una vez me compró mi primera corbata, negra, para ir a la iglesia, esto le trajo tanta alegría. A lo mejor lo veía como un nuevo comienzo, su segunda oportunidad de vida. Siempre planchaba mis camisas y ponía una corbata sobre la cama como si fuera lo más importante, como si mi corbata representara algo que yo no entendía.` },
@@ -169,7 +169,7 @@ export const NOCHES_CHAPTERS: Record<string, Chapter> = {
       attribution: "Noches de maya",
     },
     isLocked: false,
-    wordCount: 891,
+    wordCount: 523,
     paragraphs: [
       { index: 0, text: `Una noche de esas que te encuentres abrazado de tu hija, que la beses y la abraces, le tiendas la cobija y le digas buenas noches, te quiero mucho mi niña… te llegará una pregunta complicada: "¿Me puedes contar la historia de mi hermano?"` },
       { index: 1, text: `Érase una vez, llevé a tu madre a una clínica de abortos. Habíamos decidido llamarle Julio como tu abuelo. Su cuarto estaba decorado con fotos de fútbol, coyotes y guitarras. Acuerdo que lo pintamos de amarillo, un amarillo muy vivo, el que aún recuerdo en las paredes.` },
@@ -206,7 +206,7 @@ export const NOCHES_CHAPTERS: Record<string, Chapter> = {
       attribution: "Noches de maya",
     },
     isLocked: false,
-    wordCount: 1048,
+    wordCount: 528,
     paragraphs: [
       { index: 0, text: `Paco no le ha dicho a muchos que su padre lo violó, ese secreto lo mantienen entre él y su mamá. Claro su papá también lo sabe, aunque a veces actúa como si no. Al principio su mamá lo tomó como una calumnia, a lo mejor había escuchado esa palabra en alguna telenovela y decidió usarla.` },
       { index: 1, text: `Darío, como se llamaba el padre y esposo, le dijo que se dejara de tonterías que todo estaba en su mente y que aún estaba tan guapa como aquella noche que la hizo su mujer. Lo cuál le trajo tanta gracia a la doña y, sin duda alguna, placer que fue al closet a buscarse unos aretes y fue directo a la cama.` },
@@ -232,7 +232,7 @@ export const NOCHES_CHAPTERS: Record<string, Chapter> = {
       attribution: "Noches de maya",
     },
     isLocked: false,
-    wordCount: 892,
+    wordCount: 376,
     paragraphs: [
       { index: 0, text: `¿A dónde va Emilio con tanta prisa? Le preguntó un viejo a su compañero de domino. Fumaba un puro y se mojaba los labios con un dedo de caña. No era muy calvo pero el pelo se le estaba adormeciendo. Sin dejar de jugar, su vecino le respondió: -No sé, pero desde que llegó la muchacha cada tarde desaparece.` },
       { index: 1, text: `Odiaba perder, mucho más contra su vecino que nunca paraba de hablar desde aquel día que le ganó por primera vez. De cierta manera era un masoquista, el vecino, todos le ganaban y hasta su mujer se la ganaba en las tardes cuando ella llegaba del trabajo.` },
@@ -257,7 +257,7 @@ export const NOCHES_CHAPTERS: Record<string, Chapter> = {
       attribution: "Noches de maya",
     },
     isLocked: false,
-    wordCount: 22041,
+    wordCount: 22047,
     paragraphs: [
       { index: 0, text: `1
 —¿Qué necesitas? —preguntó. Al otro lado de la pequeña sala estaba una figura,

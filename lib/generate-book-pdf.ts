@@ -122,15 +122,34 @@ function stripHtml(text: string): string {
     .replace(/&nbsp;/g, " ");
 }
 
-// ─── SAFE DRAW ──────────────────────────────────────────────────────────────
+// ─── SAFE DRAW (with mixed-font support) ───────────────────────────────────
+// Splits text into CJK and non-CJK segments and draws each with the right font.
 function safeDraw(
   page: PDFPage,
   text: string,
   opts: { x: number; y: number; size: number; font: PDFFont; color: ReturnType<typeof rgb> },
+  fonts?: Fonts,
 ): void {
   try {
     if (!text.trim()) return;
-    page.drawText(text, opts);
+
+    // If no CJK in text, or no fonts struct, simple draw
+    if (!fonts || !fonts.cjk || !hasCJK(text)) {
+      page.drawText(text, opts);
+      return;
+    }
+
+    // Split into segments: CJK chars vs everything else
+    const segments = text.match(/[\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u303F\uFF00-\uFFEF]+|[^\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u303F\uFF00-\uFFEF]+/g);
+    if (!segments) return;
+
+    let xPos = opts.x;
+    for (const seg of segments) {
+      const isCJK = hasCJK(seg);
+      const segFont = isCJK ? fonts.cjk! : fonts.serif;
+      page.drawText(seg, { ...opts, x: xPos, font: segFont });
+      xPos += segFont.widthOfTextAtSize(seg, opts.size);
+    }
   } catch (e) {
     console.error(`[pdf] drawText failed for: "${text.substring(0, 40)}..."`, e);
   }
@@ -251,7 +270,7 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
     safeDraw(cursor.page, line, {
       x: MARGIN_LEFT + (TEXT_WIDTH - w) / 2, y: cursor.y,
       size: TITLE_PAGE_SIZE, font: titleFont, color: BLACK,
-    });
+    }, fonts);
     cursor.advance(TITLE_PAGE_SIZE + 8);
   }
 
@@ -291,7 +310,7 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
       safeDraw(cursor.page, line, {
         x: MARGIN_LEFT + (TEXT_WIDTH - w) / 2, y: cursor.y,
         size: 12, font: tagFont, color: MUTED,
-      });
+      }, fonts);
       cursor.advance(18);
     }
   }
@@ -326,7 +345,7 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
         safeDraw(cursor.page, line, {
           x: MARGIN_LEFT + (TEXT_WIDTH - w) / 2, y: cursor.y,
           size: CHAPTER_TITLE_SIZE, font: ctFont, color: BLACK,
-        });
+        }, fonts);
         cursor.advance(CHAPTER_TITLE_SIZE + 6);
       }
     }
@@ -344,7 +363,7 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
         safeDraw(cursor.page, line, {
           x: MARGIN_LEFT + (TEXT_WIDTH - w) / 2, y: cursor.y,
           size: 10, font: epFont, color: MUTED,
-        });
+        }, fonts);
         cursor.advance(14);
       }
       if (chapter.epigraph.attribution) {
@@ -355,7 +374,7 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
         safeDraw(cursor.page, attrText, {
           x: MARGIN_LEFT + (TEXT_WIDTH - attrW) / 2, y: cursor.y,
           size: 9, font: attrFont, color: MUTED,
-        });
+        }, fonts);
         cursor.advance(14);
       }
     }
@@ -380,7 +399,7 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
         safeDraw(cursor.page, lines[li], {
           x: MARGIN_LEFT + xOffset, y: cursor.y,
           size: BODY_FONT_SIZE, font: paraFont, color: DARK_BROWN,
-        });
+        }, fonts);
         cursor.advance(BODY_LEADING);
       }
       cursor.advance(4);
@@ -412,7 +431,7 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
     safeDraw(cursor.page, item.text, {
       x: MARGIN_LEFT + (TEXT_WIDTH - w) / 2, y: cursor.y,
       size: item.s, font, color: item.c,
-    });
+    }, fonts);
     cursor.advance(15);
   }
 

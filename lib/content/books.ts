@@ -26,7 +26,7 @@ export const BOOKS: Record<string, Book> = {
     firstChapterSlug: "one",
     chapterLabel: "Chapter",
     totalChapters: 7,
-    wordCount: 25003,
+    wordCount: 25238,
     year: 2024,
   },
   "recoleta": {
@@ -62,7 +62,7 @@ export const BOOKS: Record<string, Book> = {
     firstChapterSlug: "triste-de-cuna",
     chapterLabel: "Historia",
     totalChapters: 9,
-    wordCount: 8400,
+    wordCount: 27862,
     year: 2022,
   },
   "mi-pajaro-del-rio": {
@@ -80,7 +80,7 @@ export const BOOKS: Record<string, Book> = {
     firstChapterSlug: "el-pajaro-viejo",
     chapterLabel: "Carta",
     totalChapters: 8,
-    wordCount: 3200,
+    wordCount: 2815,
     year: 2017,
   },
 };
