@@ -12,15 +12,6 @@ const nextConfig = {
     "/api/admin/digital-purchases": ["./public/fonts/**/*"],
     "/api/webhooks/stripe": ["./public/fonts/**/*"],
   },
-  async redirects() {
-    return [
-      {
-        source: "/writers/:slug",
-        destination: "/library",
-        permanent: false,
-      },
-    ];
-  },
 };
 
 module.exports = nextConfig;
