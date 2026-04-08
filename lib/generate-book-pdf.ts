@@ -301,11 +301,6 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
 
   // ── CHAPTERS ────────────────────────────────────────────────────────────
   for (const chapter of chapters) {
-    // Skip chapters with placeholder/missing content
-    const hasRealContent = chapter.paragraphs.length > 1 ||
-      (chapter.paragraphs.length === 1 && !chapter.paragraphs[0].text.includes("Content available to subscribers"));
-    if (!hasRealContent) continue;
-
     cursor.newPage();
 
     // Chapter label
