@@ -345,8 +345,8 @@ export async function generateBookPdf(bookSlug: string): Promise<Buffer | null> 
       }
     }
 
-    // Epigraph
-    if (chapter.epigraph) {
+    // Epigraph (skip if text matches book title — avoids redundant display)
+    if (chapter.epigraph && stripHtml(chapter.epigraph.text) !== book.title) {
       cursor.advance(8);
       const epRaw = stripHtml(chapter.epigraph.text);
       const epFont = fontFor(epRaw, fonts, fonts.serifItalic);
