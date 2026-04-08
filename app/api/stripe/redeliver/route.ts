@@ -38,8 +38,10 @@ export async function POST(req: NextRequest) {
     } else {
       return NextResponse.json({ error: result.error }, { status: 500 });
     }
-  } catch (err) {
-    console.error("[redeliver]", err);
-    return NextResponse.json({ error: "Re-delivery failed." }, { status: 500 });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    const stack = err instanceof Error ? err.stack?.split("\n").slice(0, 5).join("\n") : "";
+    console.error("[redeliver]", msg, stack);
+    return NextResponse.json({ error: "Re-delivery failed.", detail: msg }, { status: 500 });
   }
 }
