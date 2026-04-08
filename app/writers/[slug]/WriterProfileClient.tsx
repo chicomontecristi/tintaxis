@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import type { FeaturedWriter, FeaturedWork } from "@/lib/featured-writers";
+import type { FeaturedWriter } from "@/lib/featured-writers";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
 import SubscriptionModal from "@/components/ui/SubscriptionModal";
 import type { SubscriptionTierName } from "@/components/ui/SubscriptionModal";
@@ -399,7 +399,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
           )}
         </motion.div>
 
-        {/* ── Works ────────────────────────────────────────────── */}
+        {/* ── Available Titles ──────────────────────────────────── */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -413,12 +413,62 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
             textTransform: "uppercase",
             marginBottom: "1.5rem",
           }}>
-            Works
+            Available Titles
           </p>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             {writer.works.map((work, i) => (
-              <WorkCard key={i} work={work} index={i} />
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.65 + i * 0.08, duration: 0.5 }}
+                style={{ display: "flex", alignItems: "baseline", gap: "0.75rem" }}
+              >
+                {work.href && !work.comingSoon ? (
+                  <Link href={work.href} style={{ textDecoration: "none", display: "flex", alignItems: "baseline", gap: "0.75rem" }}>
+                    <p style={{
+                      fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                      fontSize: "1.1rem",
+                      fontStyle: "italic",
+                      color: "rgba(245,230,200,0.85)",
+                      lineHeight: 1.2,
+                    }}>
+                      {work.title}
+                    </p>
+                    <span style={{
+                      fontFamily: '"JetBrains Mono", monospace',
+                      fontSize: "0.75rem",
+                      letterSpacing: "0.15em",
+                      color: "#C9A84C",
+                      textTransform: "uppercase",
+                    }}>
+                      Read →
+                    </span>
+                  </Link>
+                ) : (
+                  <>
+                    <p style={{
+                      fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                      fontSize: "1.1rem",
+                      fontStyle: "italic",
+                      color: "rgba(245,230,200,0.4)",
+                      lineHeight: 1.2,
+                    }}>
+                      {work.title}
+                    </p>
+                    <span style={{
+                      fontFamily: '"JetBrains Mono", monospace',
+                      fontSize: "0.75rem",
+                      letterSpacing: "0.15em",
+                      color: "rgba(201,168,76,0.2)",
+                      textTransform: "uppercase",
+                    }}>
+                      Soon
+                    </span>
+                  </>
+                )}
+              </motion.div>
             ))}
           </div>
         </motion.div>
@@ -438,130 +488,3 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
   );
 }
 
-// ─── WORK CARD ────────────────────────────────────────────────────────────────
-
-function WorkCard({ work, index }: { work: FeaturedWork; index: number }) {
-  const isLive = !!work.href && !work.comingSoon;
-
-  const content = (
-    <motion.div
-      style={{
-        padding: "1.25rem 1.5rem",
-        border: isLive
-          ? "1px solid rgba(201,168,76,0.22)"
-          : "1px solid rgba(201,168,76,0.1)",
-        background: isLive ? "rgba(201,168,76,0.03)" : "rgba(13,11,8,0.5)",
-        display: "flex",
-        gap: "1.25rem",
-        alignItems: "flex-start",
-        cursor: isLive ? "pointer" : "default",
-        position: "relative",
-      }}
-      initial={{ opacity: 0, x: -8 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.65 + index * 0.08, duration: 0.5 }}
-      whileHover={isLive ? { borderColor: "rgba(201,168,76,0.4)", background: "rgba(201,168,76,0.06)" } : {}}
-    >
-      {/* Language badge */}
-      {work.language && (
-        <div style={{
-          flexShrink: 0,
-          width: "32px",
-          height: "32px",
-          border: "1px solid rgba(201,168,76,0.15)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: "2px",
-        }}>
-          <span style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.75rem",
-            letterSpacing: "0.05em",
-            color: "rgba(201,168,76,0.4)",
-          }}>
-            {work.language}
-          </span>
-        </div>
-      )}
-
-      {/* Text */}
-      <div style={{ flex: 1 }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: "0.75rem", marginBottom: "0.25rem", flexWrap: "wrap" }}>
-          <p style={{
-            fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-            fontSize: "1.1rem",
-            fontStyle: "italic",
-            color: isLive ? "rgba(245,230,200,0.85)" : "rgba(245,230,200,0.4)",
-            lineHeight: 1.2,
-          }}>
-            {work.title}
-          </p>
-          {work.subtitle && (
-            <p style={{
-              fontFamily: '"JetBrains Mono", monospace',
-              fontSize: "0.75rem",
-              letterSpacing: "0.1em",
-              color: isLive ? "rgba(201,168,76,0.4)" : "rgba(201,168,76,0.2)",
-              textTransform: "uppercase",
-            }}>
-              {work.subtitle}
-            </p>
-          )}
-        </div>
-
-        {work.wordCount && (
-          <p style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.75rem",
-            letterSpacing: "0.08em",
-            color: "rgba(201,168,76,0.25)",
-            marginBottom: "0.5rem",
-          }}>
-            {work.wordCount}
-          </p>
-        )}
-
-        <p style={{
-          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-          fontSize: "0.9rem",
-          fontStyle: "italic",
-          color: isLive ? "rgba(245,230,200,0.55)" : "rgba(245,230,200,0.25)",
-          lineHeight: 1.6,
-        }}>
-          {work.description}
-        </p>
-      </div>
-
-      {/* Status badge */}
-      <div style={{ flexShrink: 0, alignSelf: "center" }}>
-        {isLive ? (
-          <span style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.75rem",
-            letterSpacing: "0.15em",
-            color: "#C9A84C",
-            textTransform: "uppercase",
-          }}>
-            Read →
-          </span>
-        ) : (
-          <span style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.75rem",
-            letterSpacing: "0.15em",
-            color: "rgba(201,168,76,0.2)",
-            textTransform: "uppercase",
-          }}>
-            ⚿ Soon
-          </span>
-        )}
-      </div>
-    </motion.div>
-  );
-
-  if (isLive && work.href) {
-    return <Link href={work.href} style={{ textDecoration: "none" }}>{content}</Link>;
-  }
-  return content;
-}
