@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useMemo, FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
 import { BOOKS, getBookChaptersOrdered } from "@/lib/content/books";
+import { useI18n } from "@/lib/i18n";
 
 // ─── TYPES ─────────────────────────────────────────────────────────────────────
 interface SignalQuestion {
@@ -143,6 +144,7 @@ function SectionHeader({ label }: { label: string }) {
 
 // ─── SIGNAL QUESTION CARD ──────────────────────────────────────────────────────
 function SignalCard({ signal, onReply }: { signal: SignalQuestion; onReply: (id: string, reply: string) => void }) {
+  const { t } = useI18n();
   const [composing, setComposing] = useState(false);
   const [replyText, setReplyText] = useState(signal.reply ?? "");
 
@@ -199,7 +201,7 @@ function SignalCard({ signal, onReply }: { signal: SignalQuestion; onReply: (id:
             textTransform: "uppercase",
           }}
         >
-          {signal.answered ? "✓ REPLIED" : "OPEN"}
+          {signal.answered ? t("studio.signals.status.replied") : t("studio.signals.status.open")}
         </span>
       </div>
 
@@ -250,7 +252,7 @@ function SignalCard({ signal, onReply }: { signal: SignalQuestion; onReply: (id:
               marginBottom: "0.35rem",
             }}
           >
-            Your reply
+            {t("studio.signals.yourReply")}
           </p>
           <p
             style={{
@@ -282,7 +284,7 @@ function SignalCard({ signal, onReply }: { signal: SignalQuestion; onReply: (id:
               onChange={(e) => setReplyText(e.target.value)}
               autoFocus
               rows={3}
-              placeholder="Write your reply…"
+              placeholder={t("studio.signals.writeReply")}
               style={{
                 width: "100%",
                 background: "rgba(255,255,255,0.03)",
@@ -314,7 +316,7 @@ function SignalCard({ signal, onReply }: { signal: SignalQuestion; onReply: (id:
                   cursor: "pointer",
                 }}
               >
-                Send Reply
+                {t("studio.signals.send")}
               </motion.button>
               <button
                 type="button"
@@ -331,7 +333,7 @@ function SignalCard({ signal, onReply }: { signal: SignalQuestion; onReply: (id:
                   padding: "0.5rem",
                 }}
               >
-                Cancel
+                {t("studio.signals.cancel")}
               </button>
             </div>
           </motion.form>
@@ -355,7 +357,7 @@ function SignalCard({ signal, onReply }: { signal: SignalQuestion; onReply: (id:
               padding: 0,
             }}
           >
-            {signal.answered ? "Edit reply →" : "Reply →"}
+            {signal.answered ? t("studio.signals.edit") : t("studio.signals.reply")}
           </button>
         </div>
       )}
@@ -375,6 +377,7 @@ interface LiveStats {
 }
 
 export default function AuthorDashboard() {
+  const { t } = useI18n();
   const [activeTab, setActiveTab] = useState<DashTab>("signals");
   const [selectedBookSlug, setSelectedBookSlug] = useState("the-hunt");
   const [signals, setSignals] = useState<SignalQuestion[]>([]);
@@ -727,11 +730,11 @@ export default function AuthorDashboard() {
   };
 
   const TABS: { id: DashTab; label: string; badge?: number }[] = [
-    { id: "signals",   label: "SIGNALS",   badge: openSignals.length || undefined },
-    { id: "whispers",  label: "WHISPERS" },
-    { id: "chapters",  label: "CHAPTERS" },
-    { id: "voiceover", label: "VOICE" },
-    { id: "analytics", label: "ANALYTICS" },
+    { id: "signals",   label: t("studio.tabs.signals"),   badge: openSignals.length || undefined },
+    { id: "whispers",  label: t("studio.tabs.whispers") },
+    { id: "chapters",  label: t("studio.tabs.chapters") },
+    { id: "voiceover", label: t("studio.tabs.voice") },
+    { id: "analytics", label: t("studio.tabs.analytics") },
   ];
 
   const inputStyle: React.CSSProperties = {
@@ -843,7 +846,7 @@ export default function AuthorDashboard() {
               marginBottom: "0.25rem",
             }}
           >
-            ACTIVE WORK
+            {t("studio.activeWork")}
           </p>
           <h1
             style={{
@@ -883,11 +886,11 @@ export default function AuthorDashboard() {
         >
           {[
             {
-              label: "Active Readers",
+              label: t("studio.stats.activeReaders"),
               value: statsLoading ? "—" : String(stats?.readers.active ?? 0),
             },
             {
-              label: "Revenue (USD)",
+              label: t("studio.stats.revenue"),
               value: statsLoading
                 ? "—"
                 : stats
@@ -895,8 +898,8 @@ export default function AuthorDashboard() {
                     .toFixed(0))}`
                 : "$0",
             },
-            { label: "Open Signals", value: String(openSignals.length) },
-            { label: "Whispers", value: String(whispers.length) },
+            { label: t("studio.stats.openSignals"), value: String(openSignals.length) },
+            { label: t("studio.stats.whispers"), value: String(whispers.length) },
           ].map((stat, i) => (
             <div
               key={i}
@@ -996,7 +999,7 @@ export default function AuthorDashboard() {
             >
               {openSignals.length > 0 && (
                 <>
-                  <SectionHeader label={`Open · ${openSignals.length}`} />
+                  <SectionHeader label={t("studio.signals.open", { count: openSignals.length })} />
                   {openSignals.map((s) => (
                     <SignalCard key={s.id} signal={s} onReply={handleReply} />
                   ))}
@@ -1006,7 +1009,7 @@ export default function AuthorDashboard() {
 
               {answeredSignals.length > 0 && (
                 <>
-                  <SectionHeader label={`Replied · ${answeredSignals.length}`} />
+                  <SectionHeader label={t("studio.signals.replied", { count: answeredSignals.length })} />
                   {answeredSignals.map((s) => (
                     <SignalCard key={s.id} signal={s} onReply={handleReply} />
                   ))}
@@ -1024,7 +1027,7 @@ export default function AuthorDashboard() {
                     paddingTop: "3rem",
                   }}
                 >
-                  No signal questions yet. They arrive as readers engage.
+                  {t("studio.signals.empty")}
                 </p>
               )}
             </motion.div>
@@ -1048,10 +1051,10 @@ export default function AuthorDashboard() {
                   position: "relative",
                 }}
               >
-                <SectionHeader label="New Whisper" />
+                <SectionHeader label={t("studio.whispers.new")} />
                 <form onSubmit={handleAddWhisper}>
                   <div style={{ marginBottom: "1rem" }}>
-                    <label style={labelStyle}>Chapter</label>
+                    <label style={labelStyle}>{t("studio.whispers.chapter")}</label>
                     <select
                       value={whisperForm.chapterSlug}
                       onChange={(e) => setWhisperForm((p) => ({ ...p, chapterSlug: e.target.value }))}
@@ -1065,24 +1068,24 @@ export default function AuthorDashboard() {
                     </select>
                   </div>
                   <div style={{ marginBottom: "1rem" }}>
-                    <label style={labelStyle}>Anchor — paste the exact phrase from the text</label>
+                    <label style={labelStyle}>{t("studio.whispers.anchor")}</label>
                     <input
                       type="text"
                       value={whisperForm.anchorText}
                       onChange={(e) => setWhisperForm((p) => ({ ...p, anchorText: e.target.value }))}
-                      placeholder="e.g. the sunlight pierced through the windows"
+                      placeholder={t("studio.whispers.anchorPlaceholder")}
                       style={inputStyle}
                       onFocus={(e) => (e.target.style.borderColor = "rgba(201,168,76,0.4)")}
                       onBlur={(e) => (e.target.style.borderColor = "rgba(201,168,76,0.15)")}
                     />
                   </div>
                   <div style={{ marginBottom: "1.25rem" }}>
-                    <label style={labelStyle}>Whisper</label>
+                    <label style={labelStyle}>{t("studio.whispers.label")}</label>
                     <textarea
                       value={whisperForm.whisper}
                       onChange={(e) => setWhisperForm((p) => ({ ...p, whisper: e.target.value }))}
                       rows={3}
-                      placeholder="What do you want verified readers to know about this passage?"
+                      placeholder={t("studio.whispers.placeholder")}
                       style={{ ...inputStyle, resize: "vertical", lineHeight: 1.65,
                         fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "0.95rem" }}
                       onFocus={(e) => (e.target.style.borderColor = "rgba(201,168,76,0.4)")}
@@ -1105,13 +1108,13 @@ export default function AuthorDashboard() {
                       cursor: "pointer",
                     }}
                   >
-                    {whisperStatus === "saved" ? "✓ SAVED" : "ADD WHISPER"}
+                    {whisperStatus === "saved" ? t("studio.whispers.saved") : t("studio.whispers.add")}
                   </motion.button>
                 </form>
               </div>
 
               {/* Existing whispers */}
-              <SectionHeader label={`Placed · ${whispers.length}`} />
+              <SectionHeader label={t("studio.whispers.placed", { count: whispers.length })} />
               {whispers.length === 0 && (
                 <p
                   style={{
@@ -1123,7 +1126,7 @@ export default function AuthorDashboard() {
                     paddingTop: "2rem",
                   }}
                 >
-                  No whispers placed yet. Add one above.
+                  {t("studio.whispers.empty")}
                 </p>
               )}
               {whispers.map((w) => (
@@ -1214,7 +1217,7 @@ export default function AuthorDashboard() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
             >
-              <SectionHeader label="Chapter Index" />
+              <SectionHeader label={t("studio.chapters.index")} />
               <div
                 style={{
                   border: "1px solid rgba(201,168,76,0.1)",
@@ -1263,7 +1266,7 @@ export default function AuthorDashboard() {
                           letterSpacing: "0.1em",
                         }}
                       >
-                        {ch.wordCount.toLocaleString()} words
+                        {ch.wordCount.toLocaleString()} {t("studio.chapters.words")}
                       </p>
                     </div>
                     <span
@@ -1276,7 +1279,7 @@ export default function AuthorDashboard() {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {ch.isLocked ? "⚿ LOCKED" : "◉ LIVE"}
+                      {ch.isLocked ? t("studio.chapters.locked") : t("studio.chapters.live")}
                     </span>
                     <span
                       style={{
@@ -1286,7 +1289,7 @@ export default function AuthorDashboard() {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {ch.reads > 0 ? `${ch.reads} reads` : "—"}
+                      {ch.reads > 0 ? t("studio.chapters.reads", { count: ch.reads }) : "—"}
                     </span>
                     <span style={{ display: "flex", alignItems: "center", gap: "0.5rem", whiteSpace: "nowrap" }}>
                       {ch.avgDepth > 0 && <DepthBar value={ch.avgDepth} />}
@@ -1314,7 +1317,7 @@ export default function AuthorDashboard() {
                   marginTop: "1rem",
                 }}
               >
-                To unlock a chapter — contact Tintaxis or update chapters.ts directly
+                {t("studio.chapters.unlockInfo")}
               </p>
             </motion.div>
           )}
@@ -1328,7 +1331,7 @@ export default function AuthorDashboard() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
             >
-              <SectionHeader label="Chapter Voice-Overs" />
+              <SectionHeader label={t("studio.voiceovers.heading")} />
 
               <p
                 style={{
@@ -1341,8 +1344,7 @@ export default function AuthorDashboard() {
                   maxWidth: "56ch",
                 }}
               >
-                Record or upload your voice reading the opening of each chapter.
-                Readers hear you first — then choose an AI narrator for the rest.
+                {t("studio.voiceovers.description")}
               </p>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
@@ -1394,7 +1396,7 @@ export default function AuthorDashboard() {
                             textTransform: "uppercase",
                           }}
                         >
-                          {hasAudio ? "✓ UPLOADED" : "NO AUDIO"}
+                          {hasAudio ? t("studio.voiceovers.uploaded") : t("studio.voiceovers.noAudio")}
                         </span>
                       </div>
 
@@ -1427,7 +1429,7 @@ export default function AuthorDashboard() {
                               padding: "0.2rem 0",
                             }}
                           >
-                            {deletingChapter === ch.slug ? "Deleting…" : "Delete Recording"}
+                            {deletingChapter === ch.slug ? t("studio.voiceovers.deleting") : t("studio.voiceovers.delete")}
                           </button>
                         </div>
                       )}
@@ -1445,7 +1447,7 @@ export default function AuthorDashboard() {
                               marginBottom: "0.4rem",
                             }}
                           >
-                            Preview Recording
+                            {t("studio.voiceovers.preview")}
                           </p>
                           <audio
                             src={voiceoverPreview}
@@ -1474,7 +1476,7 @@ export default function AuthorDashboard() {
                                 cursor: isUploading ? "wait" : "pointer",
                               }}
                             >
-                              {isUploading ? "Saving…" : "Save & Upload"}
+                              {isUploading ? t("studio.voiceovers.saving") : t("studio.voiceovers.saveUpload")}
                             </button>
                             <button
                               onClick={() => {
@@ -1495,7 +1497,7 @@ export default function AuthorDashboard() {
                                 padding: "0.4rem 0.5rem",
                               }}
                             >
-                              Discard
+                              {t("studio.voiceovers.discard")}
                             </button>
                           </div>
                         </div>
@@ -1549,7 +1551,7 @@ export default function AuthorDashboard() {
                               opacity: recordingChapter && !isRecording ? 0.3 : 1,
                             }}
                           >
-                            ● Record
+                            ● {t("studio.voiceovers.record")}
                           </button>
                         )}
 
@@ -1569,7 +1571,7 @@ export default function AuthorDashboard() {
                             opacity: isUploading ? 0.5 : 1,
                           }}
                         >
-                          {isUploading ? "Uploading…" : "↑ Upload File"}
+                          {isUploading ? t("studio.voiceovers.uploading") : t("studio.voiceovers.uploadFile")}
                           <input
                             type="file"
                             accept="audio/mpeg,audio/mp3,audio/mp4,audio/m4a,audio/wav,audio/webm,.mp3,.m4a,.wav,.webm"
@@ -1592,8 +1594,8 @@ export default function AuthorDashboard() {
                           }}
                         >
                           {hasAudio
-                            ? "Recording or uploading will replace the current file"
-                            : "mp3 · m4a · wav · webm — max 10 MB"}
+                            ? t("studio.voiceovers.replaceHint")
+                            : t("studio.voiceovers.formatHint")}
                         </span>
                       </div>
                     </div>
@@ -1613,8 +1615,7 @@ export default function AuthorDashboard() {
                   maxWidth: "52ch",
                 }}
               >
-                Tip: Read the first page of each chapter — roughly 2–3 minutes. Speak naturally.
-                Your voice creates the first impression; the AI narrator carries the rest.
+                {t("studio.voiceovers.tip")}
               </p>
             </motion.div>
           )}
@@ -1628,7 +1629,7 @@ export default function AuthorDashboard() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
             >
-              <SectionHeader label="Reading Intelligence" />
+              <SectionHeader label={t("studio.analytics.heading")} />
 
               {/* Depth visualization */}
               <div
@@ -1648,7 +1649,7 @@ export default function AuthorDashboard() {
                     marginBottom: "1.5rem",
                   }}
                 >
-                  Chapter One — Paragraph Depth Map
+                  {t("studio.analytics.depthMap")}
                 </p>
 
                 {/* Simulated depth bars for Ch. 1 */}
@@ -1677,7 +1678,7 @@ export default function AuthorDashboard() {
                       color: "rgba(245,230,200,0.2)",
                     }}
                   >
-                    PARAGRAPH 1
+                    {t("studio.analytics.paragraph1")}
                   </span>
                   <span
                     style={{
@@ -1686,7 +1687,7 @@ export default function AuthorDashboard() {
                       color: "rgba(245,230,200,0.2)",
                     }}
                   >
-                    PARAGRAPH 50
+                    {t("studio.analytics.paragraph50")}
                   </span>
                 </div>
 
@@ -1699,8 +1700,7 @@ export default function AuthorDashboard() {
                     marginTop: "1rem",
                   }}
                 >
-                  Readers sustain deep engagement through paragraph 28 before attrition accelerates.
-                  The cliff occurs at the description of Bryant's arrival — a natural chapter climax.
+                  {t("studio.analytics.attrition")}
                 </p>
               </div>
 
@@ -1714,9 +1714,9 @@ export default function AuthorDashboard() {
                 }}
               >
                 {[
-                  { label: "Avg. Read Time", value: "14 min", sub: "Chapter One" },
-                  { label: "Completion Rate", value: "61%", sub: "reach final paragraph" },
-                  { label: "Return Rate", value: "38%", sub: "opened more than once" },
+                  { label: t("studio.analytics.avgReadTime"), value: "14 min", sub: t("studio.analytics.chapterOne") },
+                  { label: t("studio.analytics.completionRate"), value: "61%", sub: t("studio.analytics.reachFinal") },
+                  { label: t("studio.analytics.returnRate"), value: "38%", sub: t("studio.analytics.openedMoreThanOnce") },
                 ].map((s, i) => (
                   <div
                     key={i}
@@ -1785,7 +1785,7 @@ export default function AuthorDashboard() {
                       textTransform: "uppercase",
                     }}
                   >
-                    Readers by Tier
+                    {t("studio.analytics.readersByTier")}
                   </p>
                 </div>
 
@@ -1794,10 +1794,10 @@ export default function AuthorDashboard() {
                   const total = stats?.readers.active ?? 0;
                   const pct   = total > 0 ? Math.round((count / total) * 100) : 0;
                   const tierLabels: Record<string, string> = {
-                    codex:       "Codex",
-                    scribe:      "Scribe",
-                    archive:     "Archive",
-                    chronicler:  "Chronicler",
+                    codex:       t("studio.analytics.tier.codex"),
+                    scribe:      t("studio.analytics.tier.scribe"),
+                    archive:     t("studio.analytics.tier.archive"),
+                    chronicler:  t("studio.analytics.tier.chronicler"),
                   };
                   return (
                     <div
@@ -1890,7 +1890,7 @@ export default function AuthorDashboard() {
                       textTransform: "uppercase",
                     }}
                   >
-                    Total active
+                    {t("studio.analytics.totalActive")}
                   </p>
                   <p
                     style={{
@@ -1915,7 +1915,7 @@ export default function AuthorDashboard() {
                   marginTop: "1rem",
                 }}
               >
-                Live analytics · Chapters 2–7 unlock when published
+                {t("studio.analytics.footer")}
               </p>
             </motion.div>
           )}

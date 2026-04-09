@@ -320,7 +320,7 @@ export default function LivingPage() {
               animate={{ opacity: 1 }}
               transition={{ delay: 1.8, duration: 0.6 }}
             >
-              No login required
+              {t("exp.noLogin")}
             </motion.p>
           </motion.div>
         ) : (
@@ -445,7 +445,7 @@ export default function LivingPage() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.8 }}
             >
-              {READER_COUNT} readers have passed through this chapter
+              {READER_COUNT} {t("exp.passedThrough")}
             </motion.p>
 
             {/* ── The living text ───────────────────────────── */}
@@ -486,7 +486,7 @@ export default function LivingPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6 }}
                 >
-                  This is how books should feel.
+                  {t("exp.shouldFeel")}
                 </motion.p>
 
                 <motion.p
@@ -503,7 +503,7 @@ export default function LivingPage() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.2, duration: 0.6 }}
                 >
-                  Choose where to begin
+                  {t("exp.chooseBegin")}
                 </motion.p>
 
                 {/* ── Book chooser grid ──────────────────────── */}
@@ -577,7 +577,7 @@ export default function LivingPage() {
                       textTransform: "uppercase",
                     }}
                   >
-                    Browse the full library →
+                    {t("exp.browseLibrary")}
                   </Link>
                   <Link
                     href="/"
@@ -590,7 +590,7 @@ export default function LivingPage() {
                       textTransform: "uppercase",
                     }}
                   >
-                    What is Tintaxis?
+                    {t("exp.whatIs")}
                   </Link>
                 </motion.div>
               </div>
@@ -618,7 +618,7 @@ export default function LivingPage() {
                     marginBottom: "0.75rem",
                   }}
                 >
-                  WHERE YOUR MONEY GOES
+                  {t("exp.moneyGoes")}
                 </p>
                 <h3
                   style={{
@@ -630,7 +630,7 @@ export default function LivingPage() {
                     marginBottom: "0.5rem",
                   }}
                 >
-                  You pay the writer. Not us.
+                  {t("exp.payWriter")}
                 </h3>
                 <p
                   style={{
@@ -643,19 +643,19 @@ export default function LivingPage() {
                     margin: "0 auto 2rem",
                   }}
                 >
-                  When you subscribe to a writer on Tintaxis, this is exactly where every dollar of your subscription goes — no hidden fees, no surprises.
+                  {t("exp.moneyGoesDesc")}
                 </p>
 
                 {/* Per-tier cards with visual bars */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginBottom: "1.5rem" }}>
                   {[
-                    { tier: "Codex", price: 1.99, writerCut: 1.39, platformCut: 0.24, stripeFee: 0.36, what: "Full chapter access, annotations, and four ink types." },
-                    { tier: "Scribe", price: 3.99, writerCut: 3.03, platformCut: 0.54, stripeFee: 0.42, what: "Ask the author questions directly. See their margin whispers." },
-                    { tier: "Archive", price: 7.99, writerCut: 6.34, platformCut: 1.12, stripeFee: 0.53, what: "Join the community margin. See how every reader annotates." },
-                    { tier: "Chronicler", price: 9.99, writerCut: 7.99, platformCut: 1.41, stripeFee: 0.59, what: "Signed copy, your name in the dedication, private reading session." },
-                  ].map((t, i) => (
+                    { tier: "Codex", price: 1.99, writerCut: 1.39, platformCut: 0.24, stripeFee: 0.36, what: t("exp.tierCodex") },
+                    { tier: "Scribe", price: 3.99, writerCut: 3.03, platformCut: 0.54, stripeFee: 0.42, what: t("exp.tierScribe") },
+                    { tier: "Archive", price: 7.99, writerCut: 6.34, platformCut: 1.12, stripeFee: 0.53, what: t("exp.tierArchive") },
+                    { tier: "Chronicler", price: 9.99, writerCut: 7.99, platformCut: 1.41, stripeFee: 0.59, what: t("exp.tierChronicler") },
+                  ].map((tier, i) => (
                     <motion.div
-                      key={t.tier}
+                      key={tier.tier}
                       initial={{ opacity: 0, x: -12 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
@@ -669,10 +669,10 @@ export default function LivingPage() {
                       {/* Tier header */}
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "0.35rem" }}>
                         <p style={{ fontFamily: MONO, fontSize: "0.75rem", letterSpacing: "0.2em", color: "rgba(201,168,76,0.5)", textTransform: "uppercase" }}>
-                          {t.tier} · ${t.price.toFixed(2)}/mo
+                          {tier.tier} · ${tier.price.toFixed(2)}/mo
                         </p>
                         <p style={{ fontFamily: SERIF, fontSize: "0.9rem", fontStyle: "italic", color: "rgba(245,230,200,0.3)" }}>
-                          {t.what}
+                          {tier.what}
                         </p>
                       </div>
 
@@ -686,7 +686,7 @@ export default function LivingPage() {
                         display: "flex",
                       }}>
                         <div style={{
-                          width: `${(t.writerCut / t.price * 100).toFixed(1)}%`,
+                          width: `${(tier.writerCut / tier.price * 100).toFixed(1)}%`,
                           background: "linear-gradient(90deg, rgba(0,229,204,0.12), rgba(0,229,204,0.22))",
                           borderRight: "1px solid rgba(0,229,204,0.35)",
                           display: "flex",
@@ -694,21 +694,21 @@ export default function LivingPage() {
                           paddingLeft: "0.5rem",
                         }}>
                           <span style={{ fontFamily: MONO, fontSize: "0.75rem", color: "rgba(0,229,204,0.85)", letterSpacing: "0.05em", whiteSpace: "nowrap" }}>
-                            ${t.writerCut.toFixed(2)} → writer
+                            ${tier.writerCut.toFixed(2)} → {t("exp.writer")}
                           </span>
                         </div>
                         <div style={{
-                          width: `${(t.platformCut / t.price * 100).toFixed(1)}%`,
+                          width: `${(tier.platformCut / tier.price * 100).toFixed(1)}%`,
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                         }}>
                           <span style={{ fontFamily: MONO, fontSize: "0.65rem", color: "rgba(245,230,200,0.2)", whiteSpace: "nowrap" }}>
-                            ${t.platformCut.toFixed(2)}
+                            ${tier.platformCut.toFixed(2)}
                           </span>
                         </div>
                         <div style={{
-                          width: `${(t.stripeFee / t.price * 100).toFixed(1)}%`,
+                          width: `${(tier.stripeFee / tier.price * 100).toFixed(1)}%`,
                           background: "rgba(255,255,255,0.03)",
                           borderLeft: "1px solid rgba(245,230,200,0.06)",
                           display: "flex",
@@ -738,9 +738,8 @@ export default function LivingPage() {
                     lineHeight: 1.7,
                   }}
                 >
-                  <span style={{ color: "rgba(0,229,204,0.7)", fontWeight: 500 }}>85%</span> of your subscription goes directly to the writer you chose.
-                  Tintaxis keeps <span style={{ color: "rgba(245,230,200,0.5)" }}>15%</span> to keep the platform running.
-                  No ads. No data harvesting. No middlemen. Your money is a direct line to the person who wrote the words you just read.
+                  <span style={{ color: "rgba(0,229,204,0.7)", fontWeight: 500 }}>85%</span> {t("exp.closingSplit1")}
+                  <span style={{ color: "rgba(245,230,200,0.5)" }}>15%</span> {t("exp.closingSplit2")}
                 </motion.p>
               </motion.div>
             </div>

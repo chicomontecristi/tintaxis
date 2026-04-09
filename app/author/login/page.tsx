@@ -4,8 +4,10 @@ import { useState, FormEvent } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
+import { useI18n } from "@/lib/i18n";
 
 export default function AuthorLogin() {
+  const { t } = useI18n();
   const router = useRouter();
   const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
@@ -117,7 +119,7 @@ export default function AuthorLogin() {
               fontStyle: "italic",
               color: "rgba(245,230,200,0.6)",
             }}>
-              Author Studio
+              {t("aLogin.title")}
             </p>
           </div>
 
@@ -140,7 +142,7 @@ export default function AuthorLogin() {
                 display: "block",
                 marginBottom: "0.4rem",
               }}>
-                Email
+                {t("aLogin.email")}
               </label>
               <input
                 type="email"
@@ -175,7 +177,7 @@ export default function AuthorLogin() {
                 display: "block",
                 marginBottom: "0.4rem",
               }}>
-                Password
+                {t("aLogin.password")}
               </label>
               <input
                 type="password"
@@ -240,7 +242,7 @@ export default function AuthorLogin() {
               } : {}}
               whileTap={status !== "loading" ? { scale: 0.98 } : {}}
             >
-              {status === "loading" ? "ENTERING..." : "ENTER THE STUDIO"}
+              {status === "loading" ? t("aLogin.entering") : t("aLogin.enter")}
             </motion.button>
 
             {/* Forgot password */}
@@ -260,7 +262,7 @@ export default function AuthorLogin() {
                     textTransform: "uppercase",
                   }}
                 >
-                  Forgot password?
+                  {t("aLogin.forgot")}
                 </button>
               </p>
             )}
@@ -279,7 +281,7 @@ export default function AuthorLogin() {
                   color: "rgba(245,230,200,0.4)",
                   marginBottom: "0.75rem",
                 }}>
-                  Enter your email above, then:
+                  {t("aLogin.enterEmail")}
                 </p>
                 <motion.button
                   type="button"
@@ -298,7 +300,7 @@ export default function AuthorLogin() {
                   }}
                   whileHover={{ borderColor: "rgba(201,168,76,0.5)" }}
                 >
-                  {resetStatus === "sending" ? "Sending…" : "Send Reset Link"}
+                  {resetStatus === "sending" ? t("aLogin.sending") : t("aLogin.sendReset")}
                 </motion.button>
                 <p style={{ marginTop: "0.5rem" }}>
                   <button
@@ -313,7 +315,7 @@ export default function AuthorLogin() {
                       cursor: "pointer",
                     }}
                   >
-                    Back to login
+                    {t("aLogin.backToLogin")}
                   </button>
                 </p>
               </motion.div>
@@ -333,7 +335,7 @@ export default function AuthorLogin() {
                   marginTop: "1rem",
                 }}
               >
-                Reset link sent. Check your inbox.
+                {t("aLogin.resetSent")}
               </motion.p>
             )}
           </form>
@@ -349,7 +351,7 @@ export default function AuthorLogin() {
             textDecoration: "none",
             textTransform: "uppercase",
           }}>
-            ← Return to Archive
+            {t("aLogin.returnToArchive")}
           </a>
         </p>
       </motion.div>

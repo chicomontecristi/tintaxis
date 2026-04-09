@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
+import { useI18n } from "@/lib/i18n";
 
 // ─── READER SIGN IN ───────────────────────────────────────────────────────────
 
@@ -18,6 +19,7 @@ export default function ReaderLoginPage() {
 }
 
 function ReaderLoginInner() {
+  const { t } = useI18n();
   const router      = useRouter();
   const searchParams = useSearchParams();
   const returnTo    = searchParams.get("from") ?? "/";
@@ -123,7 +125,7 @@ function ReaderLoginInner() {
           textTransform: "uppercase",
           marginBottom:  "0.75rem",
         }}>
-          Archive Entry
+          {t("rLogin.archiveEntry")}
         </p>
         <h1 style={{
           fontFamily:   '"EB Garamond", Garamond, Georgia, serif',
@@ -133,7 +135,7 @@ function ReaderLoginInner() {
           lineHeight:   1.15,
           marginBottom: "0.5rem",
         }}>
-          Enter the Archive
+          {t("rLogin.title")}
         </h1>
         <p style={{
           fontFamily:   '"EB Garamond", Garamond, Georgia, serif',
@@ -143,7 +145,7 @@ function ReaderLoginInner() {
           marginBottom: "2rem",
           lineHeight:   1.6,
         }}>
-          Your annotations are waiting.
+          {t("rLogin.subtitle")}
         </p>
 
         <div style={{ height: "1px", background: "rgba(201,168,76,0.1)", marginBottom: "2rem" }} />
@@ -151,7 +153,7 @@ function ReaderLoginInner() {
         {/* Form */}
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: "1.25rem" }}>
-            <label style={labelStyle}>Email</label>
+            <label style={labelStyle}>{t("rLogin.email")}</label>
             <input
               type="email"
               value={email}
@@ -163,7 +165,7 @@ function ReaderLoginInner() {
           </div>
 
           <div style={{ marginBottom: "1.75rem" }}>
-            <label style={labelStyle}>Password</label>
+            <label style={labelStyle}>{t("rLogin.password")}</label>
             <input
               type="password"
               value={password}
@@ -210,7 +212,7 @@ function ReaderLoginInner() {
             whileTap={loading ? {} : { scale: 0.98 }}
             transition={{ duration: 0.15 }}
           >
-            {loading ? "Verifying..." : "Open the Archive →"}
+            {loading ? t("rLogin.verifying") : t("rLogin.openArchive")}
           </motion.button>
 
           {/* Forgot password */}
@@ -230,7 +232,7 @@ function ReaderLoginInner() {
                   textTransform: "uppercase",
                 }}
               >
-                Forgot password?
+                {t("rLogin.forgot")}
               </button>
             </p>
           )}
@@ -248,7 +250,7 @@ function ReaderLoginInner() {
                 color: "rgba(245,230,200,0.35)",
                 marginBottom: "0.75rem",
               }}>
-                Enter your email above, then:
+                {t("rLogin.enterEmail")}
               </p>
               <motion.button
                 type="button"
@@ -267,7 +269,7 @@ function ReaderLoginInner() {
                 }}
                 whileHover={{ borderColor: "rgba(201,168,76,0.5)" }}
               >
-                {resetStatus === "sending" ? "Sending…" : "Send Reset Link"}
+                {resetStatus === "sending" ? t("rLogin.sending") : t("rLogin.sendReset")}
               </motion.button>
               <p style={{ marginTop: "0.5rem" }}>
                 <button
@@ -282,7 +284,7 @@ function ReaderLoginInner() {
                     cursor: "pointer",
                   }}
                 >
-                  Back to login
+                  {t("rLogin.backToLogin")}
                 </button>
               </p>
             </motion.div>
@@ -301,7 +303,7 @@ function ReaderLoginInner() {
                 marginTop: "1rem",
               }}
             >
-              Reset link sent. Check your inbox.
+              {t("rLogin.resetSent")}
             </motion.p>
           )}
         </form>
@@ -316,12 +318,12 @@ function ReaderLoginInner() {
           textAlign:     "center",
           textTransform: "uppercase",
         }}>
-          No account?{" "}
+          {t("rLogin.noAccount")}{" "}
           <Link
             href={`/reader/signup${returnTo !== "/" ? `?from=${encodeURIComponent(returnTo)}` : ""}`}
             style={{ color: "rgba(201,168,76,0.6)", textDecoration: "none" }}
           >
-            Request access →
+            {t("rLogin.requestAccess")}
           </Link>
         </p>
       </motion.div>

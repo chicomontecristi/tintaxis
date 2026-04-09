@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import type { FeaturedWriter, FeaturedWork } from "@/lib/featured-writers";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
+import { useI18n } from "@/lib/i18n";
 import SubscriptionModal from "@/components/ui/SubscriptionModal";
 import type { SubscriptionTierName } from "@/components/ui/SubscriptionModal";
 
@@ -21,6 +22,7 @@ export default function WriterProfileClient({ writer }: { writer: FeaturedWriter
 }
 
 function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
+  const { t } = useI18n();
   const [subModalOpen, setSubModalOpen] = useState(false);
   const [gateTier] = useState<SubscriptionTierName>("codex");
   const displayName = writer.artistName ?? writer.name;
@@ -215,7 +217,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
                     cursor: "pointer",
                   }}
                 >
-                  Request Instagram
+                  {t("wp.requestInstagram")}
                 </a>
               )}
               {writer.website && (
@@ -285,7 +287,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
             textTransform: "uppercase",
             marginBottom: "1rem",
           }}>
-            About
+            {t("wp.about")}
           </p>
           <p style={{
             fontFamily: '"EB Garamond", Garamond, Georgia, serif',
@@ -324,7 +326,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
                 color: "rgba(245,230,200,0.75)",
                 marginBottom: "0.25rem",
               }}>
-                {displayName} is an honorary writer of Tintaxis
+                {t("wp.honorary", { name: displayName })}
               </p>
               <p style={{
                 fontFamily: '"JetBrains Mono", monospace',
@@ -333,7 +335,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
                 color: "rgba(201,168,76,0.35)",
                 textTransform: "uppercase",
               }}>
-                Standing invitation to publish at any time
+                {t("wp.standingInvitation")}
               </p>
             </div>
           ) : (
@@ -346,7 +348,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
                   color: "rgba(245,230,200,0.75)",
                   marginBottom: "0.25rem",
                 }}>
-                  Read {displayName}&apos;s work on Tintaxis
+                  {t("wp.readWork", { name: displayName })}
                 </p>
                 <p style={{
                   fontFamily: '"JetBrains Mono", monospace',
@@ -355,7 +357,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
                   color: "rgba(201,168,76,0.35)",
                   textTransform: "uppercase",
                 }}>
-                  Full access from $3 / month · Cancel anytime
+                  {t("wp.fullAccess")}
                 </p>
               </div>
               <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", flexShrink: 0, flexWrap: "wrap" }}>
@@ -376,7 +378,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
                   whileTap={{ scale: 0.98 }}
                   transition={{ duration: 0.15 }}
                 >
-                  Subscribe to Read
+                  {t("wp.subscribe")}
                 </motion.button>
                 <Link
                   href={`/gift/${writer.slug}`}
@@ -392,7 +394,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
                     transition: "all 0.2s ease",
                   }}
                 >
-                  Gift a Month
+                  {t("wp.giftMonth")}
                 </Link>
               </div>
             </>
@@ -413,12 +415,12 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
             textTransform: "uppercase",
             marginBottom: "1.5rem",
           }}>
-            Works
+            {t("wp.works")}
           </p>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
             {writer.works.map((work, i) => (
-              <WorkCard key={i} work={work} index={i} />
+              <WorkCard key={i} work={work} index={i} t={t} />
             ))}
           </div>
         </motion.div>
@@ -440,7 +442,7 @@ function WriterProfileInner({ writer }: { writer: FeaturedWriter }) {
 
 // ─── WORK CARD ────────────────────────────────────────────────────────────────
 
-function WorkCard({ work, index }: { work: FeaturedWork; index: number }) {
+function WorkCard({ work, index, t }: { work: FeaturedWork; index: number; t: (key: string, vars?: Record<string, string>) => string }) {
   const isLive = !!work.href && !work.comingSoon;
 
   const content = (
@@ -543,7 +545,7 @@ function WorkCard({ work, index }: { work: FeaturedWork; index: number }) {
             color: "#C9A84C",
             textTransform: "uppercase",
           }}>
-            Read →
+            {t("wp.read")}
           </span>
         ) : (
           <span style={{
@@ -553,7 +555,7 @@ function WorkCard({ work, index }: { work: FeaturedWork; index: number }) {
             color: "rgba(201,168,76,0.2)",
             textTransform: "uppercase",
           }}>
-            ⚿ Soon
+            ⚿ {t("wp.soon")}
           </span>
         )}
       </div>
