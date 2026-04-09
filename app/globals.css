@@ -317,14 +317,6 @@ body {
 
 /* ─── RESPONSIVE — MOBILE BREAKPOINT (< 768px) ───────────────────── */
 @media (max-width: 768px) {
-  /* Show hamburger, hide desktop links */
-  .nav-desktop-links {
-    display: none !important;
-  }
-  .nav-hamburger {
-    display: flex !important;
-  }
-
   /* Hide margin world on mobile — too narrow */
   .margin-world-rail {
     display: none;

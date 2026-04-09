@@ -1,15 +1,15 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
 import { useI18n, LOCALE_LABELS, LOCALE_FLAGS, type Locale } from "@/lib/i18n";
 
 // ─── SITE NAV ───────────────────────────────────────────────────────────────
-// Minimal persistent navigation. Hidden on homepage (/) to keep it clean.
-// Collapses to hamburger menu on mobile (<768px).
+// Hamburger-first navigation. Bar shows logo + compact utilities.
+// All page links live inside the fullscreen overlay.
 
 const MONO = '"JetBrains Mono", monospace';
 
@@ -62,7 +62,6 @@ function LanguageSwitcher() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  // Close on outside click
   useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
@@ -277,104 +276,70 @@ export default function SiteNav() {
           Tintaxis
         </Link>
 
-        {/* ── Desktop links (hidden on mobile) ── */}
-        <div className="nav-desktop-links" style={{
+        {/* ── Right side: compact utilities + hamburger ── */}
+        <div style={{
           display: "flex",
-          gap: "clamp(0.75rem, 2.5vw, 1.5rem)",
+          gap: "0.5rem",
           alignItems: "center",
         }}>
-          {allLinks.map(({ href, label, external }) => {
-            const isActive = !external && (pathname === href || pathname.startsWith(href + "/"));
-            const linkStyle: React.CSSProperties = {
-              fontFamily: MONO,
-              fontSize: "0.8rem",
-              letterSpacing: "0.2em",
-              color: isActive ? "rgba(201,168,76,0.8)" : "rgba(201,168,76,0.4)",
-              textDecoration: "none",
-              textTransform: "uppercase",
-              transition: "color 0.2s ease",
-            };
-            return external ? (
-              <a key={href} href={href} target="_blank" rel="noopener noreferrer" style={linkStyle}>
-                {label}
-              </a>
-            ) : (
-              <Link key={href} href={href} style={linkStyle}>
-                {label}
-              </Link>
-            );
-          })}
           <LanguageSwitcher />
           <ShareOnX />
           <ThemeToggle />
-          {session.role && (
-            <button
-              onClick={handleLogout}
-              style={{
-                fontFamily: MONO,
-                fontSize: "0.8rem",
-                letterSpacing: "0.2em",
-                color: "rgba(192,57,43,0.45)",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                textTransform: "uppercase",
-                padding: 0,
-                transition: "color 0.2s ease",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(192,57,43,0.8)")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(192,57,43,0.45)")}
-            >
-              {t("nav.logOut")}
-            </button>
-          )}
-        </div>
 
-        {/* ── Hamburger button (mobile only) ── */}
-        <button
-          className="nav-hamburger"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          style={{
-            display: "none", // shown via CSS media query
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            padding: "6px",
-            flexDirection: "column",
-            gap: "5px",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <span style={{
-            display: "block",
-            width: "22px",
-            height: "1.5px",
-            background: "rgba(201,168,76,0.6)",
-            transition: "all 0.3s ease",
-            transform: menuOpen ? "rotate(45deg) translateY(3.25px)" : "none",
-          }} />
-          <span style={{
-            display: "block",
-            width: "22px",
-            height: "1.5px",
-            background: "rgba(201,168,76,0.6)",
-            transition: "all 0.3s ease",
-            opacity: menuOpen ? 0 : 1,
-          }} />
-          <span style={{
-            display: "block",
-            width: "22px",
-            height: "1.5px",
-            background: "rgba(201,168,76,0.6)",
-            transition: "all 0.3s ease",
-            transform: menuOpen ? "rotate(-45deg) translateY(-3.25px)" : "none",
-          }} />
-        </button>
+          {/* Hamburger button — always visible */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            style={{
+              background: "none",
+              border: "1px solid rgba(201,168,76,0.12)",
+              borderRadius: "2px",
+              cursor: "pointer",
+              padding: "6px 7px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "4px",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "border-color 0.2s ease",
+              marginLeft: "0.25rem",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "rgba(201,168,76,0.35)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = "rgba(201,168,76,0.12)";
+            }}
+          >
+            <span style={{
+              display: "block",
+              width: "18px",
+              height: "1.5px",
+              background: "rgba(201,168,76,0.6)",
+              transition: "all 0.3s ease",
+              transform: menuOpen ? "rotate(45deg) translateY(2.75px)" : "none",
+            }} />
+            <span style={{
+              display: "block",
+              width: "18px",
+              height: "1.5px",
+              background: "rgba(201,168,76,0.6)",
+              transition: "all 0.3s ease",
+              opacity: menuOpen ? 0 : 1,
+            }} />
+            <span style={{
+              display: "block",
+              width: "18px",
+              height: "1.5px",
+              background: "rgba(201,168,76,0.6)",
+              transition: "all 0.3s ease",
+              transform: menuOpen ? "rotate(-45deg) translateY(-2.75px)" : "none",
+            }} />
+          </button>
+        </div>
       </nav>
 
-      {/* ── Mobile menu overlay ── */}
+      {/* ── Fullscreen menu overlay ── */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -382,7 +347,6 @@ export default function SiteNav() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="nav-mobile-overlay"
             style={{
               position: "fixed",
               inset: 0,
@@ -399,7 +363,7 @@ export default function SiteNav() {
           >
             {allLinks.map(({ href, label, external }, i) => {
               const isActive = !external && (pathname === href || pathname.startsWith(href + "/"));
-              const mobileLinkStyle: React.CSSProperties = {
+              const linkStyle: React.CSSProperties = {
                 fontFamily: MONO,
                 fontSize: "1rem",
                 letterSpacing: "0.3em",
@@ -413,36 +377,27 @@ export default function SiteNav() {
                   key={href}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05, duration: 0.3 }}
+                  transition={{ delay: i * 0.04, duration: 0.3 }}
                 >
                   {external ? (
                     <a href={href} target="_blank" rel="noopener noreferrer"
-                       onClick={() => setMenuOpen(false)} style={mobileLinkStyle}>
+                       onClick={() => setMenuOpen(false)} style={linkStyle}>
                       {label}
                     </a>
                   ) : (
-                    <Link href={href} onClick={() => setMenuOpen(false)} style={mobileLinkStyle}>
+                    <Link href={href} onClick={() => setMenuOpen(false)} style={linkStyle}>
                       {label}
                     </Link>
                   )}
                 </motion.div>
               );
             })}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: allLinks.length * 0.05, duration: 0.3 }}
-              style={{ marginTop: "1rem", display: "flex", gap: "0.75rem", alignItems: "center" }}
-            >
-              <LanguageSwitcher />
-              <ShareOnX />
-              <ThemeToggle />
-            </motion.div>
             {session.role && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: (allLinks.length + 1) * 0.05, duration: 0.3 }}
+                transition={{ delay: allLinks.length * 0.04 + 0.05, duration: 0.3 }}
+                style={{ marginTop: "0.5rem" }}
               >
                 <button
                   onClick={handleLogout}
