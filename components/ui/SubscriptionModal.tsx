@@ -293,17 +293,13 @@ export default function SubscriptionModal({
               }}
             />
 
-            {/* Tier grid — horizontal scroll on mobile, grid on desktop */}
+            {/* Tier grid — wraps to rows so all content is visible */}
             <div
-              className="tier-scroll-row"
               style={{
-                display: "flex",
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
                 gap: "0.75rem",
                 marginBottom: "1.5rem",
-                overflowX: "auto",
-                WebkitOverflowScrolling: "touch",
-                paddingBottom: "0.5rem",
-                scrollSnapType: "x mandatory",
               }}
             >
               {TIERS.map((tier, i) => {
@@ -380,9 +376,6 @@ function TierCard({
         position: "relative",
         display: "flex",
         flexDirection: "column",
-        minWidth: "200px",
-        flex: "1 0 200px",
-        scrollSnapAlign: "start",
       }}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
