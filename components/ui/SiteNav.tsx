@@ -356,9 +356,11 @@ export default function SiteNav() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              justifyContent: "center",
-              gap: "1.5rem",
-              paddingBottom: "4rem",
+              justifyContent: "safe center",
+              gap: "1.25rem",
+              paddingTop: "4rem",
+              paddingBottom: "2rem",
+              overflowY: "auto",
             }}
           >
             {allLinks.map(({ href, label, external }, i) => {
