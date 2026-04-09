@@ -46,6 +46,7 @@ const ENTRIES: ChangelogEntry[] = [
   { date: "2026-04-03", tag: "feature",  titleKey: "cl.signalQuestions.title",  descKey: "cl.signalQuestions.desc" },
   { date: "2026-04-02", tag: "feature",  titleKey: "cl.sixInks.title",         descKey: "cl.sixInks.desc" },
   { date: "2026-04-01", tag: "feature",  titleKey: "cl.analyticsTab.title",    descKey: "cl.analyticsTab.desc" },
+  { date: "2026-04-01", tag: "tool",     titleKey: "cl.artPathways.title",     descKey: "cl.artPathways.desc" },
 
   // ── March 2026 ──
   { date: "2026-03-30", tag: "feature",  titleKey: "cl.authorStudio.title",    descKey: "cl.authorStudio.desc" },
