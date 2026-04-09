@@ -210,6 +210,7 @@ export default function SubscriptionModal({
               zIndex: 1,
               width: "100%",
               maxWidth: "900px",
+              maxHeight: "calc(100vh - 2rem)",
               overflowY: "auto",
               WebkitOverflowScrolling: "touch",
               background: "rgba(13,11,8,1)",
