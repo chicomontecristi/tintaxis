@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { BOOKS, getAllBookSlugs, getBookChaptersOrdered } from "@/lib/content/books";
+import { JOURNAL_POSTS } from "@/lib/content/journal-posts";
 
 const BASE_URL = "https://tintaxis.vercel.app";
 
@@ -51,6 +52,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.95,
     },
+    {
+      url: `${BASE_URL}/journal`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/changelog`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.6,
+    },
   ];
 
   // ── Excerpt pages ──────────────────────────────────────────────────────────
@@ -85,5 +98,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
   }
 
-  return [...staticPages, ...bookPages, ...excerptPages, ...chapterPages];
+  // ── Journal posts (published only) ──────────────────────────────────────
+  const journalPages: MetadataRoute.Sitemap = JOURNAL_POSTS.map((post) => ({
+    url: `${BASE_URL}/journal/${post.slug}`,
+    lastModified: new Date(post.publishedAt),
+    changeFrequency: "monthly" as const,
+    priority: 0.75,
+  }));
+
+  return [...staticPages, ...bookPages, ...excerptPages, ...chapterPages, ...journalPages];
 }

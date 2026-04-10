@@ -267,6 +267,127 @@ export default function HomeClient() {
             </Link>
           </motion.div>
 
+          {/* ── HERO SAMPLE PLAYER (COMING SOON) ───────────────────────── */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            style={{
+              marginTop: "3rem",
+              maxWidth: "480px",
+              width: "100%",
+              padding: "1.25rem 1.5rem",
+              border: "1px solid rgba(201,168,76,0.18)",
+              background: "rgba(13,11,8,0.4)",
+              backdropFilter: "blur(4px)",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+              {/* Play button (disabled, Coming Soon) */}
+              <div
+                aria-label="Sample coming soon"
+                style={{
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "50%",
+                  border: "1px solid rgba(201,168,76,0.4)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  opacity: 0.55,
+                  cursor: "not-allowed",
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 2L12 7L3 12V2Z" fill="#C9A84C" />
+                </svg>
+              </div>
+
+              <div style={{ flex: 1, textAlign: "left" }}>
+                <p
+                  style={{
+                    fontFamily: MONO,
+                    fontSize: "0.6rem",
+                    letterSpacing: "0.25em",
+                    color: "rgba(201,168,76,0.55)",
+                    textTransform: "uppercase",
+                    margin: 0,
+                    marginBottom: "0.35rem",
+                  }}
+                >
+                  {t("home.sample.label")}
+                </p>
+                <p
+                  style={{
+                    fontFamily: SERIF,
+                    fontSize: "0.95rem",
+                    fontStyle: "italic",
+                    color: "rgba(245,230,200,0.75)",
+                    margin: 0,
+                    lineHeight: 1.35,
+                  }}
+                >
+                  {t("home.sample.title")}
+                </p>
+              </div>
+
+              <span
+                style={{
+                  fontFamily: MONO,
+                  fontSize: "0.55rem",
+                  letterSpacing: "0.2em",
+                  color: "rgba(201,168,76,0.45)",
+                  border: "1px solid rgba(201,168,76,0.3)",
+                  padding: "0.35rem 0.6rem",
+                  textTransform: "uppercase",
+                  flexShrink: 0,
+                }}
+              >
+                {t("home.sample.comingSoon")}
+              </span>
+            </div>
+
+            {/* Static waveform placeholder */}
+            <div
+              style={{
+                marginTop: "0.9rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "3px",
+                height: "18px",
+                opacity: 0.35,
+              }}
+              aria-hidden="true"
+            >
+              {[5, 9, 14, 6, 11, 16, 8, 13, 10, 17, 7, 12, 15, 9, 11, 6, 14, 10, 8, 13, 11, 7, 15, 9, 12, 6, 14, 10, 8, 11].map((h, i) => (
+                <span
+                  key={i}
+                  style={{
+                    display: "block",
+                    width: "2px",
+                    height: `${h}px`,
+                    background: "rgba(201,168,76,0.6)",
+                  }}
+                />
+              ))}
+            </div>
+
+            <p
+              style={{
+                fontFamily: MONO,
+                fontSize: "0.55rem",
+                letterSpacing: "0.08em",
+                color: "rgba(245,230,200,0.35)",
+                margin: "0.8rem 0 0",
+                textAlign: "left",
+                lineHeight: 1.5,
+              }}
+            >
+              {t("home.sample.desc")}
+            </p>
+          </motion.div>
+
         </div>
       </section>
 
@@ -886,6 +1007,9 @@ export default function HomeClient() {
           SECTION 5 — FOOTER
           ══════════════════════════════════════════════════════════ */}
       <footer style={{ padding: "3rem 2rem", textAlign: "center" }}>
+        {/* ── FOLLOW THE PROJECT NEWSLETTER ───────────────────────── */}
+        <FollowProjectForm />
+
         <div
           style={{
             maxWidth: "600px",
@@ -921,6 +1045,19 @@ export default function HomeClient() {
             }}
           >
             {t("nav.writers")}
+          </Link>
+          <Link
+            href="/journal"
+            style={{
+              fontFamily: MONO,
+              fontSize: "0.55rem",
+              letterSpacing: "0.15em",
+              textTransform: "uppercase",
+              color: "rgba(245,230,200,0.3)",
+              textDecoration: "none",
+            }}
+          >
+            {t("nav.journal")}
           </Link>
           <Link
             href="/publish"
@@ -1034,6 +1171,156 @@ function CornerOrnament({
       <path d="M10 2 L10 8" stroke="#C9A84C" strokeWidth="0.5" />
       <circle cx="2" cy="2" r="1.5" fill="#C9A84C" />
     </svg>
+  );
+}
+
+// ─── FOLLOW THE PROJECT FORM ────────────────────────────────────────────────
+// Lightweight footer newsletter. Posts to /api/follow-project
+// (separate list from chapter-unlock email capture).
+function FollowProjectForm() {
+  const { t } = useI18n();
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email || status === "loading") return;
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/follow-project", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) throw new Error("request failed");
+      setStatus("success");
+      setEmail("");
+    } catch {
+      setStatus("error");
+    }
+  }
+
+  return (
+    <div
+      style={{
+        maxWidth: "480px",
+        margin: "0 auto 3rem",
+        padding: "1.5rem 1.25rem 1.75rem",
+        borderTop: "1px solid rgba(201,168,76,0.12)",
+        borderBottom: "1px solid rgba(201,168,76,0.12)",
+      }}
+    >
+      <p
+        style={{
+          fontFamily: MONO,
+          fontSize: "0.6rem",
+          letterSpacing: "0.3em",
+          textTransform: "uppercase",
+          color: "#C9A84C",
+          margin: "0 0 0.75rem",
+        }}
+      >
+        {t("home.follow.label")}
+      </p>
+      <p
+        style={{
+          fontFamily: SERIF,
+          fontSize: "0.85rem",
+          fontStyle: "italic",
+          color: "rgba(245,230,200,0.55)",
+          lineHeight: 1.6,
+          margin: "0 0 1.1rem",
+          maxWidth: "420px",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      >
+        {t("home.follow.desc")}
+      </p>
+
+      {status === "success" ? (
+        <p
+          style={{
+            fontFamily: MONO,
+            fontSize: "0.65rem",
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+            color: "rgba(201,168,76,0.8)",
+            margin: 0,
+          }}
+        >
+          ✓ {t("home.follow.success")}
+        </p>
+      ) : (
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: "flex",
+            gap: "0.5rem",
+            maxWidth: "400px",
+            margin: "0 auto",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (status === "error") setStatus("idle");
+            }}
+            placeholder={t("home.follow.placeholder")}
+            aria-label={t("home.follow.label")}
+            style={{
+              flex: "1 1 220px",
+              minWidth: "200px",
+              fontFamily: MONO,
+              fontSize: "0.75rem",
+              letterSpacing: "0.05em",
+              color: "#F5E6C8",
+              background: "rgba(13,11,8,0.6)",
+              border: "1px solid rgba(201,168,76,0.3)",
+              padding: "0.75rem 0.9rem",
+              outline: "none",
+            }}
+          />
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            style={{
+              fontFamily: MONO,
+              fontSize: "0.65rem",
+              letterSpacing: "0.25em",
+              textTransform: "uppercase",
+              color: "#C9A84C",
+              background: "transparent",
+              border: "1px solid rgba(201,168,76,0.5)",
+              padding: "0.75rem 1.25rem",
+              cursor: status === "loading" ? "wait" : "pointer",
+              transition: "all 0.2s",
+            }}
+          >
+            {status === "loading" ? "..." : t("home.follow.button")}
+          </button>
+        </form>
+      )}
+
+      {status === "error" && (
+        <p
+          style={{
+            fontFamily: MONO,
+            fontSize: "0.6rem",
+            letterSpacing: "0.1em",
+            color: "rgba(192,57,43,0.7)",
+            margin: "0.75rem 0 0",
+          }}
+        >
+          {t("home.follow.error")}
+        </p>
+      )}
+    </div>
   );
 }
 

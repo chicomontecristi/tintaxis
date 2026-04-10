@@ -173,6 +173,7 @@ const PUBLIC_LINK_DEFS = [
   { href: "/publish", i18nKey: "nav.publish" },
   { href: "/impact", i18nKey: "nav.impact" },
   { href: "/how-it-works", i18nKey: "nav.howItWorks" },
+  { href: "/journal", i18nKey: "nav.journal" },
   { href: "/changelog", i18nKey: "nav.changelog" },
   { href: "https://art-opportunity-finder--montecristi.replit.app", i18nKey: "nav.artPathways", external: true },
 ] as const;

@@ -105,6 +105,8 @@ const TIERS: Tier[] = [
       "sub.tier.chronicler.f2",
       "sub.tier.chronicler.f3",
       "sub.tier.chronicler.f4",
+      "sub.tier.chronicler.f5",
+      "sub.tier.chronicler.f6",
     ],
     inkColors: ["rgba(245,230,200,0.9)"],
     accentColor: "rgba(245,230,200,0.75)",
