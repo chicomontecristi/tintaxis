@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n";
@@ -220,7 +220,7 @@ export default function HomeClient() {
             transition={{ duration: 0.7, delay: 0.35 }}
             style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}
           >
-            <Link href="/library" passHref>
+            <Link href="/writers" passHref>
               <motion.button
                 className="relative"
                 style={{
@@ -267,126 +267,9 @@ export default function HomeClient() {
             </Link>
           </motion.div>
 
-          {/* ── HERO SAMPLE PLAYER (COMING SOON) ───────────────────────── */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            style={{
-              marginTop: "3rem",
-              maxWidth: "480px",
-              width: "100%",
-              padding: "1.25rem 1.5rem",
-              border: "1px solid rgba(201,168,76,0.18)",
-              background: "rgba(13,11,8,0.4)",
-              backdropFilter: "blur(4px)",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-              {/* Play button (disabled, Coming Soon) */}
-              <div
-                aria-label="Sample coming soon"
-                style={{
-                  width: "44px",
-                  height: "44px",
-                  borderRadius: "50%",
-                  border: "1px solid rgba(201,168,76,0.4)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  opacity: 0.55,
-                  cursor: "not-allowed",
-                }}
-              >
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 2L12 7L3 12V2Z" fill="#C9A84C" />
-                </svg>
-              </div>
+          {/* ── HERO SAMPLE PLAYER ───────────────────────────────────── */}
+          <HeroSamplePlayer />
 
-              <div style={{ flex: 1, textAlign: "left" }}>
-                <p
-                  style={{
-                    fontFamily: MONO,
-                    fontSize: "0.6rem",
-                    letterSpacing: "0.25em",
-                    color: "rgba(201,168,76,0.55)",
-                    textTransform: "uppercase",
-                    margin: 0,
-                    marginBottom: "0.35rem",
-                  }}
-                >
-                  {t("home.sample.label")}
-                </p>
-                <p
-                  style={{
-                    fontFamily: SERIF,
-                    fontSize: "0.95rem",
-                    fontStyle: "italic",
-                    color: "rgba(245,230,200,0.75)",
-                    margin: 0,
-                    lineHeight: 1.35,
-                  }}
-                >
-                  {t("home.sample.title")}
-                </p>
-              </div>
-
-              <span
-                style={{
-                  fontFamily: MONO,
-                  fontSize: "0.55rem",
-                  letterSpacing: "0.2em",
-                  color: "rgba(201,168,76,0.45)",
-                  border: "1px solid rgba(201,168,76,0.3)",
-                  padding: "0.35rem 0.6rem",
-                  textTransform: "uppercase",
-                  flexShrink: 0,
-                }}
-              >
-                {t("home.sample.comingSoon")}
-              </span>
-            </div>
-
-            {/* Static waveform placeholder */}
-            <div
-              style={{
-                marginTop: "0.9rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "3px",
-                height: "18px",
-                opacity: 0.35,
-              }}
-              aria-hidden="true"
-            >
-              {[5, 9, 14, 6, 11, 16, 8, 13, 10, 17, 7, 12, 15, 9, 11, 6, 14, 10, 8, 13, 11, 7, 15, 9, 12, 6, 14, 10, 8, 11].map((h, i) => (
-                <span
-                  key={i}
-                  style={{
-                    display: "block",
-                    width: "2px",
-                    height: `${h}px`,
-                    background: "rgba(201,168,76,0.6)",
-                  }}
-                />
-              ))}
-            </div>
-
-            <p
-              style={{
-                fontFamily: MONO,
-                fontSize: "0.55rem",
-                letterSpacing: "0.08em",
-                color: "rgba(245,230,200,0.35)",
-                margin: "0.8rem 0 0",
-                textAlign: "left",
-                lineHeight: 1.5,
-              }}
-            >
-              {t("home.sample.desc")}
-            </p>
-          </motion.div>
 
         </div>
       </section>
@@ -1171,6 +1054,220 @@ function CornerOrnament({
       <path d="M10 2 L10 8" stroke="#C9A84C" strokeWidth="0.5" />
       <circle cx="2" cy="2" r="1.5" fill="#C9A84C" />
     </svg>
+  );
+}
+
+// ─── HERO SAMPLE PLAYER ─────────────────────────────────────────────────────
+// Author voice sample played on demand. Audio lives at /audio/tintaxis-welcome.mp3
+// preload="none" so the file only fetches when the user clicks play.
+function HeroSamplePlayer() {
+  const { t } = useI18n();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0); // 0..1
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const onTime = () => {
+      setCurrentTime(audio.currentTime);
+      setProgress(audio.duration ? audio.currentTime / audio.duration : 0);
+    };
+    const onMeta = () => setDuration(audio.duration || 0);
+    const onEnd = () => {
+      setIsPlaying(false);
+      setProgress(0);
+      setCurrentTime(0);
+    };
+    const onPause = () => setIsPlaying(false);
+    const onPlay = () => setIsPlaying(true);
+
+    audio.addEventListener("timeupdate", onTime);
+    audio.addEventListener("loadedmetadata", onMeta);
+    audio.addEventListener("ended", onEnd);
+    audio.addEventListener("pause", onPause);
+    audio.addEventListener("play", onPlay);
+    return () => {
+      audio.removeEventListener("timeupdate", onTime);
+      audio.removeEventListener("loadedmetadata", onMeta);
+      audio.removeEventListener("ended", onEnd);
+      audio.removeEventListener("pause", onPause);
+      audio.removeEventListener("play", onPlay);
+    };
+  }, []);
+
+  function toggle() {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (audio.paused) {
+      audio.play().catch(() => {
+        /* autoplay/permission guard */
+      });
+    } else {
+      audio.pause();
+    }
+  }
+
+  function formatTime(sec: number): string {
+    if (!Number.isFinite(sec)) return "0:00";
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  }
+
+  // 30-bar waveform; bars light up as progress advances.
+  const barHeights = [5, 9, 14, 6, 11, 16, 8, 13, 10, 17, 7, 12, 15, 9, 11, 6, 14, 10, 8, 13, 11, 7, 15, 9, 12, 6, 14, 10, 8, 11];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: 0.6 }}
+      style={{
+        marginTop: "3rem",
+        maxWidth: "480px",
+        width: "100%",
+        padding: "1.25rem 1.5rem",
+        border: "1px solid rgba(201,168,76,0.28)",
+        background: "rgba(13,11,8,0.4)",
+        backdropFilter: "blur(4px)",
+      }}
+    >
+      <audio
+        ref={audioRef}
+        src="/audio/tintaxis-welcome.mp3"
+        preload="none"
+      />
+
+      <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        {/* Play / Pause button */}
+        <button
+          onClick={toggle}
+          aria-label={isPlaying ? "Pause sample" : "Play sample"}
+          style={{
+            width: "44px",
+            height: "44px",
+            borderRadius: "50%",
+            border: "1px solid rgba(201,168,76,0.6)",
+            background: "rgba(201,168,76,0.08)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+            cursor: "pointer",
+            transition: "all 0.2s",
+            padding: 0,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = "rgba(201,168,76,0.9)";
+            e.currentTarget.style.background = "rgba(201,168,76,0.15)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = "rgba(201,168,76,0.6)";
+            e.currentTarget.style.background = "rgba(201,168,76,0.08)";
+          }}
+        >
+          {isPlaying ? (
+            <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1" y="1" width="3" height="12" fill="#C9A84C" />
+              <rect x="8" y="1" width="3" height="12" fill="#C9A84C" />
+            </svg>
+          ) : (
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 2L12 7L3 12V2Z" fill="#C9A84C" />
+            </svg>
+          )}
+        </button>
+
+        <div style={{ flex: 1, textAlign: "left", minWidth: 0 }}>
+          <p
+            style={{
+              fontFamily: MONO,
+              fontSize: "0.6rem",
+              letterSpacing: "0.25em",
+              color: "rgba(201,168,76,0.65)",
+              textTransform: "uppercase",
+              margin: 0,
+              marginBottom: "0.35rem",
+            }}
+          >
+            {t("home.sample.label")}
+          </p>
+          <p
+            style={{
+              fontFamily: SERIF,
+              fontSize: "0.95rem",
+              fontStyle: "italic",
+              color: "rgba(245,230,200,0.85)",
+              margin: 0,
+              lineHeight: 1.35,
+            }}
+          >
+            {t("home.sample.title")}
+          </p>
+        </div>
+
+        <span
+          style={{
+            fontFamily: MONO,
+            fontSize: "0.6rem",
+            letterSpacing: "0.1em",
+            color: "rgba(201,168,76,0.7)",
+            flexShrink: 0,
+            minWidth: "68px",
+            textAlign: "right",
+          }}
+        >
+          {formatTime(currentTime)} / {duration ? formatTime(duration) : "1:43"}
+        </span>
+      </div>
+
+      {/* Waveform with playback progress */}
+      <div
+        style={{
+          marginTop: "0.9rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "3px",
+          height: "18px",
+        }}
+        aria-hidden="true"
+      >
+        {barHeights.map((h, i) => {
+          const barProgress = (i + 1) / barHeights.length;
+          const active = progress >= barProgress - 0.5 / barHeights.length;
+          return (
+            <span
+              key={i}
+              style={{
+                display: "block",
+                width: "2px",
+                height: `${h}px`,
+                background: active ? "#C9A84C" : "rgba(201,168,76,0.25)",
+                transition: "background 0.15s",
+              }}
+            />
+          );
+        })}
+      </div>
+
+      <p
+        style={{
+          fontFamily: MONO,
+          fontSize: "0.55rem",
+          letterSpacing: "0.08em",
+          color: "rgba(245,230,200,0.45)",
+          margin: "0.8rem 0 0",
+          textAlign: "left",
+          lineHeight: 1.5,
+        }}
+      >
+        {t("home.sample.desc")}
+      </p>
+    </motion.div>
   );
 }
 
