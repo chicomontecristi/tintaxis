@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useMemo, FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import TintaxisLogo from "@/components/ui/TintaxisLogo";
 import { BOOKS, getBookChaptersOrdered } from "@/lib/content/books";
+import { BOOK_SALES, getSalesSummary, getRevenueByTitle } from "@/lib/content/book-sales";
 import { useI18n } from "@/lib/i18n";
 
 // ─── TYPES ─────────────────────────────────────────────────────────────────────
@@ -535,7 +536,10 @@ export default function AuthorDashboard() {
   };
 
   // ── Voiceover upload handler ────────────────────────────────────────────
-  const MAX_UPLOAD_MB = 10;
+  // Uses a presign → direct-to-Supabase flow to bypass Vercel's 4.5 MB body
+  // cap. The route handler only exchanges a tiny JSON token; the actual file
+  // bytes go from the browser straight to Supabase Storage.
+  const MAX_UPLOAD_MB = 50;
   const MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024;
 
   const handleVoiceoverUpload = async (chapterSlug: string, file: File): Promise<boolean> => {
@@ -551,29 +555,44 @@ export default function AuthorDashboard() {
 
     setUploadingChapter(chapterSlug);
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("bookSlug", selectedBookSlug);
-      fd.append("chapterSlug", chapterSlug);
-
-      const res = await fetch("/api/author/audio", {
+      // Step 1: Get a signed upload URL from the server (tiny JSON, no file bytes)
+      const presignRes = await fetch("/api/author/audio/presign", {
         method: "POST",
-        body: fd,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bookSlug: selectedBookSlug,
+          chapterSlug,
+          contentType: file.type || "audio/mpeg",
+          size: file.size,
+        }),
       });
-      const data = await res.json();
-      if (!res.ok || !data.url) {
-        const msg = data.error || "Unknown error";
+      const presignData = await presignRes.json();
+      if (!presignRes.ok || !presignData.signedUrl) {
+        const msg = presignData.error || "Could not prepare upload";
         alert(
           msg.includes("Invalid audio type")
-            ? `${msg}\n\nAccepted formats: .mp3, .m4a, .mp4, .wav, .webm`
+            ? `${msg}\n\nAccepted formats: .mp3, .m4a, .wav, .webm`
             : msg.includes("too large") || msg.includes("Too large")
             ? `${msg}\n\nTip: Convert .wav to .mp3 for a ~10× size reduction.`
             : `Upload failed: ${msg}`
         );
         return false;
       }
-      // Append cache-buster so the browser doesn't serve stale audio
-      setVoiceovers((prev) => ({ ...prev, [chapterSlug]: `${data.url}?t=${Date.now()}` }));
+
+      // Step 2: PUT the file directly to Supabase (bypasses Vercel body limit)
+      const uploadRes = await fetch(presignData.signedUrl, {
+        method: "PUT",
+        headers: { "Content-Type": presignData.contentType },
+        body: file,
+      });
+      if (!uploadRes.ok) {
+        const errText = await uploadRes.text().catch(() => uploadRes.statusText);
+        alert(`Upload failed: ${errText}`);
+        return false;
+      }
+
+      // Step 3: Update the UI with the public URL (already includes cache-buster)
+      setVoiceovers((prev) => ({ ...prev, [chapterSlug]: presignData.publicUrl }));
       return true;
     } catch (err) {
       console.error("[voiceover] upload failed:", err);
@@ -726,6 +745,24 @@ export default function AuthorDashboard() {
       await fetch(`/api/author/whispers/${id}`, { method: "DELETE" });
     } catch (err) {
       console.error("[dashboard] whisper delete failed:", err);
+    }
+  };
+
+  const handleDeleteAllWhispers = async () => {
+    if (whispers.length === 0) return;
+    const confirmed = window.confirm(
+      `Permanently delete all ${whispers.length} whispers in the database? The Experience page demo whispers are hard-coded and will NOT be affected. This cannot be undone.`
+    );
+    if (!confirmed) return;
+    const prev = whispers;
+    setWhispers([]);
+    try {
+      const res = await fetch("/api/author/whispers", { method: "DELETE" });
+      if (!res.ok) throw new Error(`Server returned ${res.status}`);
+    } catch (err) {
+      console.error("[dashboard] bulk whisper delete failed:", err);
+      setWhispers(prev); // roll back on failure
+      alert("Could not delete whispers. Please try again.");
     }
   };
 
@@ -884,23 +921,29 @@ export default function AuthorDashboard() {
             marginBottom: "2.5rem",
           }}
         >
-          {[
-            {
-              label: t("studio.stats.activeReaders"),
-              value: statsLoading ? "—" : String(stats?.readers.active ?? 0),
-            },
-            {
-              label: t("studio.stats.revenue"),
-              value: statsLoading
-                ? "—"
-                : stats
-                ? `$${(((stats.stripe.balance.available + stats.stripe.balance.pending) / 100)
-                    .toFixed(0))}`
-                : "$0",
-            },
-            { label: t("studio.stats.openSignals"), value: String(openSignals.length) },
-            { label: t("studio.stats.whispers"), value: String(whispers.length) },
-          ].map((stat, i) => (
+          {(() => {
+            const salesSummary = getSalesSummary();
+            const stripeRevenueDollars = stats
+              ? (stats.stripe.balance.available + stats.stripe.balance.pending) / 100
+              : 0;
+            // salesSummary.totalRevenueNet is post Stripe-fee for direct sales.
+            // stripeRevenueDollars comes from stripe.balance which is already net.
+            const totalRevenue = salesSummary.totalRevenueNet + stripeRevenueDollars;
+            return [
+              {
+                label: t("studio.stats.booksSold"),
+                value: String(salesSummary.totalCount),
+              },
+              {
+                label: t("studio.stats.revenue"),
+                value: statsLoading
+                  ? "—"
+                  : `$${totalRevenue.toFixed(2)}`,
+              },
+              { label: t("studio.stats.openSignals"), value: String(openSignals.length) },
+              { label: t("studio.stats.whispers"), value: String(whispers.length) },
+            ];
+          })().map((stat, i) => (
             <div
               key={i}
               style={{
@@ -1114,7 +1157,28 @@ export default function AuthorDashboard() {
               </div>
 
               {/* Existing whispers */}
-              <SectionHeader label={t("studio.whispers.placed", { count: whispers.length })} />
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <SectionHeader label={t("studio.whispers.placed", { count: whispers.length })} />
+                {whispers.length > 0 && (
+                  <button
+                    onClick={handleDeleteAllWhispers}
+                    style={{
+                      fontFamily: '"JetBrains Mono", monospace',
+                      fontSize: "0.55rem",
+                      letterSpacing: "0.15em",
+                      textTransform: "uppercase",
+                      color: "rgba(255,120,120,0.6)",
+                      background: "transparent",
+                      border: "1px solid rgba(255,120,120,0.25)",
+                      padding: "0.45rem 0.85rem",
+                      cursor: "pointer",
+                    }}
+                    title="Remove every whisper from the database. Experience page demo whispers are not affected."
+                  >
+                    Delete All
+                  </button>
+                )}
+              </div>
               {whispers.length === 0 && (
                 <p
                   style={{
@@ -1630,6 +1694,257 @@ export default function AuthorDashboard() {
               transition={{ duration: 0.25 }}
             >
               <SectionHeader label={t("studio.analytics.heading")} />
+
+              {/* ── SALES LEDGER ─────────────────────────────────────────── */}
+              {(() => {
+                const salesSummary = getSalesSummary();
+                const stripeRevenueDollars = stats
+                  ? (stats.stripe.balance.available + stats.stripe.balance.pending) / 100
+                  : 0;
+                const revenueByTitle = getRevenueByTitle(
+                  stripeRevenueDollars,
+                  "chico-montecristi",
+                );
+                const grandTotal = revenueByTitle.reduce((s, r) => s + r.totalRevenue, 0);
+                return (
+                  <div
+                    style={{
+                      border: "1px solid rgba(201,168,76,0.12)",
+                      padding: "2rem",
+                      marginBottom: "1.5rem",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "baseline",
+                        marginBottom: "1.5rem",
+                      }}
+                    >
+                      <p
+                        style={{
+                          fontFamily: '"JetBrains Mono", monospace',
+                          fontSize: "0.46rem",
+                          letterSpacing: "0.2em",
+                          color: "rgba(201,168,76,0.4)",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        {t("studio.sales.heading")}
+                      </p>
+                      <p
+                        style={{
+                          fontFamily: '"JetBrains Mono", monospace',
+                          fontSize: "0.4rem",
+                          letterSpacing: "0.15em",
+                          color: "rgba(245,230,200,0.2)",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        {salesSummary.totalCount}{" "}
+                        {t("studio.sales.copiesSoldSuffix")} · ${grandTotal.toFixed(2)}
+                      </p>
+                    </div>
+
+                    {/* Per-title revenue table (direct + subscription attribution) */}
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 70px 90px 90px 90px",
+                        gap: "0.75rem",
+                        padding: "0.5rem 0",
+                        borderBottom: "1px solid rgba(201,168,76,0.18)",
+                        marginBottom: "0.5rem",
+                      }}
+                    >
+                      {[
+                        t("studio.sales.col.title"),
+                        t("studio.sales.col.copies"),
+                        t("studio.sales.col.direct"),
+                        t("studio.sales.col.subs"),
+                        t("studio.sales.col.total"),
+                      ].map((label, i) => (
+                        <span
+                          key={i}
+                          style={{
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: "0.42rem",
+                            letterSpacing: "0.15em",
+                            color: "rgba(245,230,200,0.25)",
+                            textTransform: "uppercase",
+                            textAlign: i === 0 ? "left" : "right",
+                          }}
+                        >
+                          {label}
+                        </span>
+                      ))}
+                    </div>
+                    {revenueByTitle.map((row) => (
+                      <div
+                        key={row.slug}
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "1fr 70px 90px 90px 90px",
+                          gap: "0.75rem",
+                          padding: "0.7rem 0",
+                          alignItems: "baseline",
+                          borderBottom: "1px solid rgba(201,168,76,0.06)",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                            fontSize: "1rem",
+                            color: "rgba(245,230,200,0.75)",
+                          }}
+                        >
+                          {row.title}
+                        </span>
+                        <span
+                          style={{
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: "0.6rem",
+                            color: "rgba(245,230,200,0.55)",
+                            textAlign: "right",
+                          }}
+                        >
+                          {row.salesCount}
+                        </span>
+                        <span
+                          style={{
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: "0.6rem",
+                            color: "rgba(201,168,76,0.55)",
+                            textAlign: "right",
+                          }}
+                        >
+                          ${row.directRevenueNet.toFixed(2)}
+                        </span>
+                        <span
+                          style={{
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: "0.6rem",
+                            color: "rgba(0,229,204,0.5)",
+                            textAlign: "right",
+                          }}
+                        >
+                          ${row.subscriptionRevenue.toFixed(2)}
+                        </span>
+                        <span
+                          style={{
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: "0.65rem",
+                            color: "rgba(201,168,76,0.85)",
+                            textAlign: "right",
+                          }}
+                        >
+                          ${row.totalRevenue.toFixed(2)}
+                        </span>
+                      </div>
+                    ))}
+
+                    {/* Recent sales */}
+                    <p
+                      style={{
+                        fontFamily: '"JetBrains Mono", monospace',
+                        fontSize: "0.42rem",
+                        letterSpacing: "0.18em",
+                        color: "rgba(245,230,200,0.2)",
+                        textTransform: "uppercase",
+                        marginTop: "1.75rem",
+                        marginBottom: "0.75rem",
+                      }}
+                    >
+                      {t("studio.sales.recent")}
+                    </p>
+                    {salesSummary.recent.length === 0 ? (
+                      <p
+                        style={{
+                          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                          fontSize: "0.9rem",
+                          fontStyle: "italic",
+                          color: "rgba(245,230,200,0.3)",
+                        }}
+                      >
+                        {t("studio.sales.empty")}
+                      </p>
+                    ) : (
+                      <div>
+                        {salesSummary.recent.map((sale) => {
+                          const book = BOOKS[sale.bookSlug];
+                          const amt = (sale.amount && sale.amount !== 0)
+                            ? sale.amount
+                            : (book?.salePrice ?? 0);
+                          return (
+                            <div
+                              key={sale.id}
+                              style={{
+                                display: "grid",
+                                gridTemplateColumns: "80px 1fr auto auto",
+                                gap: "1rem",
+                                padding: "0.5rem 0",
+                                alignItems: "baseline",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontFamily: '"JetBrains Mono", monospace',
+                                  fontSize: "0.5rem",
+                                  color: "rgba(245,230,200,0.25)",
+                                }}
+                              >
+                                {sale.date}
+                              </span>
+                              <span
+                                style={{
+                                  fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                                  fontSize: "0.9rem",
+                                  color: "rgba(245,230,200,0.55)",
+                                }}
+                              >
+                                {book?.title ?? sale.bookSlug}
+                              </span>
+                              <span
+                                style={{
+                                  fontFamily: '"JetBrains Mono", monospace',
+                                  fontSize: "0.45rem",
+                                  letterSpacing: "0.12em",
+                                  color: "rgba(201,168,76,0.35)",
+                                  textTransform: "uppercase",
+                                }}
+                              >
+                                {sale.channel}
+                              </span>
+                              <span
+                                style={{
+                                  fontFamily: '"JetBrains Mono", monospace',
+                                  fontSize: "0.55rem",
+                                  color: "rgba(201,168,76,0.55)",
+                                }}
+                              >
+                                ${amt.toFixed(2)}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    <p
+                      style={{
+                        fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                        fontSize: "0.75rem",
+                        fontStyle: "italic",
+                        color: "rgba(245,230,200,0.25)",
+                        marginTop: "1rem",
+                      }}
+                    >
+                      {t("studio.sales.footer")}
+                    </p>
+                  </div>
+                );
+              })()}
 
               {/* Depth visualization */}
               <div
