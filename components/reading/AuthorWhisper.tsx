@@ -22,36 +22,13 @@ export interface WhisperData {
   type: "whisper" | "anchor"; // Whisper = short text. Anchor = pinned reader insight.
 }
 
-// ─── AUTHOR WHISPERS — Chico Montecristi on The Hunt ─────────────────────────
-export const DEMO_WHISPERS: WhisperData[] = [
-  {
-    id: "whisper-1",
-    paragraphIndex: 1,
-    anchoredText: "the story of a teacher\'s suicide would be mustered over lunch like fries",
-    content: "Robbin is the kind of person who tells the truth without knowing it. She\'s the most honest character in the book. She just doesn\'t know she is.",
-    authorName: "Chico Montecristi",
-    timestamp: "2025",
-    type: "whisper",
-  },
-  {
-    id: "whisper-2",
-    paragraphIndex: 10,
-    anchoredText: "suicide was not one of them",
-    content: "The town knew before they knew. That\'s how small places work. The official story arrives after everyone has already decided what happened.",
-    authorName: "Chico Montecristi",
-    timestamp: "2025",
-    type: "anchor",
-  },
-  {
-    id: "whisper-3",
-    paragraphIndex: 55,
-    anchoredText: "You can\'t really trust the voices you hear",
-    content: "Alma says this at the end of chapter one and she\'s talking about the voices around her — gossip, rumor. But she\'s also talking about the whole book.",
-    authorName: "Chico Montecristi",
-    timestamp: "2025",
-    type: "whisper",
-  },
-];
+// ─── AUTHOR WHISPERS ─────────────────────────────────────────────────────────
+// Intentionally empty. Real author whispers are fetched from the database
+// via /api/whispers?chapter=... and attributed to whoever wrote them. Placing
+// AI-written text under the author's name would be misleading.
+// The Experience page has its own self-contained demo data in
+// app/experience/LivingPage.tsx — that page is NOT affected by this export.
+export const DEMO_WHISPERS: WhisperData[] = [];
 
 // ─── AUTHOR WHISPER COMPONENT ────────────────────────────────────────────────
 

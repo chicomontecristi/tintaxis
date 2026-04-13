@@ -37,11 +37,8 @@ export default function MarginWorld({
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   // Use whispers passed from parent (already fetched by ReadingSurface).
-  // Fall back to DEMO_WHISPERS only if nothing provided yet.
-  const liveWhispers: WhisperData[] =
-    liveWhispersProp && liveWhispersProp.length > 0
-      ? liveWhispersProp
-      : DEMO_WHISPERS;
+  // No fallback — only real author-created whispers from the DB appear here.
+  const liveWhispers: WhisperData[] = liveWhispersProp ?? [];
 
   // Sort by paragraph order
   const sorted = [...annotations].sort(
@@ -65,27 +62,31 @@ export default function MarginWorld({
         onGateTriggered={onGateTriggered}
       />
 
-      {/* ── Author Whispers — always visible ──────────────── */}
-      <div style={{ marginTop: "1.5rem", display: "flex", flexDirection: "column" }}>
-        <p
-          style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.75rem",
-            letterSpacing: "0.2em",
-            color: "var(--brass-dim)",
-            textTransform: "uppercase",
-            marginBottom: "0.75rem",
-          }}
-        >
-          Author
-        </p>
-        {liveWhispers.map((whisper) => (
-          <AuthorWhisper key={whisper.id} whisper={whisper} />
-        ))}
-      </div>
+      {/* ── Author Whispers — only render when the author has placed some ── */}
+      {liveWhispers.length > 0 && (
+        <>
+          <div style={{ marginTop: "1.5rem", display: "flex", flexDirection: "column" }}>
+            <p
+              style={{
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: "0.75rem",
+                letterSpacing: "0.2em",
+                color: "var(--brass-dim)",
+                textTransform: "uppercase",
+                marginBottom: "0.75rem",
+              }}
+            >
+              Author
+            </p>
+            {liveWhispers.map((whisper) => (
+              <AuthorWhisper key={whisper.id} whisper={whisper} />
+            ))}
+          </div>
 
-      {/* ── Brass divider ─────────────────────────────────── */}
-      <div className="brass-line" style={{ margin: "1rem 0" }} />
+          {/* ── Brass divider ─────────────────────────────────── */}
+          <div className="brass-line" style={{ margin: "1rem 0" }} />
+        </>
+      )}
 
       {/* ── Annotations ────────────────────────────────────── */}
       <div style={{ marginTop: "0.5rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
