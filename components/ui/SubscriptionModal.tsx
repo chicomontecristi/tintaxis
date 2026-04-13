@@ -132,6 +132,7 @@ export default function SubscriptionModal({
 }: SubscriptionModalProps) {
   const { t } = useI18n();
   const [loadingTier, setLoadingTier] = useState<SubscriptionTierName | null>(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   // Reset loading state when reader returns from Stripe (back button / tab switch)
   useEffect(() => {
@@ -158,6 +159,7 @@ export default function SubscriptionModal({
   }, [isOpen, onClose]);
 
   const handleSubscribe = async (tierId: SubscriptionTierName) => {
+    setCheckoutError(null);
     setLoadingTier(tierId);
     try {
       // Digital copy uses a separate one-time payment endpoint
@@ -172,15 +174,17 @@ export default function SubscriptionModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const data = await res.json();
-      if (data.url) {
+      const data = await res.json().catch(() => ({} as any));
+      if (res.ok && data?.url) {
         window.location.href = data.url;
-      } else {
-        console.error("[SubscriptionModal] No checkout URL returned:", data);
-        setLoadingTier(null);
+        return;
       }
+      console.error("[SubscriptionModal] No checkout URL returned:", data);
+      setCheckoutError(data?.error || `Checkout unavailable (status ${res.status}). Please try again in a moment.`);
+      setLoadingTier(null);
     } catch (err) {
       console.error("[SubscriptionModal] Checkout error:", err);
+      setCheckoutError("Network error — could not reach checkout. Check your connection and try again.");
       setLoadingTier(null);
     }
   };
@@ -321,6 +325,28 @@ export default function SubscriptionModal({
                 );
               })}
             </div>
+
+            {/* Checkout error */}
+            {checkoutError && (
+              <div
+                role="alert"
+                style={{
+                  margin: "0 auto 1rem",
+                  maxWidth: "28rem",
+                  padding: "0.6rem 0.9rem",
+                  border: "1px solid rgba(255,120,120,0.35)",
+                  background: "rgba(255,120,120,0.06)",
+                  fontFamily: '"JetBrains Mono", monospace',
+                  fontSize: "0.72rem",
+                  letterSpacing: "0.05em",
+                  color: "rgba(255,190,190,0.9)",
+                  textAlign: "center",
+                  lineHeight: 1.5,
+                }}
+              >
+                {checkoutError}
+              </div>
+            )}
 
             {/* Footer note */}
             <div style={{

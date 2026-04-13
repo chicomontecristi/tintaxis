@@ -493,19 +493,28 @@ export default function AuthorDashboard() {
   const answeredSignals = signals.filter((s) => s.answered);
 
   const handleReply = async (id: string, reply: string) => {
+    // Capture the previous state so we can roll back on failure
+    const previous = signals;
     // Optimistic update
     setSignals((prev) =>
       prev.map((s) => (s.id === id ? { ...s, answered: true, reply } : s))
     );
     // Persist to Supabase
     try {
-      await fetch(`/api/author/signals/${id}`, {
+      const res = await fetch(`/api/author/signals/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reply }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({} as any));
+        setSignals(previous);
+        alert(`Reply not saved: ${data?.error || `Server returned ${res.status}`}. Please try again.`);
+      }
     } catch (err) {
       console.error("[dashboard] reply persist failed:", err);
+      setSignals(previous);
+      alert("Network error — your reply was NOT saved. Please check your connection and try again.");
     }
   };
 
@@ -759,12 +768,20 @@ export default function AuthorDashboard() {
   };
 
   const handleDeleteWhisper = async (id: string) => {
+    const previous = whispers;
     // Optimistic removal
     setWhispers((prev) => prev.filter((w) => w.id !== id));
     try {
-      await fetch(`/api/author/whispers/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/author/whispers/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({} as any));
+        setWhispers(previous);
+        alert(`Delete failed: ${data?.error || `Server returned ${res.status}`}. The whisper was restored.`);
+      }
     } catch (err) {
       console.error("[dashboard] whisper delete failed:", err);
+      setWhispers(previous);
+      alert("Network error — the whisper could not be deleted. It has been restored.");
     }
   };
 

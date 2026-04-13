@@ -310,15 +310,19 @@ export default function BookPageClient() {
                     returnUrl: `/book/${book.slug}`,
                   }),
                 });
-                const data = await res.json();
-                if (data.url) {
+                const data = await res.json().catch(() => ({} as any));
+                if (res.ok && data?.url) {
                   window.location.href = data.url;
-                } else {
-                  console.error("Failed to create checkout session", data.error);
-                  setDcLoading(false);
+                  return;
                 }
+                console.error("Failed to create checkout session", data?.error);
+                alert(
+                  `Could not start checkout: ${data?.error || `Server returned ${res.status}`}. Please try again in a moment.`
+                );
+                setDcLoading(false);
               } catch (err) {
                 console.error("Error:", err);
+                alert("Network error — could not reach the checkout service. Please check your connection and try again.");
                 setDcLoading(false);
               }
             }}
