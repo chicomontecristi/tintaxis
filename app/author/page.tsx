@@ -402,7 +402,8 @@ export default function AuthorDashboard() {
   }, [selectedBookSlug]);
 
   const [whisperForm, setWhisperForm] = useState({ chapterSlug: activeBook.firstChapterSlug, anchorText: "", whisper: "" });
-  const [whisperStatus, setWhisperStatus] = useState<"idle" | "saved">("idle");
+  const [whisperStatus, setWhisperStatus] = useState<"idle" | "saving" | "saved">("idle");
+  const [whisperError, setWhisperError] = useState<string | null>(null);
 
   // ── Voiceover state ──────────────────────────────────────────────────────
   const [voiceovers, setVoiceovers] = useState<Record<string, string>>({}); // chapterSlug → url
@@ -695,47 +696,66 @@ export default function AuthorDashboard() {
 
   const handleAddWhisper = async (e: FormEvent) => {
     e.preventDefault();
-    if (!whisperForm.anchorText.trim() || !whisperForm.whisper.trim()) return;
+    setWhisperError(null);
 
+    const anchor = whisperForm.anchorText.trim();
+    const body   = whisperForm.whisper.trim();
+
+    if (!anchor && !body) {
+      setWhisperError("Fill in both the anchor text and the whisper body.");
+      return;
+    }
+    if (!anchor) {
+      setWhisperError("Anchor text is required — paste the sentence the whisper responds to.");
+      return;
+    }
+    if (!body) {
+      setWhisperError("Whisper body is required — write what you want to say.");
+      return;
+    }
+
+    setWhisperStatus("saving");
     try {
       const res = await fetch("/api/author/whispers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           chapterSlug: whisperForm.chapterSlug,
-          anchorText:  whisperForm.anchorText.trim(),
-          content:     whisperForm.whisper.trim(),
+          anchorText:  anchor,
+          content:     body,
         }),
       });
-      const data = await res.json();
-      if (data.whisper) {
-        const w = data.whisper;
-        setWhispers((prev) => [{
-          id:           w.id,
-          chapterSlug:  w.chapter_slug,
-          chapterTitle: w.chapter_title ?? w.chapter_slug,
-          anchorText:   w.anchor_text,
-          whisper:      w.content,
-          createdAt:    w.created_at,
-        }, ...prev]);
+      const data = await res.json().catch(() => ({} as any));
+
+      if (!res.ok) {
+        setWhisperError(data?.error || `Server returned ${res.status}. Please try again.`);
+        setWhisperStatus("idle");
+        return;
       }
+      if (!data.whisper) {
+        setWhisperError("Server did not return the new whisper. Please refresh and try again.");
+        setWhisperStatus("idle");
+        return;
+      }
+
+      const w = data.whisper;
+      setWhispers((prev) => [{
+        id:           w.id,
+        chapterSlug:  w.chapter_slug,
+        chapterTitle: w.chapter_title ?? w.chapter_slug,
+        anchorText:   w.anchor_text,
+        whisper:      w.content,
+        createdAt:    w.created_at,
+      }, ...prev]);
+
+      setWhisperForm((prev) => ({ ...prev, anchorText: "", whisper: "" }));
+      setWhisperStatus("saved");
+      setTimeout(() => setWhisperStatus("idle"), 2000);
     } catch (err) {
       console.error("[dashboard] whisper persist failed:", err);
-      // Optimistic local fallback
-      const chapter = bookChapters.find((c) => c.slug === whisperForm.chapterSlug);
-      setWhispers((prev) => [{
-        id: `w${Date.now()}`,
-        chapterSlug:  whisperForm.chapterSlug,
-        chapterTitle: chapter?.title ?? whisperForm.chapterSlug,
-        anchorText:   whisperForm.anchorText,
-        whisper:      whisperForm.whisper,
-        createdAt:    new Date().toISOString(),
-      }, ...prev]);
+      setWhisperError("Network error. Your whisper was NOT saved. Please try again.");
+      setWhisperStatus("idle");
     }
-
-    setWhisperForm((prev) => ({ ...prev, anchorText: "", whisper: "" }));
-    setWhisperStatus("saved");
-    setTimeout(() => setWhisperStatus("idle"), 2000);
   };
 
   const handleDeleteWhisper = async (id: string) => {
@@ -1137,22 +1157,47 @@ export default function AuthorDashboard() {
                   </div>
                   <motion.button
                     type="submit"
-                    whileHover={{ borderColor: "rgba(201,168,76,0.6)" }}
-                    whileTap={{ scale: 0.98 }}
+                    disabled={whisperStatus === "saving"}
+                    whileHover={whisperStatus === "saving" ? {} : { borderColor: "rgba(201,168,76,0.6)" }}
+                    whileTap={whisperStatus === "saving" ? {} : { scale: 0.98 }}
                     style={{
                       fontFamily: '"JetBrains Mono", monospace',
                       fontSize: "0.52rem",
                       letterSpacing: "0.22em",
                       textTransform: "uppercase",
-                      color: whisperStatus === "saved" ? "rgba(201,168,76,0.4)" : "#C9A84C",
+                      color:
+                        whisperStatus === "saved"
+                          ? "rgba(201,168,76,0.4)"
+                          : whisperStatus === "saving"
+                          ? "rgba(201,168,76,0.6)"
+                          : "#C9A84C",
                       background: "transparent",
                       border: "1px solid rgba(201,168,76,0.3)",
                       padding: "0.65rem 1.5rem",
-                      cursor: "pointer",
+                      cursor: whisperStatus === "saving" ? "wait" : "pointer",
+                      opacity: whisperStatus === "saving" ? 0.7 : 1,
                     }}
                   >
-                    {whisperStatus === "saved" ? t("studio.whispers.saved") : t("studio.whispers.add")}
+                    {whisperStatus === "saved"
+                      ? t("studio.whispers.saved")
+                      : whisperStatus === "saving"
+                      ? "Saving…"
+                      : t("studio.whispers.add")}
                   </motion.button>
+                  {whisperError && (
+                    <p
+                      style={{
+                        marginTop: "0.85rem",
+                        fontFamily: '"JetBrains Mono", monospace',
+                        fontSize: "0.72rem",
+                        letterSpacing: "0.05em",
+                        color: "rgba(255,120,120,0.85)",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {whisperError}
+                    </p>
+                  )}
                 </form>
               </div>
 
