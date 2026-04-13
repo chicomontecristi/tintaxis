@@ -419,6 +419,11 @@ export default function AuthorDashboard() {
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [voiceoverPreview, setVoiceoverPreview] = useState<string | null>(null); // object URL
   const [previewChapter, setPreviewChapter] = useState<string | null>(null); // which chapter the preview belongs to
+  const [recordingBytes, setRecordingBytes] = useState(0); // live size of in-progress recording
+
+  // ── Voice-note storage caps (keep in sync with /api/author/audio) ────────
+  const AUDIO_MAX_BYTES  = 3   * 1024 * 1024; // 3 MB hard cap
+  const AUDIO_WARN_BYTES = 2.5 * 1024 * 1024; // 2.5 MB soft warning
 
   const [stats, setStats] = useState<LiveStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
@@ -553,7 +558,8 @@ export default function AuthorDashboard() {
   // Uses a presign → direct-to-Supabase flow to bypass Vercel's 4.5 MB body
   // cap. The route handler only exchanges a tiny JSON token; the actual file
   // bytes go from the browser straight to Supabase Storage.
-  const MAX_UPLOAD_MB = 50;
+  // Voice notes are commentary, not full narration — 3 MB / ~5 min
+  const MAX_UPLOAD_MB = 3;
   const MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024;
 
   const handleVoiceoverUpload = async (chapterSlug: string, file: File): Promise<boolean> => {
@@ -561,8 +567,8 @@ export default function AuthorDashboard() {
     if (file.size > MAX_UPLOAD_BYTES) {
       const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
       alert(
-        `File too large (${sizeMB} MB). Maximum is ${MAX_UPLOAD_MB} MB.\n\n` +
-        `.wav files are uncompressed and can be huge — convert to .mp3 first for a ~10× size reduction with no audible quality loss.`
+        `File too large (${sizeMB} MB). Maximum is ${MAX_UPLOAD_MB} MB (~5 min voice note).\n\n` +
+        `Voice notes work best when short and focused — try trimming to your most insightful 3–5 minutes, or export at 64 kbps mono MP3 for a much smaller file.`
       );
       return false;
     }
@@ -622,7 +628,10 @@ export default function AuthorDashboard() {
 
   const startRecording = async (chapterSlug: string) => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Request mono channel at the OS level — saves bytes before encoding
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true },
+      });
 
       // Pick a supported mimeType — Safari doesn't support webm
       const mimeType = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
@@ -633,15 +642,26 @@ export default function AuthorDashboard() {
         ? "audio/mp4"
         : ""; // let browser pick default
 
-      const recorder = mimeType
-        ? new MediaRecorder(stream, { mimeType })
-        : new MediaRecorder(stream);
+      // 64 kbps mono Opus ≈ 0.5 MB/min — excellent for spoken voice
+      const options: MediaRecorderOptions = {
+        audioBitsPerSecond: 64000,
+        ...(mimeType ? { mimeType } : {}),
+      };
+      const recorder = new MediaRecorder(stream, options);
 
       chunksRef.current = [];
+      let runningBytes = 0;
 
       recorder.ondataavailable = (e) => {
         if (e.data && e.data.size > 0) {
           chunksRef.current.push(e.data);
+          runningBytes += e.data.size;
+          setRecordingBytes(runningBytes);
+
+          // Hard-stop at the 3 MB cap so we never upload an oversize file
+          if (runningBytes >= AUDIO_MAX_BYTES && recorder.state === "recording") {
+            recorder.stop();
+          }
         }
       };
 
@@ -653,6 +673,7 @@ export default function AuthorDashboard() {
           const blob = new Blob(finalChunks, { type: recorder.mimeType || "audio/webm" });
           setVoiceoverPreview(URL.createObjectURL(blob));
           setPreviewChapter(chapterSlug); // scope preview to this chapter
+          setRecordingBytes(blob.size);
         }
         setRecordingChapter(null);
         if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
@@ -665,6 +686,7 @@ export default function AuthorDashboard() {
       setRecordingTime(0);
       setRecordedChunks([]);
       setVoiceoverPreview(null);
+      setRecordingBytes(0);
 
       recordingTimerRef.current = setInterval(() => {
         setRecordingTime((t) => t + 1);
@@ -1799,25 +1821,30 @@ export default function AuthorDashboard() {
                               fontSize: "0.48rem",
                               letterSpacing: "0.15em",
                               textTransform: "uppercase",
-                              color: "#C0392B",
+                              color: recordingBytes >= AUDIO_WARN_BYTES ? "#E39F3F" : "#C0392B",
                               background: "transparent",
-                              border: "1px solid rgba(192,57,43,0.4)",
+                              border: `1px solid ${recordingBytes >= AUDIO_WARN_BYTES ? "rgba(227,159,63,0.5)" : "rgba(192,57,43,0.4)"}`,
                               padding: "0.4rem 1rem",
                               cursor: "pointer",
                               display: "flex",
                               alignItems: "center",
                               gap: "0.4rem",
                             }}
+                            title={
+                              recordingBytes >= AUDIO_WARN_BYTES
+                                ? "Approaching 3 MB limit — recording will stop automatically."
+                                : "Tap to stop recording."
+                            }
                           >
                             <span style={{
                               width: "6px",
                               height: "6px",
                               borderRadius: "50%",
-                              backgroundColor: "#C0392B",
+                              backgroundColor: recordingBytes >= AUDIO_WARN_BYTES ? "#E39F3F" : "#C0392B",
                               display: "inline-block",
                               animation: "narrator-pulse 1s ease-in-out infinite",
                             }} />
-                            Stop · {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, "0")}
+                            Stop · {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, "0")} · {(recordingBytes / (1024 * 1024)).toFixed(1)}/3 MB
                           </button>
                         ) : (
                           <button

@@ -9,7 +9,7 @@ import { supabase } from "@/lib/supabase";
 // Storage bucket: "voiceovers"
 // Path pattern:   {bookSlug}/{chapterSlug}.webm (or .mp4, .mp3, etc.)
 
-const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+const MAX_SIZE = 3 * 1024 * 1024; // 3 MB — voice commentary cap (~5 min @ 64kbps Opus)
 const ALLOWED_TYPES = [
   "audio/mpeg",
   "audio/mp3",
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     // Validate file size
     if (file.size > MAX_SIZE) {
       return NextResponse.json(
-        { error: "File too large. Maximum 10MB." },
+        { error: "File too large. Maximum 3 MB (~5 min voice note)." },
         { status: 400 }
       );
     }
