@@ -404,6 +404,10 @@ export default function AuthorDashboard() {
   const [whisperForm, setWhisperForm] = useState({ chapterSlug: activeBook.firstChapterSlug, anchorText: "", whisper: "" });
   const [whisperStatus, setWhisperStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [whisperError, setWhisperError] = useState<string | null>(null);
+  const [editingWhisperId, setEditingWhisperId] = useState<string | null>(null);
+  const [editWhisperDraft, setEditWhisperDraft] = useState<{ anchorText: string; whisper: string }>({ anchorText: "", whisper: "" });
+  const [editWhisperSaving, setEditWhisperSaving] = useState(false);
+  const [editWhisperError, setEditWhisperError] = useState<string | null>(null);
 
   // ── Voiceover state ──────────────────────────────────────────────────────
   const [voiceovers, setVoiceovers] = useState<Record<string, string>>({}); // chapterSlug → url
@@ -782,6 +786,59 @@ export default function AuthorDashboard() {
       console.error("[dashboard] whisper delete failed:", err);
       setWhispers(previous);
       alert("Network error — the whisper could not be deleted. It has been restored.");
+    }
+  };
+
+  const startEditWhisper = (w: WhisperEntry) => {
+    setEditingWhisperId(w.id);
+    setEditWhisperDraft({ anchorText: w.anchorText, whisper: w.whisper });
+    setEditWhisperError(null);
+  };
+
+  const cancelEditWhisper = () => {
+    setEditingWhisperId(null);
+    setEditWhisperDraft({ anchorText: "", whisper: "" });
+    setEditWhisperError(null);
+    setEditWhisperSaving(false);
+  };
+
+  const saveEditWhisper = async (id: string) => {
+    const anchor = editWhisperDraft.anchorText.trim();
+    const body   = editWhisperDraft.whisper.trim();
+    if (!anchor) { setEditWhisperError("Anchor text is required."); return; }
+    if (!body)   { setEditWhisperError("Whisper body is required."); return; }
+
+    setEditWhisperError(null);
+    setEditWhisperSaving(true);
+    try {
+      const res = await fetch(`/api/author/whispers/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ anchorText: anchor, content: body }),
+      });
+      const data = await res.json().catch(() => ({} as any));
+      if (!res.ok || !data?.whisper) {
+        setEditWhisperError(data?.error || `Server returned ${res.status}. Please try again.`);
+        setEditWhisperSaving(false);
+        return;
+      }
+      const w = data.whisper;
+      setWhispers((prev) =>
+        prev.map((existing) =>
+          existing.id === id
+            ? {
+                ...existing,
+                anchorText: w.anchor_text,
+                whisper:    w.content,
+              }
+            : existing
+        )
+      );
+      cancelEditWhisper();
+    } catch (err) {
+      console.error("[dashboard] whisper edit failed:", err);
+      setEditWhisperError("Network error — your changes were NOT saved. Please try again.");
+      setEditWhisperSaving(false);
     }
   };
 
@@ -1255,12 +1312,16 @@ export default function AuthorDashboard() {
                   {t("studio.whispers.empty")}
                 </p>
               )}
-              {whispers.map((w) => (
+              {whispers.map((w) => {
+                const isEditing = editingWhisperId === w.id;
+                return (
                 <motion.div
                   key={w.id}
                   layout
                   style={{
-                    border: "1px solid rgba(201,168,76,0.1)",
+                    border: isEditing
+                      ? "1px solid rgba(201,168,76,0.35)"
+                      : "1px solid rgba(201,168,76,0.1)",
                     padding: "1.25rem 1.5rem",
                     marginBottom: "0.75rem",
                   }}
@@ -1277,7 +1338,7 @@ export default function AuthorDashboard() {
                     >
                       {w.chapterTitle}
                     </span>
-                    <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
                       <span
                         style={{
                           fontFamily: '"JetBrains Mono", monospace',
@@ -1287,50 +1348,148 @@ export default function AuthorDashboard() {
                       >
                         {formatDate(w.createdAt)}
                       </span>
-                      <button
-                        onClick={() => handleDeleteWhisper(w.id)}
-                        style={{
-                          fontFamily: '"JetBrains Mono", monospace',
-                          fontSize: "0.44rem",
-                          letterSpacing: "0.1em",
-                          color: "rgba(245,230,200,0.2)",
-                          background: "transparent",
-                          border: "none",
-                          cursor: "pointer",
-                          padding: "0 0.2rem",
-                          lineHeight: 1,
-                        }}
-                        title="Remove whisper"
-                      >
-                        ×
-                      </button>
+                      {!isEditing && (
+                        <>
+                          <button
+                            onClick={() => startEditWhisper(w)}
+                            style={{
+                              fontFamily: '"JetBrains Mono", monospace',
+                              fontSize: "0.52rem",
+                              letterSpacing: "0.15em",
+                              textTransform: "uppercase",
+                              color: "rgba(201,168,76,0.7)",
+                              background: "transparent",
+                              border: "1px solid rgba(201,168,76,0.25)",
+                              cursor: "pointer",
+                              padding: "0.2rem 0.55rem",
+                              lineHeight: 1,
+                            }}
+                            title="Edit whisper"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteWhisper(w.id)}
+                            style={{
+                              fontFamily: '"JetBrains Mono", monospace',
+                              fontSize: "0.44rem",
+                              letterSpacing: "0.1em",
+                              color: "rgba(245,230,200,0.2)",
+                              background: "transparent",
+                              border: "none",
+                              cursor: "pointer",
+                              padding: "0 0.2rem",
+                              lineHeight: 1,
+                            }}
+                            title="Remove whisper"
+                          >
+                            ×
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
-                  <p
-                    style={{
-                      fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                      fontSize: "0.85rem",
-                      fontStyle: "italic",
-                      color: "rgba(245,230,200,0.3)",
-                      marginBottom: "0.5rem",
-                      borderLeft: "2px solid rgba(201,168,76,0.15)",
-                      paddingLeft: "0.65rem",
-                    }}
-                  >
-                    "…{w.anchorText}…"
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: '"EB Garamond", Garamond, Georgia, serif',
-                      fontSize: "0.95rem",
-                      lineHeight: 1.65,
-                      color: "rgba(245,230,200,0.6)",
-                    }}
-                  >
-                    {w.whisper}
-                  </p>
+
+                  {isEditing ? (
+                    <div style={{ marginTop: "0.4rem" }}>
+                      <label style={labelStyle}>{t("studio.whispers.anchor")}</label>
+                      <input
+                        type="text"
+                        value={editWhisperDraft.anchorText}
+                        onChange={(e) => setEditWhisperDraft((p) => ({ ...p, anchorText: e.target.value }))}
+                        style={inputStyle}
+                      />
+                      <div style={{ height: "0.65rem" }} />
+                      <label style={labelStyle}>{t("studio.whispers.label")}</label>
+                      <textarea
+                        value={editWhisperDraft.whisper}
+                        onChange={(e) => setEditWhisperDraft((p) => ({ ...p, whisper: e.target.value }))}
+                        rows={3}
+                        style={{ ...inputStyle, resize: "vertical", lineHeight: 1.65,
+                          fontFamily: '"EB Garamond", Garamond, Georgia, serif', fontSize: "0.95rem" }}
+                      />
+                      <div style={{ display: "flex", gap: "0.6rem", marginTop: "0.9rem" }}>
+                        <button
+                          onClick={() => saveEditWhisper(w.id)}
+                          disabled={editWhisperSaving}
+                          style={{
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: "0.52rem",
+                            letterSpacing: "0.22em",
+                            textTransform: "uppercase",
+                            color: editWhisperSaving ? "rgba(201,168,76,0.5)" : "#C9A84C",
+                            background: "transparent",
+                            border: "1px solid rgba(201,168,76,0.3)",
+                            padding: "0.55rem 1.25rem",
+                            cursor: editWhisperSaving ? "wait" : "pointer",
+                            opacity: editWhisperSaving ? 0.7 : 1,
+                          }}
+                        >
+                          {editWhisperSaving ? "Saving…" : "Save"}
+                        </button>
+                        <button
+                          onClick={cancelEditWhisper}
+                          disabled={editWhisperSaving}
+                          style={{
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: "0.52rem",
+                            letterSpacing: "0.22em",
+                            textTransform: "uppercase",
+                            color: "rgba(245,230,200,0.4)",
+                            background: "transparent",
+                            border: "1px solid rgba(245,230,200,0.15)",
+                            padding: "0.55rem 1.25rem",
+                            cursor: editWhisperSaving ? "wait" : "pointer",
+                          }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                      {editWhisperError && (
+                        <p
+                          style={{
+                            marginTop: "0.75rem",
+                            fontFamily: '"JetBrains Mono", monospace',
+                            fontSize: "0.7rem",
+                            letterSpacing: "0.05em",
+                            color: "rgba(255,120,120,0.85)",
+                            lineHeight: 1.5,
+                          }}
+                        >
+                          {editWhisperError}
+                        </p>
+                      )}
+                    </div>
+                  ) : (
+                    <>
+                      <p
+                        style={{
+                          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                          fontSize: "0.85rem",
+                          fontStyle: "italic",
+                          color: "rgba(245,230,200,0.3)",
+                          marginBottom: "0.5rem",
+                          borderLeft: "2px solid rgba(201,168,76,0.15)",
+                          paddingLeft: "0.65rem",
+                        }}
+                      >
+                        "…{w.anchorText}…"
+                      </p>
+                      <p
+                        style={{
+                          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                          fontSize: "0.95rem",
+                          lineHeight: 1.65,
+                          color: "rgba(245,230,200,0.6)",
+                        }}
+                      >
+                        {w.whisper}
+                      </p>
+                    </>
+                  )}
                 </motion.div>
-              ))}
+                );
+              })}
             </motion.div>
           )}
 

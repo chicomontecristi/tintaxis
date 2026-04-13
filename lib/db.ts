@@ -544,6 +544,32 @@ export async function getSignalReply(
 }
 
 /**
+ * Update a whisper's anchor text and/or body by ID.
+ * Returns the updated row, or null on failure.
+ */
+export async function updateWhisper(
+  id: string,
+  patch: { anchorText?: string; content?: string }
+): Promise<WhisperRow | null> {
+  const update: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (patch.anchorText !== undefined) update.anchor_text = patch.anchorText;
+  if (patch.content     !== undefined) update.content      = patch.content;
+
+  const { data, error } = await supabase
+    .from("whispers")
+    .update(update)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("[db] updateWhisper error:", error.message);
+    return null;
+  }
+  return data as WhisperRow;
+}
+
+/**
  * Delete a whisper by ID.
  */
 export async function deleteWhisper(id: string): Promise<boolean> {
