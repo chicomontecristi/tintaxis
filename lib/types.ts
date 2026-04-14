@@ -182,11 +182,14 @@ export interface Book {
   tagline: string;
   accentColor: string;       // CSS color for book theming
   coverLabel: string;        // Short display label
+  coverImage?: string;       // Path to cover image in /public (e.g. "/covers/the-hunt.jpg")
   firstChapterSlug: string;  // Entry point for readers
   chapterLabel: string;      // "Chapter", "Capítulo", "Letter", etc.
   totalChapters: number;
   wordCount: number;
   year: number;
+  /** Default sale price in USD for direct/off-platform copies. */
+  salePrice?: number;
 }
 
 // ─── READER STATE ────────────────────────────────────────────────────────────

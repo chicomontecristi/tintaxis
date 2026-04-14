@@ -303,20 +303,40 @@ function BookCard({
             cursor: "pointer",
           }}
         >
-          {/* Left: badges + title block */}
+          {/* Left: cover thumb + badges + title block */}
           <div style={{ display: "flex", alignItems: "center", gap: "1.25rem", minWidth: 0 }}>
 
-            {/* Accent color swatch */}
-            <div style={{
-              width: "3px",
-              alignSelf: "stretch",
-              minHeight: compact ? "36px" : "48px",
-              background: accent,
-              opacity: hovered ? 0.8 : 0.35,
-              borderRadius: "2px",
-              flexShrink: 0,
-              transition: "opacity 0.2s ease",
-            }} />
+            {/* Cover thumbnail or accent swatch fallback */}
+            {book.coverImage ? (
+              <div style={{
+                width: compact ? "40px" : "52px",
+                aspectRatio: "2 / 3",
+                borderRadius: "2px",
+                overflow: "hidden",
+                flexShrink: 0,
+                border: `1px solid ${accentBorder}`,
+                boxShadow: hovered ? `0 2px 12px ${accent}30` : "none",
+                transition: "box-shadow 0.2s ease",
+              }}>
+                <img
+                  src={book.coverImage}
+                  alt={book.title}
+                  loading="lazy"
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                />
+              </div>
+            ) : (
+              <div style={{
+                width: "3px",
+                alignSelf: "stretch",
+                minHeight: compact ? "36px" : "48px",
+                background: accent,
+                opacity: hovered ? 0.8 : 0.35,
+                borderRadius: "2px",
+                flexShrink: 0,
+                transition: "opacity 0.2s ease",
+              }} />
+            )}
 
             <div style={{ minWidth: 0 }}>
               {/* Badges row */}

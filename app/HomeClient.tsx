@@ -786,98 +786,99 @@ export default function HomeClient() {
               <Link href={`/book/${book.slug}`} style={{ textDecoration: "none" }}>
                 <div
                   style={{
-                    padding: "1.25rem",
-                    border: `1px solid ${book.accentColor}20`,
-                    borderRadius: "4px",
-                    background: `${book.accentColor}06`,
                     cursor: "pointer",
                     transition: "all 0.3s ease",
-                    minHeight: "180px",
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "space-between",
                   }}
                   className="book-card-hover"
                 >
-                  {/* Language badge */}
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <span
-                      style={{
-                        fontFamily: MONO,
-                        fontSize: "0.55rem",
-                        letterSpacing: "0.2em",
-                        color: book.accentColor,
-                        textTransform: "uppercase",
-                        opacity: 0.7,
-                      }}
-                    >
-                      {book.coverLabel}
-                    </span>
-                    <span
-                      style={{
-                        fontFamily: MONO,
-                        fontSize: "0.5rem",
-                        color: "rgba(245,230,200,0.3)",
-                      }}
-                    >
-                      {book.totalChapters} {book.chapterLabel?.toLowerCase()}s
-                    </span>
-                  </div>
-
-                  {/* Title + author */}
-                  <div style={{ marginTop: "0.75rem" }}>
-                    <h3
-                      style={{
+                  {/* Cover image */}
+                  {book.coverImage ? (
+                    <div style={{
+                      position: "relative",
+                      aspectRatio: "2 / 3",
+                      borderRadius: "4px",
+                      overflow: "hidden",
+                      border: `1px solid ${book.accentColor}25`,
+                      boxShadow: `0 4px 24px ${book.accentColor}15`,
+                    }}>
+                      <img
+                        src={book.coverImage}
+                        alt={`${book.title} — ${book.author}`}
+                        loading="lazy"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          display: "block",
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div style={{
+                      aspectRatio: "2 / 3",
+                      borderRadius: "4px",
+                      border: `1px solid ${book.accentColor}20`,
+                      background: `${book.accentColor}06`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}>
+                      <span style={{
                         fontFamily: SERIF,
-                        fontSize: "1.2rem",
+                        fontSize: "1.4rem",
                         fontStyle: "italic",
                         color: "#F5E6C8",
-                        marginBottom: "0.25rem",
-                        lineHeight: 1.3,
-                      }}
-                    >
-                      {book.title}
-                    </h3>
+                      }}>
+                        {book.title}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Caption below cover */}
+                  <div style={{ marginTop: "0.75rem" }}>
                     <p
                       style={{
-                        fontFamily: MONO,
-                        fontSize: "0.55rem",
-                        letterSpacing: "0.1em",
-                        color: "rgba(245,230,200,0.35)",
-                        textTransform: "uppercase",
+                        fontFamily: SERIF,
+                        fontSize: "0.85rem",
+                        fontStyle: "italic",
+                        color: "rgba(245,230,200,0.4)",
+                        lineHeight: 1.5,
                       }}
                     >
-                      {book.author}
+                      &ldquo;{book.tagline}&rdquo;
                     </p>
-                  </div>
-
-                  {/* Tagline */}
-                  <p
-                    style={{
-                      fontFamily: SERIF,
-                      fontSize: "0.9rem",
-                      fontStyle: "italic",
-                      color: "rgba(245,230,200,0.4)",
-                      lineHeight: 1.5,
-                      marginTop: "0.75rem",
-                    }}
-                  >
-                    &ldquo;{book.tagline}&rdquo;
-                  </p>
-
-                  {/* Read button */}
-                  <div
-                    style={{
-                      marginTop: "1rem",
-                      fontFamily: MONO,
-                      fontSize: "0.55rem",
-                      letterSpacing: "0.2em",
-                      textTransform: "uppercase",
-                      color: book.accentColor,
-                      opacity: 0.6,
-                    }}
-                  >
-                    {t("home.readNow")}
+                    <div
+                      style={{
+                        marginTop: "0.5rem",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: MONO,
+                          fontSize: "0.5rem",
+                          letterSpacing: "0.15em",
+                          textTransform: "uppercase",
+                          color: book.accentColor,
+                          opacity: 0.6,
+                        }}
+                      >
+                        {t("home.readNow")}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: MONO,
+                          fontSize: "0.45rem",
+                          color: "rgba(245,230,200,0.25)",
+                        }}
+                      >
+                        {book.totalChapters} {book.chapterLabel?.toLowerCase()}s
+                      </span>
+                    </div>
                   </div>
                 </div>
               </Link>

@@ -143,7 +143,24 @@ export default function BookPageClient() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.2, 0, 0.1, 1] }}
         >
-          {/* Cover label badge */}
+          {/* Cover image + label badge */}
+          {book.coverImage && (
+            <div style={{
+              width: "clamp(160px, 30vw, 240px)",
+              aspectRatio: "2 / 3",
+              borderRadius: "4px",
+              overflow: "hidden",
+              border: `1px solid ${accentFull}20`,
+              boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 2px 16px ${accentFull}12`,
+              marginBottom: "1.75rem",
+            }}>
+              <img
+                src={book.coverImage}
+                alt={`${book.title} cover`}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
+            </div>
+          )}
           <div
             style={{
               display: "inline-flex",
