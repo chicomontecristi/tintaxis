@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Analytics, type BeforeSendEvent } from "@vercel/analytics/react";
 
@@ -32,7 +32,7 @@ function isGhostSession(): boolean {
 export default function FilteredAnalytics() {
   return (
     <>
-      <GhostDetector />
+      <Suspense fallback={null}><GhostDetector /></Suspense>
       <Analytics
         beforeSend={(event: BeforeSendEvent) => {
           // Drop the event if this is a ghost/admin session (persisted across navigation)
