@@ -1,6 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+
+  // ── Redirect vercel.app → canonical domain ─────────────────────────────
+  // Prevents Google from indexing the deployment URL instead of tintaxis.com
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "tintaxis.vercel.app" }],
+        destination: "https://tintaxis.com/:path*",
+        permanent: true,   // 308 — tells Google to update its index
+      },
+    ];
+  },
   images: {
     remotePatterns: [],
   },
