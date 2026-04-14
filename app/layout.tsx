@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import FilteredAnalytics from "@/components/ui/FilteredAnalytics";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import SiteNav from "@/components/ui/SiteNav";
 import ServiceWorkerRegistration from "@/components/ui/ServiceWorkerRegistration";
 import I18nWrapper from "@/components/ui/I18nWrapper";
@@ -172,6 +173,7 @@ export default function RootLayout({
           </div>
           <ServiceWorkerRegistration />
           <FilteredAnalytics />
+          <SpeedInsights />
         </I18nWrapper>
       </body>
     </html>
