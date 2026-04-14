@@ -36,6 +36,18 @@ const TAG_COLORS: Record<EntryTag, string> = {
 
 const ENTRIES: ChangelogEntry[] = [
   // ── April 2026 ──
+  { date: "2026-04-14", tag: "infra",    titleKey: "cl.seoRedirect.title",     descKey: "cl.seoRedirect.desc" },
+  { date: "2026-04-14", tag: "feature",  titleKey: "cl.ghostPersist.title",    descKey: "cl.ghostPersist.desc" },
+  { date: "2026-04-14", tag: "design",   titleKey: "cl.bookCovers.title",      descKey: "cl.bookCovers.desc" },
+  { date: "2026-04-13", tag: "fix",      titleKey: "cl.audioUploadLimit.title", descKey: "cl.audioUploadLimit.desc" },
+  { date: "2026-04-10", tag: "feature",  titleKey: "cl.netRevenue.title",      descKey: "cl.netRevenue.desc" },
+  { date: "2026-04-10", tag: "feature",  titleKey: "cl.perTitleRevenue.title", descKey: "cl.perTitleRevenue.desc" },
+  { date: "2026-04-10", tag: "feature",  titleKey: "cl.salesLedger.title",     descKey: "cl.salesLedger.desc" },
+  { date: "2026-04-10", tag: "design",   titleKey: "cl.heroCTAs.title",        descKey: "cl.heroCTAs.desc" },
+  { date: "2026-04-10", tag: "feature",  titleKey: "cl.heroAudio.title",       descKey: "cl.heroAudio.desc" },
+  { date: "2026-04-10", tag: "content",  titleKey: "cl.journalLaunch.title",   descKey: "cl.journalLaunch.desc" },
+  { date: "2026-04-10", tag: "feature",  titleKey: "cl.followProject.title",   descKey: "cl.followProject.desc" },
+  { date: "2026-04-10", tag: "content",  titleKey: "cl.chroniclerArtifacts.title", descKey: "cl.chroniclerArtifacts.desc" },
   { date: "2026-04-09", tag: "feature",  titleKey: "cl.i18nFull.title",        descKey: "cl.i18nFull.desc" },
   { date: "2026-04-09", tag: "feature",  titleKey: "cl.changelog.title",       descKey: "cl.changelog.desc" },
   { date: "2026-04-08", tag: "fix",      titleKey: "cl.cdnCache.title",        descKey: "cl.cdnCache.desc" },
