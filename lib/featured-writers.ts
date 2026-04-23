@@ -130,7 +130,7 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
       },
     ],
     instagram: "chicomontecristi",
-    website: "montecristi.netlify.app",
+    website: "chicomontecristi.pages.dev",
   },
 ];
 
