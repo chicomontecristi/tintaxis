@@ -157,6 +157,7 @@ export default function BookPageClient() {
               <img
                 src={book.coverImage}
                 alt={`${book.title} cover`}
+                decoding="async"
                 style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
               />
             </div>

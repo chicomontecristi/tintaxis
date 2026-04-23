@@ -633,6 +633,8 @@ export default function HomeClient() {
           <img
             src="/community-penguins.png"
             alt="Shakespeare surrounded by penguins reading books — Codex and Scribe subscribers in the Tintaxis library"
+            loading="lazy"
+            decoding="async"
             style={{
               width: "100%",
               maxWidth: "700px",
@@ -807,6 +809,7 @@ export default function HomeClient() {
                         src={book.coverImage}
                         alt={`${book.title} — ${book.author}`}
                         loading="lazy"
+                        decoding="async"
                         style={{
                           width: "100%",
                           height: "100%",
