@@ -1,6 +1,5 @@
 "use client";
 
-import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -15,14 +14,13 @@ import type { Book, Chapter } from "@/lib/types";
 // Table of contents for a single book.
 // Shows: cover, description, chapter list with lock status.
 
-export default function BookPageClient() {
-  const params = useParams<{ bookSlug: string }>();
-  const bookSlug = params?.bookSlug ?? "";
-  const { t } = useI18n();
+interface BookPageClientProps {
+  book: Book | null;
+  chapters: Chapter[];
+}
 
-  const [book, setBook] = useState<Book | null>(null);
-  const [chapters, setChapters] = useState<Chapter[]>([]);
-  const [ready, setReady] = useState(false);
+export default function BookPageClient({ book, chapters }: BookPageClientProps) {
+  const { t } = useI18n();
   const [dcLoading, setDcLoading] = useState(false);
 
   // Reset loading state when reader returns from Stripe (back button / tab switch)
@@ -38,50 +36,13 @@ export default function BookPageClient() {
     };
   }, []);
 
+  // Pre-cache chapters for offline reading
   useEffect(() => {
-    // Load book data from API to avoid SSR issues with dynamic client component
-    fetch(`/api/book/${bookSlug}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (data) {
-          setBook(data.book);
-          setChapters(data.chapters);
-          // Pre-cache all chapters for offline reading
-          const slugs = (data.chapters as Chapter[])
-            .filter((ch) => !ch.isLocked)
-            .map((ch) => ch.slug);
-          cacheBookForOffline(bookSlug, slugs);
-        }
-        setReady(true);
-      })
-      .catch(() => setReady(true));
-  }, [bookSlug]);
-
-  if (!ready) {
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          backgroundColor: "#0D0B08",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <span
-          style={{
-            fontFamily: '"JetBrains Mono", monospace',
-            fontSize: "0.6rem",
-            letterSpacing: "0.3em",
-            color: "rgba(201,168,76,0.4)",
-            textTransform: "uppercase",
-          }}
-        >
-          {t("book.loading")}
-        </span>
-      </div>
-    );
-  }
+    if (book && chapters.length > 0) {
+      const slugs = chapters.filter((ch) => !ch.isLocked).map((ch) => ch.slug);
+      cacheBookForOffline(book.slug, slugs);
+    }
+  }, [book, chapters]);
 
   if (!book) {
     return (

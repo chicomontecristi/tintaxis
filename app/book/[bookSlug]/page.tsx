@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { getBook, getAllBookSlugs } from "@/lib/content/books";
+import { getBook, getAllBookSlugs, getBookChaptersOrdered } from "@/lib/content/books";
 import BookPageClient from "./BookPageClient";
+import type { Chapter } from "@/lib/types";
 
 const BASE_URL = "https://tintaxis.vercel.app";
 
@@ -210,10 +211,27 @@ function BookJsonLd({ bookSlug }: { bookSlug: string }) {
 
 // ─── PAGE ────────────────────────────────────────────────────────────────────
 export default function BookPage({ params }: Props) {
+  const book = getBook(params.bookSlug);
+
+  let chapters: Chapter[] = [];
+  if (book) {
+    chapters = getBookChaptersOrdered(params.bookSlug).map((ch) => ({
+      slug: ch.slug,
+      bookSlug: ch.bookSlug,
+      number: ch.number,
+      romanNumeral: ch.romanNumeral,
+      title: ch.title,
+      subtitle: ch.subtitle,
+      isLocked: ch.isLocked,
+      wordCount: ch.wordCount,
+      epigraph: ch.epigraph,
+    }));
+  }
+
   return (
     <>
       <BookJsonLd bookSlug={params.bookSlug} />
-      <BookPageClient />
+      <BookPageClient book={book} chapters={chapters} />
     </>
   );
 }
