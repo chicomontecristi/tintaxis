@@ -27,7 +27,7 @@ const nextConfig = {
   outputFileTracingIncludes: {
     "/api/stripe/redeliver": ["./public/fonts/**/*"],
     "/api/admin/digital-purchases": ["./public/fonts/**/*"],
-    "/api/webhooks/stripe": ["./public/fonts/**/*"],
+    "/api/stripe/webhook": ["./public/fonts/**/*"],
   },
 };
 
