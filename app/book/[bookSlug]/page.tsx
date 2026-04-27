@@ -31,19 +31,44 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     zh: "中文",
   };
 
+  // Semantic keywords optimized for AI crawlers (Rufus, Gemini)
+  const semanticKeywords: Record<string, string[]> = {
+    "the-hunt": [
+      "The Hunt",
+      "Chico Montecristi",
+      "psychological thriller",
+      "family secrets",
+      "guilt and complicity",
+      "literary fiction",
+      "character-driven",
+      "moral ambiguity",
+      "unreliable narrator",
+      "coming of age trauma",
+    ],
+  };
+
+  const keywordList = semanticKeywords[book.slug] || [
+    book.title,
+    "Chico Montecristi",
+    book.genre,
+    languageLabel[book.language] ?? book.language,
+    "Tintaxis",
+    "literary fiction",
+    "read online",
+    "free chapter",
+  ];
+
+  // Semantic Twitter descriptions for thematic positioning
+  const twitterDescriptions: Record<string, string> = {
+    "the-hunt": "A novel about guilt, family secrets, and the psychological burden of complicity. The real hunt is not for justice—but for truth.",
+  };
+
+  const twitterDescription = twitterDescriptions[book.slug] || description;
+
   return {
     title,
     description,
-    keywords: [
-      book.title,
-      "Chico Montecristi",
-      book.genre,
-      languageLabel[book.language] ?? book.language,
-      "Tintaxis",
-      "literary fiction",
-      "read online",
-      "free chapter",
-    ],
+    keywords: keywordList,
     openGraph: {
       title: `${title} · Tintaxis`,
       description,
@@ -55,7 +80,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: `${title} · Tintaxis`,
-      description,
+      description: twitterDescription,
       creator: "@chicomontecristi",
     },
     alternates: {
