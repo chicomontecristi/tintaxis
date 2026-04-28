@@ -48,12 +48,20 @@ export async function POST(req: NextRequest) {
       },
 
       // ──── APPLICATION FEE (15% platform cut, 85% to writer) ────
-    // For digital copy (one-time purchase): deduct 15% fee at payment time
-    // Writer gets 85%, Tintaxis keeps 15% platform fee
+    // For digital copy (one-time purchase at fixed $1.50):
+    // Calculate exact fee: $1.50 - Stripe fee = net, then 15% of net = platform fee
     const writerSlug = book?.writerSlug;
     const writerConnectId = writerSlug
       ? process.env[`STRIPE_CONNECT_${writerSlug.toUpperCase().replace(/-/g, "_")}`]
       : undefined;
+
+    // Fixed price in cents
+    const digitalCopyAmountCents = 150; // $1.50
+    const stripeFeePercent = 0.029;
+    const stripeFeeFixed = 30; // $0.30 in cents
+    const stripeFee = Math.round(digitalCopyAmountCents * stripeFeePercent + stripeFeeFixed);
+    const netAmountCents = digitalCopyAmountCents - stripeFee;
+    const platformFeeCents = Math.round(netAmountCents * 0.15); // 15% of net
 
     // Put the book title on the payment itself so it shows in Stripe dashboard
       payment_intent_data: {
@@ -64,9 +72,9 @@ export async function POST(req: NextRequest) {
           bookTitle,
           ...(writerSlug ? { writerSlug } : {}),
         },
-        // Application fee: 15% of $1.50 = $0.225 (22.5 cents)
-        // Writer gets: $1.275 (85% of net after Stripe fees)
-        application_fee_amount: writerConnectId ? Math.round(150 * 0.15) : undefined,
+        // Deduct 15% of net ($1.16) = $0.174 platform fee
+        // Writer receives remaining 85% = $0.986
+        application_fee_amount: writerConnectId ? platformFeeCents : undefined,
         transfer_data: writerConnectId
           ? {
               destination: writerConnectId,
