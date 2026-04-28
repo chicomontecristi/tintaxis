@@ -33,20 +33,6 @@ export async function POST(req: NextRequest) {
     // Look up book title for clear Stripe dashboard labeling
     const book = getBook(bookSlug);
     const bookTitle = book?.title ?? bookSlug;
-    const writerSlug = book?.writerSlug;
-    const writerConnectId = writerSlug
-      ? process.env[`STRIPE_CONNECT_${writerSlug.toUpperCase().replace(/-/g, "_")}`]
-      : undefined;
-
-    // ──── APPLICATION FEE (15% platform cut, 85% to writer) ────
-    // For digital copy (one-time purchase at fixed $1.50):
-    // Calculate exact fee: $1.50 - Stripe fee = net, then 15% of net = platform fee
-    const digitalCopyAmountCents = 150; // $1.50
-    const stripeFeePercent = 0.029;
-    const stripeFeeFixed = 30; // $0.30 in cents
-    const stripeFee = Math.round(digitalCopyAmountCents * stripeFeePercent + stripeFeeFixed);
-    const netAmountCents = digitalCopyAmountCents - stripeFee;
-    const platformFeeCents = Math.round(netAmountCents * 0.15); // 15% of net
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment", // One-time payment, not recurring subscription
@@ -68,16 +54,7 @@ export async function POST(req: NextRequest) {
           plan: "digital_copy",
           bookSlug,
           bookTitle,
-          ...(writerSlug ? { writerSlug } : {}),
         },
-        // Deduct 15% of net ($1.16) = $0.174 platform fee
-        // Writer receives remaining 85% = $0.986
-        application_fee_amount: writerConnectId ? platformFeeCents : undefined,
-        transfer_data: writerConnectId
-          ? {
-              destination: writerConnectId,
-            }
-          : undefined,
       },
 
       // Pre-fill email if provided
