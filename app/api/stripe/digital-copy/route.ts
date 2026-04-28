@@ -47,14 +47,31 @@ export async function POST(req: NextRequest) {
         role: "reader",
       },
 
-      // Put the book title on the payment itself so it shows in Stripe dashboard
+      // ──── APPLICATION FEE (15% platform cut, 85% to writer) ────
+    // For digital copy (one-time purchase): deduct 15% fee at payment time
+    // Writer gets 85%, Tintaxis keeps 15% platform fee
+    const writerSlug = book?.writerSlug;
+    const writerConnectId = writerSlug
+      ? process.env[`STRIPE_CONNECT_${writerSlug.toUpperCase().replace(/-/g, "_")}`]
+      : undefined;
+
+    // Put the book title on the payment itself so it shows in Stripe dashboard
       payment_intent_data: {
         description: `Digital Copy — ${bookTitle}`,
         metadata: {
           plan: "digital_copy",
           bookSlug,
           bookTitle,
+          ...(writerSlug ? { writerSlug } : {}),
         },
+        // Application fee: 15% of $1.50 = $0.225 (22.5 cents)
+        // Writer gets: $1.275 (85% of net after Stripe fees)
+        application_fee_amount: writerConnectId ? Math.round(150 * 0.15) : undefined,
+        transfer_data: writerConnectId
+          ? {
+              destination: writerConnectId,
+            }
+          : undefined,
       },
 
       // Pre-fill email if provided
