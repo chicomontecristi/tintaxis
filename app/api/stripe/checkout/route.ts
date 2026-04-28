@@ -56,14 +56,30 @@ export async function POST(req: NextRequest) {
       success_url: `${origin}/api/stripe/activate?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url:  `${origin}${safeReturn}`,
 
-      // Subscription settings — include writerSlug so webhooks can route correctly
-      subscription_data: {
-        metadata: {
-          plan,
-          role,
-          ...(writerSlug ? { writerSlug } : {}),
+      // ──── APPLICATION FEE (15% platform cut, 85% to writer) ────
+      // For reader subscriptions: use transfer_data to split payment
+      // Writer gets 85%, Tintaxis keeps 15% platform fee
+      ...(role === "reader" && writerSlug ? {
+        subscription_data: {
+          metadata: {
+            plan,
+            role,
+            writerSlug,
+          },
+          transfer_data: {
+            destination: process.env[`STRIPE_CONNECT_${writerSlug.toUpperCase().replace(/-/g, "_")}`] || "",
+            amount_percent: 85,
+          },
         },
-      },
+      } : {
+        subscription_data: {
+          metadata: {
+            plan,
+            role,
+            ...(writerSlug ? { writerSlug } : {}),
+          },
+        },
+      }),
     });
 
     return NextResponse.json({ url: session.url });
