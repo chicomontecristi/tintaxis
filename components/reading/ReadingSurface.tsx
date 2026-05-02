@@ -419,32 +419,47 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
     return () => observer.disconnect();
   }, [chapter.slug, loadedParagraphs]);
 
+  // ── Ink tier requirements ─────────────────────────────────────────────
+  // Each ink requires a specific tier or higher:
+  // - Ghost, Ember: Codex+
+  // - Copper, Archive, Memory: Scribe+
+  // - Signal: Archive+
+  const getRequiredTierForInk = (ink: InkType): SubscriptionTierName => {
+    switch (ink) {
+      case "signal":
+        return "archive";
+      case "copper":
+      case "archive":
+      case "memory":
+        return "scribe";
+      case "ghost":
+      case "ember":
+      default:
+        return "codex";
+    }
+  };
+
   // ── Handle ink type change ─────────────────────────────────
   const handleInkChange = useCallback(
     (ink: InkType) => {
-      // Signal ink requires Scribe tier
-      if (ink === "signal") {
-        if (!hasAccess("scribe")) {
-          handleGateTriggered("scribe", t("reading.signalInk"));
-          return;
-        }
-        setActiveInkTypeState(ink);
-        setActiveInkType(chapter.slug, ink);
-        const selection = window.getSelection();
-        const text = selection?.toString().trim() || "";
-        setSignalSelectedText(text);
-        setSignalModalOpen(true);
-        return;
-      }
+      const requiredTier = getRequiredTierForInk(ink);
 
-      // All other inks require Codex tier
-      if (!hasAccess("codex")) {
-        handleGateTriggered("codex", t("reading.inkAnnotation"));
+      // Check if user has access to this ink's tier
+      if (!hasAccess(requiredTier)) {
+        handleGateTriggered(requiredTier, t("reading.inkAnnotation"));
         return;
       }
 
       setActiveInkTypeState(ink);
       setActiveInkType(chapter.slug, ink);
+
+      // Signal ink opens a modal for questions to author
+      if (ink === "signal") {
+        const selection = window.getSelection();
+        const text = selection?.toString().trim() || "";
+        setSignalSelectedText(text);
+        setSignalModalOpen(true);
+      }
     },
     [chapter.slug, hasAccess]
   );
