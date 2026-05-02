@@ -118,6 +118,8 @@ export default function InkTutorial({ enabled = true }: InkTutorialProps) {
               left: "50%",
               transform: "translate(-50%, -50%)",
               width: "min(480px, calc(100vw - 2rem))",
+              maxHeight: "calc(100vh - 2rem)",
+              overflowY: "auto",
             }}
             initial={{ opacity: 0, y: 20, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -336,6 +338,8 @@ function SelectDemo() {
         textAlign: "center",
         maxWidth: "32ch",
         userSelect: "none",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
       }}
     >
       {words.map((word, i) => {

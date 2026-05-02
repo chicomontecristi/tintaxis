@@ -8,6 +8,7 @@ import { stripe, type PlanId } from "@/lib/stripe";
 import { createSessionCookie } from "@/lib/auth";
 import { upsertReader, recordPurchase, upsertReaderSubscription } from "@/lib/db";
 import { deliverDigitalCopy } from "@/lib/deliver-digital-copy";
+import { sendWelcomeEmail } from "@/lib/send-welcome-email";
 import type { ReaderTier, AuthorPlan } from "@/lib/auth";
 
 // One-time purchase plans (not subscriptions)
@@ -94,6 +95,14 @@ export async function GET(req: NextRequest) {
           stripeSubscriptionId:  subscriptionId || null,
           active:                true,
         });
+
+        // Send welcome email for new subscriptions
+        if (email) {
+          sendWelcomeEmail(email, name || undefined, plan as ReaderTier).then((r) => {
+            if (r.success) console.log(`[activate] Welcome email sent: ${email}`);
+            else console.error(`[activate] Welcome email failed: ${r.error}`);
+          });
+        }
       }
     }
 

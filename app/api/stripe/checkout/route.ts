@@ -35,7 +35,8 @@ export async function POST(req: NextRequest) {
     }
 
     const origin = req.headers.get("origin") ?? process.env.NEXT_PUBLIC_URL ?? "https://tintaxis.vercel.app";
-    const safeReturn = returnUrl ?? "/";
+    // For reader subscriptions, default to chapter one; for authors, default to home
+    const safeReturn = returnUrl ?? (role === "reader" ? "/chapter/one" : "/");
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",

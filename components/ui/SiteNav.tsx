@@ -229,7 +229,7 @@ export default function SiteNav() {
   if (session.role === "author") {
     authLinks.push({ href: "/author", label: t("nav.studio") });
   } else if (session.role === "reader") {
-    authLinks.push({ href: "/reader/login", label: t("nav.account") });
+    authLinks.push({ href: "/account", label: t("nav.account") });
   } else {
     authLinks.push({ href: "/reader/login", label: t("nav.signIn") });
     authLinks.push({ href: "/author/login", label: t("nav.authorLogin") });
