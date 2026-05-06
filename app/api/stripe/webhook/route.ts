@@ -39,6 +39,7 @@ const READER_TIERS = new Set(["codex", "scribe", "archive", "chronicler"]);
 
 // Next.js App Router: read raw body to verify Stripe signature
 export async function POST(req: NextRequest) {
+  console.log("[stripe/webhook] ✓ Handler invoked at", new Date().toISOString());
   const rawBody = await req.text();
   const sig     = req.headers.get("stripe-signature") ?? "";
   const secret  = process.env.STRIPE_WEBHOOK_SECRET ?? "";
