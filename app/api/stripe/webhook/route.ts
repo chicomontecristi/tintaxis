@@ -32,14 +32,27 @@ import type { ReaderTier } from "@/lib/db-types";
 import type Stripe from "stripe";
 
 // Map Stripe price IDs → Tintaxis tier names.
-// Update this if you add new plans to lib/stripe.ts.
-const PRICE_TO_TIER: Record<string, ReaderTier> = {
-  [process.env.STRIPE_PRICE_CODEX       ?? ""]: "codex",
-  [process.env.STRIPE_PRICE_SCRIBE      ?? ""]: "scribe",
-  [process.env.STRIPE_PRICE_ARCHIVE     ?? ""]: "archive",
-  [process.env.STRIPE_PRICE_CHRONICLER  ?? ""]: "chronicler",
-};
+// Fail fast if environment variables are missing (Issue #8).
+function buildPriceMap(): Record<string, ReaderTier> {
+  const codex = process.env.STRIPE_PRICE_CODEX;
+  const scribe = process.env.STRIPE_PRICE_SCRIBE;
+  const archive = process.env.STRIPE_PRICE_ARCHIVE;
+  const chronicler = process.env.STRIPE_PRICE_CHRONICLER;
 
+  if (!codex || !scribe || !archive || !chronicler) {
+    console.error("[stripe/webhook] Missing Stripe price IDs in environment variables");
+    throw new Error("STRIPE_PRICE_* environment variables not configured");
+  }
+
+  return {
+    [codex]: "codex",
+    [scribe]: "scribe",
+    [archive]: "archive",
+    [chronicler]: "chronicler",
+  };
+}
+
+const PRICE_TO_TIER = buildPriceMap();
 const READER_TIERS = new Set(["codex", "scribe", "archive", "chronicler"]);
 
 // Next.js App Router: read raw body to verify Stripe signature
@@ -131,14 +144,24 @@ export async function POST(req: NextRequest) {
       const customerId = typeof inv.customer === "string" ? inv.customer : (inv.customer?.id ?? "");
       const subscriptionId = typeof inv.subscription === "string" ? inv.subscription : (inv.subscription?.id ?? "");
 
-      if (customerId && subscriptionId) {
-        console.log(`[stripe/webhook] Invoice paid — restoring access for customer: ${customerId}`);
+      // Issue #7: Explicit validation before proceeding
+      if (!customerId || !subscriptionId) {
+        console.warn(`[stripe/webhook] Invoice.paid missing critical data: customerId=${customerId}, subscriptionId=${subscriptionId}. Skipping activation.`);
+        break;
+      }
 
-        // Restore per-writer subscription
-        await updateReaderSubscriptionByStripe(subscriptionId, { active: true });
+      console.log(`[stripe/webhook] Invoice paid — restoring access for customer: ${customerId}`);
 
-        // Also restore legacy readers table
-        await updateReaderSubscription(customerId, { active: true });
+      // Restore per-writer subscription and check result
+      const subResult = await updateReaderSubscriptionByStripe(subscriptionId, { active: true });
+      if (!subResult) {
+        console.error(`[stripe/webhook] Failed to activate per-writer subscription: ${subscriptionId}`);
+      }
+
+      // Also restore legacy readers table and check result
+      const legacyResult = await updateReaderSubscription(customerId, { active: true });
+      if (!legacyResult) {
+        console.error(`[stripe/webhook] Failed to activate legacy reader subscription: ${customerId}`);
       }
       break;
     }
@@ -158,76 +181,99 @@ export async function POST(req: NextRequest) {
       console.log(`[stripe/webhook] Checkout complete: ${session.id} plan=${plan} writer=${writerSlug ?? "none"}`);
 
       // ── Create per-writer subscription record for reader plans ─────────────
-      if (plan && READER_TIERS.has(plan) && writerSlug && customerId) {
+      // Validate plan from metadata (Issue #3)
+      if (plan && typeof plan === "string" && READER_TIERS.has(plan) && writerSlug && customerId) {
         // Look up the reader by their Stripe customer ID
         let reader = await getReaderByCustomerId(customerId);
         let temporaryPassword: string | undefined;
+        const subscriberEmail = session.customer_details?.email ?? "";
+        const subscriberName = session.customer_details?.name ?? undefined;
 
         // If reader doesn't exist, create one automatically with temporary password
-        if (!reader) {
-          const subscriberEmail = session.customer_details?.email ?? "";
-          const subscriberName = session.customer_details?.name ?? undefined;
+        if (!reader && subscriberEmail) {
+          // Generate temporary password with safe character set (Issue #6)
+          const safeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+          const passBytes = randomBytes(12);
+          temporaryPassword = "";
+          for (let i = 0; i < 12; i++) {
+            temporaryPassword += safeChars[passBytes[i] % safeChars.length];
+          }
 
-          if (subscriberEmail) {
-            // Generate a temporary password (12 random characters)
-            temporaryPassword = randomBytes(9).toString("base64").slice(0, 12);
-            const passwordHash = await hashPassword(temporaryPassword);
+          const passwordHash = await hashPassword(temporaryPassword);
+          reader = await createReaderWithPassword({
+            email: subscriberEmail,
+            passwordHash,
+            name: subscriberName,
+          });
 
-            reader = await createReaderWithPassword({
-              email: subscriberEmail,
-              passwordHash,
-              name: subscriberName,
-            });
-
-            if (reader) {
-              console.log(`[stripe/webhook] Reader account created automatically: ${subscriberEmail}`);
-              // Update the reader with the Stripe customer ID
-              await upsertReader({ id: reader.id, stripeCustomerId: customerId });
+          if (reader) {
+            console.log(`[stripe/webhook] Reader account created automatically: ${subscriberEmail}`);
+            // Update the reader with the Stripe customer ID (Issue #9: Check result)
+            const updateResult = await upsertReader({ id: reader.id, stripeCustomerId: customerId });
+            if (!updateResult) {
+              console.error(`[stripe/webhook] Failed to update reader with Stripe customer ID: ${reader.id}`);
             }
+          } else {
+            console.error(`[stripe/webhook] Reader creation failed for email: ${subscriberEmail}`);
           }
         }
 
         if (reader) {
-          await upsertReaderSubscription({
+          // Create subscription and check result (Issue #1: Race condition fix)
+          const subResult = await upsertReaderSubscription({
             readerId: reader.id,
             writerSlug,
             tier: plan as ReaderTier,
             stripeSubscriptionId: subscriptionId || null,
             active: true,
           });
+
+          if (!subResult) {
+            console.error(`[stripe/webhook] Subscription creation FAILED for reader: ${reader.id}. Email will NOT be sent.`);
+            break; // Don't send email if subscription failed
+          }
+
           console.log(`[stripe/webhook] Per-writer subscription created: reader=${reader.id} writer=${writerSlug} tier=${plan}`);
 
-          // ── Send welcome email to new subscriber ───────────────────────────────
-          const subscriberEmail = session.customer_details?.email ?? "";
-          const subscriberName = session.customer_details?.name ?? undefined;
+          // ── Send welcome email ONLY if subscription creation succeeded (Issue #1 + #4 fix) ──
           if (subscriberEmail) {
             const emailResult = await sendWelcomeEmail(subscriberEmail, subscriberName, plan as ReaderTier, temporaryPassword);
             if (emailResult.success) {
               console.log(`[stripe/webhook] Welcome email sent to ${subscriberEmail}`);
             } else {
-              console.error(`[stripe/webhook] Welcome email failed for ${subscriberEmail}: ${emailResult.error}`);
+              // Issue #4: Log failure with context for manual recovery
+              console.error(`[stripe/webhook] Welcome email FAILED for ${subscriberEmail} (reader: ${reader.id}, tier: ${plan}). Consider manual resend.`);
+              // TODO: Add to email_retry_queue table for manual intervention
             }
           }
         } else {
-          console.warn(`[stripe/webhook] Reader not found for customer: ${customerId} — per-writer subscription skipped.`);
+          console.warn(`[stripe/webhook] Reader not found or creation failed for customer: ${customerId} — subscription skipped.`);
         }
+      } else if (plan && !READER_TIERS.has(plan)) {
+        // Issue #3: Log invalid plans for debugging
+        console.warn(`[stripe/webhook] Invalid plan in metadata: "${plan}" — subscription skipped.`);
       }
 
       // ── Digital copy: email the full book to the buyer ─────────────────────
+      // Issue #5: Monitor digital copy delivery failures
       if (plan === "digital_copy") {
         const bookSlug = session.metadata?.bookSlug;
         const buyerEmail = session.customer_details?.email ?? "";
         const buyerName  = session.customer_details?.name  ?? undefined;
 
-        if (bookSlug && buyerEmail) {
-          const result = await deliverDigitalCopy(bookSlug, buyerEmail, buyerName);
-          if (result.success) {
-            console.log(`[stripe/webhook] Digital copy delivered: "${bookSlug}" → ${buyerEmail}`);
-          } else {
-            console.error(`[stripe/webhook] Digital copy delivery FAILED: "${bookSlug}" → ${buyerEmail}: ${result.error}`);
-          }
+        // Validate required fields
+        if (!bookSlug || !buyerEmail) {
+          console.error(`[stripe/webhook] Digital copy INCOMPLETE: bookSlug="${bookSlug}", email="${buyerEmail}". REQUIRES MANUAL FOLLOW-UP.`);
+          // TODO: Log to failed_digital_copies table for admin intervention
+          break;
+        }
+
+        const result = await deliverDigitalCopy(bookSlug, buyerEmail, buyerName);
+        if (result.success) {
+          console.log(`[stripe/webhook] Digital copy delivered: "${bookSlug}" → ${buyerEmail}`);
         } else {
-          console.error(`[stripe/webhook] Digital copy missing data: bookSlug=${bookSlug} email=${buyerEmail}`);
+          console.error(`[stripe/webhook] Digital copy delivery FAILED: "${bookSlug}" → ${buyerEmail}: ${result.error}. REQUIRES MANUAL FOLLOW-UP.`);
+          // TODO: Log to failed_digital_copies table and send admin alert
         }
       }
 

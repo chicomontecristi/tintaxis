@@ -75,15 +75,17 @@ export async function sendWelcomeEmail(
     <div style="text-align: center; padding: 1.5em; background: rgba(201,168,76,0.06); border: 1px solid #E8DCC8; margin-bottom: 2em;">
       <p style="font-family: monospace; font-size: 11px; letter-spacing: 0.15em; color: #C9A84C; text-transform: uppercase; margin: 0 0 1em;">LOGIN & GET STARTED</p>
       ${temporaryPassword ? `
-      <div style="background: white; padding: 1em; border: 1px solid #E8DCC8; margin-bottom: 1em; text-align: left; border-radius: 3px;">
-        <p style="font-family: monospace; font-size: 12px; color: #5A4A3A; margin: 0 0 0.5em;">Your login credentials:</p>
-        <p style="font-family: monospace; font-size: 13px; color: #2C1A00; margin: 0 0 0.5em;"><strong>Email:</strong> ${subscriberEmail}</p>
-        <p style="font-family: monospace; font-size: 13px; color: #2C1A00; margin: 0 0 0.5em;"><strong>Temporary password:</strong> ${temporaryPassword}</p>
-        <p style="font-family: 'Georgia', serif; font-size: 12px; color: #8B7355; margin: 0; font-style: italic;">You can change your password after logging in.</p>
+      <div style="background: #fff8f0; padding: 1.2em; border: 1px solid #E8DCC8; margin-bottom: 1em; text-align: left; border-radius: 3px; border-left: 4px solid #C9A84C;">
+        <p style="font-family: monospace; font-size: 11px; letter-spacing: 0.1em; color: #C9A84C; text-transform: uppercase; margin: 0 0 0.75em;font-weight: bold;">🔐 Temporary Login Credentials</p>
+        <p style="font-family: monospace; font-size: 13px; color: #2C1A00; margin: 0 0 0.5em;"><strong>Email:</strong> <code style="background: white; padding: 2px 4px; border-radius: 2px;">${subscriberEmail}</code></p>
+        <p style="font-family: monospace; font-size: 13px; color: #2C1A00; margin: 0 0 1em;"><strong>Password:</strong> <code style="background: white; padding: 2px 4px; border-radius: 2px;">${temporaryPassword}</code></p>
+        <p style="font-family: 'Georgia', serif; font-size: 12px; color: #8B5A3A; margin: 0 0 0.5em; font-weight: bold;">⚠️ Important:</p>
+        <p style="font-family: 'Georgia', serif; font-size: 12px; color: #8B5A3A; margin: 0;">This password is temporary and was generated just for you. <strong>Change it to something only you know</strong> immediately after your first login. Store it securely — never share it with anyone.</p>
       </div>
       ` : ''}
       <ol style="font-family: 'Georgia', serif; font-size: 14px; color: #2C1A00; margin: 0; padding-left: 1.5em; line-height: 1.8; text-align: left;">
         <li style="margin-bottom: 0.75em;">Go to <a href="https://tintaxis.com/reader/login" style="color: #C9A84C; text-decoration: none;">tintaxis.com/reader/login</a> and sign in with your credentials above.</li>
+        <li style="margin-bottom: 0.75em;"><strong>Change your password</strong> to something only you know in your Account settings.</li>
         <li style="margin-bottom: 0.75em;">Navigate to any chapter and begin reading.</li>
         <li style="margin-bottom: 0.75em;">Select passages with your mouse — the text is yours to mark.</li>
         <li style="margin-bottom: 0.75em;">Choose an ink that matches your intention.</li>
