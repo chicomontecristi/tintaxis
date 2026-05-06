@@ -23,6 +23,8 @@ import {
   getReaderByCustomerId,
   createReaderWithPassword,
   upsertReader,
+  recordEmailRetryQueue,
+  recordFailedDigitalCopy,
 } from "@/lib/db";
 import { hashPassword } from "@/lib/crypto";
 import { randomBytes } from "crypto";
@@ -241,9 +243,21 @@ export async function POST(req: NextRequest) {
             if (emailResult.success) {
               console.log(`[stripe/webhook] Welcome email sent to ${subscriberEmail}`);
             } else {
-              // Issue #4: Log failure with context for manual recovery
-              console.error(`[stripe/webhook] Welcome email FAILED for ${subscriberEmail} (reader: ${reader.id}, tier: ${plan}). Consider manual resend.`);
-              // TODO: Add to email_retry_queue table for manual intervention
+              // Issue #4: Record failure for manual intervention
+              console.error(`[stripe/webhook] Welcome email FAILED for ${subscriberEmail} (reader: ${reader.id}, tier: ${plan}): ${emailResult.error}`);
+              const recorded = await recordEmailRetryQueue({
+                recipientEmail: subscriberEmail,
+                recipientName: subscriberName,
+                emailType: "welcome",
+                readerId: reader.id,
+                stripeCustomerId: customerId,
+                subscriptionTier: plan,
+                errorMessage: emailResult.error,
+                metadata: { checkoutSessionId: session.id, writerSlug },
+              });
+              if (recorded) {
+                console.log(`[stripe/webhook] Email failure recorded in retry queue for ${subscriberEmail}`);
+              }
             }
           }
         } else {
@@ -264,7 +278,17 @@ export async function POST(req: NextRequest) {
         // Validate required fields
         if (!bookSlug || !buyerEmail) {
           console.error(`[stripe/webhook] Digital copy INCOMPLETE: bookSlug="${bookSlug}", email="${buyerEmail}". REQUIRES MANUAL FOLLOW-UP.`);
-          // TODO: Log to failed_digital_copies table for admin intervention
+          // Record incomplete delivery for admin intervention
+          await recordFailedDigitalCopy({
+            stripeSessionId: session.id,
+            stripeCustomerId: customerId,
+            bookSlug: bookSlug ?? "unknown",
+            buyerEmail,
+            buyerName,
+            errorType: "missing_data",
+            errorMessage: `Missing: bookSlug=${bookSlug}, email=${buyerEmail}`,
+            metadata: { checkoutSessionId: session.id },
+          });
           break;
         }
 
@@ -273,7 +297,17 @@ export async function POST(req: NextRequest) {
           console.log(`[stripe/webhook] Digital copy delivered: "${bookSlug}" → ${buyerEmail}`);
         } else {
           console.error(`[stripe/webhook] Digital copy delivery FAILED: "${bookSlug}" → ${buyerEmail}: ${result.error}. REQUIRES MANUAL FOLLOW-UP.`);
-          // TODO: Log to failed_digital_copies table and send admin alert
+          // Record delivery failure for admin intervention
+          await recordFailedDigitalCopy({
+            stripeSessionId: session.id,
+            stripeCustomerId: customerId,
+            bookSlug,
+            buyerEmail,
+            buyerName,
+            errorType: "delivery_failed",
+            errorMessage: result.error,
+            metadata: { checkoutSessionId: session.id },
+          });
         }
       }
 

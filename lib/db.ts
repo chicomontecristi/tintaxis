@@ -778,3 +778,77 @@ export async function updateReaderPassword(
   }
   return true;
 }
+
+// ── Email Retry Queue ──────────────────────────────────────────────────────────
+
+/**
+ * Record a failed welcome email for manual intervention.
+ * Called from Stripe webhook when sendWelcomeEmail() fails.
+ */
+export async function recordEmailRetryQueue(params: {
+  recipientEmail: string;
+  recipientName?: string;
+  emailType: "welcome" | "subscription" | "payment_failed" | "reset" | "other";
+  readerId?: string;
+  stripeCustomerId?: string;
+  subscriptionTier?: string;
+  errorMessage?: string;
+  metadata?: Record<string, any>;
+}): Promise<boolean> {
+  const { error } = await supabase
+    .from("email_retry_queue")
+    .insert({
+      recipient_email: params.recipientEmail.toLowerCase().trim(),
+      recipient_name: params.recipientName ?? null,
+      email_type: params.emailType,
+      reader_id: params.readerId ?? null,
+      stripe_customer_id: params.stripeCustomerId ?? null,
+      subscription_tier: params.subscriptionTier ?? null,
+      error_message: params.errorMessage ?? null,
+      status: "pending",
+      metadata: params.metadata ?? {},
+    });
+
+  if (error) {
+    console.error("[db] recordEmailRetryQueue error:", error.message);
+    return false;
+  }
+  return true;
+}
+
+// ── Failed Digital Copies ──────────────────────────────────────────────────────
+
+/**
+ * Record a failed digital copy delivery for admin intervention.
+ * Called from Stripe webhook when deliverDigitalCopy() fails.
+ */
+export async function recordFailedDigitalCopy(params: {
+  stripeSessionId: string;
+  stripeCustomerId?: string;
+  bookSlug: string;
+  buyerEmail: string;
+  buyerName?: string;
+  errorType: "missing_data" | "delivery_failed" | "email_rejected" | "unknown";
+  errorMessage?: string;
+  metadata?: Record<string, any>;
+}): Promise<boolean> {
+  const { error } = await supabase
+    .from("failed_digital_copies")
+    .insert({
+      stripe_session_id: params.stripeSessionId,
+      stripe_customer_id: params.stripeCustomerId ?? null,
+      book_slug: params.bookSlug,
+      buyer_email: params.buyerEmail.toLowerCase().trim(),
+      buyer_name: params.buyerName ?? null,
+      error_type: params.errorType,
+      error_message: params.errorMessage ?? null,
+      status: "failed",
+      metadata: params.metadata ?? {},
+    });
+
+  if (error) {
+    console.error("[db] recordFailedDigitalCopy error:", error.message);
+    return false;
+  }
+  return true;
+}
