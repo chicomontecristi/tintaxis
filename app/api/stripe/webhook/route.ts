@@ -23,6 +23,7 @@ import {
   getReaderByCustomerId,
 } from "@/lib/db";
 import { deliverDigitalCopy } from "@/lib/deliver-digital-copy";
+import { sendWelcomeEmail } from "@/lib/send-welcome-email";
 import type { ReaderTier } from "@/lib/db-types";
 import type Stripe from "stripe";
 
@@ -165,6 +166,18 @@ export async function POST(req: NextRequest) {
             active: true,
           });
           console.log(`[stripe/webhook] Per-writer subscription created: reader=${reader.id} writer=${writerSlug} tier=${plan}`);
+
+          // ── Send welcome email to new subscriber ───────────────────────────────
+          const subscriberEmail = session.customer_details?.email ?? "";
+          const subscriberName = session.customer_details?.name ?? undefined;
+          if (subscriberEmail) {
+            const emailResult = await sendWelcomeEmail(subscriberEmail, subscriberName, plan as ReaderTier);
+            if (emailResult.success) {
+              console.log(`[stripe/webhook] Welcome email sent to ${subscriberEmail}`);
+            } else {
+              console.error(`[stripe/webhook] Welcome email failed for ${subscriberEmail}: ${emailResult.error}`);
+            }
+          }
         } else {
           console.warn(`[stripe/webhook] Reader not found for customer: ${customerId} — per-writer subscription skipped.`);
         }
