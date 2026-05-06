@@ -21,7 +21,11 @@ import {
   deactivateReaderSubscription,
   updateReaderSubscriptionByStripe,
   getReaderByCustomerId,
+  createReaderWithPassword,
+  upsertReader,
 } from "@/lib/db";
+import { hashPassword } from "@/lib/crypto";
+import { randomBytes } from "crypto";
 import { deliverDigitalCopy } from "@/lib/deliver-digital-copy";
 import { sendWelcomeEmail } from "@/lib/send-welcome-email";
 import type { ReaderTier } from "@/lib/db-types";
@@ -156,7 +160,33 @@ export async function POST(req: NextRequest) {
       // ── Create per-writer subscription record for reader plans ─────────────
       if (plan && READER_TIERS.has(plan) && writerSlug && customerId) {
         // Look up the reader by their Stripe customer ID
-        const reader = await getReaderByCustomerId(customerId);
+        let reader = await getReaderByCustomerId(customerId);
+        let temporaryPassword: string | undefined;
+
+        // If reader doesn't exist, create one automatically with temporary password
+        if (!reader) {
+          const subscriberEmail = session.customer_details?.email ?? "";
+          const subscriberName = session.customer_details?.name ?? undefined;
+
+          if (subscriberEmail) {
+            // Generate a temporary password (12 random characters)
+            temporaryPassword = randomBytes(9).toString("base64").slice(0, 12);
+            const passwordHash = await hashPassword(temporaryPassword);
+
+            reader = await createReaderWithPassword({
+              email: subscriberEmail,
+              passwordHash,
+              name: subscriberName,
+            });
+
+            if (reader) {
+              console.log(`[stripe/webhook] Reader account created automatically: ${subscriberEmail}`);
+              // Update the reader with the Stripe customer ID
+              await upsertReader({ id: reader.id, stripeCustomerId: customerId });
+            }
+          }
+        }
+
         if (reader) {
           await upsertReaderSubscription({
             readerId: reader.id,
@@ -171,7 +201,7 @@ export async function POST(req: NextRequest) {
           const subscriberEmail = session.customer_details?.email ?? "";
           const subscriberName = session.customer_details?.name ?? undefined;
           if (subscriberEmail) {
-            const emailResult = await sendWelcomeEmail(subscriberEmail, subscriberName, plan as ReaderTier);
+            const emailResult = await sendWelcomeEmail(subscriberEmail, subscriberName, plan as ReaderTier, temporaryPassword);
             if (emailResult.success) {
               console.log(`[stripe/webhook] Welcome email sent to ${subscriberEmail}`);
             } else {
