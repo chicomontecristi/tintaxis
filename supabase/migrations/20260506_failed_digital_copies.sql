@@ -70,3 +70,34 @@ CREATE TRIGGER failed_digital_copies_update_timestamp
   BEFORE UPDATE ON failed_digital_copies
   FOR EACH ROW
   EXECUTE FUNCTION update_failed_digital_copies_timestamp();
+
+-- ─── ROW LEVEL SECURITY ───────────────────────────────────────────────────────
+-- Admin-only access: Only authenticated admins can view/manage failed deliveries
+-- (Regular users can't see other customers' failed deliveries)
+
+ALTER TABLE failed_digital_copies ENABLE ROW LEVEL SECURITY;
+
+-- Admins can view all failed digital copies
+CREATE POLICY "Admins can view all failed digital copies"
+  ON failed_digital_copies
+  FOR SELECT
+  USING (auth.jwt() ->> 'role' = 'admin');
+
+-- Only admins can insert (automatically by webhook)
+CREATE POLICY "Only admins can record failed digital copies"
+  ON failed_digital_copies
+  FOR INSERT
+  WITH CHECK (auth.jwt() ->> 'role' = 'admin' OR auth.jwt() ->> 'iss' LIKE '%stripe%');
+
+-- Only admins can update/resolve
+CREATE POLICY "Only admins can update failed digital copies"
+  ON failed_digital_copies
+  FOR UPDATE
+  USING (auth.jwt() ->> 'role' = 'admin')
+  WITH CHECK (auth.jwt() ->> 'role' = 'admin');
+
+-- Only admins can delete
+CREATE POLICY "Only admins can delete failed digital copies"
+  ON failed_digital_copies
+  FOR DELETE
+  USING (auth.jwt() ->> 'role' = 'admin');

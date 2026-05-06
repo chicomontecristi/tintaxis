@@ -60,3 +60,40 @@ CREATE TRIGGER email_retry_queue_update_timestamp
   BEFORE UPDATE ON email_retry_queue
   FOR EACH ROW
   EXECUTE FUNCTION update_email_retry_queue_timestamp();
+
+-- ─── ROW LEVEL SECURITY ───────────────────────────────────────────────────────
+-- Admin-only access: Only authenticated users with admin role can view/manage
+-- (Users can't see other users' failed emails)
+
+ALTER TABLE email_retry_queue ENABLE ROW LEVEL SECURITY;
+
+-- Admin can view all failed emails
+CREATE POLICY "Admins can view all failed emails"
+  ON email_retry_queue
+  FOR SELECT
+  USING (
+    auth.jwt() ->> 'role' = 'admin'
+    OR EXISTS (
+      SELECT 1 FROM readers
+      WHERE readers.id = auth.uid()
+      AND readers.role = 'author'
+      AND readers.id = email_retry_queue.reader_id
+    )
+  );
+
+-- Only admins can insert/update/delete
+CREATE POLICY "Only admins can manage failed emails"
+  ON email_retry_queue
+  FOR INSERT
+  WITH CHECK (auth.jwt() ->> 'role' = 'admin');
+
+CREATE POLICY "Only admins can update failed emails"
+  ON email_retry_queue
+  FOR UPDATE
+  USING (auth.jwt() ->> 'role' = 'admin')
+  WITH CHECK (auth.jwt() ->> 'role' = 'admin');
+
+CREATE POLICY "Only admins can delete failed emails"
+  ON email_retry_queue
+  FOR DELETE
+  USING (auth.jwt() ->> 'role' = 'admin');
