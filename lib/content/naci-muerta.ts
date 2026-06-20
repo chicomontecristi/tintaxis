@@ -6,6 +6,22 @@
 import type { Chapter } from "@/lib/types";
 
 export const NACI_MUERTA_CHAPTERS: Record<string, Chapter> = {
+  "introduccion": {
+    slug: "introduccion",
+    bookSlug: "naci-muerta",
+    number: 0,
+    romanNumeral: "INTRODUCCIÓN",
+    title: "Introducción",
+    isLocked: false,
+    wordCount: 287,
+    paragraphs: [
+      { index: 0, text: "Las madres dominicanas tienen la dicha de nacer en la tierra del tabaco, la caña y la bachata. Aisladas del exterior, crecen bajo valores culturales pasados desde la etapa del descubrimiento, la conquista religiosa y los patrones de la identidad socio-política. Identidad marcada por rasgos africanos y europeos, creando un sancocho de conocimientos, ideales y creencias." },
+      { index: 1, text: "Ahora, con casi sesenta años de edad, Tuta, mi mamá, refleja sobre las experiencias que formaron lo que, eventualmente, la convirtieron en lo que es hoy. Una mujer marcada por pobreza, austeridad, negligencia, caprichos, soledad, ilusión, desamor, conflictos, familia, presión, sacrificios, maltrato, justicia, y religión." },
+      { index: 2, text: "Igual que muchos hijos, tenemos una idea de lo que nuestras madres representan para nosotros, juzgamos las decisiones que tomaron sin, primero, entender las opciones brindadas por las circunstancias. Evaluamos las formas en que nos impactaron de la perspectiva del egocentrismo sin notar que ellas, nuestras madres, también fueron niñas, hijas, hermanas, amigas. Que también sufrieron desilusiones y fueron obligadas a aceptar la vida, sus exigencias y resultados." },
+      { index: 3, text: "Entre éstas madres, existen muchas que inmigraron a países exteriores; las dichosas lograron llevarse a sus hijos, las demás perdieron una larga trayectoria de memorias que jamás podrán existir. En los peores de los casos, madres dominicanas viven en el exilio por la desdicha de no poder regresar a su país por falta de papeles, dinero, o la vergüenza de no alcanzar resultados equivalentes al sacrificio. Un tema complejo y a la vez universal. En las siguientes páginas no intento evaluar la sociedad dominicana, su cultura, o política… simplemente planteo momentos de una madre que, en sus propias palabras, sacrificó todo por sus hijos—su única razón de existir. Este es su testimonio." },
+      { index: 4, text: "¡Valió la pena, mamá!" },
+    ],
+  },
   "capitulo-uno": {
     slug: "capitulo-uno",
     bookSlug: "naci-muerta",
