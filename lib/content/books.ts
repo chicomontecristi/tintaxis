@@ -7,6 +7,7 @@ import { CHAPTERS, getChapter, getAllChapterSlugs } from "./chapters";
 import { RECOLETA_CHAPTERS, getRecoletaChapter, getAllRecoletaChapterSlugs } from "./recoleta";
 import { NOCHES_CHAPTERS, getNochesChapter, getAllNochesSlugs } from "./noches-de-maya";
 import { PAJARO_CHAPTERS, getPajaroChapter, getAllPajaroSlugs } from "./mi-pajaro-del-rio";
+import { NACI_MUERTA_CHAPTERS, getNaciMuertaChapter, getAllNaciMuertaSlugs } from "./naci-muerta";
 
 // ─── BOOK METADATA ───────────────────────────────────────────────────────────
 
@@ -91,6 +92,26 @@ export const BOOKS: Record<string, Book> = {
     year: 2017,
     salePrice: 1.50,
   },
+  "naci-muerta": {
+    slug: "naci-muerta",
+    title: "Nací Muerta",
+    subtitle: "Una biografía de mamá",
+    author: "Chico Montecristi",
+    writerSlug: "chico-montecristi",
+    language: "es",
+    genre: "Biografía / Narrativa familiar",
+    description: "La historia de Carmen Mercedes Martínez Pascal, la madre del autor. Desde su nacimiento en Castañuelas, Monte Cristi, hasta su vida de sacrificio en el Bronx, Nueva York. Una biografía íntima que explora cómo una mujer dominicana transformó el dolor y la pobreza en propósito y resiliencia.",
+    tagline: "Nací muerta, pero aprendí a vivir.",
+    accentColor: "#8B6F47",
+    coverLabel: "ES",
+    coverImage: "/covers/naci-muerta.jpg",
+    firstChapterSlug: "capitulo-uno",
+    chapterLabel: "Capítulo",
+    totalChapters: 8,
+    wordCount: 16585,
+    year: 2026,
+    salePrice: 1.50,
+  },
 };
 
 // ─── CHAPTER LOOKUP ──────────────────────────────────────────────────────────
@@ -100,6 +121,7 @@ const CHAPTER_MAP: Record<string, Record<string, Chapter>> = {
   "recoleta": RECOLETA_CHAPTERS,
   "noches-de-maya": NOCHES_CHAPTERS,
   "mi-pajaro-del-rio": PAJARO_CHAPTERS,
+  "naci-muerta": NACI_MUERTA_CHAPTERS,
 };
 
 export function getBook(bookSlug: string): Book | null {
