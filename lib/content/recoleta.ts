@@ -72,7 +72,7 @@ export const RECOLETA_CHAPTERS: Record<string, Chapter> = {
       text: "Desperté en el regazo ajeno de una mujer.",
       attribution: "Recoleta",
     },
-    isLocked: true,
+    isLocked: false,
     wordCount: 4529,
     paragraphs: [
       { index: 0, text: `Desperté en el regazo ajeno de una mujer con mis brazos cruzados sobre mi pecho, en el centro de un prado. Las flores salvajes ocupaban más lugar que el césped y en los pétalos blancos, amarillos y azules la luz del sol se posaba.` },
@@ -166,7 +166,7 @@ export const RECOLETA_CHAPTERS: Record<string, Chapter> = {
       text: "Cada cambio de hora resultaba en un cambio de salón.",
       attribution: "Recoleta",
     },
-    isLocked: true,
+    isLocked: false,
     wordCount: 2594,
     paragraphs: [
       { index: 0, text: `Contrario a los colegios montecristeños, cada cambio de hora resultaba en un cambio de salón. Los estudiantes siempre corrían al pasillo y formaban una manada—con excepción de los juniors que parecían más zombi que otra cosa—los monitores velaban cada pasillo al compás de tres minutos de gritos, manotazos, peleas, música, radios y campanas. Durante esos tres minutos vi mi vida cambiar de la luz a la oscuridad: rompí con mis valores al ver a don Rana herido y no haberle ayudado, me vestí de lobo siendo oveja, y me hice cómplice del odiado mentir.` },
@@ -216,7 +216,7 @@ export const RECOLETA_CHAPTERS: Record<string, Chapter> = {
       text: "Siroco. Gorguera. Gorjal.",
       attribution: "Recoleta",
     },
-    isLocked: true,
+    isLocked: false,
     wordCount: 914,
     paragraphs: [
       { index: 0, text: `Logramos escapar de la escuela, rumbo al tren. Eran las 11:04 de la mañana, apenas comenzaba a quemar el sol de invierno. El carrusel de nubes filtraba los rayos pintando un paisaje gris y las blancas gaviotas se mecían en el aire como las hebras de un pincel chino. El marrón de los ladrillos se mezclaba con el reflejo de la luz y las miles de ventanas se transformaban en espejuelos de carnaval. Las palomas pintas arrullaban encaramadas en transformadores, verjas y alambres, haciendo del cemento debajo, todo un desastre. Las bocinas de taxis—Lincoln Town Car, negro, 2002—el chillar de los discos al frenar y las bachatas resonando desde los colmados despertaban al Bronx. A estas horas del día las aceras permanecían solitarias, con mujeres ambulantes que, entre organizar, lavar ropa y preparar el almuerzo, se les olvidaba comprar algún detergente o tal vez un aguacate, de los mexicanos...` },
