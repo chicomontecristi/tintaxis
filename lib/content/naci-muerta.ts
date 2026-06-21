@@ -2,7 +2,7 @@
 // Auto-generated from Biografia Final 5.0 Editada.docx
 // Every comma, period, accent mark, and space preserved exactly as written.
 
-import type { Chapter } from '@/lib/content/books';
+import type { Chapter } from '@/lib/types';
 
 export const NACI_MUERTA_CHAPTERS: Record<string, Chapter> = {
   'introduccion': {
