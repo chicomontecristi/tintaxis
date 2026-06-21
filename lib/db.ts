@@ -40,7 +40,15 @@ export async function upsertReader(params: {
     .single();
 
   if (error) {
-    console.error("[db] upsertReader error:", error.message);
+    console.error("[db] upsertReader error:", {
+      message: error.message,
+      code: error.code,
+      details: error.details,
+      hint: error.hint,
+      email: params.email,
+      tier: params.tier,
+      role: params.role,
+    });
     return null;
   }
   return data;

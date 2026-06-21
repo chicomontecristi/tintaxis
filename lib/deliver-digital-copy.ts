@@ -42,7 +42,22 @@ export async function deliverDigitalCopy(
 
   // ── Load the author's actual PDF ──────────────────────────────────────────
   console.log(`[deliver] Loading PDF for "${book.title}"...`);
-  const pdfPath = path.join(process.cwd(), "public", "pdfs", `${bookSlug}.pdf`);
+
+  // Map book slugs to author's actual PDF filenames
+  const pdfFilenames: Record<string, string> = {
+    "the-hunt": "The Hunt Chico Montecristi.pdf",
+    "naci-muerta": "Biografia Final 5.0 Editada.pdf",
+    "mi-pajaro-del-rio": "171228.pdf",
+    "recoleta": "Recoleta Chico Montecristi PDF.pdf",
+  };
+
+  const pdfFilename = pdfFilenames[bookSlug];
+  if (!pdfFilename) {
+    console.error(`[deliver] No PDF mapping for book: ${bookSlug}`);
+    return { success: false, error: `PDF not configured for "${bookSlug}".` };
+  }
+
+  const pdfPath = path.join(process.cwd(), "public", "pdfs", pdfFilename);
 
   let pdfBuffer: Buffer;
   try {

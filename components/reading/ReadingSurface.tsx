@@ -852,7 +852,7 @@ function ChapterHeader({ chapter }: { chapter: Chapter }) {
           marginBottom: "1.25rem",
         }}
       >
-        {t("reading.chapter")} {chapter.romanNumeral}
+        {book?.chapterLabel && `${book.chapterLabel} `}{chapter.romanNumeral}
       </p>
 
       <h1

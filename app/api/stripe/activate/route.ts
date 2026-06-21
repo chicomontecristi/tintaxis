@@ -53,6 +53,15 @@ export async function GET(req: NextRequest) {
     if (email) {
       const isOneTime = ONE_TIME_PLANS.has(plan);
 
+      console.log("[stripe/activate] Creating reader:", {
+        email,
+        plan,
+        role,
+        isOneTime,
+        customerId,
+        subscriptionId,
+      });
+
       const reader = await upsertReader({
         email,
         name:                 name || undefined,
@@ -63,6 +72,10 @@ export async function GET(req: NextRequest) {
         role,
         active: true,
       });
+
+      if (!reader) {
+        console.error("[stripe/activate] Failed to create reader:", email);
+      }
 
       // For one-time purchases, record the purchase
       const purchaseSlug = chapterSlug ?? (plan === "digital_copy" ? bookSlug : null);

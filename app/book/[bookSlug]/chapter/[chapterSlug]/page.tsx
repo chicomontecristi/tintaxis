@@ -29,7 +29,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const chapter = getBookChapter(params.bookSlug, params.chapterSlug);
   if (!book || !chapter) return {};
 
-  const chapterTitle = `${book.chapterLabel} ${chapter.romanNumeral}: ${chapter.title}`;
+  const chapterLabel = book.chapterLabel ? `${book.chapterLabel} ` : "";
+  const chapterTitle = `${chapterLabel}${chapter.romanNumeral}: ${chapter.title}`;
   const pageTitle = `${chapterTitle} — ${book.title}`;
 
   // Build a meaningful description from the chapter's first paragraph (truncated)
@@ -109,17 +110,18 @@ function ChapterJsonLd({ bookSlug, chapterSlug }: { bookSlug: string; chapterSlu
       {
         "@type": "ListItem",
         position: 4,
-        name: `${book.chapterLabel} ${chapter.romanNumeral}`,
+        name: book.chapterLabel ? `${book.chapterLabel} ${chapter.romanNumeral}` : chapter.romanNumeral,
         item: chapterUrl,
       },
     ],
   };
 
   // Chapter as Article (so Google indexes the chapter text as content)
+  const chapterLabel = book.chapterLabel ? `${book.chapterLabel} ` : "";
   const article = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: `${book.chapterLabel} ${chapter.romanNumeral}: ${chapter.title} — ${book.title}`,
+    headline: `${chapterLabel}${chapter.romanNumeral}: ${chapter.title} — ${book.title}`,
     author: {
       "@type": "Person",
       name: book.author,
