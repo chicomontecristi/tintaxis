@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { playArchiveMode } from "@/lib/sound";
 import { motion, AnimatePresence } from "framer-motion";
-import type { Annotation, InkType, MarginLayer, Chapter, NarratorVoice, NarratorState } from "@/lib/types";
+import type { Annotation, InkType, MarginLayer, Chapter, NarratorVoice, NarratorState, Book } from "@/lib/types";
 import type { WhisperData } from "./AuthorWhisper";
 import {
   getAnnotations,
@@ -581,7 +581,7 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
           {/* ── Viral: Quote selector (floating on text selection) ── */}
           <QuoteSelector chapter={chapter} />
           {/* ── Chapter header ──────────────────────────────── */}
-          <ChapterHeader chapter={chapter} />
+          <ChapterHeader chapter={chapter} book={book} />
 
           {/* ── Brass rule ────────────────────────────────── */}
           <div className="brass-line" style={{ marginBottom: "3rem" }} />
@@ -832,7 +832,7 @@ function estimateReadTime(wordCount: number, t: ReturnType<typeof useI18n>["t"])
 
 // ─── CHAPTER HEADER ──────────────────────────────────────────────────────────
 
-function ChapterHeader({ chapter }: { chapter: Chapter }) {
+function ChapterHeader({ chapter, book }: { chapter: Chapter; book: Book | null }) {
   const { t } = useI18n();
   return (
     <motion.header
