@@ -1,12 +1,16 @@
 // ─── DIGITAL COPY DELIVERY ──────────────────────────────────────────────────
-// Generates a real PDF of the complete book and emails it as an attachment
+// Serves the author's actual PDF manuscript and emails it as an attachment
 // to the buyer via Resend.
 //
 // Called from the Stripe webhook on checkout.session.completed for digital_copy
 // and from the manual re-delivery endpoint.
+//
+// PDFs are stored in public/pdfs/ and named by book slug (e.g., naci-muerta.pdf).
+// Each PDF is the author's actual, submitted manuscript with original formatting.
 
 import { BOOKS } from "@/lib/content/books";
-import { generateBookPdf } from "@/lib/generate-book-pdf";
+import * as fs from "fs";
+import * as path from "path";
 
 const RESEND_API = "https://api.resend.com/emails";
 
@@ -36,12 +40,16 @@ export async function deliverDigitalCopy(
     return { success: false, error: `Book "${bookSlug}" not found.` };
   }
 
-  // ── Generate the PDF ──────────────────────────────────────────────────────
-  console.log(`[deliver] Generating PDF for "${book.title}"...`);
-  const pdfBuffer = await generateBookPdf(bookSlug);
-  if (!pdfBuffer) {
-    console.error(`[deliver] PDF generation failed for: ${bookSlug}`);
-    return { success: false, error: `PDF generation failed for "${bookSlug}".` };
+  // ── Load the author's actual PDF ──────────────────────────────────────────
+  console.log(`[deliver] Loading PDF for "${book.title}"...`);
+  const pdfPath = path.join(process.cwd(), "public", "pdfs", `${bookSlug}.pdf`);
+
+  let pdfBuffer: Buffer;
+  try {
+    pdfBuffer = fs.readFileSync(pdfPath);
+  } catch (err) {
+    console.error(`[deliver] PDF not found at ${pdfPath}:`, err);
+    return { success: false, error: `PDF file not found for "${bookSlug}".` };
   }
 
   const pdfBase64 = pdfBuffer.toString("base64");
@@ -49,7 +57,7 @@ export async function deliverDigitalCopy(
     .replace(/[^\p{L}\p{N}\s—.]/gu, "")
     .trim();
 
-  console.log(`[deliver] PDF generated: ${(pdfBuffer.length / 1024).toFixed(0)} KB, ${fileName}`);
+  console.log(`[deliver] PDF loaded: ${(pdfBuffer.length / 1024 / 1024).toFixed(1)} MB, ${fileName}`);
 
   // ── Build the email ───────────────────────────────────────────────────────
   const greeting = buyerName ? buyerName : "Reader";
