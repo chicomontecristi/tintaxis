@@ -2,7 +2,7 @@
 // Extracted directly from The Hunt Chico Montecristi.docx
 // Every word, comma, period, accent mark preserved exactly as written.
 
-import type { Chapter } from '@/lib/content/books';
+import type { Chapter } from '@/lib/types';
 
 export const CHAPTERS: Record<string, Chapter> = {
   'one': {
@@ -77,8 +77,8 @@ export const CHAPTERS: Record<string, Chapter> = {
   },
 };
 // Export helper functions
-export function getChapter(slug: string): Chapter | undefined {
-  return CHAPTERS[slug];
+export function getChapter(slug: string): Chapter | null {
+  return CHAPTERS[slug] ?? null;
 }
 
 export function getAllChapterSlugs(): string[] {
