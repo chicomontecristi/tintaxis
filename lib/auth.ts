@@ -105,13 +105,39 @@ export function getSessionFromCookie(cookieHeader: string | null): SessionPayloa
 export { COOKIE_NAME };
 
 // ── Author credential validation ──────────────────────────────────────────────
-// Phase 1: env vars. Phase 2: database lookup.
+// Queries Supabase authors table and validates password hash.
 
-export function validateAuthorCredentials(email: string, password: string): boolean {
-  const authorEmail    = process.env.AUTHOR_EMAIL    ?? "";
-  const authorPassword = process.env.AUTHOR_PASSWORD ?? "";
-  return (
-    email.toLowerCase().trim() === authorEmail.toLowerCase().trim() &&
-    password === authorPassword
-  );
+import { createClient } from "@supabase/supabase-js";
+import { comparePassword } from "./crypto";
+
+export async function validateAuthorCredentials(email: string, password: string): Promise<boolean> {
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      console.error("[auth] Supabase credentials missing");
+      return false;
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    const { data, error } = await supabase
+      .from("authors")
+      .select("password_hash")
+      .eq("email", email.toLowerCase().trim())
+      .single();
+
+    if (error || !data) {
+      console.error("[auth] Author not found:", email);
+      return false;
+    }
+
+    // Compare provided password with stored hash
+    const isValid = await comparePassword(password, data.password_hash);
+    return isValid;
+  } catch (err) {
+    console.error("[auth] Error validating author:", err);
+    return false;
+  }
 }

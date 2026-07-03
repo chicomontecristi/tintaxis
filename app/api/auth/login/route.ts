@@ -9,7 +9,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email and password required." }, { status: 400 });
     }
 
-    if (validateAuthorCredentials(email, password)) {
+    const isValid = await validateAuthorCredentials(email, password);
+    if (isValid) {
       const token = signSessionToken({
         sub: email,
         role: "author",
@@ -23,7 +24,8 @@ export async function POST(req: NextRequest) {
 
     // Wrong credentials — same error for both wrong email and wrong password
     return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
-  } catch {
+  } catch (err) {
+    console.error("[login] Error:", err);
     return NextResponse.json({ error: "Server error." }, { status: 500 });
   }
 }

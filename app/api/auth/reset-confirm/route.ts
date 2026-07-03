@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyResetToken } from "../reset-request/route";
 import { hashPassword } from "@/lib/crypto";
 import { updateReaderPassword } from "@/lib/db";
+import { createClient } from "@supabase/supabase-js";
 
 // ─── POST /api/auth/reset-confirm ───────────────────────────────────────────
 // Completes the password reset.
@@ -43,20 +44,31 @@ export async function POST(req: NextRequest) {
     // Hash the new password
     const newHash = await hashPassword(password);
 
-    // Update in database (works for readers; authors may also have reader accounts)
-    const updated = await updateReaderPassword(email, newHash);
-
+    // Update author account in Supabase
     if (isAuthor) {
-      // Author passwords live in env vars — can't update at runtime.
-      // But if they also have a reader row, that's updated above.
-      // We still return success and note they should update Vercel env.
-      return NextResponse.json({
-        success: true,
-        isAuthor: true,
-        message: "Password updated. If this is your author account, also update AUTHOR_PASSWORD in your Vercel environment variables.",
-      });
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+      if (!supabaseUrl || !supabaseKey) {
+        return NextResponse.json({ error: "Server configuration error." }, { status: 500 });
+      }
+
+      const supabase = createClient(supabaseUrl, supabaseKey);
+      const { error } = await supabase
+        .from("authors")
+        .update({ password_hash: newHash, updated_at: new Date().toISOString() })
+        .eq("email", email);
+
+      if (error) {
+        console.error("[reset-confirm] Author update error:", error);
+        return NextResponse.json({ error: "Failed to update password." }, { status: 500 });
+      }
+
+      return NextResponse.json({ success: true, isAuthor: true });
     }
 
+    // Update reader account in Supabase
+    const updated = await updateReaderPassword(email, newHash);
     if (!updated) {
       return NextResponse.json(
         { error: "Failed to update password. Please try again." },
