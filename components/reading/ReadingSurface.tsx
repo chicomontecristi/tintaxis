@@ -635,7 +635,30 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
             />
           )}
 
-          {/* ── Narrator selector — after voiceover ends ───── */}
+          {/* ── AI Narrator selector — available immediately (no voiceover required) ─── */}
+          {!hasAuthorAudio && narratorState === "idle" && (
+            <motion.button
+              onClick={() => setNarratorState("selecting")}
+              style={{
+                background: "transparent",
+                border: "1px solid rgba(201,168,76,0.3)",
+                color: "rgba(201,168,76,0.8)",
+                padding: "0.75rem 1.5rem",
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: "0.5rem",
+                letterSpacing: "0.15em",
+                textTransform: "uppercase",
+                cursor: "pointer",
+                marginBottom: "2rem",
+                marginTop: "1rem",
+              }}
+              whileHover={{ borderColor: "rgba(201,168,76,0.6)" }}
+            >
+              {t("reading.chooseNarrator") || "Choose AI Narrator"}
+            </motion.button>
+          )}
+
+          {/* ── Narrator selector modal ─────────────────────── */}
           <AnimatePresence>
             {narratorState === "selecting" && (
               <NarratorSelector
