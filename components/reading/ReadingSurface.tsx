@@ -635,26 +635,86 @@ export default function ReadingSurface({ chapter, nextChapter, prevChapter }: Re
             />
           )}
 
-          {/* ── AI Narrator selector — available immediately (no voiceover required) ─── */}
+          {/* ── AI Narrator — available immediately (no voiceover required) ─── */}
           {!hasAuthorAudio && narratorState === "idle" && (
             <motion.button
               onClick={() => setNarratorState("selecting")}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
               style={{
-                background: "transparent",
-                border: "1px solid rgba(201,168,76,0.3)",
-                color: "rgba(201,168,76,0.8)",
-                padding: "0.75rem 1.5rem",
-                fontFamily: '"JetBrains Mono", monospace',
-                fontSize: "0.5rem",
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
+                margin: "0 auto 3rem",
+                maxWidth: "520px",
+                padding: "1.5rem",
+                border: `1px solid ${book?.accentColor || "#C9A84C"}22`,
+                borderRadius: "4px",
+                background: "#0D0B08",
+                position: "relative",
+                display: "block",
+                width: "100%",
+                textAlign: "center",
                 cursor: "pointer",
-                marginBottom: "2rem",
-                marginTop: "1rem",
               }}
-              whileHover={{ borderColor: "rgba(201,168,76,0.6)" }}
+              whileHover={{
+                borderColor: `${book?.accentColor || "#C9A84C"}44`,
+                boxShadow: `0 0 12px ${book?.accentColor || "#C9A84C"}11`,
+              }}
             >
-              {t("reading.chooseNarrator") || "Choose AI Narrator"}
+              {/* Accent line */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: "10%",
+                  right: "10%",
+                  height: "1px",
+                  background: `linear-gradient(90deg, transparent, ${book?.accentColor || "#C9A84C"}40, transparent)`,
+                }}
+              />
+
+              {/* Sound wave icon */}
+              <div style={{ marginBottom: "0.75rem" }}>
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke={book?.accentColor || "#C9A84C"}
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  style={{ margin: "0 auto" }}
+                >
+                  <path d="M12 1v22M6 5v14M18 5v14M3 9v6M21 9v6" />
+                </svg>
+              </div>
+
+              {/* Label */}
+              <p
+                style={{
+                  fontFamily: '"JetBrains Mono", monospace',
+                  fontSize: "0.45rem",
+                  letterSpacing: "0.25em",
+                  textTransform: "uppercase",
+                  color: `${book?.accentColor || "#C9A84C"}88`,
+                  margin: "0 0 0.5rem 0",
+                }}
+              >
+                Audio Narration
+              </p>
+
+              {/* Description */}
+              <p
+                style={{
+                  fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+                  fontSize: "0.95rem",
+                  fontStyle: "italic",
+                  color: "rgba(245,230,200,0.55)",
+                  lineHeight: 1.5,
+                  margin: 0,
+                }}
+              >
+                Choose a voice to narrate this chapter
+              </p>
             </motion.button>
           )}
 
