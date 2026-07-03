@@ -46,15 +46,28 @@ export default function AuthorLogin() {
     e.preventDefault();
     if (!email.trim()) { setErrorMsg("Enter your email first."); setStatus("error"); return; }
     setResetStatus("sending");
+    setErrorMsg("");
     try {
-      await fetch("/api/auth/reset-request", {
+      const res = await fetch("/api/auth/reset-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
+      const data = await res.json();
+
+      if (!res.ok || !data.sent) {
+        console.error("[reset] API error:", data);
+        setErrorMsg(data.error ?? "Failed to send reset email.");
+        setStatus("error");
+        setResetStatus("idle");
+        return;
+      }
+
+      console.log("[reset] Email sent to:", email);
       setResetStatus("sent");
-    } catch {
-      setErrorMsg("Failed to send reset email.");
+    } catch (err) {
+      console.error("[reset] Network error:", err);
+      setErrorMsg("Connection failed. Try again.");
       setStatus("error");
       setResetStatus("idle");
     }
