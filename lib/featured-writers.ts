@@ -35,6 +35,7 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
   {
     slug: "rosalva-flores-aleman",
     name: "Rosalva Flores-Alemán, Ph.D.",
+    honorific: "Scriptor Honoris Causa",
     photo: "/writers/rosalva-flores-aleman.jpg",
     origin: "Sonora, México · Tucson, AZ · Tennessee",
     genre: "Literary Scholarship · Latin American Fiction",
@@ -127,6 +128,15 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
           "2017年12月，从Rochester和Montauk寄出的八封信。写给那只河口的鸟。",
         language: "中",
         href: "/book/mi-pajaro-del-rio",
+      },
+      {
+        title: "Nací Muerta",
+        subtitle: "Una biografía de mamá",
+        description:
+          "La historia de Carmen Mercedes Martínez Pascal, la madre del autor. Desde su nacimiento en Castañuelas, Monte Cristi, hasta su vida de sacrificio en el Bronx. Una biografía íntima que explora cómo una mujer dominicana transformó el dolor y la pobreza en propósito y resiliencia.",
+        language: "ES",
+        wordCount: "~16,392 palabras",
+        href: "/book/naci-muerta",
       },
     ],
     instagram: "chicomontecristi",
