@@ -43,15 +43,7 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
       "A scholar and writer whose work moves between 19th-century Latin American literature and the living questions of cultural identity, performance, and what it means to belong. She writes and teaches in Spanish and English — often at the same time.",
     fullBio:
       "Rosalva Flores-Alemán holds a Ph.D. in Literature from the University of Arizona (2022), where her research centered on 19th- and 20th-century Latin American literature, cultural studies, and the intersections of performance and subalternity. She is a native speaker of Spanish who has spent her academic career at the boundary between languages — teaching Spanish as a foreign language, working with Heritage Speakers recovering their own tongue, and building fully online courses that make rigorous literary study available to students who cannot reach a classroom. She has served as an academic advisor for Spanish Majors and Minors and as a Study Abroad advisor, personally recruiting and leading 33 students to Spain in 2021 and helping rescue a Costa Rica program from cancellation. Her pedagogy is built around first-generation students: active learning, critical thinking, and the conviction that literature is not a luxury but a tool. She writes with the same precision she demands in the classroom.",
-    works: [
-      {
-        title: "Subalternity, 21st Century Diaspora",
-        subtitle: "Essays · Poetry · PHaiLOSOPHY",
-        description:
-          "A collection moving across essay, poetry, and philosophical reflection — on silence, inheritance, and what it means to carry a culture across borders, languages, and generations.",
-        language: "EN",
-      },
-    ],
+    works: [],
     instagram: "rosalva.bp",
     instagramPrivate: true,
     website: undefined,
@@ -68,15 +60,7 @@ export const FEATURED_WRITERS: FeaturedWriter[] = [
       "A Dominican public intellectual and political figure whose writing addresses power, identity, and the condition of the Caribbean. His essays arrive with the weight of someone who has lived the history he describes.",
     fullBio:
       "José La Luz is a Dominican political figure, intellectual, and writer whose work spans more than three decades of engagement with Caribbean politics, social development, and the lives of ordinary people. His writing draws from direct experience inside the institutions and movements that have shaped the Dominican Republic. He writes in Spanish — plainly, precisely, and without detachment. His essays are not commentary from the outside. They are testimony.",
-    works: [
-      {
-        title: "Escritos de un Hombre Político",
-        subtitle: "Ensayos · Español",
-        description:
-          "A collection of political essays drawn from thirty years of public life in the Dominican Republic. On power, community, and the cost of conviction. Awaiting the author's word.",
-        language: "ES",
-      },
-    ],
+    works: [],
     instagram: undefined,
     website: undefined,
   },
